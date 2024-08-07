@@ -38,7 +38,7 @@ export const SmallCard = ({
             </Button>
           </div>
           <div className="lg:col-span-3 sm:col-span-1">
-            <div className="flex flex-col sm:items-center lg:items-start">
+            <div className="flex flex-col items-center">
               <h2 className="text-muted-foreground">{title}</h2>
               <p className="text-2xl font-semibold">{value}</p>
             </div>

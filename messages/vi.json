@@ -12,5 +12,9 @@
       "title": "Thông báo",
       "none": "Không có thông báo"
     }
+  },
+  "route": {
+    "/dashboard": "Trang chủ",
+    "/dashboard/products": "Sản phẩm"
   }
 }

@@ -23,9 +23,9 @@ import {
 } from "@/components/ui/table";
 
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
 import { DataTablePagination } from "@/components/datatable-pagination";
 import { DataTableViewOptions } from "@/components/datatable-view-options";
+import { DataTableFilterColumn } from "@/components/datatable-filter-column";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -61,14 +61,11 @@ export function DataTable<TData, TValue>({
 
   return (
     <>
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
+      <div className="flex items-center py-4 lg:flex-row flex-col-reverse gap-4">
+        <DataTableFilterColumn
+          column="email"
+          placeholder="Filter email..."
+          table={table}
         />
         <DataTableViewOptions table={table} />
       </div>

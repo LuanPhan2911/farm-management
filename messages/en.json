@@ -12,5 +12,9 @@
       "title": "Notification",
       "none": "No notifications"
     }
+  },
+  "route": {
+    "/dashboard": "Dashboard",
+    "/dashboard/products": "Products"
   }
 }
