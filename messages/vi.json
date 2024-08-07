@@ -1,0 +1,20 @@
+{
+  "localeSwitcher": {
+    "title": "Thay đổi ngôn ngữ"
+  },
+  "modeToggle": {
+    "title": "Đổi chế độ"
+  },
+  "dashboard": {
+    "heading": "Tổng quan",
+    "userButton": "Thông tin tài khoản",
+    "notification": {
+      "title": "Thông báo",
+      "none": "Không có thông báo"
+    }
+  },
+  "route": {
+    "/dashboard": "Trang chủ",
+    "/dashboard/products": "Sản phẩm"
+  }
+}

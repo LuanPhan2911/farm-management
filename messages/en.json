@@ -1,0 +1,20 @@
+{
+  "localeSwitcher": {
+    "title": "Change language"
+  },
+  "modeToggle": {
+    "title": "Change mode"
+  },
+  "dashboard": {
+    "heading": "Dashboard Overview",
+    "userButton": "Profile",
+    "notification": {
+      "title": "Notification",
+      "none": "No notifications"
+    }
+  },
+  "route": {
+    "/dashboard": "Dashboard",
+    "/dashboard/products": "Products"
+  }
+}
