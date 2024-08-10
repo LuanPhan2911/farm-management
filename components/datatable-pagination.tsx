@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "./ui/select";
 import { Button } from "./ui/button";
+import { useTranslations } from "next-intl";
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;
@@ -21,15 +22,18 @@ interface DataTablePaginationProps<TData> {
 export function DataTablePagination<TData>({
   table,
 }: DataTablePaginationProps<TData>) {
+  const tPagination = useTranslations("datatable.pagination");
   return (
     <div className="flex lg:items-center items-end justify-between px-2 gap-4 my-2 lg:flex-row flex-col-reverse">
       <div className="flex-1 text-sm text-muted-foreground">
-        {table.getFilteredSelectedRowModel().rows.length} of{" "}
-        {table.getFilteredRowModel().rows.length} row(s) selected.
+        {tPagination("rowSelected", {
+          selectedRow: table.getFilteredSelectedRowModel().rows.length,
+          allRow: table.getFilteredRowModel().rows.length,
+        })}
       </div>
       <div className="flex lg:items-center items-end space-x-6 lg:space-x-8 lg:flex-row flex-col-reverse gap-4">
         <div className="flex items-center space-x-2">
-          <p className="text-sm font-medium">Rows per page</p>
+          <p className="text-sm font-medium">{tPagination("rowPerPage")}</p>
           <Select
             value={`${table.getState().pagination.pageSize}`}
             onValueChange={(value) => {
@@ -50,8 +54,10 @@ export function DataTablePagination<TData>({
         </div>
         <div className="flex flex-row">
           <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-            Page {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()}
+            {tPagination("page", {
+              currentPage: table.getState().pagination.pageIndex + 1,
+              pageCount: table.getPageCount(),
+            })}
           </div>
           <div className="flex items-center space-x-2">
             <Button
