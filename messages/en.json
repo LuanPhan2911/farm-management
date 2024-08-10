@@ -5,6 +5,33 @@
   "modeToggle": {
     "title": "Change mode"
   },
+  "form": {
+    "button": {
+      "close": "Close",
+      "submit": "Submit",
+      "confirm": "Confirm"
+    }
+  },
+  "datatable": {
+    "view": {
+      "label": "View",
+      "toggle": "Toggle column"
+    },
+    "sort": {
+      "label": "Sort",
+      "asc": "ASC",
+      "desc": "DESC"
+    },
+    "pagination": {
+      "rowSelected": "{selectedRow} of {allRow} row(s) selected",
+      "rowPerPage": "Rows per page",
+      "page": "Page {currentPage} of {pageCount}"
+    },
+    "bulkAction": {
+      "label": "Bulk actions",
+      "description": "Actions"
+    }
+  },
   "dashboard": {
     "heading": "Dashboard Overview",
     "userButton": "Profile",
@@ -13,8 +40,84 @@
       "none": "No notifications"
     }
   },
+
+  "categories": {
+    "heading": "Manage Categories",
+    "button": {
+      "create": "Add",
+      "edit": "Edit",
+      "destroy": "Delete"
+    },
+    "table": {
+      "heading": "All categories",
+      "thead": {
+        "name": "Name",
+        "description": "Description"
+      },
+      "action": {
+        "label": "Action",
+        "edit": "Edit",
+        "destroy": "Delete"
+      },
+      "bulkAction": {
+        "deleteSelected": {
+          "label": "Delete all selected",
+          "title": "Delete all selected categories?",
+          "description": "Are you absolutely sure? This action can not be undone!"
+        }
+      }
+    },
+    "search": {
+      "placeholder": "Filter by category name..."
+    },
+    "form": {
+      "create": {
+        "title": "Add category",
+        "description": "Category use for classify the creature in the farm"
+      },
+      "edit": {
+        "title": "Edit category",
+        "description": "Category can edit"
+      },
+      "destroy": {
+        "title": "Delete category?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid fields!"
+      },
+      "name": {
+        "minlength": "Category name is required!",
+        "label": "Name",
+        "placeholder": "Category name"
+      },
+      "description": {
+        "minlength": "Category description is required!",
+        "label": "Description",
+        "placeholder": "Category description"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Category created!",
+        "edit": "Category edited!",
+        "destroy": "Category deleted!"
+      },
+      "failure": {
+        "create": "Something went wrong while creating category!",
+        "edit": "Something went wrong while editing category!",
+        "destroy": "Something went wrong while deleting category!"
+      }
+    }
+  },
+  "errors": {
+    "error": "Something went wrong!"
+  },
   "route": {
     "/dashboard": "Dashboard",
-    "/dashboard/products": "Products"
+    "/dashboard/products": "Products",
+    "/dashboard/categories": "Categories"
   }
 }

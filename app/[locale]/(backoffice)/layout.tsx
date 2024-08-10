@@ -27,7 +27,7 @@ const BackOfficeLayout = ({ children }: BackOfficeLayoutProps) => {
       <div
         className={cn(
           "h-full transition-all w-full relative",
-          isOpen && "pl-0 sm:pl-72"
+          isOpen && "pl-0 sm:pl-60"
         )}
       >
         {/* Navbar */}
