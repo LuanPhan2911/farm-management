@@ -1,10 +1,10 @@
 "use client";
 import { DynamicDialog } from "@/components/dynamic-dialog";
 import { Button } from "@/components/ui/button";
-import { CategorySchema } from "@/schemas";
+import { UnitSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Category } from "@prisma/client";
+import { Unit } from "@prisma/client";
 import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
@@ -19,27 +19,24 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { toast } from "sonner";
-import { edit } from "@/actions/category";
+import { edit } from "@/actions/unit";
 import { Input } from "@/components/ui/input";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 
-interface EditCategoryButtonProps {
-  data: Category;
+interface UnitEditButtonProps {
+  data: Unit;
   label: string;
 }
 
-export const EditCategoryButton = ({
-  data,
-  label,
-}: EditCategoryButtonProps) => {
+export const UnitEditButton = ({ data, label }: UnitEditButtonProps) => {
   const { onOpen } = useDialog();
   return (
     <Button
       className="w-full"
       onClick={() =>
-        onOpen("category.edit", {
-          category: data,
+        onOpen("unit.edit", {
+          unit: data,
         })
       }
     >
@@ -48,15 +45,15 @@ export const EditCategoryButton = ({
     </Button>
   );
 };
-export const EditCategoryDialog = () => {
+export const UnitEditDialog = () => {
   const { isOpen, type, data, onClose } = useDialog();
-  const isOpenDialog = isOpen && type === "category.edit";
+  const isOpenDialog = isOpen && type === "unit.edit";
 
-  const tSchema = useTranslations("categories.schema");
-  const tCategory = useTranslations("categories");
-  const tEdit = useTranslations("categories.form.edit");
+  const tSchema = useTranslations("units.schema");
+  const tUnit = useTranslations("units");
+  const tEdit = useTranslations("units.form.edit");
   const tForm = useTranslations("form");
-  const formSchema = CategorySchema(tSchema);
+  const formSchema = UnitSchema(tSchema);
 
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -68,10 +65,10 @@ export const EditCategoryDialog = () => {
   });
   const [id, setId] = useState("");
   useEffect(() => {
-    if (data?.category) {
-      form.setValue("name", data.category.name);
-      form.setValue("description", data.category.description);
-      setId(data.category.id);
+    if (data?.unit) {
+      form.setValue("name", data.unit.name);
+      form.setValue("description", data.unit.description);
+      setId(data.unit.id);
     }
   }, [data, form]);
   const onSubmit = (values: z.infer<typeof formSchema>) => {

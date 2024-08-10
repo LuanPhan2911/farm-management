@@ -112,12 +112,85 @@
       }
     }
   },
+  "units": {
+    "heading": "Quản lý đơn vị tính",
+    "button": {
+      "create": "Thêm",
+      "edit": "Sửa",
+      "destroy": "Xóa"
+    },
+    "table": {
+      "heading": "Tất cả đơn vị tính",
+      "thead": {
+        "name": "Tên",
+        "description": "Mô tả"
+      },
+      "action": {
+        "label": "Hành động",
+        "edit": "Sửa",
+        "destroy": "Xóa"
+      },
+      "bulkAction": {
+        "deleteSelected": {
+          "label": "Xóa tất cả đã chọn",
+          "title": "Xóa tất cả đơn vị tính đã chọn?",
+          "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
+        }
+      }
+    },
+    "search": {
+      "placeholder": "Lọc theo tên đơn vị tính..."
+    },
+
+    "form": {
+      "create": {
+        "title": "Thêm đơn vị tính",
+        "description": "Đơn vị tính được dùng để phân loại sinh vật trong nông trại"
+      },
+      "edit": {
+        "title": "Sửa đơn vị tính",
+        "description": "Đơn vị tính có thể cập nhật"
+      },
+      "destroy": {
+        "title": "Xóa đơn vị tính?",
+        "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Dữ liệu không hợp lệ!"
+      },
+      "name": {
+        "minlength": "Tên đơn vị tính là trường bắt buộc!",
+        "label": "Tên",
+        "placeholder": "Tên đơn vị tính"
+      },
+      "description": {
+        "minlength": "Mô tả đơn vị tính là trường bắt buộc!",
+        "label": "Mô tả",
+        "placeholder": "Mô tả tên đơn vị tính"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Đơn vị tính đã được tạo!",
+        "edit": "Đơn vị tính đã được cập nhật!",
+        "destroy": "Đơn vị tính đã được xóa!"
+      },
+      "failure": {
+        "create": "Có lỗi xảy ra trong khi tạo đơn vị tính!",
+        "edit": "Có lỗi xảy ra trong khi cập nhật đơn vị tính!",
+        "destroy": "Có lỗi xảy ra trong khi xóa đơn vị tính!"
+      }
+    }
+  },
   "errors": {
     "error": "Có lỗi xảy ra với hệ thống!"
   },
   "route": {
     "/dashboard": "Trang chủ",
     "/dashboard/products": "Sản phẩm",
-    "/dashboard/categories": "Thể loại"
+    "/dashboard/categories": "Thể loại",
+    "/dashboard/units": "Đơn vị tính"
   }
 }
