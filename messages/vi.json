@@ -5,6 +5,33 @@
   "modeToggle": {
     "title": "Đổi chế độ"
   },
+  "form": {
+    "button": {
+      "close": "Đóng",
+      "submit": "Lưu",
+      "confirm": "Xác nhận"
+    }
+  },
+  "datatable": {
+    "view": {
+      "label": "Xem cột",
+      "toggle": "Ẩn cột"
+    },
+    "sort": {
+      "label": "Sắp xếp",
+      "asc": "Giảm dần",
+      "desc": "Tăng dần"
+    },
+    "pagination": {
+      "rowSelected": "{selectedRow} / {allRow} dòng được chọn",
+      "rowPerPage": "Dòng trên bảng",
+      "page": "Trang {currentPage} / {pageCount}"
+    },
+    "bulkAction": {
+      "label": "Hành đồng lớn",
+      "description": "Hành động"
+    }
+  },
   "dashboard": {
     "heading": "Tổng quan",
     "userButton": "Thông tin tài khoản",
@@ -13,8 +40,84 @@
       "none": "Không có thông báo"
     }
   },
+  "categories": {
+    "heading": "Quản lý thể loại",
+    "button": {
+      "create": "Thêm",
+      "edit": "Sửa",
+      "destroy": "Xóa"
+    },
+    "table": {
+      "heading": "Tất cả thể loại",
+      "thead": {
+        "name": "Tên",
+        "description": "Mô tả"
+      },
+      "action": {
+        "label": "Hành động",
+        "edit": "Sửa",
+        "destroy": "Xóa"
+      },
+      "bulkAction": {
+        "deleteSelected": {
+          "label": "Xóa tất cả đã chọn",
+          "title": "Xóa tất cả thể loại đã chọn?",
+          "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
+        }
+      }
+    },
+    "search": {
+      "placeholder": "Lọc theo tên thể loại..."
+    },
+
+    "form": {
+      "create": {
+        "title": "Thêm thể loại",
+        "description": "Thể loại được dùng để phân loại sinh vật trong nông trại"
+      },
+      "edit": {
+        "title": "Sửa thể loại",
+        "description": "Thể loại có thể cập nhật"
+      },
+      "destroy": {
+        "title": "Xóa thể loại?",
+        "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Dữ liệu không hợp lệ!"
+      },
+      "name": {
+        "minlength": "Tên thể loại là trường bắt buộc!",
+        "label": "Tên",
+        "placeholder": "Tên thể loại"
+      },
+      "description": {
+        "minlength": "Mô tả thể loại là trường bắt buộc!",
+        "label": "Mô tả",
+        "placeholder": "Mô tả tên thể loại"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Thể loại đã được tạo!",
+        "edit": "Thể loại đã được cập nhật!",
+        "destroy": "Thể loại đã được xóa!"
+      },
+      "failure": {
+        "create": "Có lỗi xảy ra trong khi tạo thể loại!",
+        "edit": "Có lỗi xảy ra trong khi cập nhật thể loại!",
+        "destroy": "Có lỗi xảy ra trong khi xóa thể loại!"
+      }
+    }
+  },
+  "errors": {
+    "error": "Có lỗi xảy ra với hệ thống!"
+  },
   "route": {
     "/dashboard": "Trang chủ",
-    "/dashboard/products": "Sản phẩm"
+    "/dashboard/products": "Sản phẩm",
+    "/dashboard/categories": "Thể loại"
   }
 }
