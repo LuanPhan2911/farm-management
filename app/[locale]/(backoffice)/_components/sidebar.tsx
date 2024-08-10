@@ -69,12 +69,12 @@ export const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(({}, ref) => {
           title="Dashboard"
         />
         <SidebarAccordionItem title="Catalogue" icon={Flower}>
-          <SidebarItem
+          {/* <SidebarItem
             href="/dashboard/products"
             active={pathname === "/dashboard/products"}
             icon={Package}
             title="Products"
-          />
+          /> */}
           <SidebarItem
             href="/dashboard/categories"
             active={pathname === "/dashboard/categories"}
@@ -82,17 +82,17 @@ export const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(({}, ref) => {
             title="Categories"
           />
           <SidebarItem
-            href="/dashboard/attributes"
-            active={pathname === "/dashboard/attributes"}
+            href="/dashboard/units"
+            active={pathname === "/dashboard/units"}
             icon={MountainSnow}
-            title="Attributes"
+            title="Units"
           />
-          <SidebarItem
+          {/* <SidebarItem
             href="/dashboard/coupons"
             active={pathname === "/dashboard/coupons"}
             icon={TicketCheck}
             title="Coupons"
-          />
+          /> */}
         </SidebarAccordionItem>
         <SidebarItem
           href="/dashboard/customers"
