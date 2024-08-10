@@ -7,8 +7,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { EditCategoryButton } from "./edit-category-button";
-import { DeleteCategoryButton } from "./detele-category-button";
+import { CategoryEditButton } from "./category-edit-button";
+import { CategoryDeleteButton } from "./category-delete-button";
 import { MoreHorizontal } from "lucide-react";
 import { Category } from "@prisma/client";
 import { useTranslations } from "next-intl";
@@ -28,10 +28,10 @@ export const CategoriesTableAction = ({ data }: CategoriesTableActionProps) => {
         <DropdownMenuLabel>{tAction("label")}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <EditCategoryButton data={data} label={tAction("edit")} />
+          <CategoryEditButton data={data} label={tAction("edit")} />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <DeleteCategoryButton data={data} label={tAction("destroy")} />
+          <CategoryDeleteButton data={data} label={tAction("destroy")} />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

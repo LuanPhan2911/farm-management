@@ -24,15 +24,15 @@ import { Input } from "@/components/ui/input";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 
-interface EditCategoryButtonProps {
+interface CategoryEditButtonProps {
   data: Category;
   label: string;
 }
 
-export const EditCategoryButton = ({
+export const CategoryEditButton = ({
   data,
   label,
-}: EditCategoryButtonProps) => {
+}: CategoryEditButtonProps) => {
   const { onOpen } = useDialog();
   return (
     <Button
@@ -48,7 +48,7 @@ export const EditCategoryButton = ({
     </Button>
   );
 };
-export const EditCategoryDialog = () => {
+export const CategoryEditDialog = () => {
   const { isOpen, type, data, onClose } = useDialog();
   const isOpenDialog = isOpen && type === "category.edit";
 
