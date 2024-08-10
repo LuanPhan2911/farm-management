@@ -7,16 +7,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { CategoryEditButton } from "./category-edit-button";
-import { CategoryDeleteButton } from "./category-delete-button";
+import { UnitEditButton } from "./unit-edit-button";
+import { UnitDeleteButton } from "./unit-delete-button";
 import { MoreHorizontal } from "lucide-react";
-import { Category } from "@prisma/client";
+import { Unit } from "@prisma/client";
 import { useTranslations } from "next-intl";
-interface CategoriesTableActionProps {
-  data: Category;
+interface UnitsTableActionProps {
+  data: Unit;
 }
-export const CategoriesTableAction = ({ data }: CategoriesTableActionProps) => {
-  const tAction = useTranslations("categories.table.action");
+export const UnitsTableAction = ({ data }: UnitsTableActionProps) => {
+  const tAction = useTranslations("units.table.action");
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -28,10 +28,10 @@ export const CategoriesTableAction = ({ data }: CategoriesTableActionProps) => {
         <DropdownMenuLabel>{tAction("label")}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <CategoryEditButton data={data} label={tAction("edit")} />
+          <UnitEditButton data={data} label={tAction("edit")} />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <CategoryDeleteButton data={data} label={tAction("destroy")} />
+          <UnitDeleteButton data={data} label={tAction("destroy")} />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

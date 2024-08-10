@@ -112,12 +112,84 @@
       }
     }
   },
+  "units": {
+    "heading": "Manage Units",
+    "button": {
+      "create": "Add",
+      "edit": "Edit",
+      "destroy": "Delete"
+    },
+    "table": {
+      "heading": "All units",
+      "thead": {
+        "name": "Name",
+        "description": "Description"
+      },
+      "action": {
+        "label": "Action",
+        "edit": "Edit",
+        "destroy": "Delete"
+      },
+      "bulkAction": {
+        "deleteSelected": {
+          "label": "Delete all selected",
+          "title": "Delete all selected units?",
+          "description": "Are you absolutely sure? This action can not be undone!"
+        }
+      }
+    },
+    "search": {
+      "placeholder": "Filter by unit name..."
+    },
+    "form": {
+      "create": {
+        "title": "Add unit",
+        "description": "Unit use for "
+      },
+      "edit": {
+        "title": "Edit unit",
+        "description": "Unit can edit"
+      },
+      "destroy": {
+        "title": "Delete unit?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid fields!"
+      },
+      "name": {
+        "minlength": "Unit name is required!",
+        "label": "Name",
+        "placeholder": "Unit name"
+      },
+      "description": {
+        "minlength": "Unit description is required!",
+        "label": "Description",
+        "placeholder": "Unit description"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Unit created!",
+        "edit": "Unit edited!",
+        "destroy": "Unit deleted!"
+      },
+      "failure": {
+        "create": "Something went wrong while creating unit!",
+        "edit": "Something went wrong while editing unit!",
+        "destroy": "Something went wrong while deleting unit!"
+      }
+    }
+  },
   "errors": {
     "error": "Something went wrong!"
   },
   "route": {
     "/dashboard": "Dashboard",
     "/dashboard/products": "Products",
-    "/dashboard/categories": "Categories"
+    "/dashboard/categories": "Categories",
+    "/dashboard/units": "Units"
   }
 }

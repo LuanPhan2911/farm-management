@@ -31,9 +31,8 @@ import { useRef, useTransition } from "react";
 import { create } from "@/actions/category";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
-import { UploadImages } from "@/components/upload-images";
 
-export const CreateCategoryButton = () => {
+export const CategoryCreateButton = () => {
   const tSchema = useTranslations("categories.schema");
   const tButton = useTranslations("categories.button");
   const tCreate = useTranslations("categories.form.create");

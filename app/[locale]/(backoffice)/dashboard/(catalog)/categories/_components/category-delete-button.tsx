@@ -7,14 +7,14 @@ import { Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
-interface DeleteCategoryButtonProps {
+interface CategoryDeleteButtonProps {
   data: Category;
   label: string;
 }
-export const DeleteCategoryButton = ({
+export const CategoryDeleteButton = ({
   data,
   label,
-}: DeleteCategoryButtonProps) => {
+}: CategoryDeleteButtonProps) => {
   const { id } = data;
   const { onOpen, onClose } = useAlertDialog();
   const tDestroy = useTranslations("categories.form.destroy");
