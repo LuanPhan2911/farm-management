@@ -26,15 +26,27 @@ import { useState } from "react";
 import { DataTablePagination } from "@/components/datatable-pagination";
 import { DataTableViewOptions } from "@/components/datatable-view-options";
 import { DataTableFilterColumn } from "@/components/datatable-filter-column";
+import { DataTableBulkAction } from "./datatable-bulk-action";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  filterColumn?: {
+    isShown: boolean;
+    value: string;
+    placeholder: string;
+  };
+  bulkActions?: {
+    label: string;
+    action: (rows: TData[]) => void;
+  }[];
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  filterColumn,
+  bulkActions,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -61,13 +73,18 @@ export function DataTable<TData, TValue>({
 
   return (
     <>
-      <div className="flex items-center py-4 lg:flex-row flex-col-reverse gap-4">
-        <DataTableFilterColumn
-          column="email"
-          placeholder="Filter email..."
-          table={table}
-        />
-        <DataTableViewOptions table={table} />
+      <div className="flex py-4 lg:flex-row flex-col-reverse gap-4">
+        {filterColumn?.isShown && (
+          <DataTableFilterColumn
+            column={filterColumn.value}
+            placeholder={filterColumn.placeholder}
+            table={table}
+          />
+        )}
+        <div className="flex ml-auto gap-x-2">
+          <DataTableBulkAction table={table} actions={bulkActions} />
+          <DataTableViewOptions table={table} />
+        </div>
       </div>
 
       <div className="rounded-md border">
