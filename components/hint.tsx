@@ -13,6 +13,7 @@ export const Hint = ({
   align,
   signOffset,
   alignOffset,
+  disabled = false,
 }: {
   asChild?: boolean;
   label: string;
@@ -21,7 +22,11 @@ export const Hint = ({
   align?: "start" | "center" | "end";
   signOffset?: number;
   alignOffset?: number;
+  disabled?: boolean;
 }) => {
+  if (disabled) {
+    return children;
+  }
   return (
     <TooltipProvider>
       <Tooltip>

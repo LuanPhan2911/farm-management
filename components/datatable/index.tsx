@@ -23,9 +23,9 @@ import {
 } from "@/components/ui/table";
 
 import { useState } from "react";
-import { DataTablePagination } from "@/components/datatable-pagination";
-import { DataTableViewOptions } from "@/components/datatable-view-options";
-import { DataTableFilterColumn } from "@/components/datatable-filter-column";
+import { DataTablePagination } from "@/components/datatable/datatable-pagination";
+import { DataTableViewOptions } from "@/components/datatable/datatable-view-options";
+import { DataTableFilterColumn } from "@/components/datatable/datatable-filter-column";
 import { DataTableBulkAction } from "./datatable-bulk-action";
 
 interface DataTableProps<TData, TValue> {

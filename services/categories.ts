@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 
-export const getAll = async () => {
+export const getCategoriesAll = async () => {
   const categories = await db.category.findMany({
     orderBy: {
       name: "asc",
@@ -8,10 +8,18 @@ export const getAll = async () => {
   });
   return categories;
 };
-export const getBySlug = async (slug: string) => {
+export const getCategoryBySlug = async (slug: string) => {
   const category = await db.category.findUnique({
     where: {
       slug,
+    },
+  });
+  return category;
+};
+export const getCategoryById = async (id: string) => {
+  const category = await db.category.findUnique({
+    where: {
+      id,
     },
   });
   return category;

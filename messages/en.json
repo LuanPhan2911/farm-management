@@ -183,6 +183,147 @@
       }
     }
   },
+  "jobs": {
+    "heading": "Manage Jobs",
+    "button": {
+      "create": "Add",
+      "edit": "Edit",
+      "destroy": "Delete"
+    },
+    "table": {
+      "heading": "All jobs",
+      "thead": {
+        "name": "Name",
+        "quantity": "Quantity",
+        "gender": "Gender",
+        "experience": "Experience",
+        "published": "Published",
+        "expiredAt": "Expired date"
+      },
+      "action": {
+        "label": "Action",
+        "edit": "Edit",
+        "destroy": "Delete"
+      },
+      "bulkAction": {
+        "deleteSelected": {
+          "label": "Delete all selected",
+          "title": "Delete all selected jobs?",
+          "description": "Are you absolutely sure? This action can not be undone!"
+        }
+      }
+    },
+    "search": {
+      "placeholder": "Filter by job name..."
+    },
+    "form": {
+      "create": {
+        "title": "Add job",
+        "description": "Job use for "
+      },
+      "edit": {
+        "title": "Edit job",
+        "description": "Job can edit"
+      },
+      "destroy": {
+        "title": "Delete job?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid fields!"
+      },
+      "name": {
+        "minlength": "Job name is required!",
+        "label": "Name",
+        "placeholder": "Job name"
+      },
+      "experience": {
+        "label": "Experience",
+        "placeholder": "Select Experience",
+        "enum": "Please select experience in list",
+        "options": {
+          "NONE": "None required experience",
+          "ONE": "1 year experience",
+          "TWO": "2 year experiences",
+          "FIVE": "5 year experiences",
+          "TEN": "10 year experiences",
+          "GREATER_THAN_TEN": "More than 10 year experiences"
+        }
+      },
+      "quantity": {
+        "label": "Quantity",
+        "placeholder": "Quantity applicant",
+        "min": "Quantity applicant is at least 1",
+        "max": "Quantity applicant is at most 100",
+        "required_error": "Quantity is required",
+        "invalid_type": "Quantity is number",
+        "int": "Quantity is integer number"
+      },
+      "expiredAt": {
+        "label": "Expired Date Apply",
+        "placeholder": "Expired date apply",
+        "min": "Today is expired date minimize value"
+      },
+      "gender": {
+        "label": "Gender",
+        "placeholder": "Choose gender",
+        "enum": "Please choose gender in list",
+        "options": {
+          "MALE": "Male",
+          "FEMALE": "Female",
+          "NONE": "None required!"
+        }
+      },
+      "workingState": {
+        "label": "Working type",
+        "placeholder": "Working type",
+        "enum": "Please choose working time in list",
+        "options": {
+          "PART_TIME": "Part-time job",
+          "FULL_TIME": "Full-time job"
+        }
+      },
+      "workingTime": {
+        "minlength": "Working time is required!",
+        "label": "Working Time",
+        "placeholder": "Working time"
+      },
+      "wage": {
+        "minlength": "Job wage is required!",
+        "label": "Wage",
+        "placeholder": "Job's wage"
+      },
+      "description": {
+        "minlength": "Job description is required!",
+        "label": "Description",
+        "placeholder": "Job's description"
+      },
+      "requirement": {
+        "minlength": "Job requirement is required!",
+        "label": "Requirement",
+        "placeholder": "Job's requirement"
+      },
+      "rights": {
+        "minlength": "Job rights is required!",
+        "label": "Rights",
+        "placeholder": "Job's right"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Job created!",
+        "edit": "Job edited!",
+        "destroy": "Job deleted!"
+      },
+      "failure": {
+        "create": "Something went wrong while creating job!",
+        "edit": "Something went wrong while editing job!",
+        "destroy": "Something went wrong while deleting job!"
+      }
+    }
+  },
   "errors": {
     "error": "Something went wrong!"
   },
@@ -190,6 +331,9 @@
     "/dashboard": "Dashboard",
     "/dashboard/products": "Products",
     "/dashboard/categories": "Categories",
-    "/dashboard/units": "Units"
+    "/dashboard/units": "Units",
+    "/dashboard/jobs": "Jobs",
+    "/dashboard/jobs/create": "Create",
+    "/dashboard/jobs/edit": "Edit"
   }
 }

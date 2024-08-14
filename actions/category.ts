@@ -6,7 +6,7 @@ import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import slugify from "slugify";
-import { getBySlug } from "@/services/categories";
+import { getCategoryBySlug } from "@/services/categories";
 
 export const create = async (
   values: z.infer<ReturnType<typeof CategorySchema>>
@@ -23,7 +23,7 @@ export const create = async (
     let slug = slugify(validatedFields.data.name, {
       lower: true,
     });
-    const existingCategorySlug = await getBySlug(slug);
+    const existingCategorySlug = await getCategoryBySlug(slug);
     if (existingCategorySlug) {
       slug = slugify(
         `${validatedFields.data.name}-${Math.floor(Math.random() * 1000)}`,
@@ -58,8 +58,9 @@ export const edit = async (
     let slug = slugify(validatedFields.data.name, {
       lower: true,
     });
-    const existingCategorySlug = await getBySlug(slug);
-    if (existingCategorySlug) {
+    const existingCategorySlug = await getCategoryBySlug(slug);
+
+    if (existingCategorySlug && id !== existingCategorySlug.id) {
       slug = slugify(
         `${validatedFields.data.name}-${Math.floor(Math.random() * 1000)}`,
         {
