@@ -2,11 +2,11 @@ import { Heading } from "../../_components/heading";
 import { CategoryCreateButton } from "./_components/category-create-button";
 import { CategoriesTable } from "./_components/categories-data-table";
 import { getTranslations } from "next-intl/server";
-import { getAll } from "@/services/categories";
+import { getCategoriesAll } from "@/services/categories";
 
 const CategoriesPage = async () => {
   const t = await getTranslations("categories");
-  const data = await getAll();
+  const data = await getCategoriesAll();
   return (
     <div className="flex flex-col gap-y-4 h-full">
       <Heading title={t("heading")} />

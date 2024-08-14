@@ -1,5 +1,5 @@
 import { Search } from "lucide-react";
-import { Input } from "./ui/input";
+import { Input } from "@/components/ui/input";
 import { Table } from "@tanstack/react-table";
 interface DataTableFilterColumnProps<TData> {
   table: Table<TData>;

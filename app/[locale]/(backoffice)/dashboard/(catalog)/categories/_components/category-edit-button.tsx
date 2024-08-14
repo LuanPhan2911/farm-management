@@ -53,7 +53,6 @@ export const CategoryEditDialog = () => {
   const isOpenDialog = isOpen && type === "category.edit";
 
   const tSchema = useTranslations("categories.schema");
-  const tCategory = useTranslations("categories");
   const tEdit = useTranslations("categories.form.edit");
   const tForm = useTranslations("form");
   const formSchema = CategorySchema(tSchema);
@@ -81,7 +80,6 @@ export const CategoryEditDialog = () => {
     startTransition(() => {
       edit(values, id)
         .then(({ message }) => {
-          form.reset();
           onClose();
           toast.success(message);
         })

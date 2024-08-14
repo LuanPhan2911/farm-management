@@ -8,8 +8,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { Button } from "./ui/button";
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 import { Workflow } from "lucide-react";
 import { useTranslations } from "next-intl";
 

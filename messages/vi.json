@@ -184,6 +184,150 @@
       }
     }
   },
+  "jobs": {
+    "heading": "Quản lý việc làm",
+    "button": {
+      "create": "Thêm",
+      "edit": "Sửa",
+      "destroy": "Xóa"
+    },
+    "table": {
+      "heading": "Tất cả việc làm",
+      "thead": {
+        "name": "Tên",
+        "quantity": "Số lượng",
+        "gender": "Yêu cầu giới tính",
+        "experience": "Kinh nghiệm làm việc",
+        "published": "Công khai",
+        "expiredAt": "Ngày hết hạng"
+      },
+      "action": {
+        "label": "Hành động",
+        "edit": "Sửa",
+        "destroy": "Xóa"
+      },
+      "bulkAction": {
+        "deleteSelected": {
+          "label": "Xóa tất cả đã chọn",
+          "title": "Xóa tất cả việc làm đã chọn?",
+          "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
+        }
+      }
+    },
+    "search": {
+      "placeholder": "Lọc theo tên việc làm..."
+    },
+
+    "form": {
+      "create": {
+        "title": "Thêm việc làm",
+        "description": "Việc làm được dùng để phân loại sinh vật trong nông trại"
+      },
+      "edit": {
+        "title": "Sửa việc làm",
+        "description": "Việc làm có thể cập nhật"
+      },
+      "destroy": {
+        "title": "Xóa việc làm?",
+        "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Dữ liệu không hợp lệ!"
+      },
+      "name": {
+        "minlength": "Tên việc làm là trường bắt buộc!",
+        "label": "Tên",
+        "placeholder": "Tên việc làm"
+      },
+
+      "experience": {
+        "label": "Yêu cầu kinh nghiệm làm việc",
+        "placeholder": "Chọn kinh nghiệm",
+        "enum": "Vui lòng chọn trong danh sách kinh nghiệm",
+        "options": {
+          "NONE": "Không yêu cầu kinh nghiệm",
+          "ONE": "1 năm kinh nghiệm",
+          "TWO": "2 năm kinh nghiệm",
+          "FIVE": "5 năm kinh nghiệm",
+          "TEN": "10 năm kinh nghiệm",
+          "GREATER_THAN_TEN": "Trên 10 năm năm kinh nghiệm"
+        }
+      },
+      "quantity": {
+        "label": "Số lượng ứng tuyển",
+        "placeholder": "Số lượng ứng viên",
+        "min": "Số lượng ứng viên ít nhất là 1",
+        "max": "Số lượng ứng viên nhiều nhất là 100",
+        "required_error": "Số lượng ứng viên bắt buộc phải điền",
+        "invalid_type": "Trường số lượng phải là số",
+        "int": "Trường số lượng phải là số nguyên"
+      },
+      "expiredAt": {
+        "label": "Ngày hết hạn nộp đơn",
+        "placeholder": "Ngày hết hạn nộp đơn",
+        "min": "Ít nhất hôm nay là ngày hết hạn"
+      },
+      "gender": {
+        "label": "Giới tính",
+        "placeholder": "Chọn giới tính",
+        "enum": "Vui lòng chọn giới tính trong danh sách",
+        "options": {
+          "MALE": "Nam",
+          "FEMALE": "Nữ",
+          "NONE": "Không yêu cầu"
+        }
+      },
+      "workingState": {
+        "label": "Hình thức làm việc",
+        "placeholder": "Hình thức làm việc",
+        "enum": "Vui lòng chọn hình thức làm việc",
+        "options": {
+          "PART_TIME": "Bán thời gian",
+          "FULL_TIME": "Toàn thời gian"
+        }
+      },
+
+      "workingTime": {
+        "minlength": "Thời gian làm việc là trường bắt buộc!",
+        "label": "Thời gian làm việc",
+        "placeholder": "Thời gian làm việc"
+      },
+      "wage": {
+        "minlength": "Lương là trường bắt buộc!",
+        "label": "Lương",
+        "placeholder": "Lương công việc"
+      },
+      "description": {
+        "minlength": "Mô tả việc làm là trường bắt buộc!",
+        "label": "Mô tả",
+        "placeholder": "Mô tả tên việc làm"
+      },
+      "requirement": {
+        "minlength": "Yêu cầu việc làm là trường bắt buộc!",
+        "label": "Yêu cầu việc làm",
+        "placeholder": "Yêu cầu việc làm"
+      },
+      "rights": {
+        "minlength": "Quyền lợi việc làm là trường bắt buộc!",
+        "label": "Quyền lợi việc làm",
+        "placeholder": "Quyền lợi việc làm"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Việc làm đã được tạo!",
+        "edit": "Việc làm đã được cập nhật!",
+        "destroy": "Việc làm đã được xóa!"
+      },
+      "failure": {
+        "create": "Có lỗi xảy ra trong khi tạo việc làm!",
+        "edit": "Có lỗi xảy ra trong khi cập nhật việc làm!",
+        "destroy": "Có lỗi xảy ra trong khi xóa việc làm!"
+      }
+    }
+  },
   "errors": {
     "error": "Có lỗi xảy ra với hệ thống!"
   },
@@ -191,6 +335,9 @@
     "/dashboard": "Trang chủ",
     "/dashboard/products": "Sản phẩm",
     "/dashboard/categories": "Thể loại",
-    "/dashboard/units": "Đơn vị tính"
+    "/dashboard/units": "Đơn vị tính",
+    "/dashboard/jobs": "Việc làm",
+    "/dashboard/jobs/create": "Thêm",
+    "/dashboard/jobs/edit": "Sửa"
   }
 }

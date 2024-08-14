@@ -1,9 +1,10 @@
 import { useMedia } from "@/hooks/use-media";
 import { cn } from "@/lib/utils";
+import { Link } from "@/navigation";
+import { useConfirmWhenChangeRoute } from "@/stores/use-confirm-when-change-route";
 import { useDashboardSidebar } from "@/stores/use-dashboard-sidebar";
 import { LucideIcon } from "lucide-react";
-import Link from "next/link";
-import { useMediaQuery } from "react-responsive";
+
 interface SidebarItemProps {
   icon: LucideIcon;
   active: boolean;
@@ -18,7 +19,8 @@ export const SidebarItem = ({
 }: SidebarItemProps) => {
   const { isMobile } = useMedia();
   const { onClose } = useDashboardSidebar();
-  const handleClick = () => {
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     if (isMobile) {
       onClose();
     }

@@ -78,7 +78,6 @@ export const UnitEditDialog = () => {
     startTransition(() => {
       edit(values, id)
         .then(({ message }) => {
-          form.reset();
           onClose();
           toast.success(message);
         })

@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 import { ColumnDef } from "@tanstack/react-table";
 
-import { DataTableColumnHeader } from "@/components/datatable-column-header";
+import { DataTableColumnHeader } from "@/components/datatable/datatable-column-header";
 import { Category } from "@prisma/client";
 import { CategoriesTableAction } from "./categories-table-action";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
