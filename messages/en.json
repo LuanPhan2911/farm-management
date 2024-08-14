@@ -32,6 +32,39 @@
       "description": "Actions"
     }
   },
+  "editor": {
+    "alignment": {
+      "left": "Align left",
+      "right": "Align right",
+      "center": "Align center",
+      "justify": "Align justify"
+    },
+    "list": {
+      "bullet": "Bullet list",
+      "order": "Order list"
+    },
+    "fontFamily": {
+      "title": "Font family",
+      "description": "Font family"
+    },
+    "fontSize": {
+      "title": "Font size"
+    },
+    "mark": {
+      "bold": "Bold",
+      "italic": "Italic",
+      "underline": "Underline",
+      "highlight": "Highlighter"
+    },
+    "history": {
+      "redo": "Redo",
+      "undo": "Undo"
+    },
+    "script": {
+      "super": "Superscript",
+      "sub": "Subscript"
+    }
+  },
   "dashboard": {
     "heading": "Dashboard Overview",
     "userButton": "Profile",
@@ -315,13 +348,19 @@
       "success": {
         "create": "Job created!",
         "edit": "Job edited!",
-        "destroy": "Job deleted!"
+        "destroy": "Job deleted!",
+        "updatePublished": "Job's publish updated"
       },
       "failure": {
         "create": "Something went wrong while creating job!",
         "edit": "Something went wrong while editing job!",
-        "destroy": "Something went wrong while deleting job!"
+        "destroy": "Something went wrong while deleting job!",
+        "updatePublished": "Something went wrong while updating published"
       }
+    },
+    "notFound": {
+      "title": "Cannot find the job to edit",
+      "backButton": "Go back"
     }
   },
   "errors": {

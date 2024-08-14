@@ -8,11 +8,13 @@ import {
 } from "@/components/ui/select";
 import { useEditorAttributePersist } from "@/stores/use-editor-attribute";
 import { Hint } from "@/components/hint";
+import { useTranslations } from "next-intl";
 
 interface FontSizeButtonProps {
   disabled?: boolean;
 }
 export const FontSizeButton = ({ disabled }: FontSizeButtonProps) => {
+  const tFontSize = useTranslations("editor.fontSize");
   const { activeFontSize, setFontSize, fontSizes } =
     useEditorAttributePersist();
   const handleChange = (value: string) => {
@@ -20,7 +22,7 @@ export const FontSizeButton = ({ disabled }: FontSizeButtonProps) => {
   };
   return (
     <Select onValueChange={handleChange} disabled={disabled}>
-      <Hint asChild label="Font size">
+      <Hint asChild label={tFontSize("title")}>
         <SelectTrigger className="w-[60px] bg-transparent">
           <SelectValue placeholder={activeFontSize} />
         </SelectTrigger>

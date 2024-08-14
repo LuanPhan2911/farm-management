@@ -12,5 +12,18 @@ export const getJobById = async (id: string) => {
 };
 
 export const getJobsAll = async () => {
-  return await db.job.findMany();
+  return await db.job.findMany({
+    select: {
+      id: true,
+      name: true,
+      quantity: true,
+      experience: true,
+      gender: true,
+      expiredAt: true,
+      published: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
 };

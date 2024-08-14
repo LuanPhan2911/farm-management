@@ -33,9 +33,10 @@ import { addDays } from "date-fns";
 import { RadioOptions } from "@/components/radio-options";
 import { Tiptap } from "@/components/tiptap";
 import { useTransition } from "react";
+import { JobTable } from "@/types";
 
 interface JobEditButtonProps {
-  data: Job;
+  data: JobTable;
   label: string;
 }
 
