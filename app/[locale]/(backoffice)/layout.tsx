@@ -34,7 +34,7 @@ const BackOfficeLayout = ({ children }: BackOfficeLayoutProps) => {
         <Navbar />
         {/* Sidebar */}
         <Sidebar ref={sidebarRef} />
-        <main className="min-h-full h-fit w-full py-16 sm:px-6 px-2 ">
+        <main className="min-h-full w-full py-16 sm:px-6 px-2 ">
           {children}
         </main>
       </div>

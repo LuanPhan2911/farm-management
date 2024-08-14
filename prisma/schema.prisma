@@ -24,9 +24,11 @@ model Farmer {
 
   firstName String
   lastName  String
-  email     String @unique
-  phone     String @unique
+  username  String  @unique
+  email     String  @unique
+  phone     String  @unique
   address   String
+  imageUrl  String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -39,6 +41,47 @@ model Category {
   name        String
   description String
   slug        String @unique
+}
+
+enum JobExperience {
+  NONE
+  ONE
+  TWO
+  FIVE
+  TEN
+  GREATER_THAN_TEN
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  NONE
+}
+
+enum JobWorkingState {
+  PART_TIME
+  FULL_TIME
+}
+
+model Job {
+  id          String @id @default(uuid())
+  name        String
+  description String
+  requirement String
+  rights      String
+  workingTime String
+  wage        String
+  slug        String @unique
+
+  quantity     Int
+  experience   JobExperience
+  gender       Gender
+  workingState JobWorkingState
+
+  published Boolean  @default(false)
+  expiredAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Field {

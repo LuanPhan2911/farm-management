@@ -24,11 +24,10 @@ import { SidebarItem } from "./sidebar-item";
 import { SidebarAccordionItem } from "./sidebar-accordion-item";
 import { useMedia } from "@/hooks/use-media";
 import { forwardRef, useEffect } from "react";
-import { Button } from "@/components/ui/button";
 
 interface SidebarProps {}
 export const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(({}, ref) => {
-  const { isOpen, onClose, onOpen, onToggle } = useDashboardSidebar();
+  const { isOpen, onClose, onOpen } = useDashboardSidebar();
   const { isDesktop } = useMedia();
   const pathname = usePathname();
 
@@ -101,10 +100,10 @@ export const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(({}, ref) => {
           title="Customers"
         />
         <SidebarItem
-          href="/dashboard/orders"
-          active={pathname === "/dashboard/orders"}
+          href="/dashboard/jobs"
+          active={pathname === "/dashboard/jobs"}
           icon={Compass}
-          title="Orders"
+          title="Jobs"
         />
         <SidebarItem
           href="/dashboard/staff"

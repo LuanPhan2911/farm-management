@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
-import { DataTableColumnHeader } from "@/components/datatable-column-header";
+import { DataTableColumnHeader } from "@/components/datatable/datatable-column-header";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
