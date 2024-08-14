@@ -2,13 +2,14 @@
 import { destroy } from "@/actions/job";
 import { Button } from "@/components/ui/button";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
+import { JobTable } from "@/types";
 import { Job } from "@prisma/client";
 import { Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 interface JobDeleteButtonProps {
-  data: Job;
+  data: JobTable;
   label: string;
 }
 export const JobDeleteButton = ({ data, label }: JobDeleteButtonProps) => {
