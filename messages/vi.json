@@ -32,6 +32,39 @@
       "description": "Hành động"
     }
   },
+  "editor": {
+    "alignment": {
+      "left": "Căn trái",
+      "right": "Căn phải",
+      "center": "Căn giữa",
+      "justify": "Căn đều"
+    },
+    "list": {
+      "bullet": "Danh sách không thứ tự",
+      "order": "Danh sách có thứ tự"
+    },
+    "fontFamily": {
+      "title": "Phong chữ",
+      "description": "Phong chữ"
+    },
+    "fontSize": {
+      "title": "Cỡ chữ"
+    },
+    "mark": {
+      "bold": "In đậm",
+      "italic": "In nghiêng",
+      "underline": "Gạch dưới",
+      "highlight": "Bôi màu"
+    },
+    "history": {
+      "redo": "Làm lại",
+      "undo": "Hoàn tác"
+    },
+    "script": {
+      "super": "Chữ số trên",
+      "sub": "Chữ số dưới"
+    }
+  },
   "dashboard": {
     "heading": "Tổng quan",
     "userButton": "Thông tin tài khoản",
@@ -319,13 +352,19 @@
       "success": {
         "create": "Việc làm đã được tạo!",
         "edit": "Việc làm đã được cập nhật!",
-        "destroy": "Việc làm đã được xóa!"
+        "destroy": "Việc làm đã được xóa!",
+        "updatePublished": "Việc làm trạng thái đã được cập nhật"
       },
       "failure": {
         "create": "Có lỗi xảy ra trong khi tạo việc làm!",
         "edit": "Có lỗi xảy ra trong khi cập nhật việc làm!",
-        "destroy": "Có lỗi xảy ra trong khi xóa việc làm!"
+        "destroy": "Có lỗi xảy ra trong khi xóa việc làm!",
+        "updatePublished": "Có lỗi xảy ra khi cập nhật trạng thái công khai"
       }
+    },
+    "notFound": {
+      "title": "Không tìm thấy công việc để cập nhật",
+      "backButton": "Quay trở lại"
     }
   },
   "errors": {

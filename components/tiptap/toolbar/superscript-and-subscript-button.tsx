@@ -4,6 +4,7 @@ import {
 } from "@/components/toggle-group-button";
 import { useEditorAttribute } from "@/stores/use-editor-attribute";
 import { Subscript, Superscript } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface SuperscriptAndSubscriptButtonProps {
   disabled?: boolean;
@@ -13,17 +14,18 @@ export const SuperscriptAndSubscriptButton = ({
 }: SuperscriptAndSubscriptButtonProps) => {
   const { toggleSubscript, toggleSuperscript, subscript, superscript } =
     useEditorAttribute();
+  const tScript = useTranslations("editor.script");
   const toggleButtons: ToggleButton[] = [
     {
       icon: Superscript,
-      label: "Superscript",
+      label: tScript("super"),
       onToggle: () => {
         toggleSuperscript(superscript);
       },
     },
     {
       icon: Subscript,
-      label: "Subscript",
+      label: tScript("sub"),
       onToggle: () => {
         toggleSubscript(subscript);
       },
