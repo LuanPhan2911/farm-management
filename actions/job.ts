@@ -113,3 +113,22 @@ export const deleteMany = async (ids: string[]) => {
     throw new Error(tStatus("failure.destroy"));
   }
 };
+export const togglePublished = async (id: string, published: boolean) => {
+  const tStatus = await getTranslations("jobs.status");
+  try {
+    const job = await db.job.update({
+      where: {
+        id,
+      },
+      data: {
+        published,
+      },
+    });
+    revalidatePath("/dashboard/jobs");
+    return {
+      message: tStatus("success.updatePublished"),
+    };
+  } catch (error) {
+    throw new Error(tStatus("failure.updatePublished"));
+  }
+};

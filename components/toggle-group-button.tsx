@@ -3,6 +3,7 @@
 import { LucideIcon } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Hint } from "./hint";
+import { useState } from "react";
 export interface ToggleButton {
   icon: LucideIcon;
   label: string;
@@ -10,16 +11,22 @@ export interface ToggleButton {
 }
 interface ToggleGroupButtonProps {
   toggleButtons: ToggleButton[];
-  type?: "single" | "multiple";
+  type: "multiple" | "single";
   disabled?: boolean;
 }
 export const ToggleGroupButton = ({
   toggleButtons,
-  type = "multiple",
+  type,
   disabled,
 }: ToggleGroupButtonProps) => {
+  const [values, setValues] = useState<string[]>([]);
+  const onChange = (values: string[]) => {
+    console.log(values);
+
+    setValues(values);
+  };
   return (
-    <ToggleGroup type={type} variant={"outline"}>
+    <ToggleGroup type={type}>
       {toggleButtons.map(({ icon: Icon, label, onToggle }) => {
         return (
           <Hint asChild label={label} key={label}>

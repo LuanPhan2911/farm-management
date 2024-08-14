@@ -80,8 +80,8 @@ export const JobCreateForm = () => {
     startTransition(() => {
       create(values)
         .then(({ message }) => {
-          form.reset();
           router.push("/dashboard/jobs");
+          form.reset();
           toast.success(message);
         })
         .catch((error: Error) => {

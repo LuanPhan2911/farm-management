@@ -4,6 +4,7 @@ import {
 } from "@/components/toggle-group-button";
 import { Editor } from "@tiptap/react";
 import { List, ListOrdered } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface BulletAndOrderListButtonProps {
   editor: Editor;
@@ -13,17 +14,18 @@ export const BulletAndOrderListButton = ({
   editor,
   disabled,
 }: BulletAndOrderListButtonProps) => {
+  const tList = useTranslations("editor.list");
   const toggleButtons: ToggleButton[] = [
     {
       icon: List,
-      label: "Bullet list",
+      label: tList("bullet"),
       onToggle: () => {
         editor.chain().focus().toggleBulletList().run();
       },
     },
     {
       icon: ListOrdered,
-      label: "Order list",
+      label: tList("order"),
       onToggle: () => {
         editor.chain().focus().toggleOrderedList().run();
       },

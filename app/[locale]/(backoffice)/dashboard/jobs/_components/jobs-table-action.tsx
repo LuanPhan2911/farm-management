@@ -10,10 +10,11 @@ import { Button } from "@/components/ui/button";
 import { JobEditButton } from "./job-edit-button";
 import { JobDeleteButton } from "./job-delete-button";
 import { MoreHorizontal } from "lucide-react";
-import { Job } from "@prisma/client";
+
 import { useTranslations } from "next-intl";
+import { JobTable } from "@/types";
 interface JobsTableActionProps {
-  data: Job;
+  data: JobTable;
 }
 export const JobsTableAction = ({ data }: JobsTableActionProps) => {
   const tAction = useTranslations("jobs.table.action");

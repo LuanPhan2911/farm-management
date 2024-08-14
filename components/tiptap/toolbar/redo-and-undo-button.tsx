@@ -2,6 +2,7 @@ import { Hint } from "@/components/hint";
 import { Button } from "@/components/ui/button";
 import { Editor } from "@tiptap/react";
 import { Redo, Undo } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface RedoAndUndoButtonProps {
   editor: Editor;
@@ -11,9 +12,10 @@ export const RedoAndUndoButton = ({
   editor,
   disabled,
 }: RedoAndUndoButtonProps) => {
+  const tHistory = useTranslations("editor.history");
   return (
     <div className="flex gap-x-1">
-      <Hint asChild label="Undo">
+      <Hint asChild label={tHistory("undo")}>
         <Button
           size={"icon"}
           variant={"outline"}
@@ -25,7 +27,7 @@ export const RedoAndUndoButton = ({
           <Undo className="h-6 w-6" />
         </Button>
       </Hint>
-      <Hint asChild label="Redo">
+      <Hint asChild label={tHistory("redo")}>
         <Button
           size={"icon"}
           variant={"outline"}

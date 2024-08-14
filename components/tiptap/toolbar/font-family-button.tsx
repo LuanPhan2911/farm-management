@@ -7,12 +7,14 @@ import {
   SelectContent,
 } from "@/components/ui/select";
 import { useEditorAttributePersist } from "@/stores/use-editor-attribute";
+import { useTranslations } from "next-intl";
 
 interface FontFamilyButtonProps {
   disabled?: boolean;
 }
 export const FontFamilyButton = ({ disabled }: FontFamilyButtonProps) => {
   const { fonts, activeFont, setFont } = useEditorAttributePersist();
+  const tFontFamily = useTranslations("editor.fontFamily");
   const handleChange = (value: string) => {
     setFont(value);
   };
@@ -22,9 +24,9 @@ export const FontFamilyButton = ({ disabled }: FontFamilyButtonProps) => {
       onValueChange={handleChange}
       disabled={disabled}
     >
-      <Hint asChild label="Font family">
+      <Hint asChild label={tFontFamily("title")}>
         <SelectTrigger className="w-[100px] bg-transparent">
-          <SelectValue placeholder="Font family" />
+          <SelectValue placeholder={tFontFamily("description")} />
         </SelectTrigger>
       </Hint>
       <SelectContent>

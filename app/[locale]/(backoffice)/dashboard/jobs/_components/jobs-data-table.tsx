@@ -1,21 +1,23 @@
 "use client";
 import { DataTable } from "@/components/datatable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useFormatter, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
 import { Checkbox } from "@/components/ui/checkbox";
 
 import { ColumnDef } from "@tanstack/react-table";
 
 import { DataTableColumnHeader } from "@/components/datatable/datatable-column-header";
-import { Job } from "@prisma/client";
 import { JobsTableAction } from "./jobs-table-action";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
 import { deleteMany } from "@/actions/job";
 import { toast } from "sonner";
+import { JobTable } from "@/types";
+import { JobPublishedSwitch } from "./job-published-switch";
+import { JobExpired } from "./job-expired";
 
 interface JobsTableProps {
-  data: Job[];
+  data: JobTable[];
 }
 export const JobsTable = ({ data }: JobsTableProps) => {
   const tTable = useTranslations("jobs.table");
@@ -23,9 +25,8 @@ export const JobsTable = ({ data }: JobsTableProps) => {
   const tBulkAction = useTranslations("jobs.table.bulkAction");
   const tSchema = useTranslations("jobs.schema");
   const { onOpen, onClose } = useAlertDialog();
-  const format = useFormatter();
 
-  const columns: ColumnDef<Job>[] = [
+  const columns: ColumnDef<JobTable>[] = [
     {
       id: "select",
       header: ({ table }) => (
@@ -81,16 +82,16 @@ export const JobsTable = ({ data }: JobsTableProps) => {
       header: tTable("thead.expiredAt"),
       cell: ({ row }) => {
         const data = row.original.expiredAt;
-        return format.dateTime(data, {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        });
+        return <JobExpired expiredAt={data} />;
       },
     },
     {
       accessorKey: "published",
       header: tTable("thead.published"),
+      cell: ({ row }) => {
+        const { id, published } = row.original;
+        return <JobPublishedSwitch id={id} published={published} />;
+      },
     },
     {
       id: "actions",
@@ -104,7 +105,7 @@ export const JobsTable = ({ data }: JobsTableProps) => {
   const bulkActions = [
     {
       label: tBulkAction("deleteSelected.label"),
-      action: (rows: Job[]) => {
+      action: (rows: JobTable[]) => {
         onOpen({
           title: tBulkAction("deleteSelected.title"),
           description: tBulkAction("deleteSelected.description"),
