@@ -21,6 +21,9 @@ import { Link } from "@/navigation";
 import { BreadcrumbItemWithSeparator } from "@/components/breadscrumb-item-with-separator";
 import { useBreadCrumb } from "@/hooks/use-breadcrumb";
 import { useMedia } from "@/hooks/use-media";
+import { useConfirmWhenChangeRoute } from "@/stores/use-confirm-when-change-route";
+import { truncateString } from "@/lib/utils";
+import { Hint } from "@/components/hint";
 
 const ITEMS_TO_DISPLAY = 3;
 
@@ -40,7 +43,7 @@ export const BreadcrumbResponsive = () => {
       <BreadcrumbList>
         {items.length >= ITEMS_TO_DISPLAY && (
           <BreadcrumbItemWithSeparator
-            label={items[0].label}
+            label={truncateString(items[0].label, 25)}
             href={items[0].href}
           />
         )}
@@ -57,9 +60,15 @@ export const BreadcrumbResponsive = () => {
                 <DropdownMenuContent align="start">
                   {items.slice(1, -2).map((item, index) => (
                     <DropdownMenuItem key={index}>
-                      <Link href={item.href ? item.href : "#"}>
-                        {item.label}
-                      </Link>
+                      <Hint
+                        asChild
+                        label={item.label}
+                        disabled={item.label.length < 25}
+                      >
+                        <Link href={item.href ? item.href : "#"}>
+                          {truncateString(item.label, 25)}
+                        </Link>
+                      </Hint>
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
