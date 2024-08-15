@@ -56,7 +56,7 @@ export const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(({}, ref) => {
       ref={ref}
     >
       <div className="flex items-center mb-6">
-        <Link href={"/dashboard"} className="h-12 w-36 relative block">
+        <Link href={"/"} className="h-12 w-36 relative block">
           <Image src={"/logo.png"} alt="Logo" fill />
         </Link>
       </div>

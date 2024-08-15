@@ -1,5 +1,7 @@
 "use client";
 
+import { LocaleSwitcher } from "@/components/locale-switcher";
+import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -10,7 +12,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
+import { SignInButton, useUser } from "@clerk/nextjs";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -49,11 +51,11 @@ export const Navbar = () => {
         </NavigationMenuList>
       </NavigationMenu>
       <div className="flex gap-x-2">
+        <LocaleSwitcher />
+        <ModeToggle />
+
         {isSignedIn ? (
           <>
-            <SignOutButton redirectUrl="/">
-              <Button variant={"outline"}>Sign out</Button>
-            </SignOutButton>
             <Link href={"/dashboard"}>
               <Button>
                 Dashboard <ArrowRight className="w-4 h-4 ml-2" />

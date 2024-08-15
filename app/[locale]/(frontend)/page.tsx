@@ -12,9 +12,9 @@ export default function HomePage() {
           <h2 className="text-6xl font-extrabold mb-6 mt-20">
             Make beautiful websites regardless of your design experience.
           </h2>
-          <p className="text-xl font-light ">
+          <div className="text-xl font-light ">
             Beautiful, fast and modern React UI library.
-          </p>
+          </div>
           <div className="flex gap-x-4">
             <Button size={"lg"}>
               Get started <ArrowRight className="h-6 w-6 ml-2" />

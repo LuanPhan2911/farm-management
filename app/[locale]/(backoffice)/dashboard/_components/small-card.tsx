@@ -40,7 +40,7 @@ export const SmallCard = ({
           <div className="lg:col-span-3 sm:col-span-1">
             <div className="flex flex-col items-center">
               <h2 className="text-muted-foreground">{title}</h2>
-              <p className="text-2xl font-semibold">{value}</p>
+              <div className="text-2xl font-semibold">{value}</div>
             </div>
           </div>
         </div>
