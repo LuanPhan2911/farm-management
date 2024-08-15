@@ -6,14 +6,17 @@ import { Search } from "lucide-react";
 import { Input } from "./ui/input";
 interface SearchBarProps {
   placeholder: string;
+  isPagination?: boolean;
 }
-export const SearchBar = ({ placeholder }: SearchBarProps) => {
+export const SearchBar = ({ placeholder, isPagination }: SearchBarProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const handleSearch = useDebounceCallback((term: string) => {
     const params = new URLSearchParams(searchParams);
-    params.set("page", "1");
+    if (!isPagination) {
+      params.set("page", "1");
+    }
 
     if (term) {
       params.set("query", term);

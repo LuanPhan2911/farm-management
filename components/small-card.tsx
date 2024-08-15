@@ -22,7 +22,7 @@ export const SmallCard = ({
       <CardContent>
         <div className="text-md font-semibold">{value}</div>
         {description && (
-          <p className="text-md text-muted-foreground">{description}</p>
+          <div className="text-md text-muted-foreground">{description}</div>
         )}
       </CardContent>
     </Card>
