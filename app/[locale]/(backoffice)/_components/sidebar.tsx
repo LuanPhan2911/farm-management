@@ -8,58 +8,41 @@ import {
   Flower,
   Globe,
   LayoutGrid,
-  Menu,
   MountainSnow,
-  Package,
   Section,
   Settings,
   Store,
-  TicketCheck,
   User,
   Users,
 } from "lucide-react";
-import Image from "next/image";
+
 import Link from "next/link";
 import { SidebarItem } from "./sidebar-item";
 import { SidebarAccordionItem } from "./sidebar-accordion-item";
-import { useMedia } from "@/hooks/use-media";
-import { forwardRef, useEffect } from "react";
+
+import { forwardRef } from "react";
+import { Icons } from "@/components/icons";
+import { siteConfig } from "@/configs/siteConfig";
 
 interface SidebarProps {}
 export const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(({}, ref) => {
-  const { isOpen, onClose, onOpen } = useDashboardSidebar();
-  const { isDesktop } = useMedia();
-  const pathname = usePathname();
+  const { isOpen } = useDashboardSidebar();
 
-  useEffect(() => {
-    if (isDesktop) {
-      onOpen();
-    } else {
-      onClose();
-    }
-  }, [isDesktop, onClose, onOpen]);
-  useEffect(() => {
-    if (!isDesktop && isOpen) {
-      document.body.classList.add("overflow-hidden");
-    } else {
-      document.body.classList.remove("overflow-hidden");
-    }
-  }, [isOpen, isDesktop]);
+  const pathname = usePathname();
 
   return (
     <div
       className={cn(
         "space-y-6 w-60 h-full px-2 py-6 fixed sm:top-0 top-16 left-0 transition-all z-50 overflow-y-auto",
         !isOpen && "hidden",
-        "custom-scrollbar border-r rounded-md shadow-md dark:bg-black bg-white"
+        "custom-scrollbar border-r rounded-md shadow-md bg-background"
       )}
       ref={ref}
     >
-      <div className="flex items-center mb-6">
-        <Link href={"/"} className="h-12 w-36 relative block">
-          <Image src={"/logo.png"} alt="Logo" fill />
-        </Link>
-      </div>
+      <Link href={"/"} className="flex items-center">
+        <Icons.logo className="mr-2 h-6 w-6" />
+        <span className="font-bold">{siteConfig.name}</span>
+      </Link>
       <div className="flex flex-col gap-y-2">
         <SidebarItem
           href="/dashboard"
