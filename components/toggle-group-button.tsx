@@ -19,12 +19,6 @@ export const ToggleGroupButton = ({
   type,
   disabled,
 }: ToggleGroupButtonProps) => {
-  const [values, setValues] = useState<string[]>([]);
-  const onChange = (values: string[]) => {
-    console.log(values);
-
-    setValues(values);
-  };
   return (
     <ToggleGroup type={type}>
       {toggleButtons.map(({ icon: Icon, label, onToggle }) => {

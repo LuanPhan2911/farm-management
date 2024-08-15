@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { getRequestConfig } from "next-intl/server";
-import { locales } from "./config";
-import { IntlErrorCode } from "next-intl";
+import { locales } from "./configs/localeConfig";
 
 // Can be imported from a shared config
 

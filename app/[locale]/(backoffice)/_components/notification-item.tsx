@@ -26,9 +26,11 @@ export const NotificationItem = () => {
           </div>
           <div className="flex gap-x-2 items-center">
             <Badge variant={"default"}>
-              <p className="text-[10px] text-nowrap">New order</p>
+              <div className="text-[10px] text-nowrap">New order</div>
             </Badge>
-            <p className="text-xs text-muted-foreground">2024-12-10 12:14PM</p>
+            <div className="text-xs text-muted-foreground">
+              2024-12-10 12:14PM
+            </div>
           </div>
         </div>
         <Button size={"icon"} variant={"ghost"} onClick={handleClick}>
