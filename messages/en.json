@@ -361,6 +361,22 @@
     "notFound": {
       "title": "Cannot find the job to edit",
       "backButton": "Go back"
+    },
+    "card": {
+      "info": "Information about job",
+      "description": "Description",
+      "requirement": "Requirement",
+      "rights": "Rights",
+      "title": "Jobs",
+      "search": {
+        "placeholder": "Search by name...",
+        "notFound": "Not find the job with name is",
+        "typeOther": "Please type other name!"
+      },
+      "noJob": {
+        "label": "Current no job for you",
+        "backLabel": "Go to homepage"
+      }
     }
   },
   "errors": {

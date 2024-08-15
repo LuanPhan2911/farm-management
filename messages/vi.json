@@ -276,7 +276,7 @@
       },
 
       "experience": {
-        "label": "Yêu cầu kinh nghiệm làm việc",
+        "label": "Yêu cầu kinh nghiệm",
         "placeholder": "Chọn kinh nghiệm",
         "enum": "Vui lòng chọn trong danh sách kinh nghiệm",
         "options": {
@@ -298,7 +298,7 @@
         "int": "Trường số lượng phải là số nguyên"
       },
       "expiredAt": {
-        "label": "Ngày hết hạn nộp đơn",
+        "label": "Hạn nộp",
         "placeholder": "Ngày hết hạn nộp đơn",
         "min": "Ít nhất hôm nay là ngày hết hạn"
       },
@@ -365,6 +365,22 @@
     "notFound": {
       "title": "Không tìm thấy công việc để cập nhật",
       "backButton": "Quay trở lại"
+    },
+    "card": {
+      "info": "Thông tin chung về công việc",
+      "description": "Mô tả",
+      "requirement": "Yêu cầu",
+      "rights": "Quyền lợi",
+      "title": "Công việc",
+      "search": {
+        "placeholder": "Lọc theo tên công việc",
+        "notFound": "Không tìm thấy công việc với tên như ",
+        "typeOther": "Vui lòng nhập tên khác!"
+      },
+      "noJob": {
+        "label": "Hiện tại không có công việc cho bạn",
+        "backLabel": "Trở về trang chủ"
+      }
     }
   },
   "errors": {
