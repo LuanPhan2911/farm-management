@@ -3,7 +3,7 @@ import { LucideIcon } from "lucide-react";
 
 interface SmallCardProps {
   title: string;
-  value: string;
+  value: string | number;
   icon: LucideIcon;
   description?: string;
 }

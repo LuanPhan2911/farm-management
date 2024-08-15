@@ -1,5 +1,5 @@
+import { SmallCard } from "@/components/small-card";
 import { Car, CheckCheck, RefreshCcw, ShoppingCart } from "lucide-react";
-import { SmallCard } from "../../_components/small-card";
 
 export const SmallCards = () => {
   return (
