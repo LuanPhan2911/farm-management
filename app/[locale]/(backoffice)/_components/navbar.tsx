@@ -8,8 +8,6 @@ import { Notification } from "./notification";
 import { BreadcrumbResponsive } from "./breadcrumb-responsive";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
-import Link from "next/link";
-import Image from "next/image";
 
 export const Navbar = () => {
   const { isOpen, onToggle } = useDashboardSidebar();

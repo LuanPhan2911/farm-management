@@ -4,23 +4,13 @@ import { Navbar } from "./_components/navbar";
 import { Sidebar } from "./_components/sidebar";
 import { cn } from "@/lib/utils";
 import { useRef } from "react";
-import { useOnClickOutside } from "usehooks-ts";
-import { useMedia } from "@/hooks/use-media";
 
 interface BackOfficeLayoutProps {
   children: React.ReactNode;
 }
 
 const BackOfficeLayout = ({ children }: BackOfficeLayoutProps) => {
-  const { isOpen, onClose } = useDashboardSidebar();
-  const sidebarRef = useRef<HTMLDivElement>(null);
-  const { isMobile } = useMedia();
-
-  useOnClickOutside(sidebarRef, () => {
-    if (isMobile && isOpen) {
-      onClose();
-    }
-  });
+  const { isOpen } = useDashboardSidebar();
 
   return (
     <div className="flex h-full w-full">
@@ -33,7 +23,7 @@ const BackOfficeLayout = ({ children }: BackOfficeLayoutProps) => {
         {/* Navbar */}
         <Navbar />
         {/* Sidebar */}
-        <Sidebar ref={sidebarRef} />
+        <Sidebar />
         <main className="min-h-full h-fit w-full py-16 sm:px-6 px-2 ">
           {children}
         </main>

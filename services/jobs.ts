@@ -11,7 +11,7 @@ export const getJobById = async (id: string) => {
   });
 };
 
-export const getJobsAll = async () => {
+export const getJobsTable = async () => {
   return await db.job.findMany({
     select: {
       id: true,
@@ -24,6 +24,47 @@ export const getJobsAll = async () => {
     },
     orderBy: {
       createdAt: "desc",
+    },
+  });
+};
+export const getJobsCard = async (queryString: string) => {
+  return await db.job.findMany({
+    select: {
+      id: true,
+      name: true,
+      createdAt: true,
+      gender: true,
+      expiredAt: true,
+      slug: true,
+      wage: true,
+      experience: true,
+      workingState: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    where: {
+      published: true,
+      expiredAt: {
+        gt: new Date(),
+      },
+      name: {
+        contains: queryString,
+        mode: "insensitive",
+      },
+    },
+  });
+};
+export const getLatestJob = async () => {
+  return await db.job.findFirst({
+    orderBy: {
+      createdAt: "desc",
+    },
+    where: {
+      published: true,
+      expiredAt: {
+        gt: new Date(),
+      },
     },
   });
 };

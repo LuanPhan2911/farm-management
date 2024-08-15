@@ -1,4 +1,4 @@
-import { Gender, JobExperience } from "@prisma/client";
+import { Gender, JobExperience, JobWorkingState } from "@prisma/client";
 
 export type BreadCrumb = {
   label: string;
@@ -11,5 +11,16 @@ export type JobTable = {
   experience: JobExperience;
   gender: Gender;
   published: boolean;
+  expiredAt: Date;
+};
+export type JobCard = {
+  id: string;
+  name: string;
+  createdAt: Date;
+  gender: Gender;
+  slug: string;
+  wage: string;
+  experience: JobExperience;
+  workingState: JobWorkingState;
   expiredAt: Date;
 };

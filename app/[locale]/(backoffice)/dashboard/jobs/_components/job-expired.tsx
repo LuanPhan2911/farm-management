@@ -1,24 +1,26 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { useFormatter } from "next-intl";
-import { addDays, isFuture } from "date-fns";
+import { useFormatter, useNow } from "next-intl";
+import { isFuture } from "date-fns";
 
 interface JobExpiredProps {
   expiredAt: Date;
 }
 export const JobExpired = ({ expiredAt }: JobExpiredProps) => {
   const format = useFormatter();
-  const isValidDate = isFuture(addDays(expiredAt, 1));
+  const now = useNow();
+
+  const isValidDate = isFuture(expiredAt);
   return (
     <div className="flex flex-col gap-y-2 justify-center items-center">
-      <p>
+      <div>
         {format.dateTime(expiredAt, {
           year: "numeric",
           month: "2-digit",
           day: "2-digit",
         })}
-      </p>
+      </div>
       <Badge variant={isValidDate ? "success" : "destructive"}>
         {isValidDate ? "active" : "expired"}
       </Badge>

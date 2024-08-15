@@ -40,9 +40,9 @@ export const Notification = () => {
         <NotificationItem />
         <NotificationItem />
         <DropdownMenuItem>
-          <p className="text-muted-foreground text-sm text-center w-full">
+          <div className="text-muted-foreground text-sm text-center w-full">
             {t("none")}
-          </p>
+          </div>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

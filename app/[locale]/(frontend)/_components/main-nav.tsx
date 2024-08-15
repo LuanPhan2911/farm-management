@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Icons } from "@/components/icons";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -10,17 +10,18 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
-import { ArrowRight } from "lucide-react";
-import Image from "next/image";
+import { siteConfig } from "@/configs/siteConfig";
+
 import Link from "next/link";
 
-export const Navbar = () => {
-  const { isSignedIn } = useUser();
+export const MainNav = () => {
   return (
-    <div className="flex justify-between px-5 py-2">
-      <Link href={"/"} className="relative h-12 w-36 block">
-        <Image src={"/logo.png"} alt="Logo" fill />
+    <div className="md:flex hidden mr-4">
+      <Link href={"/"} className="mr-4 flex items-center space-x-2 lg:mr-6">
+        <Icons.logo className="h-6 w-6" />
+        <span className="hidden font-bold lg:inline-block">
+          {siteConfig.name}
+        </span>
       </Link>
       <NavigationMenu>
         <NavigationMenuList>
@@ -48,24 +49,6 @@ export const Navbar = () => {
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
-      <div className="flex gap-x-2">
-        {isSignedIn ? (
-          <>
-            <SignOutButton redirectUrl="/">
-              <Button variant={"outline"}>Sign out</Button>
-            </SignOutButton>
-            <Link href={"/dashboard"}>
-              <Button>
-                Dashboard <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-            </Link>
-          </>
-        ) : (
-          <SignInButton>
-            <Button>Login</Button>
-          </SignInButton>
-        )}
-      </div>
     </div>
   );
 };

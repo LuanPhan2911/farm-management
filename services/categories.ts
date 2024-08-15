@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 
-export const getCategoriesAll = async () => {
+export const getCategoriesTable = async () => {
   const categories = await db.category.findMany({
     orderBy: {
       name: "asc",
