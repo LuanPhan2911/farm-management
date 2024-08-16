@@ -217,6 +217,94 @@
       }
     }
   },
+  "applicants": {
+    "heading": "Quản lý ứng viên",
+    "button": {
+      "apply": "Nộp đơn",
+      "destroy": "Xóa",
+      "close": "Đóng",
+      "submit": "Gửi"
+    },
+    "table": {
+      "heading": "Tất cả ứng viên",
+      "thead": {
+        "name": "Tên"
+      },
+      "action": {
+        "label": "Hành động",
+        "destroy": "Xóa"
+      },
+      "bulkAction": {
+        "deleteSelected": {
+          "label": "Xóa tất cả đã chọn",
+          "title": "Xóa tất cả ứng viên đã chọn?",
+          "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
+        }
+      }
+    },
+    "search": {
+      "placeholder": "Lọc theo tên ứng viên..."
+    },
+
+    "form": {
+      "apply": {
+        "title": "Nộp đơn",
+        "description": "Nộp đơn công việc này"
+      },
+      "destroy": {
+        "title": "Xóa ứng viên?",
+        "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Dữ liệu không hợp lệ!",
+        "jobIdInvalid": "Công việc không hợp lệ"
+      },
+      "name": {
+        "minlength": "Tên ứng viên là trường bắt buộc",
+        "label": "Tên ứng viên",
+        "placeholder": "Tên ứng viên"
+      },
+      "email": {
+        "minlength": "Email ứng viên là trường bắt buộc phải điền",
+        "isEmail": "Email không hợp lệ",
+        "label": "Email",
+        "placeholder": "Email ứng viên"
+      },
+      "phone": {
+        "minlength": "Số điện thoại ứng viên là trường bắt buộc phải điền",
+        "label": "Số điện thoại",
+        "placeholder": "Số điện thoại",
+        "isPhone": "Số điện thoại không hợp lệ"
+      },
+      "address": {
+        "minlength": "Địa chỉ ứng viên là trường bắt buộc phải điền",
+        "label": "Địa chỉ",
+        "placeholder": "Địa chỉ"
+      },
+      "note": {
+        "label": "Ghi chú",
+        "placeholder": "Ghi chú"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Nộp đơn cho công việc thành công",
+        "destroy": "Ứng viên đã được xóa!"
+      },
+      "failure": {
+        "create": "Có lỗi xảy ra trong khi nộp đơn",
+        "destroy": "Có lỗi xảy ra trong khi xóa ứng viên!"
+      }
+    },
+    "mail": {
+      "apply": {
+        "subject": "Cảm ơn vi đã nộp đơn xin việc ở website chúng tối",
+        "html": "Gửi {name}. Cảm ơn bạn vì đã nộp đơn xin việc ở công ty chúng tôi. Khi có nhu cầu liên hệ, chúng tôi sẽ liên hệ bạn thông qua email này."
+      }
+    }
+  },
   "jobs": {
     "heading": "Quản lý việc làm",
     "button": {
