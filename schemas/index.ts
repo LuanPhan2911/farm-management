@@ -1,7 +1,7 @@
 import { Gender, JobExperience, JobWorkingState } from "@prisma/client";
 import { addDays } from "date-fns";
 import { z } from "zod";
-
+import validator from "validator";
 export const CategorySchema = (t: (arg: string) => string) =>
   z.object({
     name: z.string().min(1, {
@@ -73,3 +73,30 @@ export const JobSchema = (t: (arg: string) => string) =>
       }
     ),
   });
+export const ApplicantSchema = (t: (arg: string) => string) => {
+  return z.object({
+    name: z.string().min(1, {
+      message: t("name.minlength"),
+    }),
+    email: z
+      .string()
+      .min(1, {
+        message: t("email.minlength"),
+      })
+      .email({
+        message: t("email.isEmail"),
+      }),
+    phone: z
+      .string()
+      .min(1, {
+        message: t("phone.minlength"),
+      })
+      .refine(validator.isMobilePhone, {
+        message: "phone.isPhone",
+      }),
+    address: z.string().min(1, {
+      message: t("address.minlength"),
+    }),
+    note: z.string(),
+  });
+};

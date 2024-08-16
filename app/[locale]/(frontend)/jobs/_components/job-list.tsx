@@ -12,8 +12,9 @@ import { getJobsCard } from "@/services/jobs";
 
 interface JobListProps {
   query: string;
+  activeId?: string;
 }
-export const JobList = async ({ query }: JobListProps) => {
+export const JobList = async ({ query, activeId }: JobListProps) => {
   const tCard = await getTranslations("jobs.card");
   const data = await getJobsCard(query);
   return (
@@ -46,7 +47,13 @@ export const JobList = async ({ query }: JobListProps) => {
           <ScrollArea className="h-screen">
             <div className="flex flex-col gap-2 px-4 pt-0">
               {data.map((item) => {
-                return <JobCardItem key={item.id} data={item} />;
+                return (
+                  <JobCardItem
+                    key={item.id}
+                    data={item}
+                    active={activeId === item.id}
+                  />
+                );
               })}
             </div>
           </ScrollArea>
