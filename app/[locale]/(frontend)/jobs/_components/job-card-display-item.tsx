@@ -7,9 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Link } from "@/navigation";
 import { Job } from "@prisma/client";
 import { Calendar, DollarSign, Target, Timer, User, Users } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
+import { JobApplyButton } from "./job-apply-button";
 
 interface JobCardDisplayItemProps {
   data: Job;
@@ -28,9 +30,7 @@ export const JobCardDisplayItem = ({ data }: JobCardDisplayItemProps) => {
             </Badge>
           </div>
           <div className="absolute top-0 left-0">
-            <Button size={"sm"} variant={"success"}>
-              Apply now
-            </Button>
+            <JobApplyButton jobId={data.id} />
           </div>
           <div className="flex mt-6 text-justify md:text-lg text-md font-semibold">
             {data.name}
@@ -96,9 +96,7 @@ export const JobCardDisplayItem = ({ data }: JobCardDisplayItemProps) => {
           </div>
           <Separator className="my-4" />
           <div className="flex items-center justify-center">
-            <Button size={"sm"} variant={"success"}>
-              Apply now
-            </Button>
+            <JobApplyButton jobId={data.id} />
           </div>
         </div>
       </CardContent>

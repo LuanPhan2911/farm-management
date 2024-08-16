@@ -216,6 +216,95 @@
       }
     }
   },
+  "applicants": {
+    "heading": "Manage Applicants",
+    "button": {
+      "apply": "Apply",
+      "destroy": "Delete",
+      "close": "Close",
+      "submit": "Submit"
+    },
+    "table": {
+      "heading": "All applicants",
+      "thead": {
+        "name": "Name"
+      },
+      "action": {
+        "label": "Action",
+
+        "destroy": "Delete"
+      },
+      "bulkAction": {
+        "deleteSelected": {
+          "label": "Delete all selected",
+          "title": "Delete all selected applicants?",
+          "description": "Are you absolutely sure? This action can not be undone!"
+        }
+      }
+    },
+    "search": {
+      "placeholder": "Filter by applicant name..."
+    },
+    "form": {
+      "apply": {
+        "title": "Apply",
+        "description": "Apply this job"
+      },
+      "destroy": {
+        "title": "Delete applicant?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid fields!",
+        "jobIdInvalid": "Job is invalid"
+      },
+      "name": {
+        "minlength": "Applicant first name is required!",
+        "label": "First name",
+        "placeholder": "Applicant first name"
+      },
+
+      "email": {
+        "minlength": "Applicant email is required!",
+        "isEmail": "Applicant email is invalid!",
+        "label": "Email",
+        "placeholder": "Applicant email"
+      },
+      "phone": {
+        "minlength": "Applicant phone is required!",
+        "label": "Phone",
+        "placeholder": "Applicant phone",
+        "isPhone": "Applicant phone number is invalid"
+      },
+      "address": {
+        "minlength": "Applicant address is required!",
+        "label": "Address",
+        "placeholder": "Applicant address"
+      },
+      "note": {
+        "label": "Note",
+        "placeholder": "Note"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Apply this job success",
+        "destroy": "Applicant deleted!"
+      },
+      "failure": {
+        "create": "Something went wrong while applying the job!",
+        "destroy": "Something went wrong while deleting applicant!"
+      }
+    },
+    "mail": {
+      "apply": {
+        "subject": "Thanks for apply the job in our website",
+        "html": "Dear {name}. Thank you for applying for a job with our company. If we need to contact you, we will contact you via this email."
+      }
+    }
+  },
   "jobs": {
     "heading": "Manage Jobs",
     "button": {

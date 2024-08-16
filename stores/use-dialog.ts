@@ -1,4 +1,4 @@
-import { Category, Unit } from "@prisma/client";
+import { Category, Unit, Applicant } from "@prisma/client";
 import { create } from "zustand";
 
 export type DialogType = "category.edit" | "unit.edit";
@@ -6,6 +6,7 @@ export type DialogType = "category.edit" | "unit.edit";
 export interface DialogData {
   category?: Category;
   unit?: Unit;
+  applicant?: Applicant;
 }
 interface DialogStore {
   type: DialogType | null;
