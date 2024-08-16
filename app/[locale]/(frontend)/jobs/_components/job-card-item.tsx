@@ -5,15 +5,12 @@ import { cn } from "@/lib/utils";
 import { useRouter } from "@/navigation";
 import { JobCard } from "@/types";
 import { useFormatter, useTranslations } from "next-intl";
-import { useParams } from "next/navigation";
-import { useState } from "react";
+
 interface JobCardProps {
   data: JobCard;
+  active?: boolean;
 }
-export const JobCardItem = ({ data }: JobCardProps) => {
-  const params = useParams<{
-    jobSlug: string;
-  }>();
+export const JobCardItem = ({ data, active }: JobCardProps) => {
   const router = useRouter();
   const format = useFormatter();
   const tJob = useTranslations("jobs.schema");
@@ -26,16 +23,14 @@ export const JobCardItem = ({ data }: JobCardProps) => {
     <button
       className={cn(
         "flex flex-col items-start relative gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent",
-        params?.jobSlug === data.slug && "bg-muted"
+        active && "bg-muted"
       )}
       onClick={handleClick}
     >
       <div
         className={cn(
           "text-xs absolute right-1 top-1 flex items-center gap-2",
-          params.jobSlug === data.slug
-            ? "text-foreground"
-            : "text-muted-foreground"
+          active ? "text-foreground" : "text-muted-foreground"
         )}
       >
         <Badge variant={"info"}>

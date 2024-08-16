@@ -82,6 +82,24 @@ model Job {
   expiredAt DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  aplicants Applicant[]
+}
+
+model Applicant {
+  id String @id @default(uuid())
+
+  name    String
+  email   String
+  phone   String
+  address String
+  note    String?
+
+  jobId String?
+  job   Job?    @relation(fields: [jobId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Field {
