@@ -3,7 +3,6 @@ import { useDashboardSidebar } from "@/stores/use-dashboard-sidebar";
 import { Navbar } from "./_components/navbar";
 import { Sidebar } from "./_components/sidebar";
 import { cn } from "@/lib/utils";
-import { useRef } from "react";
 
 interface BackOfficeLayoutProps {
   children: React.ReactNode;

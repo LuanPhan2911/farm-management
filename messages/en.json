@@ -10,7 +10,8 @@
       "close": "Close",
       "submit": "Submit",
       "confirm": "Confirm"
-    }
+    },
+    "error": "Something went wrong!"
   },
   "datatable": {
     "view": {
@@ -476,13 +477,14 @@
     "error": "Something went wrong!"
   },
   "route": {
-    "/dashboard": "Dashboard",
-    "/dashboard/products": "Products",
-    "/dashboard/categories": "Categories",
-    "/dashboard/units": "Units",
-    "/dashboard/jobs": "Jobs",
-    "/dashboard/jobs/create": "Create",
-    "/dashboard/jobs/edit": "Edit",
-    "/dashboard/applicants": "Applicant"
+    "/admin": "Admin",
+    "/admin/dashboard": "Dashboard",
+    "/admin/products": "Products",
+    "/admin/categories": "Categories",
+    "/admin/units": "Units",
+    "/admin/jobs": "Jobs",
+    "/admin/jobs/create": "Create",
+    "/admin/jobs/edit": "Edit",
+    "/admin/applicants": "Applicant"
   }
 }

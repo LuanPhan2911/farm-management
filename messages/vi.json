@@ -10,7 +10,8 @@
       "close": "Đóng",
       "submit": "Lưu",
       "confirm": "Xác nhận"
-    }
+    },
+    "error": "Có lỗi xảy ra với hệ thống!"
   },
   "datatable": {
     "view": {
@@ -479,13 +480,14 @@
     "error": "Có lỗi xảy ra với hệ thống!"
   },
   "route": {
-    "/dashboard": "Trang chủ",
-    "/dashboard/products": "Sản phẩm",
-    "/dashboard/categories": "Thể loại",
-    "/dashboard/units": "Đơn vị tính",
-    "/dashboard/jobs": "Việc làm",
-    "/dashboard/jobs/create": "Thêm",
-    "/dashboard/jobs/edit": "Sửa",
-    "/dashboard/applicants": "Ứng viên"
+    "/admin": "Admin",
+    "/admin/dashboard": "Trang chủ",
+    "/admin/products": "Sản phẩm",
+    "/admin/categories": "Thể loại",
+    "/admin/units": "Đơn vị tính",
+    "/admin/jobs": "Việc làm",
+    "/admin/jobs/create": "Thêm",
+    "/admin/jobs/edit": "Sửa",
+    "/admin/applicants": "Ứng viên"
   }
 }

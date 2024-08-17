@@ -1,5 +1,5 @@
 import { getJobById } from "@/services/jobs";
-import { Heading } from "@/app/[locale]/(backoffice)/dashboard/_components/heading";
+
 import { JobEditForm } from "../../_components/job-edit-button";
 import { notFound } from "next/navigation";
 
@@ -15,7 +15,6 @@ const JobEditPage = async ({ params }: JobEditPageProps) => {
   }
   return (
     <div className="flex flex-col gap-y-4">
-      <Heading title="Edit Job" />
       <JobEditForm job={data} />
     </div>
   );

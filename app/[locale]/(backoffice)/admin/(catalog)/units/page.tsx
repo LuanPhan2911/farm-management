@@ -1,4 +1,3 @@
-import { Heading } from "../../_components/heading";
 import { UnitCreateButton } from "./_components/unit-create-button";
 import { UnitsTable } from "./_components/units-data-table";
 import { getTranslations } from "next-intl/server";
@@ -9,7 +8,6 @@ const UnitsPage = async () => {
   const data = await gitUnitsTable();
   return (
     <div className="flex flex-col gap-y-4 h-full">
-      <Heading title={t("heading")} />
       <div className="ml-auto">
         <UnitCreateButton />
       </div>

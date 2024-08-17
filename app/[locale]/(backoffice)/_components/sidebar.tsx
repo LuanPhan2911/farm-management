@@ -45,53 +45,41 @@ export const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(({}, ref) => {
       </Link>
       <div className="flex flex-col gap-y-2">
         <SidebarItem
-          href="/dashboard"
-          active={pathname === "/dashboard"}
+          href="/admin/dashboard"
+          active={pathname === "/admin/dashboard"}
           icon={LayoutGrid}
           title="Dashboard"
         />
         <SidebarAccordionItem title="Catalogue" icon={Flower}>
-          {/* <SidebarItem
-            href="/dashboard/products"
-            active={pathname === "/dashboard/products"}
-            icon={Package}
-            title="Products"
-          /> */}
           <SidebarItem
-            href="/dashboard/categories"
-            active={pathname === "/dashboard/categories"}
+            href="/admin/categories"
+            active={pathname === "/admin/categories"}
             icon={Section}
             title="Categories"
           />
           <SidebarItem
-            href="/dashboard/units"
-            active={pathname === "/dashboard/units"}
+            href="/admin/units"
+            active={pathname === "/admin/units"}
             icon={MountainSnow}
             title="Units"
           />
-          {/* <SidebarItem
-            href="/dashboard/coupons"
-            active={pathname === "/dashboard/coupons"}
-            icon={TicketCheck}
-            title="Coupons"
-          /> */}
         </SidebarAccordionItem>
 
         <SidebarAccordionItem title="Recruit" icon={Users}>
           <SidebarItem
-            href="/dashboard/jobs"
-            active={pathname === "/dashboard/jobs"}
+            href="/admin/jobs"
+            active={pathname === "/admin/jobs"}
             icon={Compass}
             title="Jobs"
           />
           <SidebarItem
-            href="/dashboard/applicants"
-            active={pathname === "/dashboard/applicants"}
+            href="/admin/applicants"
+            active={pathname === "/admin/applicants"}
             icon={User}
             title="Applicants"
           />
         </SidebarAccordionItem>
-        <SidebarItem
+        {/* <SidebarItem
           href="/dashboard/customers"
           active={pathname === "/dashboard/customers"}
           icon={Users}
@@ -118,7 +106,7 @@ export const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(({}, ref) => {
         </SidebarAccordionItem>
         <SidebarAccordionItem title="Pages" icon={Columns2}>
           <div></div>
-        </SidebarAccordionItem>
+        </SidebarAccordionItem> */}
       </div>
     </div>
   );
