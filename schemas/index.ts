@@ -4,42 +4,66 @@ import { z } from "zod";
 import validator from "validator";
 export const CategorySchema = (t: (arg: string) => string) =>
   z.object({
-    name: z.string().min(1, {
-      message: t("name.minlength"),
-    }),
+    name: z
+      .string()
+      .min(1, {
+        message: t("name.minlength"),
+      })
+      .max(50),
     description: z.string().min(1, {
       message: t("description.minlength"),
     }),
   });
 export const UnitSchema = (t: (arg: string) => string) =>
   z.object({
-    name: z.string().min(1, {
-      message: t("name.minlength"),
-    }),
+    name: z
+      .string()
+      .min(1, {
+        message: t("name.minlength"),
+      })
+      .max(50),
     description: z.string().min(1, {
       message: t("description.minlength"),
     }),
   });
 export const JobSchema = (t: (arg: string) => string) =>
   z.object({
-    name: z.string().min(1, {
-      message: t("name.minlength"),
-    }),
-    description: z.string().min(1, {
-      message: t("description.minlength"),
-    }),
-    requirement: z.string().min(1, {
-      message: t("requirement.minlength"),
-    }),
-    rights: z.string().min(1, {
-      message: t("rights.minlength"),
-    }),
-    workingTime: z.string().min(1, {
-      message: t("workingTime.minlength"),
-    }),
-    wage: z.string().min(1, {
-      message: t("wage.minlength"),
-    }),
+    name: z
+      .string()
+      .min(1, {
+        message: t("name.minlength"),
+      })
+      .max(50),
+    description: z
+      .string()
+      .min(1, {
+        message: t("description.minlength"),
+      })
+      .max(5000),
+    requirement: z
+      .string()
+      .min(1, {
+        message: t("requirement.minlength"),
+      })
+      .max(5000),
+    rights: z
+      .string()
+      .min(1, {
+        message: t("rights.minlength"),
+      })
+      .max(5000),
+    workingTime: z
+      .string()
+      .min(1, {
+        message: t("workingTime.minlength"),
+      })
+      .max(50),
+    wage: z
+      .string()
+      .min(1, {
+        message: t("wage.minlength"),
+      })
+      .max(50),
     quantity: z.coerce
       .number({
         required_error: t("quantity.required_error"),
@@ -75,9 +99,12 @@ export const JobSchema = (t: (arg: string) => string) =>
   });
 export const ApplicantSchema = (t: (arg: string) => string) => {
   return z.object({
-    name: z.string().min(1, {
-      message: t("name.minlength"),
-    }),
+    name: z
+      .string()
+      .min(1, {
+        message: t("name.minlength"),
+      })
+      .max(50),
     email: z
       .string()
       .min(1, {
@@ -85,7 +112,8 @@ export const ApplicantSchema = (t: (arg: string) => string) => {
       })
       .email({
         message: t("email.isEmail"),
-      }),
+      })
+      .max(50),
     phone: z
       .string()
       .min(1, {
@@ -94,9 +122,12 @@ export const ApplicantSchema = (t: (arg: string) => string) => {
       .refine(validator.isMobilePhone, {
         message: "phone.isPhone",
       }),
-    address: z.string().min(1, {
-      message: t("address.minlength"),
-    }),
-    note: z.string(),
+    address: z
+      .string()
+      .min(1, {
+        message: t("address.minlength"),
+      })
+      .max(50),
+    note: z.string().max(200),
   });
 };

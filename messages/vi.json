@@ -228,7 +228,10 @@
     "table": {
       "heading": "Tất cả ứng viên",
       "thead": {
-        "name": "Tên"
+        "name": "Tên",
+        "email": "Email",
+        "address": "Địa chỉ",
+        "phone": "Số điện thoại"
       },
       "action": {
         "label": "Hành động",
@@ -259,7 +262,8 @@
     "schema": {
       "errors": {
         "parse": "Dữ liệu không hợp lệ!",
-        "jobIdInvalid": "Công việc không hợp lệ"
+        "jobIdInvalid": "Công việc không hợp lệ",
+        "existingApplicant": "Bạn đã nộp đơn công việc này rồi"
       },
       "name": {
         "minlength": "Tên ứng viên là trường bắt buộc",
@@ -481,6 +485,7 @@
     "/dashboard/units": "Đơn vị tính",
     "/dashboard/jobs": "Việc làm",
     "/dashboard/jobs/create": "Thêm",
-    "/dashboard/jobs/edit": "Sửa"
+    "/dashboard/jobs/edit": "Sửa",
+    "/dashboard/applicants": "Ứng viên"
   }
 }
