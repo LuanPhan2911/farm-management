@@ -1,48 +1,50 @@
 "use server";
 
 import { db } from "@/lib/db";
+import { errorResponse, successResponse } from "@/lib/utils";
 import { UnitSchema } from "@/schemas";
+import { ActionResponse } from "@/types";
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 export const create = async (
   values: z.infer<ReturnType<typeof UnitSchema>>
-) => {
+): Promise<ActionResponse> => {
   const tSchema = await getTranslations("units.schema");
   const tStatus = await getTranslations("units.status");
   const paramsSchema = UnitSchema(tSchema);
   const validatedFields = paramsSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    throw new Error(tSchema("errors.parse"));
+    return errorResponse(tSchema("errors.parse"));
   }
   try {
-    const unit = await db.unit.create({
+    await db.unit.create({
       data: {
         ...validatedFields.data,
       },
     });
     revalidatePath("/dashboard/units");
-    return { message: tStatus("success.create") };
+    return successResponse(tStatus("success.create"));
   } catch (error) {
-    throw new Error(tStatus("failure.create"));
+    return errorResponse(tStatus("failure.create"));
   }
 };
 export const edit = async (
   values: z.infer<ReturnType<typeof UnitSchema>>,
   id: string
-) => {
+): Promise<ActionResponse> => {
   const tSchema = await getTranslations("units.schema");
   const tStatus = await getTranslations("units.status");
   const paramsSchema = UnitSchema(tSchema);
   const validatedFields = paramsSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    throw new Error(tSchema("errors.parse"));
+    return errorResponse(tSchema("errors.parse"));
   }
   try {
-    const unit = await db.unit.update({
+    await db.unit.update({
       where: {
         id,
       },
@@ -51,29 +53,29 @@ export const edit = async (
       },
     });
     revalidatePath("/dashboard/units");
-    return { message: tStatus("success.edit") };
+    return successResponse(tStatus("success.edit"));
   } catch (error) {
-    throw new Error(tStatus("failure.edit"));
+    return errorResponse(tStatus("failure.edit"));
   }
 };
-export const destroy = async (id: string) => {
+export const destroy = async (id: string): Promise<ActionResponse> => {
   const tStatus = await getTranslations("units.status");
   try {
-    const unit = await db.unit.delete({
+    await db.unit.delete({
       where: {
         id,
       },
     });
     revalidatePath("/dashboard/units");
-    return { message: tStatus("success.destroy") };
+    return successResponse(tStatus("success.destroy"));
   } catch (error) {
-    throw new Error(tStatus("failure.destroy"));
+    return errorResponse(tStatus("failure.destroy"));
   }
 };
-export const deleteMany = async (ids: string[]) => {
+export const deleteMany = async (ids: string[]): Promise<ActionResponse> => {
   const tStatus = await getTranslations("units.status");
   try {
-    const units = await db.unit.deleteMany({
+    await db.unit.deleteMany({
       where: {
         id: {
           in: ids,
@@ -81,8 +83,8 @@ export const deleteMany = async (ids: string[]) => {
       },
     });
     revalidatePath("/dashboard/units");
-    return { message: tStatus("success.destroy") };
+    return successResponse(tStatus("success.destroy"));
   } catch (error) {
-    throw new Error(tStatus("failure.destroy"));
+    return errorResponse(tStatus("failure.destroy"));
   }
 };

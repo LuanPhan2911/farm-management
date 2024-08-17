@@ -79,12 +79,16 @@ export const CategoryEditDialog = () => {
     }
     startTransition(() => {
       edit(values, id)
-        .then(({ message }) => {
-          onClose();
-          toast.success(message);
+        .then(({ message, ok }) => {
+          if (ok) {
+            onClose();
+            toast.success(message);
+          } else {
+            toast.error(message);
+          }
         })
-        .catch((error: Error) => {
-          toast.error(error.message);
+        .catch((error) => {
+          toast.error(tForm("error"));
         });
     });
   };

@@ -24,6 +24,7 @@ export const JobsTable = ({ data }: JobsTableProps) => {
   const tSearch = useTranslations("jobs.search");
   const tBulkAction = useTranslations("jobs.table.bulkAction");
   const tSchema = useTranslations("jobs.schema");
+  const tForm = useTranslations("form");
   const { onOpen, onClose } = useAlertDialog();
 
   const columns: ColumnDef<JobTable>[] = [
@@ -112,11 +113,15 @@ export const JobsTable = ({ data }: JobsTableProps) => {
           onConfirm: () => {
             const ids = rows.map((row) => row.id);
             deleteMany(ids)
-              .then(({ message }) => {
-                toast.success(message);
+              .then(({ message, ok }) => {
+                if (ok) {
+                  toast.success(message);
+                } else {
+                  toast.error(message);
+                }
               })
               .catch((error: Error) => {
-                toast.error(error.message);
+                toast.error(tForm("error"));
               })
               .finally(() => {
                 onClose();

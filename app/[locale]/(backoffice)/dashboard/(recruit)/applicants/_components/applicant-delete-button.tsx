@@ -18,13 +18,18 @@ export const ApplicantDeleteButton = ({
   const { id } = data;
   const { onOpen, onClose } = useAlertDialog();
   const tDestroy = useTranslations("applicants.form.destroy");
+  const tForm = useTranslations("form");
   const onConfirm = async () => {
     destroy(id)
-      .then(({ message }) => {
-        toast.success(message);
+      .then(({ message, ok }) => {
+        if (ok) {
+          toast.success(message);
+        } else {
+          toast.error(message);
+        }
       })
       .catch((error: Error) => {
-        toast.error(error.message);
+        toast.error(tForm("error"));
       })
       .finally(() => {
         onClose();

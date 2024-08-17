@@ -1,9 +1,11 @@
 "use server";
 import { db } from "@/lib/db";
 import { sendApplicantApply } from "@/lib/mail";
+import { errorResponse, successResponse } from "@/lib/utils";
 import { ApplicantSchema } from "@/schemas";
 import { getApplicantByEmailAndJobId } from "@/services/applicants";
 import { getJobById } from "@/services/jobs";
+import { ActionResponse } from "@/types";
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -11,25 +13,25 @@ import { z } from "zod";
 export const create = async (
   values: z.infer<ReturnType<typeof ApplicantSchema>>,
   jobId: string
-) => {
+): Promise<ActionResponse> => {
   const tSchema = await getTranslations("applicants.schema");
   const tStatus = await getTranslations("applicants.status");
   const paramsSchema = ApplicantSchema(tSchema);
   const validatedFields = paramsSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    throw new Error(tSchema("errors.parse"));
+    return errorResponse(tSchema("errors.parse"));
   }
   const job = await getJobById(jobId);
   if (!job) {
-    throw new Error(tSchema("errors.jobInvalid"));
+    return errorResponse(tSchema("errors.jobInvalid"));
   }
   const existingApplicant = await getApplicantByEmailAndJobId(
     validatedFields.data.email,
     job.id
   );
   if (existingApplicant) {
-    throw new Error(tSchema("errors.existingApplicant"));
+    return errorResponse(tSchema("errors.existingApplicant"));
   }
   try {
     const applicant = await db.applicant.create({
@@ -40,12 +42,12 @@ export const create = async (
     });
     sendApplicantApply(applicant);
 
-    return { message: tStatus("success.create") };
+    return successResponse(tStatus("success.create"));
   } catch (error) {
-    throw new Error(tStatus("failure.create"));
+    return errorResponse(tStatus("failure.create"));
   }
 };
-export const destroy = async (id: string) => {
+export const destroy = async (id: string): Promise<ActionResponse> => {
   const tStatus = await getTranslations("applicants.status");
   try {
     await db.applicant.delete({
@@ -54,12 +56,12 @@ export const destroy = async (id: string) => {
       },
     });
     revalidatePath("/dashboard/applicants");
-    return { message: tStatus("success.destroy") };
+    return successResponse(tStatus("success.destroy"));
   } catch (error) {
-    throw new Error(tStatus("failure.destroy"));
+    return errorResponse(tStatus("failure.destroy"));
   }
 };
-export const deleteMany = async (ids: string[]) => {
+export const deleteMany = async (ids: string[]): Promise<ActionResponse> => {
   const tStatus = await getTranslations("applicants.status");
   try {
     await db.applicant.deleteMany({
@@ -70,8 +72,8 @@ export const deleteMany = async (ids: string[]) => {
       },
     });
     revalidatePath("/dashboard/applicants");
-    return { message: tStatus("success.destroy") };
+    return successResponse(tStatus("success.destroy"));
   } catch (error) {
-    throw new Error(tStatus("failure.destroy"));
+    return errorResponse(tStatus("failure.destroy"));
   }
 };

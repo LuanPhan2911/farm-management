@@ -21,7 +21,7 @@ export const ApplicantsTable = ({ data }: ApplicantsTableProps) => {
   const tTable = useTranslations("applicants.table");
   const tSearch = useTranslations("applicants.search");
   const tBulkAction = useTranslations("applicants.table.bulkAction");
-  const tSchema = useTranslations("applicants.schema");
+  const tForm = useTranslations("form");
   const { onOpen, onClose } = useAlertDialog();
 
   const columns: ColumnDef<Applicant>[] = [
@@ -87,11 +87,15 @@ export const ApplicantsTable = ({ data }: ApplicantsTableProps) => {
           onConfirm: () => {
             const ids = rows.map((row) => row.id);
             deleteMany(ids)
-              .then(({ message }) => {
-                toast.success(message);
+              .then(({ message, ok }) => {
+                if (ok) {
+                  toast.success(message);
+                } else {
+                  toast.error(message);
+                }
               })
               .catch((error: Error) => {
-                toast.error(error.message);
+                toast.error(tForm("error"));
               })
               .finally(() => {
                 onClose();

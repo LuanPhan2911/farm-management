@@ -50,7 +50,6 @@ export const UnitEditDialog = () => {
   const isOpenDialog = isOpen && type === "unit.edit";
 
   const tSchema = useTranslations("units.schema");
-  const tUnit = useTranslations("units");
   const tEdit = useTranslations("units.form.edit");
   const tForm = useTranslations("form");
   const formSchema = UnitSchema(tSchema);
@@ -77,12 +76,16 @@ export const UnitEditDialog = () => {
     }
     startTransition(() => {
       edit(values, id)
-        .then(({ message }) => {
-          onClose();
-          toast.success(message);
+        .then(({ message, ok }) => {
+          if (ok) {
+            onClose();
+            toast.success(message);
+          } else {
+            toast.error(message);
+          }
         })
         .catch((error: Error) => {
-          toast.error(error.message);
+          toast.error(tForm("error"));
         });
     });
   };

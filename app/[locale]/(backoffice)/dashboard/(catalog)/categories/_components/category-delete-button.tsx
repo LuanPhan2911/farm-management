@@ -18,13 +18,19 @@ export const CategoryDeleteButton = ({
   const { id } = data;
   const { onOpen, onClose } = useAlertDialog();
   const tDestroy = useTranslations("categories.form.destroy");
+  const tForm = useTranslations("form");
   const onConfirm = async () => {
     destroy(id)
-      .then(({ message }) => {
-        toast.success(message);
+      .then(({ message, ok }) => {
+        if (ok) {
+          onClose();
+          toast.success(message);
+        } else {
+          toast.error(message);
+        }
       })
-      .catch((error: Error) => {
-        toast.error(error.message);
+      .catch((error) => {
+        toast.error(tForm("error"));
       })
       .finally(() => {
         onClose();

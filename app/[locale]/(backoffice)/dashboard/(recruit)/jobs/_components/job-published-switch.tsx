@@ -2,6 +2,7 @@
 
 import { togglePublished } from "@/actions/job";
 import { Switch } from "@/components/ui/switch";
+import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { toast } from "sonner";
 
@@ -14,19 +15,30 @@ export const JobPublishedSwitch = ({
   published,
 }: JobPublishedSwitchProps) => {
   const [isPending, startTransition] = useTransition();
+  const tForm = useTranslations("form");
   const onToggle = (value: boolean) => {
     if (!id) {
       return;
     }
     startTransition(() => {
       togglePublished(id, value)
-        .then(({ message }) => {
-          toast.success(message);
+        .then(({ message, ok }) => {
+          if (ok) {
+            toast.success(message);
+          } else {
+            toast.error(message);
+          }
         })
         .catch((error: Error) => {
-          toast.error(error.message);
+          toast.error(tForm("error"));
         });
     });
   };
-  return <Switch checked={published} onCheckedChange={onToggle} />;
+  return (
+    <Switch
+      checked={published}
+      onCheckedChange={onToggle}
+      disabled={isPending}
+    />
+  );
 };

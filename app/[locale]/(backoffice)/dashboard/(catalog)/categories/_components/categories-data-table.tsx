@@ -20,6 +20,7 @@ interface CategoriesTableProps {
 export const CategoriesTable = ({ data }: CategoriesTableProps) => {
   const tTable = useTranslations("categories.table");
   const tSearch = useTranslations("categories.search");
+  const tForm = useTranslations("form");
   const tBulkAction = useTranslations("categories.table.bulkAction");
   const { onOpen, onClose } = useAlertDialog();
 
@@ -81,11 +82,16 @@ export const CategoriesTable = ({ data }: CategoriesTableProps) => {
           onConfirm: () => {
             const ids = rows.map((row) => row.id);
             deleteMany(ids)
-              .then(({ message }) => {
-                toast.success(message);
+              .then(({ message, ok }) => {
+                if (ok) {
+                  onClose();
+                  toast.success(message);
+                } else {
+                  toast.error(message);
+                }
               })
-              .catch((error: Error) => {
-                toast.error(error.message);
+              .catch((error) => {
+                toast.error(tForm("error"));
               })
               .finally(() => {
                 onClose();

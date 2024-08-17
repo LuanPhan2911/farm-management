@@ -21,6 +21,7 @@ export const UnitsTable = ({ data }: UnitsTableProps) => {
   const tTable = useTranslations("units.table");
   const tSearch = useTranslations("units.search");
   const tBulkAction = useTranslations("units.table.bulkAction");
+  const tForm = useTranslations("form");
   const { onOpen, onClose } = useAlertDialog();
 
   const columns: ColumnDef<Unit>[] = [
@@ -77,11 +78,15 @@ export const UnitsTable = ({ data }: UnitsTableProps) => {
           onConfirm: () => {
             const ids = rows.map((row) => row.id);
             deleteMany(ids)
-              .then(({ message }) => {
-                toast.success(message);
+              .then(({ message, ok }) => {
+                if (ok) {
+                  toast.success(message);
+                } else {
+                  toast.error(message);
+                }
               })
               .catch((error: Error) => {
-                toast.error(error.message);
+                toast.error(tForm("error"));
               })
               .finally(() => {
                 onClose();

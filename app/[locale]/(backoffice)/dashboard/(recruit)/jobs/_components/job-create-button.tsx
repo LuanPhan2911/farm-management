@@ -16,7 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useEffect, useTransition } from "react";
+import { useTransition } from "react";
 import { create } from "@/actions/job";
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -79,13 +79,17 @@ export const JobCreateForm = () => {
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       create(values)
-        .then(({ message }) => {
-          router.push("/dashboard/jobs");
-          form.reset();
-          toast.success(message);
+        .then(({ message, ok }) => {
+          if (ok) {
+            router.push("/dashboard/jobs");
+            form.reset();
+            toast.success(message);
+          } else {
+            toast.error(message);
+          }
         })
         .catch((error: Error) => {
-          toast.error(error.message);
+          toast.error(tForm("error"));
         });
     });
   };

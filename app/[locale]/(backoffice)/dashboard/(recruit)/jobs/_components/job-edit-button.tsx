@@ -77,11 +77,15 @@ export const JobEditForm = ({ job }: JobEditFormProps) => {
     }
     startTransition(() => {
       edit(values, id)
-        .then(({ message }) => {
-          toast.success(message);
+        .then(({ message, ok }) => {
+          if (ok) {
+            toast.success(message);
+          } else {
+            toast.error(message);
+          }
         })
         .catch((error: Error) => {
-          toast.error(error.message);
+          toast.error(tForm("error"));
         });
     });
   };

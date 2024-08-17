@@ -51,13 +51,16 @@ export const CategoryCreateButton = () => {
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       create(values)
-        .then(({ message }) => {
-          form.reset();
-          closeRef.current?.click();
-          toast.success(message);
+        .then(({ message, ok }) => {
+          if (ok) {
+            toast.success(message);
+            closeRef.current?.click();
+          } else {
+            toast.error(message);
+          }
         })
-        .catch((error: Error) => {
-          toast.error(error.message);
+        .catch((error) => {
+          toast.error(tForm("error"));
         });
     });
   };
