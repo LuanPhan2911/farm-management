@@ -1,5 +1,5 @@
 "use client";
-import { Heading } from "../../_components/heading";
+import { Heading } from "@/app/[locale]/(backoffice)/dashboard/_components/heading";
 import { JobCreateForm } from "../_components/job-create-button";
 
 const JobCreatePage = () => {

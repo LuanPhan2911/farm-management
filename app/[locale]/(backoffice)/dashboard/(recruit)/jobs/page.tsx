@@ -1,5 +1,5 @@
 import { getJobsTable } from "@/services/jobs";
-import { Heading } from "../_components/heading";
+import { Heading } from "@/app/[locale]/(backoffice)/dashboard/_components/heading";
 import { JobCreateButton } from "./_components/job-create-button";
 import { JobsTable } from "./_components/jobs-data-table";
 
