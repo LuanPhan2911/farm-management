@@ -88,3 +88,19 @@ export const getLatestJob = async () => {
     return null;
   }
 };
+
+export const getJobsSelection = async () => {
+  try {
+    return await db.job.findMany({
+      select: {
+        id: true,
+        name: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  } catch (error) {
+    return [];
+  }
+};

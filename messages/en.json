@@ -227,7 +227,10 @@
     "table": {
       "heading": "All applicants",
       "thead": {
-        "name": "Name"
+        "name": "Name",
+        "email": "Email",
+        "address": "Address",
+        "phone": "Phone number"
       },
       "action": {
         "label": "Action",
@@ -258,7 +261,8 @@
     "schema": {
       "errors": {
         "parse": "Invalid fields!",
-        "jobIdInvalid": "Job is invalid"
+        "jobIdInvalid": "Job is invalid",
+        "existingApplicant": "You applied this job"
       },
       "name": {
         "minlength": "Applicant first name is required!",
@@ -478,6 +482,7 @@
     "/dashboard/units": "Units",
     "/dashboard/jobs": "Jobs",
     "/dashboard/jobs/create": "Create",
-    "/dashboard/jobs/edit": "Edit"
+    "/dashboard/jobs/edit": "Edit",
+    "/dashboard/applicants": "Applicant"
   }
 }

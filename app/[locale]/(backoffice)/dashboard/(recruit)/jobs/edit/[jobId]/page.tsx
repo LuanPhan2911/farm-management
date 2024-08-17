@@ -1,5 +1,5 @@
 import { getJobById } from "@/services/jobs";
-import { Heading } from "../../../_components/heading";
+import { Heading } from "@/app/[locale]/(backoffice)/dashboard/_components/heading";
 import { JobEditForm } from "../../_components/job-edit-button";
 import { notFound } from "next/navigation";
 

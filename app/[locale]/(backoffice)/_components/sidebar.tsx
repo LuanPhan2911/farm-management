@@ -76,17 +76,26 @@ export const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(({}, ref) => {
             title="Coupons"
           /> */}
         </SidebarAccordionItem>
+
+        <SidebarAccordionItem title="Recruit" icon={Users}>
+          <SidebarItem
+            href="/dashboard/jobs"
+            active={pathname === "/dashboard/jobs"}
+            icon={Compass}
+            title="Jobs"
+          />
+          <SidebarItem
+            href="/dashboard/applicants"
+            active={pathname === "/dashboard/applicants"}
+            icon={User}
+            title="Applicants"
+          />
+        </SidebarAccordionItem>
         <SidebarItem
           href="/dashboard/customers"
           active={pathname === "/dashboard/customers"}
           icon={Users}
           title="Customers"
-        />
-        <SidebarItem
-          href="/dashboard/jobs"
-          active={pathname === "/dashboard/jobs"}
-          icon={Compass}
-          title="Jobs"
         />
         <SidebarItem
           href="/dashboard/staff"
