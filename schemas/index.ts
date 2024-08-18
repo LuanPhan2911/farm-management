@@ -9,7 +9,7 @@ export const CategorySchema = (t: (arg: string) => string) =>
       .min(1, {
         message: t("name.minlength"),
       })
-      .max(50),
+      .max(100),
     description: z.string().min(1, {
       message: t("description.minlength"),
     }),
@@ -21,7 +21,7 @@ export const UnitSchema = (t: (arg: string) => string) =>
       .min(1, {
         message: t("name.minlength"),
       })
-      .max(50),
+      .max(100),
     description: z.string().min(1, {
       message: t("description.minlength"),
     }),
@@ -33,7 +33,7 @@ export const JobSchema = (t: (arg: string) => string) =>
       .min(1, {
         message: t("name.minlength"),
       })
-      .max(50),
+      .max(100),
     description: z
       .string()
       .min(1, {
@@ -57,13 +57,13 @@ export const JobSchema = (t: (arg: string) => string) =>
       .min(1, {
         message: t("workingTime.minlength"),
       })
-      .max(50),
+      .max(100),
     wage: z
       .string()
       .min(1, {
         message: t("wage.minlength"),
       })
-      .max(50),
+      .max(100),
     quantity: z.coerce
       .number({
         required_error: t("quantity.required_error"),
@@ -104,7 +104,7 @@ export const ApplicantSchema = (t: (arg: string) => string) => {
       .min(1, {
         message: t("name.minlength"),
       })
-      .max(50),
+      .max(100),
     email: z
       .string()
       .min(1, {
@@ -113,7 +113,7 @@ export const ApplicantSchema = (t: (arg: string) => string) => {
       .email({
         message: t("email.isEmail"),
       })
-      .max(50),
+      .max(100),
     phone: z
       .string()
       .min(1, {
@@ -127,7 +127,7 @@ export const ApplicantSchema = (t: (arg: string) => string) => {
       .min(1, {
         message: t("address.minlength"),
       })
-      .max(50),
+      .max(100),
     note: z.string().max(200),
   });
 };

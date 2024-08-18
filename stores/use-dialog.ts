@@ -1,7 +1,7 @@
 import { Category, Unit, Applicant } from "@prisma/client";
 import { create } from "zustand";
 
-export type DialogType = "category.edit" | "unit.edit";
+export type DialogType = "category.edit" | "unit.edit" | "applicant.setRole";
 
 export interface DialogData {
   category?: Category;

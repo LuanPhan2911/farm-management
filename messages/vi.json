@@ -10,7 +10,8 @@
       "close": "Đóng",
       "submit": "Lưu",
       "confirm": "Xác nhận"
-    }
+    },
+    "error": "Có lỗi xảy ra với hệ thống!"
   },
   "datatable": {
     "view": {
@@ -235,7 +236,8 @@
       },
       "action": {
         "label": "Hành động",
-        "destroy": "Xóa"
+        "destroy": "Xóa",
+        "updateRole": "Cập nhật quyền"
       },
       "bulkAction": {
         "deleteSelected": {
@@ -257,13 +259,18 @@
       "destroy": {
         "title": "Xóa ứng viên?",
         "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
+      },
+      "setRole": {
+        "title": "Cập nhật quyền cho ứng viên",
+        "description": "Sau khi cập nhật thành công, ứng viên sẽ bị xóa"
       }
     },
     "schema": {
       "errors": {
         "parse": "Dữ liệu không hợp lệ!",
         "jobIdInvalid": "Công việc không hợp lệ",
-        "existingApplicant": "Bạn đã nộp đơn công việc này rồi"
+        "existingApplicant": "Bạn đã nộp đơn công việc này rồi",
+        "noExist": "Ứng viên không tồn tại"
       },
       "name": {
         "minlength": "Tên ứng viên là trường bắt buộc",
@@ -295,17 +302,13 @@
     "status": {
       "success": {
         "create": "Nộp đơn cho công việc thành công",
-        "destroy": "Ứng viên đã được xóa!"
+        "destroy": "Ứng viên đã được xóa!",
+        "updateRole": "Role của ứng viên đã được cập nhật"
       },
       "failure": {
         "create": "Có lỗi xảy ra trong khi nộp đơn",
-        "destroy": "Có lỗi xảy ra trong khi xóa ứng viên!"
-      }
-    },
-    "mail": {
-      "apply": {
-        "subject": "Cảm ơn vi đã nộp đơn xin việc ở website chúng tối",
-        "html": "Gửi {name}. Cảm ơn bạn vì đã nộp đơn xin việc ở công ty chúng tôi. Khi có nhu cầu liên hệ, chúng tôi sẽ liên hệ bạn thông qua email này."
+        "destroy": "Có lỗi xảy ra trong khi xóa ứng viên!",
+        "updateRole": "Có lỗi xảy ra trong khi cập nhật role cho ứng viên"
       }
     }
   },
@@ -479,13 +482,14 @@
     "error": "Có lỗi xảy ra với hệ thống!"
   },
   "route": {
-    "/dashboard": "Trang chủ",
-    "/dashboard/products": "Sản phẩm",
-    "/dashboard/categories": "Thể loại",
-    "/dashboard/units": "Đơn vị tính",
-    "/dashboard/jobs": "Việc làm",
-    "/dashboard/jobs/create": "Thêm",
-    "/dashboard/jobs/edit": "Sửa",
-    "/dashboard/applicants": "Ứng viên"
+    "/admin": "Admin",
+    "/admin/dashboard": "Trang chủ",
+    "/admin/products": "Sản phẩm",
+    "/admin/categories": "Thể loại",
+    "/admin/units": "Đơn vị tính",
+    "/admin/jobs": "Việc làm",
+    "/admin/jobs/create": "Thêm",
+    "/admin/jobs/edit": "Sửa",
+    "/admin/applicants": "Ứng viên"
   }
 }

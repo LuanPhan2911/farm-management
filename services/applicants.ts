@@ -30,3 +30,19 @@ export const getApplicantByEmailAndJobId = async (
     return null;
   }
 };
+export const getApplicantById = async (id: string) => {
+  try {
+    return await db.applicant.findUnique({
+      where: { id },
+      include: {
+        job: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+  } catch (error) {
+    return null;
+  }
+};
