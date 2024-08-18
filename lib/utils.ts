@@ -12,15 +12,26 @@ export function truncateString(str: string, num: number = 50) {
     return str;
   }
 }
-export const errorResponse = (message: string): ActionResponse => {
+export function errorResponse(message: string): ActionResponse {
   return {
     message,
     ok: false,
   };
-};
-export const successResponse = (message: string): ActionResponse => {
+}
+export function successResponse(message: string): ActionResponse {
   return {
     message,
     ok: true,
   };
-};
+}
+export function generatePassword(length: number) {
+  const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let password = "";
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    password += characters.charAt(randomIndex);
+  }
+
+  return password;
+}
