@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { useTranslations } from "next-intl";
 import { ApplicantSchema } from "@/schemas";
-import { useRef, useTransition } from "react";
+import { useEffect, useRef, useTransition } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { create } from "@/actions/applicant";
@@ -27,6 +27,7 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { useUser } from "@clerk/nextjs";
 
 interface JobApplyButtonProps {
   jobId: string;
@@ -35,10 +36,10 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
   const tSchema = useTranslations("applicants.schema");
   const tForm = useTranslations("applicants.form");
   const tButton = useTranslations("applicants.button");
-
   const formSchema = ApplicantSchema(tSchema);
   const [isPending, startTransition] = useTransition();
   const closeRef = useRef<HTMLButtonElement>(null);
+  const { user } = useUser();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -49,6 +50,14 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
       note: "",
     },
   });
+  useEffect(() => {
+    if (user?.fullName) {
+      form.setValue("name", user.fullName);
+    }
+    if (user?.emailAddresses.length) {
+      form.setValue("email", user.emailAddresses[0].toString());
+    }
+  }, [user, form]);
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       create(values, jobId)

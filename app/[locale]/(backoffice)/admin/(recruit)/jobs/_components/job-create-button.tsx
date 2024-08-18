@@ -40,7 +40,7 @@ export const JobCreateButton = () => {
   const tButton = useTranslations("jobs.button");
 
   return (
-    <Link href={"/dashboard/jobs/create"}>
+    <Link href={"/admin/jobs/create"}>
       <Button>
         <Plus className="h-6 w-6 mr-2" />{" "}
         <span className="text-sm font-semibold">{tButton("create")}</span>
@@ -81,7 +81,7 @@ export const JobCreateForm = () => {
       create(values)
         .then(({ message, ok }) => {
           if (ok) {
-            router.push("/dashboard/jobs");
+            router.push("/admin/jobs");
             form.reset();
             toast.success(message);
           } else {

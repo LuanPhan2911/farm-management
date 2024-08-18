@@ -13,6 +13,7 @@ import { useAlertDialog } from "@/stores/use-alert-dialog";
 import { deleteMany } from "@/actions/applicant";
 import { toast } from "sonner";
 import { Applicant } from "@prisma/client";
+import { ApplicantSelectJob } from "./applicant-select-job";
 
 interface ApplicantsTableProps {
   data: Applicant[];

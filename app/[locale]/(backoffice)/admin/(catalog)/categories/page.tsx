@@ -7,7 +7,7 @@ const CategoriesPage = async () => {
   const t = await getTranslations("categories");
   const data = await getCategoriesTable();
   return (
-    <div className="flex flex-col gap-y-4 h-full">
+    <div className="flex flex-col gap-y-4 h-full py-4">
       <div className="ml-auto">
         <CategoryCreateButton />
       </div>

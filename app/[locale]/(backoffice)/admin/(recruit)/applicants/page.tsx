@@ -13,8 +13,9 @@ const ApplicantsPage = async ({ searchParams }: ApplicantsPageProps) => {
   const applicants = await getApplicants(jobId);
   const jobs = await getJobsSelection();
   return (
-    <div className="flex flex-col gap-y-4 h-full">
+    <div className="flex flex-col gap-y-4 h-full py-4">
       <ApplicantSelectJob data={jobs} />
+
       <ApplicantsTable data={applicants} />
     </div>
   );

@@ -40,7 +40,7 @@ export const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(({}, ref) => {
       ref={ref}
     >
       <Link href={"/"} className="flex items-center">
-        <Icons.logo className="mr-2 h-6 w-6" />
+        <Icons.logo height={24} width={24} />
         <span className="font-bold">{siteConfig.name}</span>
       </Link>
       <div className="flex flex-col gap-y-2">

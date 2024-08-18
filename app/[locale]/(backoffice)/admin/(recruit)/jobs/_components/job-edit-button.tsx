@@ -45,7 +45,7 @@ export const JobEditButton = ({ data, label }: JobEditButtonProps) => {
   return (
     <Button
       className="w-full"
-      onClick={() => router.push(`/dashboard/jobs/edit/${data.id}`)}
+      onClick={() => router.push(`/admin/jobs/edit/${data.id}`)}
     >
       <Edit className="w-6 h-6 mr-2" />
       {label}

@@ -7,7 +7,7 @@ const UnitsPage = async () => {
   const t = await getTranslations("units");
   const data = await gitUnitsTable();
   return (
-    <div className="flex flex-col gap-y-4 h-full">
+    <div className="flex flex-col gap-y-4 h-full py-4">
       <div className="ml-auto">
         <UnitCreateButton />
       </div>
