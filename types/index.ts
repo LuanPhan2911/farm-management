@@ -1,5 +1,9 @@
 import { Gender, JobExperience, JobWorkingState } from "@prisma/client";
-
+export type Roles = "superadmin" | "admin" | "farmer";
+export type ActionResponse = {
+  message: string;
+  ok: boolean;
+};
 export type BreadCrumb = {
   label: string;
   href?: string;

@@ -10,7 +10,8 @@
       "close": "Close",
       "submit": "Submit",
       "confirm": "Confirm"
-    }
+    },
+    "error": "Something went wrong!"
   },
   "datatable": {
     "view": {
@@ -234,8 +235,8 @@
       },
       "action": {
         "label": "Action",
-
-        "destroy": "Delete"
+        "destroy": "Delete",
+        "updateRole": "Set Role"
       },
       "bulkAction": {
         "deleteSelected": {
@@ -256,13 +257,18 @@
       "destroy": {
         "title": "Delete applicant?",
         "description": "Are you absolutely sure? This action can not be undone!"
+      },
+      "setRole": {
+        "title": "Update role for this applicant",
+        "description": "After update success. The applicant will be removed."
       }
     },
     "schema": {
       "errors": {
         "parse": "Invalid fields!",
         "jobIdInvalid": "Job is invalid",
-        "existingApplicant": "You applied this job"
+        "existingApplicant": "You applied this job",
+        "noExist": "Applicant is not exist"
       },
       "name": {
         "minlength": "Applicant first name is required!",
@@ -295,17 +301,13 @@
     "status": {
       "success": {
         "create": "Apply this job success",
-        "destroy": "Applicant deleted!"
+        "destroy": "Applicant deleted!",
+        "updateRole": "Applicant role updated"
       },
       "failure": {
         "create": "Something went wrong while applying the job!",
-        "destroy": "Something went wrong while deleting applicant!"
-      }
-    },
-    "mail": {
-      "apply": {
-        "subject": "Thanks for apply the job in our website",
-        "html": "Dear {name}. Thank you for applying for a job with our company. If we need to contact you, we will contact you via this email."
+        "destroy": "Something went wrong while deleting applicant!",
+        "updateRole": "Something went wrong while updating applicant role!"
       }
     }
   },
@@ -476,13 +478,14 @@
     "error": "Something went wrong!"
   },
   "route": {
-    "/dashboard": "Dashboard",
-    "/dashboard/products": "Products",
-    "/dashboard/categories": "Categories",
-    "/dashboard/units": "Units",
-    "/dashboard/jobs": "Jobs",
-    "/dashboard/jobs/create": "Create",
-    "/dashboard/jobs/edit": "Edit",
-    "/dashboard/applicants": "Applicant"
+    "/admin": "Admin",
+    "/admin/dashboard": "Dashboard",
+    "/admin/products": "Products",
+    "/admin/categories": "Categories",
+    "/admin/units": "Units",
+    "/admin/jobs": "Jobs",
+    "/admin/jobs/create": "Create",
+    "/admin/jobs/edit": "Edit",
+    "/admin/applicants": "Applicant"
   }
 }

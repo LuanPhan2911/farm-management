@@ -1,35 +1,47 @@
 "use server";
 import { db } from "@/lib/db";
-import { sendApplicantApply } from "@/lib/mail";
+import {
+  sendApplicantApply,
+  sendApplicantCreateUser,
+  sendApplicantUpdateRole,
+} from "@/lib/mail";
+import { errorResponse, generatePassword, successResponse } from "@/lib/utils";
 import { ApplicantSchema } from "@/schemas";
-import { getApplicantByEmailAndJobId } from "@/services/applicants";
+import {
+  getApplicantByEmailAndJobId,
+  getApplicantById,
+} from "@/services/applicants";
 import { getJobById } from "@/services/jobs";
+import { ActionResponse, Roles } from "@/types";
+import { clerkClient } from "@clerk/nextjs/server";
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
+import { Applicant } from "@prisma/client";
+
 export const create = async (
   values: z.infer<ReturnType<typeof ApplicantSchema>>,
   jobId: string
-) => {
+): Promise<ActionResponse> => {
   const tSchema = await getTranslations("applicants.schema");
   const tStatus = await getTranslations("applicants.status");
   const paramsSchema = ApplicantSchema(tSchema);
   const validatedFields = paramsSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    throw new Error(tSchema("errors.parse"));
+    return errorResponse(tSchema("errors.parse"));
   }
   const job = await getJobById(jobId);
   if (!job) {
-    throw new Error(tSchema("errors.jobInvalid"));
+    return errorResponse(tSchema("errors.jobInvalid"));
   }
   const existingApplicant = await getApplicantByEmailAndJobId(
     validatedFields.data.email,
     job.id
   );
   if (existingApplicant) {
-    throw new Error(tSchema("errors.existingApplicant"));
+    return errorResponse(tSchema("errors.existingApplicant"));
   }
   try {
     const applicant = await db.applicant.create({
@@ -37,15 +49,22 @@ export const create = async (
         ...validatedFields.data,
         jobId: job.id,
       },
+      include: {
+        job: {
+          select: {
+            name: true,
+          },
+        },
+      },
     });
     sendApplicantApply(applicant);
 
-    return { message: tStatus("success.create") };
+    return successResponse(tStatus("success.create"));
   } catch (error) {
-    throw new Error(tStatus("failure.create"));
+    return errorResponse(tStatus("failure.create"));
   }
 };
-export const destroy = async (id: string) => {
+export const destroy = async (id: string): Promise<ActionResponse> => {
   const tStatus = await getTranslations("applicants.status");
   try {
     await db.applicant.delete({
@@ -54,12 +73,12 @@ export const destroy = async (id: string) => {
       },
     });
     revalidatePath("/dashboard/applicants");
-    return { message: tStatus("success.destroy") };
+    return successResponse(tStatus("success.destroy"));
   } catch (error) {
-    throw new Error(tStatus("failure.destroy"));
+    return errorResponse(tStatus("failure.destroy"));
   }
 };
-export const deleteMany = async (ids: string[]) => {
+export const deleteMany = async (ids: string[]): Promise<ActionResponse> => {
   const tStatus = await getTranslations("applicants.status");
   try {
     await db.applicant.deleteMany({
@@ -70,8 +89,65 @@ export const deleteMany = async (ids: string[]) => {
       },
     });
     revalidatePath("/dashboard/applicants");
-    return { message: tStatus("success.destroy") };
+    return successResponse(tStatus("success.destroy"));
   } catch (error) {
-    throw new Error(tStatus("failure.destroy"));
+    return errorResponse(tStatus("failure.destroy"));
+  }
+};
+
+export const updateRole = async (
+  applicantId: string,
+  role: Roles
+): Promise<ActionResponse> => {
+  const tStatus = await getTranslations("applicants.status");
+  const tError = await getTranslations("applicants.schema.errors");
+  try {
+    const applicant = await getApplicantById(applicantId);
+    if (!applicant) {
+      return {
+        message: tError("noExist"),
+        ok: false,
+      };
+    }
+
+    const { data: users, totalCount } = await clerkClient().users.getUserList({
+      emailAddress: [applicant.email],
+
+      limit: 1,
+    });
+    if (totalCount === 1) {
+      const existingUser = users[0];
+
+      await clerkClient.users.updateUser(existingUser.id, {
+        firstName: applicant.name,
+        publicMetadata: {
+          role: role,
+        },
+      });
+      sendApplicantUpdateRole(applicant);
+    } else {
+      const password = generatePassword(8);
+      await clerkClient().users.createUser({
+        firstName: applicant.name,
+        emailAddress: [applicant.email],
+        password,
+        publicMetadata: {
+          role: role,
+        },
+      });
+      sendApplicantCreateUser(applicant, password);
+
+      //send mail notification
+    }
+
+    await db.applicant.deleteMany({
+      where: {
+        email: applicant.email,
+      },
+    });
+    revalidatePath("/admin/applicants");
+    return successResponse(tStatus("success.updateRole"));
+  } catch (error) {
+    return errorResponse(tStatus("failure.updateRole"));
   }
 };

@@ -7,17 +7,19 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import slugify from "slugify";
 import { getCategoryBySlug } from "@/services/categories";
+import { ActionResponse } from "@/types";
+import { errorResponse, successResponse } from "@/lib/utils";
 
 export const create = async (
   values: z.infer<ReturnType<typeof CategorySchema>>
-) => {
+): Promise<ActionResponse> => {
   const tSchema = await getTranslations("categories.schema");
   const tStatus = await getTranslations("categories.status");
   const paramsSchema = CategorySchema(tSchema);
   const validatedFields = paramsSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    throw new Error(tSchema("errors.parse"));
+    return errorResponse(tSchema("errors.parse"));
   }
   try {
     let slug = slugify(validatedFields.data.name, {
@@ -30,29 +32,29 @@ export const create = async (
         { lower: true }
       );
     }
-    const category = await db.category.create({
+    await db.category.create({
       data: {
         ...validatedFields.data,
         slug,
       },
     });
     revalidatePath("/dashboard/categories");
-    return { message: tStatus("success.create") };
+    return successResponse(tStatus("success.create"));
   } catch (error) {
-    throw new Error(tStatus("failure.create"));
+    return errorResponse(tStatus("failure.create"));
   }
 };
 export const edit = async (
   values: z.infer<ReturnType<typeof CategorySchema>>,
   id: string
-) => {
+): Promise<ActionResponse> => {
   const tSchema = await getTranslations("categories.schema");
   const tStatus = await getTranslations("categories.status");
   const paramsSchema = CategorySchema(tSchema);
   const validatedFields = paramsSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    throw new Error(tSchema("errors.parse"));
+    return errorResponse(tSchema("errors.parse"));
   }
   try {
     let slug = slugify(validatedFields.data.name, {
@@ -68,7 +70,7 @@ export const edit = async (
         }
       );
     }
-    const category = await db.category.update({
+    await db.category.update({
       where: {
         id,
       },
@@ -78,29 +80,30 @@ export const edit = async (
       },
     });
     revalidatePath("/dashboard/categories");
-    return { message: tStatus("success.edit") };
+
+    return successResponse(tStatus("success.edit"));
   } catch (error) {
-    throw new Error(tStatus("failure.edit"));
+    return errorResponse(tStatus("failure.edit"));
   }
 };
-export const destroy = async (id: string) => {
+export const destroy = async (id: string): Promise<ActionResponse> => {
   const tStatus = await getTranslations("categories.status");
   try {
-    const category = await db.category.delete({
+    await db.category.delete({
       where: {
         id,
       },
     });
     revalidatePath("/dashboard/categories");
-    return { message: tStatus("success.destroy") };
+    return successResponse(tStatus("success.destroy"));
   } catch (error) {
-    throw new Error(tStatus("failure.destroy"));
+    return errorResponse(tStatus("failure.destroy"));
   }
 };
-export const deleteMany = async (ids: string[]) => {
+export const deleteMany = async (ids: string[]): Promise<ActionResponse> => {
   const tStatus = await getTranslations("categories.status");
   try {
-    const categories = await db.category.deleteMany({
+    await db.category.deleteMany({
       where: {
         id: {
           in: ids,
@@ -108,8 +111,8 @@ export const deleteMany = async (ids: string[]) => {
       },
     });
     revalidatePath("/dashboard/categories");
-    return { message: tStatus("success.destroy") };
+    return successResponse(tStatus("success.destroy"));
   } catch (error) {
-    throw new Error(tStatus("failure.destroy"));
+    return errorResponse(tStatus("failure.destroy"));
   }
 };
