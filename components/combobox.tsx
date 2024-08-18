@@ -40,15 +40,18 @@ export const ComboBox = ({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="max-w-[400px] justify-between"
+          className="w-[300px] justify-between"
         >
-          {value
-            ? data.find((item) => item.value === value)?.label
-            : labelSelect}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <p className="h-full w-[240px] truncate">
+            {value
+              ? data.find((item) => item.value === value)?.label
+              : labelSelect}
+          </p>
+
+          <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="max-w-[400px] p-0">
+      <PopoverContent className="w-[300px] p-0">
         <Command>
           <CommandInput placeholder={labelSearch} />
           <CommandList>
