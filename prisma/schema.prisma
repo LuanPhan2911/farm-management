@@ -86,6 +86,11 @@ model Job {
   aplicants Applicant[]
 }
 
+enum ApplicantStatus {
+  NEW
+  CONFIRM
+}
+
 model Applicant {
   id String @id @default(uuid())
 
@@ -97,6 +102,8 @@ model Applicant {
 
   jobId String
   job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  status ApplicantStatus @default(NEW)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
