@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { ApplicantStatus } from "@prisma/client";
 
 export const getApplicants = async (jobId: string | null) => {
   try {
@@ -33,7 +34,7 @@ export const getApplicantByEmailAndJobId = async (
 export const getApplicantById = async (id: string) => {
   try {
     return await db.applicant.findUnique({
-      where: { id },
+      where: { id, status: ApplicantStatus.NEW },
       include: {
         job: {
           select: {

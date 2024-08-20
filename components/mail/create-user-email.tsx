@@ -16,6 +16,7 @@ interface CreateUserEmailProps {
   senderName: string;
   receiveName: string;
   jobTitle: string;
+  email: string;
   password: string;
 }
 
@@ -25,6 +26,7 @@ export const CreateUserEmail = ({
   jobTitle,
   receiveName,
   senderName,
+  email,
   password,
 }: CreateUserEmailProps) => {
   return (
@@ -59,8 +61,9 @@ export const CreateUserEmail = ({
             Chúng tôi sẽ sớm liên hệ với bạn để sắp xếp các thủ tục nhập việc.
           </Text>
           <Text style={paragraph}>
-            Bạn có thể đăng nhập vào website của chúng tôi bằng địa chỉ email
-            này. Mật khẩu đăng là:
+            Bạn có thể đăng nhập vào website của chúng tôi bằng địa chỉ email:
+            <span style={{ fontWeight: 700 }}>{email}</span>. Mật khẩu đăng nhập
+            là:
             <span style={{ fontWeight: 700 }}>{password}</span>
           </Text>
           <Text style={paragraph}>

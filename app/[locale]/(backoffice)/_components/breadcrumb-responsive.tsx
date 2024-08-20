@@ -1,8 +1,5 @@
 "use client";
 
-import * as React from "react";
-
-import { useMediaQuery } from "react-responsive";
 import {
   Breadcrumb,
   BreadcrumbEllipsis,
@@ -21,14 +18,15 @@ import { Link } from "@/navigation";
 import { BreadcrumbItemWithSeparator } from "@/components/breadscrumb-item-with-separator";
 import { useBreadCrumb } from "@/hooks/use-breadcrumb";
 import { useMedia } from "@/hooks/use-media";
-import { useConfirmWhenChangeRoute } from "@/stores/use-confirm-when-change-route";
+
 import { truncateString } from "@/lib/utils";
 import { Hint } from "@/components/hint";
+import { useState } from "react";
 
 const ITEMS_TO_DISPLAY = 3;
 
 export const BreadcrumbResponsive = () => {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const { isDesktop } = useMedia();
 
   const { breadcrumbs: items } = useBreadCrumb();

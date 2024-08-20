@@ -14,7 +14,7 @@ export const SearchBar = ({ placeholder, isPagination }: SearchBarProps) => {
   const pathname = usePathname();
   const handleSearch = useDebounceCallback((term: string) => {
     const params = new URLSearchParams(searchParams);
-    if (!isPagination) {
+    if (isPagination) {
       params.set("page", "1");
     }
 

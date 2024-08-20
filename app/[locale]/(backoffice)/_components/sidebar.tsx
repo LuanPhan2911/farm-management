@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { usePathname } from "@/navigation";
 import { useDashboardSidebar } from "@/stores/use-dashboard-sidebar";
 import {
+  Clipboard,
   Columns2,
   Compass,
   Flower,
@@ -13,6 +14,7 @@ import {
   Settings,
   Store,
   User,
+  UserCog,
   Users,
 } from "lucide-react";
 
@@ -20,15 +22,22 @@ import Link from "next/link";
 import { SidebarItem } from "./sidebar-item";
 import { SidebarAccordionItem } from "./sidebar-accordion-item";
 
-import { forwardRef } from "react";
+import { forwardRef, useEffect } from "react";
 import { Icons } from "@/components/icons";
 import { siteConfig } from "@/configs/siteConfig";
+import { useMedia } from "@/hooks/use-media";
 
 interface SidebarProps {}
 export const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(({}, ref) => {
-  const { isOpen } = useDashboardSidebar();
-
+  const { isOpen, onClose } = useDashboardSidebar();
+  const { isMobile } = useMedia();
   const pathname = usePathname();
+
+  useEffect(() => {
+    if (isMobile) {
+      onClose();
+    }
+  }, [isMobile, onClose]);
 
   return (
     <div
@@ -39,7 +48,7 @@ export const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(({}, ref) => {
       )}
       ref={ref}
     >
-      <Link href={"/"} className="flex items-center">
+      <Link href={"/"} className="flex items-center ml-2">
         <Icons.logo height={24} width={24} />
         <span className="font-bold">{siteConfig.name}</span>
       </Link>
@@ -49,6 +58,12 @@ export const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(({}, ref) => {
           active={pathname === "/admin/dashboard"}
           icon={LayoutGrid}
           title="Dashboard"
+        />
+        <SidebarItem
+          href="/admin/users"
+          active={pathname === "/admin/users"}
+          icon={Users}
+          title="Users"
         />
         <SidebarAccordionItem title="Catalogue" icon={Flower}>
           <SidebarItem
@@ -65,7 +80,7 @@ export const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(({}, ref) => {
           />
         </SidebarAccordionItem>
 
-        <SidebarAccordionItem title="Recruit" icon={Users}>
+        <SidebarAccordionItem title="Recruit" icon={Clipboard}>
           <SidebarItem
             href="/admin/jobs"
             active={pathname === "/admin/jobs"}
@@ -79,13 +94,8 @@ export const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(({}, ref) => {
             title="Applicants"
           />
         </SidebarAccordionItem>
+
         {/* <SidebarItem
-          href="/dashboard/customers"
-          active={pathname === "/dashboard/customers"}
-          icon={Users}
-          title="Customers"
-        />
-        <SidebarItem
           href="/dashboard/staff"
           active={pathname === "/dashboard/staff"}
           icon={User}
