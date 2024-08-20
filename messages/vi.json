@@ -218,6 +218,104 @@
       }
     }
   },
+  "users": {
+    "heading": "Quản lý người dùng",
+    "button": {
+      "create": "Thêm",
+      "edit": "Sửa",
+      "destroy": "Xóa"
+    },
+    "table": {
+      "heading": "Tất cả người dùng",
+      "thead": {
+        "name": "Người dùng",
+        "lastSignedIn": "Đăng nhập lần cuối",
+        "role": "Vai trò",
+        "joined": "Ngày tham gia"
+      },
+      "action": {
+        "label": "Hành động",
+        "edit": "Sửa",
+        "destroy": "Xóa",
+        "view": "Xem thông tin"
+      },
+      "bulkAction": {
+        "deleteSelected": {
+          "label": "Xóa tất cả đã chọn",
+          "title": "Xóa tất cả người dùng đã chọn?",
+          "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
+        }
+      }
+    },
+    "search": {
+      "placeholder": "Lọc theo tên người dùng..."
+    },
+
+    "form": {
+      "create": {
+        "title": "Thêm người dùng",
+        "description": "Người dùng được dùng để phân loại sinh vật trong nông trại"
+      },
+      "edit": {
+        "title": "Sửa người dùng",
+        "description": "Người dùng có thể cập nhật"
+      },
+      "destroy": {
+        "title": "Xóa người dùng?",
+        "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
+      },
+      "setRole": {
+        "title": "Cập nhật vai trò cho người dùng",
+        "description": "Cập nhật"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Dữ liệu không hợp lệ!"
+      },
+      "firstName": {
+        "minlength": "Tên người dùng là trường bắt buộc!",
+        "label": "Tên",
+        "placeholder": "Tên người dùng"
+      },
+      "lastName": {
+        "minlength": "Họ người dùng là trường bắt buộc!",
+        "label": "Họ",
+        "placeholder": "Họ người dùng"
+      },
+      "email": {
+        "minlength": "Email là trường bắt buộc phải điền",
+        "isEmail": "Email không hợp lệ",
+        "label": "Email",
+        "placeholder": "Email"
+      },
+      "phone": {
+        "minlength": "Số điện thoại là trường bắt buộc phải điền",
+        "label": "Số điện thoại",
+        "placeholder": "Số điện thoại",
+        "isPhone": "Số điện thoại không hợp lệ"
+      },
+      "address": {
+        "minlength": "Địa chỉ là trường bắt buộc phải điền",
+        "label": "Địa chỉ",
+        "placeholder": "Địa chỉ"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Người dùng đã được tạo!",
+        "edit": "Người dùng đã được cập nhật!",
+        "destroy": "Người dùng đã được xóa!",
+        "updateRole": "Role của người dùng đã được cập nhật"
+      },
+      "failure": {
+        "create": "Có lỗi xảy ra trong khi tạo người dùng!",
+        "edit": "Có lỗi xảy ra trong khi cập nhật người dùng!",
+        "destroy": "Có lỗi xảy ra trong khi xóa người dùng!",
+        "updateRole": "Có lỗi xảy ra trong khi cập nhật role cho người dùng"
+      }
+    }
+  },
   "applicants": {
     "heading": "Quản lý ứng viên",
     "button": {
@@ -232,7 +330,8 @@
         "name": "Tên",
         "email": "Email",
         "address": "Địa chỉ",
-        "phone": "Số điện thoại"
+        "phone": "Số điện thoại",
+        "status": "Trạng thái"
       },
       "action": {
         "label": "Hành động",
@@ -262,7 +361,7 @@
       },
       "setRole": {
         "title": "Cập nhật quyền cho ứng viên",
-        "description": "Sau khi cập nhật thành công, ứng viên sẽ bị xóa"
+        "description": "Một tài khoản mới sẽ được tạo cho ứng viên với quyền được chọn"
       }
     },
     "schema": {
@@ -297,6 +396,10 @@
       "note": {
         "label": "Ghi chú",
         "placeholder": "Ghi chú"
+      },
+      "role": {
+        "minlength": "Vai trò là trường bắt buộc phải điền",
+        "label": "Vai trò"
       }
     },
     "status": {
@@ -490,6 +593,8 @@
     "/admin/jobs": "Việc làm",
     "/admin/jobs/create": "Thêm",
     "/admin/jobs/edit": "Sửa",
-    "/admin/applicants": "Ứng viên"
+    "/admin/applicants": "Ứng viên",
+    "/admin/users": "Người dùng",
+    "/admin/users/detail": "Chi tiết"
   }
 }

@@ -4,13 +4,26 @@ import { updateRole } from "@/actions/applicant";
 import { DynamicDialog } from "@/components/dynamic-dialog";
 import { SelectOptions } from "@/components/select-options";
 import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { ApplicantUpdateRoleSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
 import { Roles } from "@/types";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Applicant } from "@prisma/client";
 import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState, useTransition } from "react";
+import { useEffect, useTransition } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { z } from "zod";
 
 interface ApplicantSetRoleButtonProps {
   data: Applicant;
@@ -42,14 +55,30 @@ export const ApplicantSetRoleDialog = () => {
   const isOpenDialog = isOpen && type === "applicant.setRole";
   const [isPending, startTransition] = useTransition();
   const tForm = useTranslations("form");
-  const [role, setRole] = useState<Roles>("farmer");
-  const handleSetRole = () => {
+
+  const tSchema = useTranslations("applicants.schema");
+  const formSchema = ApplicantUpdateRoleSchema(tSchema);
+  const form = useForm<z.infer<typeof formSchema>>({
+    mode: "onChange",
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      role: "",
+    },
+  });
+  useEffect(() => {
+    if (data.applicant) {
+      form.setValue("name", data.applicant.name);
+      form.setValue("role", "farmer");
+    }
+  }, [form, data]);
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
     if (!data.applicant?.id) {
       return;
     }
     const applicantId = data.applicant.id;
     startTransition(() => {
-      updateRole(applicantId, role)
+      updateRole(values, applicantId)
         .then(({ message, ok }) => {
           if (ok) {
             toast.success(message);
@@ -65,6 +94,7 @@ export const ApplicantSetRoleDialog = () => {
         });
     });
   };
+
   const options: { label: string; option: Roles }[] = [
     {
       label: "Admin",
@@ -82,22 +112,56 @@ export const ApplicantSetRoleDialog = () => {
       title={tSetRole("title")}
       description={tSetRole("description")}
     >
-      <SelectOptions
-        label="Select role"
-        options={options}
-        onChange={(value) => {
-          setRole(value as Roles);
-        }}
-        value={role}
-      />
-      <div className="flex gap-x-2 justify-end">
-        <Button variant="secondary" onClick={onClose}>
-          {tForm("button.close")}
-        </Button>
-        <Button disabled={isPending} onClick={handleSetRole}>
-          {tForm("button.submit")}
-        </Button>
-      </div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("name.label")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={tSchema("name.placeholder")}
+                    {...field}
+                    disabled={isPending}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="role"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("role.label")}</FormLabel>
+                <FormControl>
+                  <SelectOptions
+                    label="Select role"
+                    options={options}
+                    onChange={field.onChange}
+                    value={field.value}
+                    disabled={isPending}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="flex gap-x-2 justify-end">
+            <Button variant="secondary" onClick={onClose} type="button">
+              {tForm("button.close")}
+            </Button>
+            <Button disabled={isPending} type="submit">
+              {tForm("button.submit")}
+            </Button>
+          </div>
+        </form>
+      </Form>
     </DynamicDialog>
   );
 };

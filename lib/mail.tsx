@@ -39,33 +39,13 @@ export const sendApplicantApply = async (
   });
 };
 
-export const sendApplicantUpdateRole = async (
-  applicant: Applicant & {
-    job: {
-      name: string;
-    };
-  }
-) => {
-  const user = await currentUser();
-  await transporter.sendMail({
-    from: `${siteConfig.name} <${process.env.GOOGLE_APP_ACCOUNT}>`,
-    to: [applicant.email],
-    subject: "Xin chúc mừng bạn đã trúng tuyển!",
-    html: render(
-      <JobApplySuccessEmail
-        jobTitle={applicant.job.name}
-        receiveName={applicant.name}
-        senderName={user?.fullName || "Quản lý nhân sự"}
-      />
-    ),
-  });
-};
 export const sendApplicantCreateUser = async (
   applicant: Applicant & {
     job: {
       name: string;
     };
   },
+  email: string,
   password: string
 ) => {
   const user = await currentUser();
@@ -76,6 +56,7 @@ export const sendApplicantCreateUser = async (
     html: render(
       <CreateUserEmail
         jobTitle={applicant.job.name}
+        email={email}
         password={password}
         receiveName={applicant.name}
         senderName={user?.fullName || "Quản lý nhân sự"}

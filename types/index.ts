@@ -1,8 +1,18 @@
+import {
+  EmailAddress,
+  ExternalAccount,
+  PhoneNumber,
+} from "@clerk/nextjs/server";
 import { Gender, JobExperience, JobWorkingState } from "@prisma/client";
 export type Roles = "superadmin" | "admin" | "farmer";
+
 export type ActionResponse = {
   message: string;
   ok: boolean;
+};
+export type PaginatedResourceResponse<T> = {
+  data: T[];
+  totalCount: number;
 };
 export type BreadCrumb = {
   label: string;
@@ -27,4 +37,8 @@ export type JobCard = {
   experience: JobExperience;
   workingState: JobWorkingState;
   expiredAt: Date;
+};
+export type JobSelect = {
+  id: string;
+  name: string;
 };

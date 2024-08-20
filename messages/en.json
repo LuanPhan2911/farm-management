@@ -217,6 +217,96 @@
       }
     }
   },
+  "users": {
+    "heading": "Manage Users",
+    "button": {
+      "create": "Add",
+      "edit": "Edit",
+      "destroy": "Delete"
+    },
+    "table": {
+      "heading": "All users",
+      "thead": {
+        "name": "User",
+        "lastSignedIn": "Last Signed In",
+        "role": "Role",
+        "joined": "Joined"
+      },
+      "action": {
+        "label": "Action",
+        "edit": "Edit",
+        "destroy": "Delete",
+        "view": "View profile"
+      }
+    },
+    "search": {
+      "placeholder": "Filter by user name..."
+    },
+    "form": {
+      "create": {
+        "title": "Add user",
+        "description": "User use for "
+      },
+      "edit": {
+        "title": "Edit user",
+        "description": "User can edit"
+      },
+      "destroy": {
+        "title": "Delete user?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      },
+      "setRole": {
+        "title": "Update role for user",
+        "description": "Update role"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid fields!"
+      },
+      "firstName": {
+        "label": "First name",
+        "placeholder": "First name",
+        "minlength": "First name is required!"
+      },
+      "lastName": {
+        "label": "Last name",
+        "placeholder": "Last name",
+        "minlength": "Last name is required!"
+      },
+      "email": {
+        "minlength": "Email is required!",
+        "isEmail": "Email is invalid!",
+        "label": "Email",
+        "placeholder": "Email"
+      },
+      "phone": {
+        "minlength": "Phone number is required!",
+        "label": "Phone",
+        "placeholder": "Phone",
+        "isPhone": "Phone number is invalid"
+      },
+      "address": {
+        "minlength": "Address is required!",
+        "label": "Address",
+        "placeholder": "Address"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "User created!",
+        "edit": "User edited!",
+        "destroy": "User deleted!",
+        "updateRole": "User role updated"
+      },
+      "failure": {
+        "create": "Something went wrong while creating user!",
+        "edit": "Something went wrong while editing user!",
+        "destroy": "Something went wrong while deleting user!",
+        "updateRole": "Something went wrong while updating role"
+      }
+    }
+  },
   "applicants": {
     "heading": "Manage Applicants",
     "button": {
@@ -231,7 +321,8 @@
         "name": "Name",
         "email": "Email",
         "address": "Address",
-        "phone": "Phone number"
+        "phone": "Phone number",
+        "status": "Status"
       },
       "action": {
         "label": "Action",
@@ -260,7 +351,7 @@
       },
       "setRole": {
         "title": "Update role for this applicant",
-        "description": "After update success. The applicant will be removed."
+        "description": "A new account will created for applicant with selected role"
       }
     },
     "schema": {
@@ -296,6 +387,10 @@
       "note": {
         "label": "Note",
         "placeholder": "Note"
+      },
+      "role": {
+        "minlength": "Role is required",
+        "label": "Role"
       }
     },
     "status": {
@@ -486,6 +581,8 @@
     "/admin/jobs": "Jobs",
     "/admin/jobs/create": "Create",
     "/admin/jobs/edit": "Edit",
-    "/admin/applicants": "Applicant"
+    "/admin/applicants": "Applicant",
+    "/admin/users": "User",
+    "/admin/users/detail": "Detail"
   }
 }

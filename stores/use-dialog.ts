@@ -1,12 +1,18 @@
+import { User } from "@clerk/nextjs/server";
 import { Category, Unit, Applicant } from "@prisma/client";
 import { create } from "zustand";
 
-export type DialogType = "category.edit" | "unit.edit" | "applicant.setRole";
+export type DialogType =
+  | "category.edit"
+  | "unit.edit"
+  | "applicant.setRole"
+  | "user.setRole";
 
 export interface DialogData {
   category?: Category;
   unit?: Unit;
   applicant?: Applicant;
+  user?: User;
 }
 interface DialogStore {
   type: DialogType | null;

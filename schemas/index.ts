@@ -131,3 +131,50 @@ export const ApplicantSchema = (t: (arg: string) => string) => {
     note: z.string().max(200),
   });
 };
+
+export const ApplicantUpdateRoleSchema = (t: (arg: string) => string) => {
+  return z.object({
+    name: z
+      .string()
+      .min(1, {
+        message: t("name.minlength"),
+      })
+      .max(100),
+    role: z.string().min(1, { message: t("role.minlength") }),
+  });
+};
+
+export const UserSchema = (t: (arg: string) => string) => {
+  return z.object({
+    email: z
+      .string()
+      .min(1, {
+        message: t("email.minlength"),
+      })
+      .email({
+        message: t("email.isEmail"),
+      })
+      .max(100),
+    firstName: z.string().min(1, {
+      message: t("firstName.minlength"),
+    }),
+    lastName: z.string().min(1, {
+      message: t("lastName.minlength"),
+    }),
+
+    phone: z
+      .string()
+      .min(1, {
+        message: t("phone.minlength"),
+      })
+      .refine(validator.isMobilePhone, {
+        message: "phone.isPhone",
+      }),
+    address: z
+      .string()
+      .min(1, {
+        message: t("address.minlength"),
+      })
+      .max(100),
+  });
+};
