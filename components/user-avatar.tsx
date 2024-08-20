@@ -13,13 +13,24 @@ const avatarSizes = cva("", {
     size: "default",
   },
 });
-interface UserAvatarProps extends VariantProps<typeof avatarSizes> {
+interface UserAvatarProps
+  extends VariantProps<typeof avatarSizes>,
+    React.HTMLAttributes<HTMLImageElement> {
   src: string | undefined;
 }
-export const UserAvatar = ({ src, size }: UserAvatarProps) => {
+export const UserAvatar = ({
+  src,
+  size,
+  className,
+  ...props
+}: UserAvatarProps) => {
   return (
-    <Avatar className={cn(avatarSizes({ size }))}>
-      <AvatarImage src={src} />
+    <Avatar>
+      <AvatarImage
+        src={src}
+        className={cn(avatarSizes({ size, className }))}
+        {...props}
+      />
       <AvatarFallback className="bg-blue-300 p-2 rounded-full">
         CN
       </AvatarFallback>

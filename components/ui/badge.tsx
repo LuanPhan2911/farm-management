@@ -18,6 +18,8 @@ const badgeVariants = cva(
         success:
           "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
         info: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
+        cyanToBlue:
+          "text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium text-sm text-center",
       },
     },
     defaultVariants: {
