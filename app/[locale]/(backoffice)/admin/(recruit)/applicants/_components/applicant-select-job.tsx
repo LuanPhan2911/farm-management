@@ -2,13 +2,11 @@
 
 import { ComboBox, ComboBoxData } from "@/components/combobox";
 import { usePathname, useRouter } from "@/navigation";
+import { JobSelect } from "@/types";
 import { useSearchParams } from "next/navigation";
 
 interface ApplicantSelectJobProps {
-  data: {
-    id: string;
-    name: string;
-  }[];
+  data: JobSelect[];
 }
 export const ApplicantSelectJob = ({ data }: ApplicantSelectJobProps) => {
   const searchParams = useSearchParams();

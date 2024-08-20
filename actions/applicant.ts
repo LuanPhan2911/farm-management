@@ -1,24 +1,25 @@
 "use server";
 import { db } from "@/lib/db";
+import { sendApplicantApply, sendApplicantCreateUser } from "@/lib/mail";
 import {
-  sendApplicantApply,
-  sendApplicantCreateUser,
-  sendApplicantUpdateRole,
-} from "@/lib/mail";
-import { errorResponse, generatePassword, successResponse } from "@/lib/utils";
-import { ApplicantSchema } from "@/schemas";
+  errorResponse,
+  generateEmail,
+  generatePassword,
+  successResponse,
+} from "@/lib/utils";
+import { ApplicantSchema, ApplicantUpdateRoleSchema } from "@/schemas";
 import {
   getApplicantByEmailAndJobId,
   getApplicantById,
 } from "@/services/applicants";
 import { getJobById } from "@/services/jobs";
 import { ActionResponse, Roles } from "@/types";
-import { clerkClient } from "@clerk/nextjs/server";
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
-import { Applicant } from "@prisma/client";
+import { createUser, getUserByEmail } from "@/services/users";
+import { ApplicantStatus } from "@prisma/client";
 
 export const create = async (
   values: z.infer<ReturnType<typeof ApplicantSchema>>,
@@ -96,58 +97,63 @@ export const deleteMany = async (ids: string[]): Promise<ActionResponse> => {
 };
 
 export const updateRole = async (
-  applicantId: string,
-  role: Roles
+  values: z.infer<ReturnType<typeof ApplicantUpdateRoleSchema>>,
+  applicantId: string
 ): Promise<ActionResponse> => {
-  const tStatus = await getTranslations("applicants.status");
-  const tError = await getTranslations("applicants.schema.errors");
+  const tSchema = await getTranslations("applicants.schema");
+  const tApplicantStatus = await getTranslations("applicants.status");
+  const tApplicantError = await getTranslations("applicants.schema.errors");
+  const tUserStatus = await getTranslations("users.status");
+
+  const paramsSchema = ApplicantUpdateRoleSchema(tSchema);
+  const validatedFields = paramsSchema.safeParse(values);
+
+  if (!validatedFields.success) {
+    return errorResponse(tSchema("errors.parse"));
+  }
   try {
     const applicant = await getApplicantById(applicantId);
     if (!applicant) {
       return {
-        message: tError("noExist"),
+        message: tApplicantError("noExist"),
+        ok: false,
+      };
+    }
+    const name = validatedFields.data.name;
+    const role = validatedFields.data.role as Roles;
+    const email = await generateEmail(name);
+    const password = generatePassword(8);
+
+    const existingUser = await getUserByEmail(email);
+    if (existingUser) {
+      return {
+        message: "Existing email",
         ok: false,
       };
     }
 
-    const { data: users, totalCount } = await clerkClient().users.getUserList({
-      emailAddress: [applicant.email],
-
-      limit: 1,
-    });
-    if (totalCount === 1) {
-      const existingUser = users[0];
-
-      await clerkClient.users.updateUser(existingUser.id, {
-        firstName: applicant.name,
-        publicMetadata: {
-          role: role,
-        },
-      });
-      sendApplicantUpdateRole(applicant);
-    } else {
-      const password = generatePassword(8);
-      await clerkClient().users.createUser({
-        firstName: applicant.name,
-        emailAddress: [applicant.email],
-        password,
-        publicMetadata: {
-          role: role,
-        },
-      });
-      sendApplicantCreateUser(applicant, password);
-
-      //send mail notification
+    const user = await createUser(name, email, password, role);
+    if (!user) {
+      return {
+        message: tUserStatus("failure.create"),
+        ok: false,
+      };
     }
+    sendApplicantCreateUser(applicant, email, password);
 
-    await db.applicant.deleteMany({
+    // send mail notification
+
+    await db.applicant.updateMany({
       where: {
         email: applicant.email,
       },
+      data: {
+        status: ApplicantStatus.CONFIRM,
+      },
     });
     revalidatePath("/admin/applicants");
-    return successResponse(tStatus("success.updateRole"));
+    return successResponse(tApplicantStatus("success.updateRole"));
   } catch (error) {
-    return errorResponse(tStatus("failure.updateRole"));
+    return errorResponse(tApplicantStatus("failure.updateRole"));
   }
 };
