@@ -26,8 +26,8 @@ export const UsersTable = ({ data, totalPage }: UsersTableProps) => {
   const tTable = useTranslations("users.table");
   const { relativeTime } = useFormatter();
   const router = useRouter();
-  const handleClick = (userId: string) => {
-    router.push(`/admin/users/detail/${userId}`);
+  const handleClick = (id: string) => {
+    router.push(`/admin/users/detail/${id}`);
   };
   return (
     <Card>
@@ -41,8 +41,9 @@ export const UsersTable = ({ data, totalPage }: UsersTableProps) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>{tTable("thead.name")}</TableHead>
               <TableHead></TableHead>
+              <TableHead>{tTable("thead.name")}</TableHead>
+
               <TableHead>{tTable("thead.role")}</TableHead>
               <TableHead>{tTable("thead.lastSignedIn")}</TableHead>
               <TableHead>{tTable("thead.joined")} </TableHead>

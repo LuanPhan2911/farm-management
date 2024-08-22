@@ -1,11 +1,10 @@
 import { Badge } from "@/components/ui/badge";
-import { Roles } from "@/types";
 
 interface UserMetadataRoleProps {
   metadata: UserPublicMetadata;
 }
 export const UserMetadataRole = ({ metadata }: UserMetadataRoleProps) => {
-  const role = metadata?.role as Roles;
+  const role = metadata?.role;
 
   if (role === "superadmin") {
     return <Badge variant={"cyanToBlue"}>Superadmin</Badge>;

@@ -1,6 +1,6 @@
 "use client";
 
-import { updateRole } from "@/actions/applicant";
+import { editRole } from "@/actions/applicant";
 import { DynamicDialog } from "@/components/dynamic-dialog";
 import { SelectOptions } from "@/components/select-options";
 import { Button } from "@/components/ui/button";
@@ -15,9 +15,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { ApplicantUpdateRoleSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
-import { Roles } from "@/types";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Applicant } from "@prisma/client";
+import { Applicant, StaffRole } from "@prisma/client";
 import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useTransition } from "react";
@@ -51,11 +51,10 @@ export const ApplicantSetRoleButton = ({
 };
 export const ApplicantSetRoleDialog = () => {
   const { isOpen, data, type, onClose } = useDialog();
-  const tSetRole = useTranslations("applicants.form.setRole");
+
   const isOpenDialog = isOpen && type === "applicant.setRole";
   const [isPending, startTransition] = useTransition();
-  const tForm = useTranslations("form");
-
+  const t = useTranslations("applicants");
   const tSchema = useTranslations("applicants.schema");
   const formSchema = ApplicantUpdateRoleSchema(tSchema);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -63,13 +62,12 @@ export const ApplicantSetRoleDialog = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      role: "",
+      role: "farmer",
     },
   });
   useEffect(() => {
     if (data.applicant) {
       form.setValue("name", data.applicant.name);
-      form.setValue("role", "farmer");
     }
   }, [form, data]);
   const onSubmit = (values: z.infer<typeof formSchema>) => {
@@ -78,7 +76,7 @@ export const ApplicantSetRoleDialog = () => {
     }
     const applicantId = data.applicant.id;
     startTransition(() => {
-      updateRole(values, applicantId)
+      editRole(values, applicantId)
         .then(({ message, ok }) => {
           if (ok) {
             toast.success(message);
@@ -87,7 +85,7 @@ export const ApplicantSetRoleDialog = () => {
           }
         })
         .catch((error: Error) => {
-          toast.error(tForm("error"));
+          toast.error(t("status.failure.editRole"));
         })
         .finally(() => {
           onClose();
@@ -95,7 +93,7 @@ export const ApplicantSetRoleDialog = () => {
     });
   };
 
-  const options: { label: string; option: Roles }[] = [
+  const options: { label: string; option: StaffRole }[] = [
     {
       label: "Admin",
       option: "admin",
@@ -109,8 +107,8 @@ export const ApplicantSetRoleDialog = () => {
   return (
     <DynamicDialog
       isOpen={isOpenDialog}
-      title={tSetRole("title")}
-      description={tSetRole("description")}
+      title={t("form.setRole.title")}
+      description={t("form.setRole.description")}
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -154,10 +152,10 @@ export const ApplicantSetRoleDialog = () => {
           />
           <div className="flex gap-x-2 justify-end">
             <Button variant="secondary" onClick={onClose} type="button">
-              {tForm("button.close")}
+              Close
             </Button>
             <Button disabled={isPending} type="submit">
-              {tForm("button.submit")}
+              Submit
             </Button>
           </div>
         </form>

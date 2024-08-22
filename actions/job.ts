@@ -101,7 +101,7 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
     return errorResponse(tStatus("failure.destroy"));
   }
 };
-export const deleteMany = async (ids: string[]): Promise<ActionResponse> => {
+export const destroyMany = async (ids: string[]): Promise<ActionResponse> => {
   const tStatus = await getTranslations("jobs.status");
   try {
     await db.job.deleteMany({
@@ -117,7 +117,7 @@ export const deleteMany = async (ids: string[]): Promise<ActionResponse> => {
     return errorResponse(tStatus("failure.destroy"));
   }
 };
-export const togglePublished = async (
+export const editPublished = async (
   id: string,
   published: boolean
 ): Promise<ActionResponse> => {
@@ -132,8 +132,8 @@ export const togglePublished = async (
       },
     });
     revalidatePath("/dashboard/jobs");
-    return successResponse(tStatus("success.updatePublished"));
+    return successResponse(tStatus("success.editPublished"));
   } catch (error) {
-    return errorResponse(tStatus("failure.updatePublished"));
+    return errorResponse(tStatus("failure.editPublished"));
   }
 };

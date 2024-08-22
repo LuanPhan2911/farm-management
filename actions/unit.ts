@@ -72,7 +72,7 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
     return errorResponse(tStatus("failure.destroy"));
   }
 };
-export const deleteMany = async (ids: string[]): Promise<ActionResponse> => {
+export const destroyMany = async (ids: string[]): Promise<ActionResponse> => {
   const tStatus = await getTranslations("units.status");
   try {
     await db.unit.deleteMany({

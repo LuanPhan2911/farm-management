@@ -14,26 +14,42 @@ datasource db {
 }
 
 model Unit {
-  id          String @id @default(uuid())
+  id          String      @id @default(uuid())
   name        String
   description String
+  floatUnit   FloatUnit[]
+  intUnit     IntUnit[]
 }
 
-model Farmer {
-  id String @id @default(uuid())
+model FloatUnit {
+  id     String @id @default(uuid())
+  value  Float
+  unitId String
+  unit   Unit   @relation(fields: [unitId], references: [id], onDelete: Cascade)
 
-  firstName String
-  lastName  String
-  username  String  @unique
-  email     String  @unique
-  phone     String  @unique
-  address   String
-  imageUrl  String?
+  heightFields Field[] @relation(name: "height")
+  widthFields  Field[] @relation(name: "width")
+  areaFields   Field[] @relation(name: "area")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  tempuratureWeathers Weather[] @relation(name: "temperature")
 
-  field Field[]
+  outputs  Crop[] @relation(name: "output")
+  expenses Crop[] @relation(name: "expense")
+  revenues Crop[] @relation(name: "revenue")
+}
+
+model IntUnit {
+  id    String @id @default(uuid())
+  value Int
+
+  unitId String
+  unit   Unit   @relation(fields: [unitId], references: [id], onDelete: Cascade)
+
+  himidityWeathers Weather[] @relation(name: "humidity")
+  moistures        Soil[]    @relation(name: "moisture")
+
+  rainfalls  Weather[]   @relation(name: "rainfall")
+  capacities Equipment[] @relation(name: "capacity")
 }
 
 model Category {
@@ -91,6 +107,20 @@ enum ApplicantStatus {
   CONFIRM
 }
 
+enum StaffRole {
+  superadmin
+  admin
+  farmer
+}
+
+model Staff {
+  id        String    @id @default(uuid())
+  email     String    @unique
+  role      StaffRole
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
 model Applicant {
   id String @id @default(uuid())
 
@@ -111,26 +141,252 @@ model Applicant {
   @@unique([email, jobId])
 }
 
-model Field {
+model Weather {
   id String @id @default(uuid())
 
-  farmerId String
-  farmer   Farmer @relation(fields: [farmerId], references: [id])
+  temperatureId String
+  temperature   FloatUnit @relation(name: "temperature", fields: [temperatureId], references: [id])
+
+  humidityId String
+  humidtidy  IntUnit @relation(name: "humidity", fields: [humidityId], references: [id])
+
+  rainfallId String
+  rainfall   IntUnit @relation(name: "rainfall", fields: [rainfallId], references: [id])
+
+  fieldId String
+  field   Field  @relation(fields: [fieldId], references: [id])
+
+  confirmed   Boolean @default(false)
+  confimrerId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Crop      Crop[]
+}
+
+model Soil {
+  id String @id @default(uuid())
+
+  ph Float
+
+  moistureId String
+  moisture   IntUnit @relation("moisture", fields: [moistureId], references: [id])
+
+  fieldId String
+  field   Field  @relation(fields: [fieldId], references: [id])
+
+  confirmed   Boolean  @default(false)
+  confimrerId String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Field {
+  id String @id @default(uuid())
+
+  name     String
+  location String
+  orgId    String @unique
+
+  //manage width, height, area, shape
+  heightId String
+  height   FloatUnit @relation(name: "height", fields: [heightId], references: [id])
+
+  widthId String
+  width   FloatUnit @relation(name: "width", fields: [widthId], references: [id])
+
+  areaId String
+  area   FloatUnit @relation(name: "area", fields: [areaId], references: [id])
+  shape  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  crops    Crop[]
+  weathers Weather[]
+  soils    Soil[]
+}
+
+enum Season {
+  SPRING
+  SUMMER
+  AUTUMN
+  WINTER
 }
 
 model Crop {
   id   String @id @default(uuid())
   name String
 
+  season Season
+  year   Int
+
   plantingDate        DateTime
   expectedHarvestDate DateTime
 
   fieldId String
   field   Field  @relation(fields: [fieldId], references: [id])
+
+  plantId String
+  plant   Plant  @relation(fields: [plantId], references: [id])
+
+  outputId String?
+  output   FloatUnit? @relation(name: "output", fields: [outputId], references: [id])
+
+  expenseId String?
+  expense   FloatUnit? @relation(name: "expense", fields: [expenseId], references: [id])
+
+  revenueId String?
+  revenue   FloatUnit? @relation(name: "revenue", fields: [revenueId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  farmingdiaries FarmingDairy[]
+}
+
+model Plant {
+  id String @id @default(uuid())
+
+  name     String
+  varitety String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  crops          Crop[]
+  farmingdiaries FarmingDairy[]
+}
+
+enum ActivityType {
+  FERTILIZER
+  PESTICIDE
+  EQUIPMENT
+}
+
+model Activity {
+  id          String @id @default(uuid())
+  name        String
+  description String
+  farmerId    String
+
+  note String?
+
+  activitableId   String
+  activiatbleType ActivityType
+
+  fertilizer Fertilizer? @relation(name: "fertilizer", fields: [activitableId], references: [id], map: "fertilizerActivitableId")
+  pesticide  Pesticide?  @relation(name: "pesticide", fields: [activitableId], references: [id], map: "pesicideActivirableId")
+  equiment   Equipment?  @relation(name: "equipment", fields: [activitableId], references: [id], map: "equipmentActivitableId")
+
+  farmingDiaryId String
+  farmingDiary   FarmingDairy @relation(fields: [farmingDiaryId], references: [id])
+}
+
+model FarmingDairy {
+  id String @id @default(uuid())
+
+  createdDate DateTime
+  cropId      String
+  crops       Crop     @relation(fields: [cropId], references: [id])
+
+  plantId String
+  plant   Plant  @relation(fields: [plantId], references: [id])
+
+  activities Activity[]
+}
+
+enum FertilizerType {
+  ORGANIC
+  INORGANIC
+  BIO
+}
+
+model PlantFerilizer {
+  fertisizerId String
+  plantId      String
+
+  @@unique([fertisizerId, plantId])
+}
+
+model PlantPesticide {
+  pesticideId String
+  plantId     String
+
+  @@unique([pesticideId, plantId])
+}
+
+model Fertilizer {
+  id String @id @default(uuid())
+
+  name String
+  type FertilizerType
+
+  nutrientOfNPK String
+  manufacturer  String
+
+  createdDate DateTime
+  expriryDate DateTime
+
+  activities Activity[] @relation(name: "fertilizer")
+}
+
+enum PesticideType {
+  PESTICIDE
+  HERBICIDE
+  FUNGICIDE
+}
+
+model Pesticide {
+  id String @id @default(uuid())
+
+  name      String
+  type      PesticideType
+  ingredent String
+
+  manufacturer String
+
+  createdDate DateTime
+  expriryDate DateTime
+  activities  Activity[] @relation(name: "pesticide")
+}
+
+model Equipment {
+  id String @id @default(uuid())
+
+  name String
+  type String // xem xet them
+
+  capacityId String
+  capacity   IntUnit @relation(name: "capacity", fields: [capacityId], references: [id])
+
+  manufacturer String
+  createdYear  Int
+  activities   Activity[] @relation(name: "equipment")
+}
+
+model Product {
+  id String @id @default(uuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id String @id @default(uuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Inventory {
+  id String @id @default(uuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Mission {
+  id String @id @default(uuid())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

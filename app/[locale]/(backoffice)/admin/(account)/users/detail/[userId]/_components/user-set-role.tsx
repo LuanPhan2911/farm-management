@@ -1,12 +1,13 @@
 "use client";
 
-import { updateRole } from "@/actions/user";
+import { editRole } from "@/actions/user";
 import { DynamicDialog } from "@/components/dynamic-dialog";
 import { SelectOptions } from "@/components/select-options";
 import { Button } from "@/components/ui/button";
 import { useDialog } from "@/stores/use-dialog";
-import { Roles } from "@/types";
+
 import { User } from "@clerk/nextjs/server";
+import { StaffRole } from "@prisma/client";
 
 import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -28,6 +29,7 @@ export const UserSetRole = ({ data, label }: UserSetRoleProps) => {
           user: data,
         })
       }
+      variant={"success"}
     >
       <Edit className="h-6 w-6 mr-2" />
       {label}
@@ -36,18 +38,18 @@ export const UserSetRole = ({ data, label }: UserSetRoleProps) => {
 };
 export const UserSetRoleDialog = () => {
   const { isOpen, data, type, onClose } = useDialog();
-  const tSetRole = useTranslations("users.form.setRole");
+
+  const t = useTranslations("users");
   const isOpenDialog = isOpen && type === "user.setRole";
   const [isPending, startTransition] = useTransition();
-  const tForm = useTranslations("form");
-  const [role, setRole] = useState<Roles>("farmer");
+  const [role, setRole] = useState<StaffRole>("farmer");
   const handleSetRole = () => {
     if (!data.user) {
       return;
     }
     const id = data.user.id;
     startTransition(() => {
-      updateRole(id, role)
+      editRole(id, role)
         .then(({ message, ok }) => {
           if (ok) {
             toast.success(message);
@@ -56,14 +58,14 @@ export const UserSetRoleDialog = () => {
           }
         })
         .catch((error: Error) => {
-          toast.error(tForm("error"));
+          toast.error(t("status.failure.setRole"));
         })
         .finally(() => {
           onClose();
         });
     });
   };
-  const options: { label: string; option: Roles }[] = [
+  const options: { label: string; option: StaffRole }[] = [
     {
       label: "Admin",
       option: "admin",
@@ -77,23 +79,23 @@ export const UserSetRoleDialog = () => {
   return (
     <DynamicDialog
       isOpen={isOpenDialog}
-      title={tSetRole("title")}
-      description={tSetRole("description")}
+      title={t("form.setRole.title")}
+      description={t("form.setRole.description")}
     >
       <SelectOptions
         label="Select role"
         options={options}
         onChange={(value) => {
-          setRole(value as Roles);
+          setRole(value as StaffRole);
         }}
         value={role}
       />
       <div className="flex gap-x-2 justify-end">
         <Button variant="secondary" onClick={onClose}>
-          {tForm("button.close")}
+          Close
         </Button>
         <Button disabled={isPending} onClick={handleSetRole}>
-          {tForm("button.submit")}
+          Submit
         </Button>
       </div>
     </DynamicDialog>

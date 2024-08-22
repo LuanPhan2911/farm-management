@@ -50,8 +50,7 @@ export const UnitEditDialog = () => {
   const isOpenDialog = isOpen && type === "unit.edit";
 
   const tSchema = useTranslations("units.schema");
-  const tEdit = useTranslations("units.form.edit");
-  const tForm = useTranslations("form");
+  const t = useTranslations("units");
   const formSchema = UnitSchema(tSchema);
 
   const [isPending, startTransition] = useTransition();
@@ -85,15 +84,15 @@ export const UnitEditDialog = () => {
           }
         })
         .catch((error: Error) => {
-          toast.error(tForm("error"));
+          toast.error(t("status.failure.edit"));
         });
     });
   };
   return (
     <DynamicDialog
       isOpen={isOpenDialog}
-      title={tEdit("title")}
-      description={tEdit("description")}
+      title={t("form.edit.title")}
+      description={t("form.edit.description")}
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -136,11 +135,11 @@ export const UnitEditDialog = () => {
           <DialogFooter>
             <DialogClose asChild>
               <Button type="button" variant="secondary">
-                {tForm("button.close")}
+                Close
               </Button>
             </DialogClose>
             <Button type="submit" disabled={isPending}>
-              {tForm("button.submit")}
+              Submit
             </Button>
           </DialogFooter>
         </form>

@@ -76,11 +76,6 @@
   },
   "categories": {
     "heading": "Quản lý thể loại",
-    "button": {
-      "create": "Thêm",
-      "edit": "Sửa",
-      "destroy": "Xóa"
-    },
     "table": {
       "heading": "Tất cả thể loại",
       "thead": {
@@ -91,13 +86,6 @@
         "label": "Hành động",
         "edit": "Sửa",
         "destroy": "Xóa"
-      },
-      "bulkAction": {
-        "deleteSelected": {
-          "label": "Xóa tất cả đã chọn",
-          "title": "Xóa tất cả thể loại đã chọn?",
-          "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
-        }
       }
     },
     "search": {
@@ -106,15 +94,23 @@
 
     "form": {
       "create": {
+        "label": "Thêm",
         "title": "Thêm thể loại",
         "description": "Thể loại được dùng để phân loại sinh vật trong nông trại"
       },
       "edit": {
+        "label": "Sửa",
         "title": "Sửa thể loại",
         "description": "Thể loại có thể cập nhật"
       },
       "destroy": {
+        "label": "Xóa",
         "title": "Xóa thể loại?",
+        "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
+      },
+      "destroySelected": {
+        "label": "Xóa tất cả đã chọn",
+        "title": "Xóa tất cả thể loại đã chọn?",
         "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
       }
     },
@@ -148,11 +144,6 @@
   },
   "units": {
     "heading": "Quản lý đơn vị tính",
-    "button": {
-      "create": "Thêm",
-      "edit": "Sửa",
-      "destroy": "Xóa"
-    },
     "table": {
       "heading": "Tất cả đơn vị tính",
       "thead": {
@@ -163,13 +154,6 @@
         "label": "Hành động",
         "edit": "Sửa",
         "destroy": "Xóa"
-      },
-      "bulkAction": {
-        "deleteSelected": {
-          "label": "Xóa tất cả đã chọn",
-          "title": "Xóa tất cả đơn vị tính đã chọn?",
-          "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
-        }
       }
     },
     "search": {
@@ -178,15 +162,23 @@
 
     "form": {
       "create": {
+        "label": "Thêm",
         "title": "Thêm đơn vị tính",
         "description": "Đơn vị tính được dùng để phân loại sinh vật trong nông trại"
       },
       "edit": {
+        "label": "Sửa",
         "title": "Sửa đơn vị tính",
         "description": "Đơn vị tính có thể cập nhật"
       },
       "destroy": {
+        "label": "Xóa",
         "title": "Xóa đơn vị tính?",
+        "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
+      },
+      "destroySelected": {
+        "label": "Xóa tất cả đã chọn",
+        "title": "Xóa tất cả đơn vị tính đã chọn?",
         "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
       }
     },
@@ -220,11 +212,6 @@
   },
   "users": {
     "heading": "Quản lý người dùng",
-    "button": {
-      "create": "Thêm",
-      "edit": "Sửa",
-      "destroy": "Xóa"
-    },
     "table": {
       "heading": "Tất cả người dùng",
       "thead": {
@@ -238,13 +225,6 @@
         "edit": "Sửa",
         "destroy": "Xóa",
         "view": "Xem thông tin"
-      },
-      "bulkAction": {
-        "deleteSelected": {
-          "label": "Xóa tất cả đã chọn",
-          "title": "Xóa tất cả người dùng đã chọn?",
-          "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
-        }
       }
     },
     "search": {
@@ -253,18 +233,22 @@
 
     "form": {
       "create": {
+        "label": "Thêm",
         "title": "Thêm người dùng",
         "description": "Người dùng được dùng để phân loại sinh vật trong nông trại"
       },
       "edit": {
+        "label": "Sửa",
         "title": "Sửa người dùng",
         "description": "Người dùng có thể cập nhật"
       },
       "destroy": {
+        "label": "Xóa",
         "title": "Xóa người dùng?",
         "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
       },
-      "setRole": {
+      "editRole": {
+        "label": "Sửa vai trog",
         "title": "Cập nhật vai trò cho người dùng",
         "description": "Cập nhật"
       }
@@ -306,13 +290,13 @@
         "create": "Người dùng đã được tạo!",
         "edit": "Người dùng đã được cập nhật!",
         "destroy": "Người dùng đã được xóa!",
-        "updateRole": "Role của người dùng đã được cập nhật"
+        "editRole": "Role của người dùng đã được cập nhật"
       },
       "failure": {
         "create": "Có lỗi xảy ra trong khi tạo người dùng!",
         "edit": "Có lỗi xảy ra trong khi cập nhật người dùng!",
         "destroy": "Có lỗi xảy ra trong khi xóa người dùng!",
-        "updateRole": "Có lỗi xảy ra trong khi cập nhật role cho người dùng"
+        "editRole": "Có lỗi xảy ra trong khi cập nhật role cho người dùng"
       }
     }
   },
@@ -336,10 +320,10 @@
       "action": {
         "label": "Hành động",
         "destroy": "Xóa",
-        "updateRole": "Cập nhật quyền"
+        "editRole": "Cập nhật quyền"
       },
       "bulkAction": {
-        "deleteSelected": {
+        "destroySelected": {
           "label": "Xóa tất cả đã chọn",
           "title": "Xóa tất cả ứng viên đã chọn?",
           "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
@@ -359,7 +343,7 @@
         "title": "Xóa ứng viên?",
         "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
       },
-      "setRole": {
+      "editRole": {
         "title": "Cập nhật quyền cho ứng viên",
         "description": "Một tài khoản mới sẽ được tạo cho ứng viên với quyền được chọn"
       }
@@ -406,12 +390,12 @@
       "success": {
         "create": "Nộp đơn cho công việc thành công",
         "destroy": "Ứng viên đã được xóa!",
-        "updateRole": "Role của ứng viên đã được cập nhật"
+        "editRole": "Role của ứng viên đã được cập nhật"
       },
       "failure": {
         "create": "Có lỗi xảy ra trong khi nộp đơn",
         "destroy": "Có lỗi xảy ra trong khi xóa ứng viên!",
-        "updateRole": "Có lỗi xảy ra trong khi cập nhật role cho ứng viên"
+        "editRole": "Có lỗi xảy ra trong khi cập nhật role cho ứng viên"
       }
     }
   },
@@ -438,7 +422,7 @@
         "destroy": "Xóa"
       },
       "bulkAction": {
-        "deleteSelected": {
+        "destroySelected": {
           "label": "Xóa tất cả đã chọn",
           "title": "Xóa tất cả việc làm đã chọn?",
           "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
@@ -551,13 +535,13 @@
         "create": "Việc làm đã được tạo!",
         "edit": "Việc làm đã được cập nhật!",
         "destroy": "Việc làm đã được xóa!",
-        "updatePublished": "Việc làm trạng thái đã được cập nhật"
+        "editPublished": "Việc làm trạng thái đã được cập nhật"
       },
       "failure": {
         "create": "Có lỗi xảy ra trong khi tạo việc làm!",
         "edit": "Có lỗi xảy ra trong khi cập nhật việc làm!",
         "destroy": "Có lỗi xảy ra trong khi xóa việc làm!",
-        "updatePublished": "Có lỗi xảy ra khi cập nhật trạng thái công khai"
+        "editPublished": "Có lỗi xảy ra khi cập nhật trạng thái công khai"
       }
     },
     "notFound": {

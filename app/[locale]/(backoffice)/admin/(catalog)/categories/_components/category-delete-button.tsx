@@ -17,8 +17,8 @@ export const CategoryDeleteButton = ({
 }: CategoryDeleteButtonProps) => {
   const { id } = data;
   const { onOpen, onClose } = useAlertDialog();
-  const tDestroy = useTranslations("categories.form.destroy");
-  const tForm = useTranslations("form");
+  const t = useTranslations("categories");
+
   const onConfirm = async () => {
     destroy(id)
       .then(({ message, ok }) => {
@@ -30,7 +30,7 @@ export const CategoryDeleteButton = ({
         }
       })
       .catch((error) => {
-        toast.error(tForm("error"));
+        toast.error(t("status.failure.destroy"));
       })
       .finally(() => {
         onClose();
@@ -41,8 +41,8 @@ export const CategoryDeleteButton = ({
       className="w-full"
       onClick={() =>
         onOpen({
-          title: tDestroy("title"),
-          description: tDestroy("description"),
+          title: t("form.destroy.title"),
+          description: t("form.destroy.description"),
           onConfirm,
         })
       }

@@ -1,6 +1,7 @@
 "use client";
 
-import { update } from "@/actions/user";
+import { edit } from "@/actions/user";
+import { ClipboardButton } from "@/components/clipboard-button";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -32,9 +33,7 @@ interface UserBasicInfoProps {
 }
 export const UserBasicInfo = ({ data }: UserBasicInfoProps) => {
   const tSchema = useTranslations("users.schema");
-
-  const tForm = useTranslations("form");
-
+  const t = useTranslations("users");
   const formSchema = UserSchema(tSchema);
   const form = useForm<z.infer<typeof formSchema>>({
     mode: "onChange",
@@ -60,7 +59,7 @@ export const UserBasicInfo = ({ data }: UserBasicInfoProps) => {
   const [isPending, startTransition] = useTransition();
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
-      update(values, data.id)
+      edit(values, data.id)
         .then(({ message, ok }) => {
           if (ok) {
             toast.success(message);
@@ -69,7 +68,7 @@ export const UserBasicInfo = ({ data }: UserBasicInfoProps) => {
           }
         })
         .catch((error: Error) => {
-          toast.error(tForm("error"));
+          toast.error(t("status.failure.edit"));
         });
     });
   };
@@ -85,6 +84,17 @@ export const UserBasicInfo = ({ data }: UserBasicInfoProps) => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-8 max-w-4xl"
           >
+            <FormItem>
+              <FormLabel>{tSchema("id.label")}</FormLabel>
+              <div className="flex gap-x-2">
+                <Input
+                  placeholder={tSchema("id.placeholder")}
+                  value={data.id}
+                  disabled={true}
+                />
+                <ClipboardButton value={data.id} />
+              </div>
+            </FormItem>
             <FormField
               control={form.control}
               name="email"
@@ -177,11 +187,8 @@ export const UserBasicInfo = ({ data }: UserBasicInfoProps) => {
             />
 
             <div className="flex gap-x-2 justify-center">
-              <Button type="button" variant="secondary">
-                {tForm("button.close")}
-              </Button>
               <Button type="submit" disabled={isPending}>
-                {tForm("button.submit")}
+                Submit
               </Button>
             </div>
           </form>

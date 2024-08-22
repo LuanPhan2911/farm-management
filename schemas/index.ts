@@ -1,4 +1,9 @@
-import { Gender, JobExperience, JobWorkingState } from "@prisma/client";
+import {
+  Gender,
+  JobExperience,
+  JobWorkingState,
+  StaffRole,
+} from "@prisma/client";
 import { addDays } from "date-fns";
 import { z } from "zod";
 import validator from "validator";
@@ -140,7 +145,9 @@ export const ApplicantUpdateRoleSchema = (t: (arg: string) => string) => {
         message: t("name.minlength"),
       })
       .max(100),
-    role: z.string().min(1, { message: t("role.minlength") }),
+    role: z.nativeEnum(StaffRole, {
+      message: t("role.native"),
+    }),
   });
 };
 
@@ -176,5 +183,23 @@ export const UserSchema = (t: (arg: string) => string) => {
         message: t("address.minlength"),
       })
       .max(100),
+  });
+};
+
+export const OrganizationSchema = (t: (arg: string) => string) => {
+  return z.object({
+    name: z
+      .string()
+      .min(1, {
+        message: t("name.minlength"),
+      })
+      .max(100),
+    slug: z
+      .string()
+      .min(1, {
+        message: t("slug.minlength"),
+      })
+      .max(100),
+    createdBy: z.optional(z.string()),
   });
 };

@@ -69,6 +69,7 @@
     "react": "^18",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18",
+    "react-drag-drop-files": "^2.3.10",
     "react-hook-form": "^7.52.2",
     "react-resizable-panels": "^2.0.23",
     "react-responsive": "^10.0.0",

@@ -29,7 +29,7 @@ export const ApplicantsTableAction = ({ data }: ApplicantsTableActionProps) => {
         <DropdownMenuLabel>{tAction("label")}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <ApplicantSetRoleButton data={data} label={tAction("updateRole")} />
+          <ApplicantSetRoleButton data={data} label={tAction("editRole")} />
         </DropdownMenuItem>
         <DropdownMenuItem>
           <ApplicantDeleteButton data={data} label={tAction("destroy")} />

@@ -33,9 +33,7 @@ import { toast } from "sonner";
 
 export const UnitCreateButton = () => {
   const tSchema = useTranslations("units.schema");
-  const tButton = useTranslations("units.button");
-  const tCreate = useTranslations("units.form.create");
-  const tForm = useTranslations("form");
+  const t = useTranslations("units");
 
   const formSchema = UnitSchema(tSchema);
   const [isPending, startTransition] = useTransition();
@@ -60,7 +58,7 @@ export const UnitCreateButton = () => {
           }
         })
         .catch((error: Error) => {
-          toast.error(tForm("error"));
+          toast.error(t("status.failure.create"));
         });
     });
   };
@@ -69,13 +67,15 @@ export const UnitCreateButton = () => {
       <DialogTrigger asChild>
         <Button>
           <Plus className="h-6 w-6 mr-2" />{" "}
-          <span className="text-sm font-semibold">{tButton("create")}</span>
+          <span className="text-sm font-semibold">
+            {t("form.create.label")}
+          </span>
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{tCreate("title")}</DialogTitle>
-          <DialogDescription>{tCreate("description")}</DialogDescription>
+          <DialogTitle>{t("form.create.title")}</DialogTitle>
+          <DialogDescription>{t("form.create.description")}</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -120,11 +120,11 @@ export const UnitCreateButton = () => {
             <DialogFooter>
               <DialogClose asChild>
                 <Button type="button" variant="secondary" ref={closeRef}>
-                  {tForm("button.close")}
+                  Close
                 </Button>
               </DialogClose>
               <Button type="submit" disabled={isPending}>
-                {tForm("button.submit")}
+                Submit
               </Button>
             </DialogFooter>
           </form>

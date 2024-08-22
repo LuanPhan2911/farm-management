@@ -14,8 +14,7 @@ interface UnitDeleteButtonProps {
 export const UnitDeleteButton = ({ data, label }: UnitDeleteButtonProps) => {
   const { id } = data;
   const { onOpen, onClose } = useAlertDialog();
-  const tDestroy = useTranslations("units.form.destroy");
-  const tForm = useTranslations("form");
+  const t = useTranslations("units");
   const onConfirm = async () => {
     destroy(id)
       .then(({ message, ok }) => {
@@ -26,7 +25,7 @@ export const UnitDeleteButton = ({ data, label }: UnitDeleteButtonProps) => {
         }
       })
       .catch((error: Error) => {
-        toast.error(tForm("error"));
+        toast.error(t("status.failure.destroy"));
       })
       .finally(() => {
         onClose();
@@ -37,8 +36,8 @@ export const UnitDeleteButton = ({ data, label }: UnitDeleteButtonProps) => {
       className="w-full"
       onClick={() =>
         onOpen({
-          title: tDestroy("title"),
-          description: tDestroy("description"),
+          title: t("form.destroy.title"),
+          description: t("form.destroy.description"),
           onConfirm,
         })
       }

@@ -5,14 +5,6 @@
   "modeToggle": {
     "title": "Change mode"
   },
-  "form": {
-    "button": {
-      "close": "Close",
-      "submit": "Submit",
-      "confirm": "Confirm"
-    },
-    "error": "Something went wrong!"
-  },
   "datatable": {
     "view": {
       "label": "View",
@@ -77,11 +69,6 @@
 
   "categories": {
     "heading": "Manage Categories",
-    "button": {
-      "create": "Add",
-      "edit": "Edit",
-      "destroy": "Delete"
-    },
     "table": {
       "heading": "All categories",
       "thead": {
@@ -92,13 +79,6 @@
         "label": "Action",
         "edit": "Edit",
         "destroy": "Delete"
-      },
-      "bulkAction": {
-        "deleteSelected": {
-          "label": "Delete all selected",
-          "title": "Delete all selected categories?",
-          "description": "Are you absolutely sure? This action can not be undone!"
-        }
       }
     },
     "search": {
@@ -106,15 +86,23 @@
     },
     "form": {
       "create": {
+        "label": "Add",
         "title": "Add category",
         "description": "Category use for classify the creature in the farm"
       },
       "edit": {
+        "label": "Edit",
         "title": "Edit category",
         "description": "Category can edit"
       },
       "destroy": {
+        "label": "Delete",
         "title": "Delete category?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      },
+      "destroySelected": {
+        "label": "Delete all selected",
+        "title": "Delete all selected categories?",
         "description": "Are you absolutely sure? This action can not be undone!"
       }
     },
@@ -148,11 +136,6 @@
   },
   "units": {
     "heading": "Manage Units",
-    "button": {
-      "create": "Add",
-      "edit": "Edit",
-      "destroy": "Delete"
-    },
     "table": {
       "heading": "All units",
       "thead": {
@@ -163,13 +146,6 @@
         "label": "Action",
         "edit": "Edit",
         "destroy": "Delete"
-      },
-      "bulkAction": {
-        "deleteSelected": {
-          "label": "Delete all selected",
-          "title": "Delete all selected units?",
-          "description": "Are you absolutely sure? This action can not be undone!"
-        }
       }
     },
     "search": {
@@ -177,15 +153,23 @@
     },
     "form": {
       "create": {
+        "label": "Add",
         "title": "Add unit",
         "description": "Unit use for "
       },
       "edit": {
+        "label": "Edit",
         "title": "Edit unit",
         "description": "Unit can edit"
       },
       "destroy": {
+        "label": "Delete",
         "title": "Delete unit?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      },
+      "destroySelected": {
+        "label": "Delete all selected",
+        "title": "Delete all selected units?",
         "description": "Are you absolutely sure? This action can not be undone!"
       }
     },
@@ -219,11 +203,7 @@
   },
   "users": {
     "heading": "Manage Users",
-    "button": {
-      "create": "Add",
-      "edit": "Edit",
-      "destroy": "Delete"
-    },
+
     "table": {
       "heading": "All users",
       "thead": {
@@ -244,18 +224,22 @@
     },
     "form": {
       "create": {
+        "label": "Add",
         "title": "Add user",
         "description": "User use for "
       },
       "edit": {
+        "label": "Edit",
         "title": "Edit user",
         "description": "User can edit"
       },
       "destroy": {
+        "label": "Delete",
         "title": "Delete user?",
         "description": "Are you absolutely sure? This action can not be undone!"
       },
-      "setRole": {
+      "editRole": {
+        "label": "Set role",
         "title": "Update role for user",
         "description": "Update role"
       }
@@ -297,24 +281,18 @@
         "create": "User created!",
         "edit": "User edited!",
         "destroy": "User deleted!",
-        "updateRole": "User role updated"
+        "editRole": "User role updated"
       },
       "failure": {
         "create": "Something went wrong while creating user!",
         "edit": "Something went wrong while editing user!",
         "destroy": "Something went wrong while deleting user!",
-        "updateRole": "Something went wrong while updating role"
+        "editRole": "Something went wrong while updating role"
       }
     }
   },
   "applicants": {
     "heading": "Manage Applicants",
-    "button": {
-      "apply": "Apply",
-      "destroy": "Delete",
-      "close": "Close",
-      "submit": "Submit"
-    },
     "table": {
       "heading": "All applicants",
       "thead": {
@@ -327,14 +305,7 @@
       "action": {
         "label": "Action",
         "destroy": "Delete",
-        "updateRole": "Set Role"
-      },
-      "bulkAction": {
-        "deleteSelected": {
-          "label": "Delete all selected",
-          "title": "Delete all selected applicants?",
-          "description": "Are you absolutely sure? This action can not be undone!"
-        }
+        "editRole": "Set Role"
       }
     },
     "search": {
@@ -342,16 +313,24 @@
     },
     "form": {
       "apply": {
+        "label": "Apply",
         "title": "Apply",
         "description": "Apply this job"
       },
       "destroy": {
+        "label": "Delete",
         "title": "Delete applicant?",
         "description": "Are you absolutely sure? This action can not be undone!"
       },
       "setRole": {
+        "label": "Set role",
         "title": "Update role for this applicant",
         "description": "A new account will created for applicant with selected role"
+      },
+      "destroySelected": {
+        "label": "Delete all selected",
+        "title": "Delete all selected applicants?",
+        "description": "Are you absolutely sure? This action can not be undone!"
       }
     },
     "schema": {
@@ -397,22 +376,17 @@
       "success": {
         "create": "Apply this job success",
         "destroy": "Applicant deleted!",
-        "updateRole": "Applicant role updated"
+        "editRole": "Applicant role updated"
       },
       "failure": {
         "create": "Something went wrong while applying the job!",
         "destroy": "Something went wrong while deleting applicant!",
-        "updateRole": "Something went wrong while updating applicant role!"
+        "editRole": "Something went wrong while updating applicant role!"
       }
     }
   },
   "jobs": {
     "heading": "Manage Jobs",
-    "button": {
-      "create": "Add",
-      "edit": "Edit",
-      "destroy": "Delete"
-    },
     "table": {
       "heading": "All jobs",
       "thead": {
@@ -427,13 +401,6 @@
         "label": "Action",
         "edit": "Edit",
         "destroy": "Delete"
-      },
-      "bulkAction": {
-        "deleteSelected": {
-          "label": "Delete all selected",
-          "title": "Delete all selected jobs?",
-          "description": "Are you absolutely sure? This action can not be undone!"
-        }
       }
     },
     "search": {
@@ -441,15 +408,23 @@
     },
     "form": {
       "create": {
+        "label": "Add",
         "title": "Add job",
         "description": "Job use for "
       },
       "edit": {
+        "label": "Edit",
         "title": "Edit job",
         "description": "Job can edit"
       },
       "destroy": {
+        "label": "Delete",
         "title": "Delete job?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      },
+      "destroySelected": {
+        "label": "Delete all selected",
+        "title": "Delete all selected jobs?",
         "description": "Are you absolutely sure? This action can not be undone!"
       }
     },
@@ -539,13 +514,13 @@
         "create": "Job created!",
         "edit": "Job edited!",
         "destroy": "Job deleted!",
-        "updatePublished": "Job's publish updated"
+        "editPublished": "Job's publish updated"
       },
       "failure": {
         "create": "Something went wrong while creating job!",
         "edit": "Something went wrong while editing job!",
         "destroy": "Something went wrong while deleting job!",
-        "updatePublished": "Something went wrong while updating published"
+        "editPublished": "Something went wrong while updating published"
       }
     },
     "notFound": {

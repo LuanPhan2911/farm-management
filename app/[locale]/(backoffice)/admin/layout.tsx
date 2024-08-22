@@ -2,13 +2,21 @@ import { checkRole } from "@/lib/role";
 import { redirect } from "@/navigation";
 
 import { PropsWithChildren } from "react";
+import { AdminSidebar } from "../_components/admin-sidebar";
 
 const AdminLayout = ({ children }: PropsWithChildren) => {
   if (!checkRole("admin") && !checkRole("superadmin")) {
     return redirect("/");
   }
 
-  return children;
+  return (
+    <>
+      <AdminSidebar />
+      <main className="min-h-full h-fit w-full py-16 sm:px-6 px-2 ">
+        {children}
+      </main>
+    </>
+  );
 };
 
 export default AdminLayout;

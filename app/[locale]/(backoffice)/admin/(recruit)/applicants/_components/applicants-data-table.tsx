@@ -10,7 +10,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/datatable/datatable-column-header";
 import { ApplicantsTableAction } from "./applicants-table-action";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
-import { deleteMany } from "@/actions/applicant";
+import { destroyMany } from "@/actions/applicant";
 import { toast } from "sonner";
 import { Applicant, ApplicantStatus } from "@prisma/client";
 import { ApplicantSelectJob } from "./applicant-select-job";
@@ -22,10 +22,8 @@ interface ApplicantsTableProps {
   jobs: JobSelect[];
 }
 export const ApplicantsTable = ({ applicants, jobs }: ApplicantsTableProps) => {
-  const tTable = useTranslations("applicants.table");
-  const tSearch = useTranslations("applicants.search");
-  const tBulkAction = useTranslations("applicants.table.bulkAction");
-  const tForm = useTranslations("form");
+  const t = useTranslations("applicants");
+
   const { onOpen, onClose } = useAlertDialog();
 
   const columns: ColumnDef<Applicant>[] = [
@@ -55,25 +53,28 @@ export const ApplicantsTable = ({ applicants, jobs }: ApplicantsTableProps) => {
       accessorKey: "name",
       header: ({ column }) => {
         return (
-          <DataTableColumnHeader column={column} title={tTable("thead.name")} />
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.thead.name")}
+          />
         );
       },
     },
     {
       accessorKey: "email",
-      header: tTable("thead.email"),
+      header: t("table.thead.email"),
     },
     {
       accessorKey: "address",
-      header: tTable("thead.address"),
+      header: t("tabel.thead.address"),
     },
     {
       accessorKey: "phone",
-      header: tTable("thead.phone"),
+      header: t("tablethead.phone"),
     },
     {
       accessorKey: "status",
-      header: tTable("thead.status"),
+      header: t("table.thead.status"),
       cell: ({ row }) => {
         const data = row.original;
         if (data.status === ApplicantStatus.NEW) {
@@ -94,14 +95,14 @@ export const ApplicantsTable = ({ applicants, jobs }: ApplicantsTableProps) => {
 
   const bulkActions = [
     {
-      label: tBulkAction("deleteSelected.label"),
+      label: t("form.destroySelected.label"),
       action: (rows: Applicant[]) => {
         onOpen({
-          title: tBulkAction("deleteSelected.title"),
-          description: tBulkAction("deleteSelected.description"),
+          title: t("form.destroySelected.title"),
+          description: t("form.destroySelected.description"),
           onConfirm: () => {
             const ids = rows.map((row) => row.id);
-            deleteMany(ids)
+            destroyMany(ids)
               .then(({ message, ok }) => {
                 if (ok) {
                   toast.success(message);
@@ -110,7 +111,7 @@ export const ApplicantsTable = ({ applicants, jobs }: ApplicantsTableProps) => {
                 }
               })
               .catch((error: Error) => {
-                toast.error(tForm("error"));
+                toast.error(t("status.failure.destroy"));
               })
               .finally(() => {
                 onClose();
@@ -124,7 +125,7 @@ export const ApplicantsTable = ({ applicants, jobs }: ApplicantsTableProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{tTable("heading")}</CardTitle>
+        <CardTitle>{t("heading")}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex justify-end">
@@ -136,7 +137,7 @@ export const ApplicantsTable = ({ applicants, jobs }: ApplicantsTableProps) => {
           filterColumn={{
             isShown: true,
             value: "name",
-            placeholder: tSearch("placeholder"),
+            placeholder: t("search.placeholder"),
           }}
           bulkActions={bulkActions}
         />

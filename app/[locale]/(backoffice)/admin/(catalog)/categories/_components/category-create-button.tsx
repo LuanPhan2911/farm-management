@@ -13,7 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
+import { Plus, Send, X } from "lucide-react";
 import { z } from "zod";
 import { CategorySchema } from "@/schemas";
 import { useTranslations } from "next-intl";
@@ -34,11 +34,8 @@ import { Textarea } from "@/components/ui/textarea";
 
 export const CategoryCreateButton = () => {
   const tSchema = useTranslations("categories.schema");
-  const tButton = useTranslations("categories.button");
-  const tCreate = useTranslations("categories.form.create");
-  const tForm = useTranslations("form");
-
   const formSchema = CategorySchema(tSchema);
+  const t = useTranslations("categories");
   const [isPending, startTransition] = useTransition();
   const closeRef = useRef<HTMLButtonElement>(null);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -60,7 +57,7 @@ export const CategoryCreateButton = () => {
           }
         })
         .catch((error) => {
-          toast.error(tForm("error"));
+          toast.error(t("status.failure.create"));
         });
     });
   };
@@ -69,13 +66,15 @@ export const CategoryCreateButton = () => {
       <DialogTrigger asChild>
         <Button>
           <Plus className="h-6 w-6 mr-2" />{" "}
-          <span className="text-sm font-semibold">{tButton("create")}</span>
+          <span className="text-sm font-semibold">
+            {t("form.create.label")}
+          </span>
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{tCreate("title")}</DialogTitle>
-          <DialogDescription>{tCreate("description")}</DialogDescription>
+          <DialogTitle>{t("form.create.title")}</DialogTitle>
+          <DialogDescription>{t("form.create.description")}</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -120,11 +119,11 @@ export const CategoryCreateButton = () => {
             <DialogFooter>
               <DialogClose asChild>
                 <Button type="button" variant="secondary" ref={closeRef}>
-                  {tForm("button.close")}
+                  Cancel
                 </Button>
               </DialogClose>
               <Button type="submit" disabled={isPending}>
-                {tForm("button.submit")}
+                Submit
               </Button>
             </DialogFooter>
           </form>

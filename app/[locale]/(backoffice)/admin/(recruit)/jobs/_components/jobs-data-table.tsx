@@ -10,7 +10,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/datatable/datatable-column-header";
 import { JobsTableAction } from "./jobs-table-action";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
-import { deleteMany } from "@/actions/job";
+import { destroyMany } from "@/actions/job";
 import { toast } from "sonner";
 import { JobTable } from "@/types";
 import { JobPublishedSwitch } from "./job-published-switch";
@@ -20,11 +20,9 @@ interface JobsTableProps {
   data: JobTable[];
 }
 export const JobsTable = ({ data }: JobsTableProps) => {
-  const tTable = useTranslations("jobs.table");
-  const tSearch = useTranslations("jobs.search");
-  const tBulkAction = useTranslations("jobs.table.bulkAction");
   const tSchema = useTranslations("jobs.schema");
-  const tForm = useTranslations("form");
+  const t = useTranslations("jobs");
+
   const { onOpen, onClose } = useAlertDialog();
 
   const columns: ColumnDef<JobTable>[] = [
@@ -54,17 +52,20 @@ export const JobsTable = ({ data }: JobsTableProps) => {
       accessorKey: "name",
       header: ({ column }) => {
         return (
-          <DataTableColumnHeader column={column} title={tTable("thead.name")} />
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.thead.name")}
+          />
         );
       },
     },
     {
       accessorKey: "quantity",
-      header: tTable("thead.quantity"),
+      header: t("table.thead.quantity"),
     },
     {
       accessorKey: "experience",
-      header: tTable("thead.experience"),
+      header: t("table.thead.experience"),
       cell: ({ row }) => {
         const data = row.original.experience;
         return tSchema(`experience.options.${data}`);
@@ -72,7 +73,7 @@ export const JobsTable = ({ data }: JobsTableProps) => {
     },
     {
       accessorKey: "gender",
-      header: tTable("thead.gender"),
+      header: t("table.thead.gender"),
       cell: ({ row }) => {
         const data = row.original.gender;
         return tSchema(`gender.options.${data}`);
@@ -80,7 +81,7 @@ export const JobsTable = ({ data }: JobsTableProps) => {
     },
     {
       accessorKey: "expiredAt",
-      header: tTable("thead.expiredAt"),
+      header: t("table.thead.expiredAt"),
       cell: ({ row }) => {
         const data = row.original.expiredAt;
         return <JobExpired expiredAt={data} />;
@@ -88,7 +89,7 @@ export const JobsTable = ({ data }: JobsTableProps) => {
     },
     {
       accessorKey: "published",
-      header: tTable("thead.published"),
+      header: t("table.thead.published"),
       cell: ({ row }) => {
         const { id, published } = row.original;
         return <JobPublishedSwitch id={id} published={published} />;
@@ -105,14 +106,14 @@ export const JobsTable = ({ data }: JobsTableProps) => {
 
   const bulkActions = [
     {
-      label: tBulkAction("deleteSelected.label"),
+      label: t("form.destroySelected.label"),
       action: (rows: JobTable[]) => {
         onOpen({
-          title: tBulkAction("deleteSelected.title"),
-          description: tBulkAction("deleteSelected.description"),
+          title: t("form.destroySelected.title"),
+          description: t("form.destroySelected.description"),
           onConfirm: () => {
             const ids = rows.map((row) => row.id);
-            deleteMany(ids)
+            destroyMany(ids)
               .then(({ message, ok }) => {
                 if (ok) {
                   toast.success(message);
@@ -121,7 +122,7 @@ export const JobsTable = ({ data }: JobsTableProps) => {
                 }
               })
               .catch((error: Error) => {
-                toast.error(tForm("error"));
+                toast.error(t("status.failure.destroy"));
               })
               .finally(() => {
                 onClose();
@@ -135,7 +136,7 @@ export const JobsTable = ({ data }: JobsTableProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{tTable("heading")}</CardTitle>
+        <CardTitle>{t("heading")}</CardTitle>
       </CardHeader>
       <CardContent>
         <DataTable
@@ -144,7 +145,7 @@ export const JobsTable = ({ data }: JobsTableProps) => {
           filterColumn={{
             isShown: true,
             value: "name",
-            placeholder: tSearch("placeholder"),
+            placeholder: t("search.placeholder"),
           }}
           bulkActions={bulkActions}
         />

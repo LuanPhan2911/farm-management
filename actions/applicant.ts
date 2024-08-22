@@ -13,7 +13,7 @@ import {
   getApplicantById,
 } from "@/services/applicants";
 import { getJobById } from "@/services/jobs";
-import { ActionResponse, Roles } from "@/types";
+import { ActionResponse } from "@/types";
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -79,7 +79,7 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
     return errorResponse(tStatus("failure.destroy"));
   }
 };
-export const deleteMany = async (ids: string[]): Promise<ActionResponse> => {
+export const destroyMany = async (ids: string[]): Promise<ActionResponse> => {
   const tStatus = await getTranslations("applicants.status");
   try {
     await db.applicant.deleteMany({
@@ -96,13 +96,13 @@ export const deleteMany = async (ids: string[]): Promise<ActionResponse> => {
   }
 };
 
-export const updateRole = async (
+export const editRole = async (
   values: z.infer<ReturnType<typeof ApplicantUpdateRoleSchema>>,
   applicantId: string
 ): Promise<ActionResponse> => {
   const tSchema = await getTranslations("applicants.schema");
-  const tApplicantStatus = await getTranslations("applicants.status");
-  const tApplicantError = await getTranslations("applicants.schema.errors");
+
+  const tApplicant = await getTranslations("applicants");
   const tUserStatus = await getTranslations("users.status");
 
   const paramsSchema = ApplicantUpdateRoleSchema(tSchema);
@@ -115,12 +115,12 @@ export const updateRole = async (
     const applicant = await getApplicantById(applicantId);
     if (!applicant) {
       return {
-        message: tApplicantError("noExist"),
+        message: tApplicant("schema.errors.noExist"),
         ok: false,
       };
     }
     const name = validatedFields.data.name;
-    const role = validatedFields.data.role as Roles;
+    const role = validatedFields.data.role;
     const email = await generateEmail(name);
     const password = generatePassword(8);
 
@@ -152,8 +152,8 @@ export const updateRole = async (
       },
     });
     revalidatePath("/admin/applicants");
-    return successResponse(tApplicantStatus("success.updateRole"));
+    return successResponse(tApplicant("status.success.editRole"));
   } catch (error) {
-    return errorResponse(tApplicantStatus("failure.updateRole"));
+    return errorResponse(tApplicant("status.failure.editRole"));
   }
 };

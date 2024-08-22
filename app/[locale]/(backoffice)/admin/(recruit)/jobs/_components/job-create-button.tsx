@@ -37,13 +37,13 @@ import { addDays } from "date-fns";
 import { useRouter } from "@/navigation";
 
 export const JobCreateButton = () => {
-  const tButton = useTranslations("jobs.button");
+  const t = useTranslations("jobs.form.create");
 
   return (
     <Link href={"/admin/jobs/create"}>
       <Button>
         <Plus className="h-6 w-6 mr-2" />{" "}
-        <span className="text-sm font-semibold">{tButton("create")}</span>
+        <span className="text-sm font-semibold">{t("label")}</span>
       </Button>
     </Link>
   );
@@ -51,8 +51,7 @@ export const JobCreateButton = () => {
 export const JobCreateForm = () => {
   const tSchema = useTranslations("jobs.schema");
 
-  const tCreate = useTranslations("jobs.form.create");
-  const tForm = useTranslations("form");
+  const t = useTranslations("jobs");
 
   const formSchema = JobSchema(tSchema);
   const [isPending, startTransition] = useTransition();
@@ -89,15 +88,15 @@ export const JobCreateForm = () => {
           }
         })
         .catch((error: Error) => {
-          toast.error(tForm("error"));
+          toast.error(t("status.failure.create"));
         });
     });
   };
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{tCreate("title")}</CardTitle>
-        <CardDescription>{tCreate("description")}</CardDescription>
+        <CardTitle>{t("form.create.title")}</CardTitle>
+        <CardDescription>{t("form.create.description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -319,11 +318,8 @@ export const JobCreateForm = () => {
               )}
             />
             <div className="flex gap-x-2 justify-center">
-              <Button type="button" variant="secondary">
-                {tForm("button.close")}
-              </Button>
               <Button type="submit" disabled={isPending}>
-                {tForm("button.submit")}
+                Submit
               </Button>
             </div>
           </form>
