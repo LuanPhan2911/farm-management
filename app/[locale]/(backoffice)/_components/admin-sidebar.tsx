@@ -13,8 +13,10 @@ import {
   MountainSnow,
   Section,
   Settings,
+  SquareUserRound,
   Store,
   User,
+  UserCheck,
   UserCog,
   Users,
 } from "lucide-react";
@@ -57,12 +59,20 @@ export const AdminSidebar = () => {
           icon={LayoutGrid}
           title="Dashboard"
         />
-        <SidebarItem
-          href="/admin/users"
-          active={pathname === "/admin/users"}
-          icon={Users}
-          title="Users"
-        />
+        <SidebarAccordionItem title="Account" icon={Users}>
+          <SidebarItem
+            href="/admin/staffs"
+            active={pathname === "/admin/staffs"}
+            icon={SquareUserRound}
+            title="Staffs"
+          />
+          <SidebarItem
+            href="/admin/users"
+            active={pathname === "/admin/users"}
+            icon={User}
+            title="Users"
+          />
+        </SidebarAccordionItem>
         <SidebarItem
           href="/admin/organizations"
           active={pathname === "/admin/organizations"}

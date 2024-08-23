@@ -11,7 +11,6 @@ import { Ellipsis } from "lucide-react";
 import { UserDeleteButton } from "./user-delete-button";
 import { useTranslations } from "next-intl";
 import { User } from "@clerk/nextjs/server";
-import { UserViewProfileButton } from "./user-view-profile-button";
 
 interface UsersTableActionProps {
   data: User;
@@ -27,10 +26,6 @@ export const UsersTableAction = ({ data: user }: UsersTableActionProps) => {
       <DropdownMenuContent>
         <DropdownMenuLabel>{tAction("label")}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <UserViewProfileButton data={user} label={tAction("view")} />
-        </DropdownMenuItem>
-
         <DropdownMenuItem>
           <UserDeleteButton data={user} label={tAction("destroy")} />
         </DropdownMenuItem>

@@ -66,11 +66,11 @@ export const ApplicantsTable = ({ applicants, jobs }: ApplicantsTableProps) => {
     },
     {
       accessorKey: "address",
-      header: t("tabel.thead.address"),
+      header: t("table.thead.address"),
     },
     {
       accessorKey: "phone",
-      header: t("tablethead.phone"),
+      header: t("table.thead.phone"),
     },
     {
       accessorKey: "status",

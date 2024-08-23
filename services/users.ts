@@ -1,21 +1,19 @@
 import { LIMIT } from "@/configs/paginationConfig";
-
 import { clerkClient } from "@clerk/nextjs/server";
 import { StaffRole } from "@prisma/client";
-import {
-  createOrUpdateStaff,
-  createStaff,
-  deleteStaff,
-  getStaffByEmail,
-} from "./staffs";
+import { getStaffExternalIds } from "./staffs";
 
 export const getUsersTable = async (query: string, currentPage: number) => {
   try {
+    const staffIds = await getStaffExternalIds();
+
     const { data, totalCount } = await clerkClient().users.getUserList({
       limit: LIMIT,
       offset: (currentPage - 1) * LIMIT,
       query,
+      userId: staffIds.map((id) => `-${id}`),
     });
+
     const totalPage = Math.ceil(totalCount / LIMIT);
     return {
       data,
@@ -30,11 +28,11 @@ export const getUsersTable = async (query: string, currentPage: number) => {
 };
 export const getUserByEmail = async (email: string) => {
   try {
-    const { data } = await clerkClient().users.getUserList({
+    const { data, totalCount } = await clerkClient().users.getUserList({
       emailAddress: [email],
       limit: 1,
     });
-    if (!data.length) {
+    if (totalCount === 0) {
       return null;
     }
     return data[0];
@@ -43,27 +41,27 @@ export const getUserByEmail = async (email: string) => {
   }
 };
 
-export const createUser = async (
-  name: string,
-  email: string,
-  password: string,
-  role: StaffRole
-) => {
+export const createUser = async ({
+  name,
+  email,
+  password,
+  role,
+}: {
+  name: string;
+  email: string;
+  password: string;
+  role: StaffRole;
+}) => {
   try {
-    const existingStaff = await getStaffByEmail(email);
-    if (existingStaff) {
-      return null;
-    }
-    const staff = await createStaff(email, role);
     const user = await clerkClient().users.createUser({
       firstName: name,
       emailAddress: [email],
       password,
-      externalId: staff?.id,
       publicMetadata: {
         role,
       },
     });
+
     return user;
   } catch (error) {
     return null;
@@ -94,7 +92,6 @@ export const updateUser = async (
   params: {
     firstName?: string;
     lastName?: string;
-    externalId?: string;
   },
   publicMetadata: UserPublicMetadata
 ) => {
@@ -115,9 +112,6 @@ export const updateUser = async (
 export const deleteUser = async (userId: string) => {
   try {
     const user = await clerkClient().users.deleteUser(userId);
-    if (user.externalId) {
-      await deleteStaff(user.externalId);
-    }
     return user;
   } catch (error) {
     return null;

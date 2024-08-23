@@ -1,6 +1,5 @@
 import { getUsersTable } from "@/services/users";
 import { UsersTable } from "./_components/users-table";
-import { LIMIT } from "@/configs/paginationConfig";
 
 interface UsersPageProps {
   searchParams: {

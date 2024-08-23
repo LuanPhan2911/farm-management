@@ -343,8 +343,8 @@
         "title": "Xóa ứng viên?",
         "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
       },
-      "editRole": {
-        "title": "Cập nhật quyền cho ứng viên",
+      "createStaff": {
+        "title": "Tạo nhân viên mới",
         "description": "Một tài khoản mới sẽ được tạo cho ứng viên với quyền được chọn"
       }
     },

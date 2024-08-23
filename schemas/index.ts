@@ -133,11 +133,11 @@ export const ApplicantSchema = (t: (arg: string) => string) => {
         message: t("address.minlength"),
       })
       .max(100),
-    note: z.string().max(200),
+    note: z.optional(z.string().max(200)),
   });
 };
 
-export const ApplicantUpdateRoleSchema = (t: (arg: string) => string) => {
+export const StaffSchema = (t: (arg: string) => string) => {
   return z.object({
     name: z
       .string()
@@ -145,9 +145,30 @@ export const ApplicantUpdateRoleSchema = (t: (arg: string) => string) => {
         message: t("name.minlength"),
       })
       .max(100),
+    email: z
+      .string()
+      .min(1, {
+        message: t("email.minlength"),
+      })
+      .email({
+        message: t("email.isEmail"),
+      })
+      .max(100),
+    password: z
+      .string()
+      .min(8, {
+        message: t("password.minlength"),
+      })
+      .max(50),
+
     role: z.nativeEnum(StaffRole, {
       message: t("role.native"),
     }),
+    receiverEmail: z.optional(
+      z.string().min(1, {
+        message: t("receiverEmail"),
+      })
+    ),
   });
 };
 

@@ -322,9 +322,9 @@
         "title": "Delete applicant?",
         "description": "Are you absolutely sure? This action can not be undone!"
       },
-      "setRole": {
-        "label": "Set role",
-        "title": "Update role for this applicant",
+      "createStaff": {
+        "label": "Create Staff",
+        "title": "Create staff",
         "description": "A new account will created for applicant with selected role"
       },
       "destroySelected": {

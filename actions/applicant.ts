@@ -7,7 +7,7 @@ import {
   generatePassword,
   successResponse,
 } from "@/lib/utils";
-import { ApplicantSchema, ApplicantUpdateRoleSchema } from "@/schemas";
+import { ApplicantSchema, StaffSchema } from "@/schemas";
 import {
   getApplicantByEmailAndJobId,
   getApplicantById,
@@ -20,6 +20,7 @@ import { z } from "zod";
 
 import { createUser, getUserByEmail } from "@/services/users";
 import { ApplicantStatus } from "@prisma/client";
+import { createStaff } from "@/services/staffs";
 
 export const create = async (
   values: z.infer<ReturnType<typeof ApplicantSchema>>,
@@ -96,8 +97,8 @@ export const destroyMany = async (ids: string[]): Promise<ActionResponse> => {
   }
 };
 
-export const editRole = async (
-  values: z.infer<ReturnType<typeof ApplicantUpdateRoleSchema>>,
+export const createApplicantStaff = async (
+  values: z.infer<ReturnType<typeof StaffSchema>>,
   applicantId: string
 ): Promise<ActionResponse> => {
   const tSchema = await getTranslations("applicants.schema");
@@ -105,7 +106,7 @@ export const editRole = async (
   const tApplicant = await getTranslations("applicants");
   const tUserStatus = await getTranslations("users.status");
 
-  const paramsSchema = ApplicantUpdateRoleSchema(tSchema);
+  const paramsSchema = StaffSchema(tSchema);
   const validatedFields = paramsSchema.safeParse(values);
 
   if (!validatedFields.success) {
@@ -114,30 +115,28 @@ export const editRole = async (
   try {
     const applicant = await getApplicantById(applicantId);
     if (!applicant) {
-      return {
-        message: tApplicant("schema.errors.noExist"),
-        ok: false,
-      };
+      return errorResponse("Applicant has already created staff");
     }
-    const name = validatedFields.data.name;
-    const role = validatedFields.data.role;
-    const email = await generateEmail(name);
-    const password = generatePassword(8);
+
+    const { email, name, password, role } = validatedFields.data;
 
     const existingUser = await getUserByEmail(email);
     if (existingUser) {
-      return {
-        message: "Existing email",
-        ok: false,
-      };
+      return errorResponse("Existing email");
     }
 
-    const user = await createUser(name, email, password, role);
+    const user = await createUser({ ...validatedFields.data });
     if (!user) {
-      return {
-        message: tUserStatus("failure.create"),
-        ok: false,
-      };
+      return errorResponse(tUserStatus("failure.create"));
+    }
+    const staff = await createStaff(user.id, {
+      email,
+      name,
+      role,
+      imageUrl: user.imageUrl,
+    });
+    if (!staff) {
+      return errorResponse(tUserStatus("failure.create"));
     }
     sendApplicantCreateUser(applicant, email, password);
 

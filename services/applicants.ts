@@ -1,5 +1,4 @@
 import { db } from "@/lib/db";
-import { ApplicantStatus } from "@prisma/client";
 
 export const getApplicants = async (jobId: string | null) => {
   try {

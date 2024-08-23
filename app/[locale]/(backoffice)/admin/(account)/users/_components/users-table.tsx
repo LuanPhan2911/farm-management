@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -13,7 +12,6 @@ import { UserAvatar } from "@/components/user-avatar";
 import { UsersTableAction } from "./users-table-action";
 import { User } from "@clerk/nextjs/server";
 import { useFormatter, useTranslations } from "next-intl";
-import { UserMetadataRole } from "./user-metadata-role";
 import { SearchBar } from "@/components/search-bar";
 import { NavPagination } from "@/components/nav-pagination";
 import { useRouter } from "@/navigation";
@@ -43,8 +41,6 @@ export const UsersTable = ({ data, totalPage }: UsersTableProps) => {
             <TableRow>
               <TableHead></TableHead>
               <TableHead>{tTable("thead.name")}</TableHead>
-
-              <TableHead>{tTable("thead.role")}</TableHead>
               <TableHead>{tTable("thead.lastSignedIn")}</TableHead>
               <TableHead>{tTable("thead.joined")} </TableHead>
               <TableHead></TableHead>
@@ -66,9 +62,7 @@ export const UsersTable = ({ data, totalPage }: UsersTableProps) => {
                     />
                   </TableCell>
                   <TableCell>{user.emailAddresses[0].emailAddress}</TableCell>
-                  <TableCell>
-                    <UserMetadataRole metadata={user.publicMetadata} />
-                  </TableCell>
+
                   <TableCell>
                     {user.lastSignInAt
                       ? relativeTime(user.lastSignInAt)

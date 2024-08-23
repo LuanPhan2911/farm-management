@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 
-export const gitUnitsTable = async () => {
+export const getUnitsTable = async () => {
   try {
     const units = await db.unit.findMany({
       orderBy: {

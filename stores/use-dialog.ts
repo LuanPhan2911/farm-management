@@ -5,8 +5,9 @@ import { create } from "zustand";
 export type DialogType =
   | "category.edit"
   | "unit.edit"
-  | "applicant.setRole"
-  | "user.setRole";
+  | "applicant.createStaff"
+  | "staff.editRole"
+  | "staff.create";
 
 export interface DialogData {
   category?: Category;
