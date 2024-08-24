@@ -20,7 +20,6 @@ import { z } from "zod";
 
 import { createUser, getUserByEmail } from "@/services/users";
 import { ApplicantStatus } from "@prisma/client";
-import { createStaff } from "@/services/staffs";
 
 export const create = async (
   values: z.infer<ReturnType<typeof ApplicantSchema>>,
@@ -74,7 +73,7 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
         id,
       },
     });
-    revalidatePath("/dashboard/applicants");
+    revalidatePath("/admin/applicants");
     return successResponse(tStatus("success.destroy"));
   } catch (error) {
     return errorResponse(tStatus("failure.destroy"));
@@ -90,7 +89,7 @@ export const destroyMany = async (ids: string[]): Promise<ActionResponse> => {
         },
       },
     });
-    revalidatePath("/dashboard/applicants");
+    revalidatePath("/admin/applicants");
     return successResponse(tStatus("success.destroy"));
   } catch (error) {
     return errorResponse(tStatus("failure.destroy"));
@@ -102,9 +101,7 @@ export const createApplicantStaff = async (
   applicantId: string
 ): Promise<ActionResponse> => {
   const tSchema = await getTranslations("applicants.schema");
-
-  const tApplicant = await getTranslations("applicants");
-  const tUserStatus = await getTranslations("users.status");
+  const tStatus = await getTranslations("applicants.status");
 
   const paramsSchema = StaffSchema(tSchema);
   const validatedFields = paramsSchema.safeParse(values);
@@ -115,29 +112,23 @@ export const createApplicantStaff = async (
   try {
     const applicant = await getApplicantById(applicantId);
     if (!applicant) {
-      return errorResponse("Applicant has already created staff");
+      return errorResponse(tSchema("errors.exist"));
     }
 
     const { email, name, password, role } = validatedFields.data;
 
     const existingUser = await getUserByEmail(email);
     if (existingUser) {
-      return errorResponse("Existing email");
+      return errorResponse(tSchema("errors.emailExist"));
     }
 
     const user = await createUser({ ...validatedFields.data });
     if (!user) {
-      return errorResponse(tUserStatus("failure.create"));
+      return errorResponse(tStatus("failure.createStaff"));
     }
-    const staff = await createStaff(user.id, {
-      email,
-      name,
-      role,
-      imageUrl: user.imageUrl,
-    });
-    if (!staff) {
-      return errorResponse(tUserStatus("failure.create"));
-    }
+
+    // TODO: use webhook to create staff
+
     sendApplicantCreateUser(applicant, email, password);
 
     // send mail notification
@@ -151,8 +142,8 @@ export const createApplicantStaff = async (
       },
     });
     revalidatePath("/admin/applicants");
-    return successResponse(tApplicant("status.success.editRole"));
+    return successResponse(tStatus("success.createStaff"));
   } catch (error) {
-    return errorResponse(tApplicant("status.failure.editRole"));
+    return errorResponse(tStatus("failure.createStaff"));
   }
 };

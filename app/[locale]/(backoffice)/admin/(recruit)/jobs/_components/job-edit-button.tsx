@@ -46,6 +46,8 @@ export const JobEditButton = ({ data, label }: JobEditButtonProps) => {
     <Button
       className="w-full"
       onClick={() => router.push(`/admin/jobs/edit/${data.id}`)}
+      size={"sm"}
+      variant={"edit"}
     >
       <Edit className="w-6 h-6 mr-2" />
       {label}
@@ -91,8 +93,8 @@ export const JobEditForm = ({ job }: JobEditFormProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("form.edit.title")}</CardTitle>
-        <CardDescription>{t("form.edit.description")}</CardDescription>
+        <CardTitle>{t("page.edit.title")}</CardTitle>
+        <CardDescription>{t("page.edit.description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>

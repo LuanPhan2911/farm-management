@@ -103,3 +103,26 @@ export const getStaffsTable = async (query: string, currentPage: number) => {
     };
   }
 };
+
+export const getStaffsForCreatedByOrganization = async () => {
+  try {
+    const staffs = await db.staff.findMany({
+      where: {
+        role: {
+          in: [StaffRole.admin, StaffRole.superadmin],
+        },
+      },
+    });
+    return staffs;
+  } catch (error) {
+    return [];
+  }
+};
+export const getStaffsForAddMemberOrganization = async (orgId: string) => {
+  try {
+    const staffs = await db.staff.findMany();
+    return staffs;
+  } catch (error) {
+    return [];
+  }
+};

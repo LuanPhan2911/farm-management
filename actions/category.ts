@@ -38,7 +38,7 @@ export const create = async (
         slug,
       },
     });
-    revalidatePath("/dashboard/categories");
+    revalidatePath("/admin/categories");
     return successResponse(t("success.create"));
   } catch (error) {
     return errorResponse(t("failure.create"));
@@ -79,7 +79,7 @@ export const edit = async (
         slug,
       },
     });
-    revalidatePath("/dashboard/categories");
+    revalidatePath("/admin/categories");
 
     return successResponse(t("success.edit"));
   } catch (error) {
@@ -94,7 +94,7 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
         id,
       },
     });
-    revalidatePath("/dashboard/categories");
+    revalidatePath("/admin/categories");
     return successResponse(t("success.destroy"));
   } catch (error) {
     return errorResponse(t("failure.destroy"));
@@ -110,7 +110,7 @@ export const destroyMany = async (ids: string[]): Promise<ActionResponse> => {
         },
       },
     });
-    revalidatePath("/dashboard/categories");
+    revalidatePath("/admin/categories");
     return successResponse(t("success.destroy"));
   } catch (error) {
     return errorResponse(t("failure.destroy"));

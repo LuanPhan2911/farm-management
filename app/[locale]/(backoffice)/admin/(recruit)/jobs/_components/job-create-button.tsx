@@ -41,7 +41,7 @@ export const JobCreateButton = () => {
 
   return (
     <Link href={"/admin/jobs/create"}>
-      <Button>
+      <Button size={"sm"} variant={"success"}>
         <Plus className="h-6 w-6 mr-2" />{" "}
         <span className="text-sm font-semibold">{t("label")}</span>
       </Button>
@@ -95,14 +95,14 @@ export const JobCreateForm = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("form.create.title")}</CardTitle>
-        <CardDescription>{t("form.create.description")}</CardDescription>
+        <CardTitle>{t("page.create.title")}</CardTitle>
+        <CardDescription>{t("page.create.description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8 max-w-4xl"
+            className="space-y-4 max-w-4xl"
           >
             <FormField
               control={form.control}

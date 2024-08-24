@@ -43,6 +43,7 @@ export const ApplicantStaffCreateButton = ({
           applicant: data,
         })
       }
+      variant={"success"}
     >
       <Edit className="h-6 w-6 mr-2" />
       {label}
@@ -56,7 +57,7 @@ export const ApplicantStaffCreateDialog = () => {
   const isOpenDialog = isOpen && type === "applicant.createStaff";
   const [isPending, startTransition] = useTransition();
   const t = useTranslations("applicants");
-  const tSchema = useTranslations("applicants.schema");
+  const tSchema = useTranslations("staffs.schema");
   const formSchema = StaffSchema(tSchema);
   const form = useForm<z.infer<typeof formSchema>>({
     mode: "onChange",
@@ -166,7 +167,12 @@ export const ApplicantStaffCreateDialog = () => {
                       disabled={isPending}
                     />
                   </FormControl>
-                  <Button size={"sm"} onClick={refreshPassword} type="button">
+                  <Button
+                    size={"sm"}
+                    onClick={refreshPassword}
+                    type="button"
+                    disabled={isPending}
+                  >
                     <RefreshCcw />
                   </Button>
                 </div>

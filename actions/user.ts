@@ -16,7 +16,7 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
     if (!user) {
       return errorResponse(tStatus("failure.destroy"));
     }
-    revalidatePath("/dashboard/users");
+    revalidatePath("/admin/users");
     return successResponse(tStatus("success.destroy"));
   } catch (error) {
     return errorResponse(tStatus("failure.destroy"));

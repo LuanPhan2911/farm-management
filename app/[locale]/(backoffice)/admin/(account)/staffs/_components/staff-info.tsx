@@ -1,14 +1,12 @@
 "use client";
 import { UserAvatar } from "@/components/user-avatar";
 import { User } from "@clerk/nextjs/server";
-import { useFormatter } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
@@ -16,33 +14,32 @@ import { Settings } from "lucide-react";
 import { StaffDeleteButton } from "./staff-delele-button";
 import { StaffEditRole } from "./staff-edit-role";
 import { StaffMetadataRole } from "../../../_components/staff-metadata-role";
+import { getEmailAddress, getFullName } from "@/lib/utils";
 
 interface StaffInfoProps {
   data: User;
 }
 export const StaffInfo = ({ data }: StaffInfoProps) => {
+  const t = useTranslations("staffs");
   const { relativeTime } = useFormatter();
-  const fullName =
-    `${data.firstName || ""} ${data.lastName || ""}`.trim() || "No filled";
-  const email = data.emailAddresses[0].emailAddress;
-  const lastSignedIn = data.lastSignInAt
-    ? relativeTime(data.lastSignInAt)
-    : "never";
   return (
     <div className="flex flex-col gap-y-2 justify-center py-5 p-3 relative">
       <UserAvatar src={data.imageUrl} size={"lg"} className="rounded-full" />
       <div className="flex flex-col gap-y-2">
         <div className="text-md font-semibold flex items-center gap-x-2">
-          {fullName}
+          {getFullName(data)}
           <StaffMetadataRole metadata={data.publicMetadata} />
         </div>
-        <p className="text-sm font-semibold">{email}</p>
+        <p className="text-sm font-semibold">{getEmailAddress(data)}</p>
         <p className="text-sm text-muted-foreground">
-          Last signed in {lastSignedIn}
+          {t("table.thead.lastSignedIn")}:{" "}
+          {data.lastSignInAt
+            ? relativeTime(data.lastSignInAt)
+            : t("table.trow.lastSignedIn")}
         </p>
       </div>
       <div className="text-sm text-muted-foreground ">
-        Joined on{" "}
+        {t("table.thead.joined")}:{" "}
         <span className="font-semibold">{relativeTime(data.createdAt)}</span>
       </div>
 
@@ -53,13 +50,11 @@ export const StaffInfo = ({ data }: StaffInfoProps) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuSeparator />
           <DropdownMenuItem>
-            <StaffEditRole data={data} label="Edit role" />
+            <StaffEditRole data={data} label={t("form.editRole.label")} />
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <StaffDeleteButton data={data} label="Delete User" />
+            <StaffDeleteButton data={data} label={t("form.destroy.label")} />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

@@ -1,7 +1,7 @@
 "use client";
 import { UserAvatar } from "@/components/user-avatar";
 import { User } from "@clerk/nextjs/server";
-import { useFormatter } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 
 import {
   DropdownMenu,
@@ -14,32 +14,32 @@ import {
 import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
 import { UserDeleteButton } from "./user-delete-button";
+import { getEmailAddress, getFullName } from "@/lib/utils";
 
 interface UserInfoProps {
   data: User;
 }
 export const UserInfo = ({ data }: UserInfoProps) => {
+  const t = useTranslations("users");
   const { relativeTime } = useFormatter();
-  const fullName =
-    `${data.firstName || ""} ${data.lastName || ""}`.trim() || "No filled";
-  const email = data.emailAddresses[0].emailAddress;
-  const lastSignedIn = data.lastSignInAt
-    ? relativeTime(data.lastSignInAt)
-    : "never";
+
   return (
     <div className="flex flex-col gap-y-2 justify-center py-5 p-3 relative">
       <UserAvatar src={data.imageUrl} size={"lg"} className="rounded-full" />
       <div className="flex flex-col gap-y-2">
         <div className="text-md font-semibold flex items-center gap-x-2">
-          {fullName}
+          {getFullName(data)}
         </div>
-        <p className="text-sm font-semibold">{email}</p>
+        <p className="text-sm font-semibold">{getEmailAddress(data)}</p>
         <p className="text-sm text-muted-foreground">
-          Last signed in {lastSignedIn}
+          {t("table.thead.lastSignedIn")}:{" "}
+          {data.lastSignInAt
+            ? relativeTime(data.lastSignInAt)
+            : t("table.trow.lastSignedIn")}
         </p>
       </div>
       <div className="text-sm text-muted-foreground ">
-        Joined on{" "}
+        {t("table.thead.joined")}:{" "}
         <span className="font-semibold">{relativeTime(data.createdAt)}</span>
       </div>
 

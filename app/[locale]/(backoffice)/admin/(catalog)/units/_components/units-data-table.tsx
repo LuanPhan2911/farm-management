@@ -2,17 +2,15 @@
 import { DataTable } from "@/components/datatable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslations } from "next-intl";
-
 import { Checkbox } from "@/components/ui/checkbox";
-
 import { ColumnDef } from "@tanstack/react-table";
-
 import { DataTableColumnHeader } from "@/components/datatable/datatable-column-header";
 import { Unit } from "@prisma/client";
 import { UnitsTableAction } from "./units-table-action";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
 import { destroyMany } from "@/actions/unit";
 import { toast } from "sonner";
+import { UnitCreateButton } from "./unit-create-button";
 
 interface UnitsTableProps {
   data: Unit[];
@@ -100,9 +98,12 @@ export const UnitsTable = ({ data }: UnitsTableProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("heading")}</CardTitle>
+        <CardTitle>{t("page.title")}</CardTitle>
       </CardHeader>
       <CardContent>
+        <div className="flex justify-end">
+          <UnitCreateButton />
+        </div>
         <DataTable
           columns={columns}
           data={data}

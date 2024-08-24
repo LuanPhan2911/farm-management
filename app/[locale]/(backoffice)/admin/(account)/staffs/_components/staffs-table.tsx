@@ -23,7 +23,7 @@ interface StaffsTableProps {
   totalPage: number;
 }
 export const StaffsTable = ({ data, totalPage }: StaffsTableProps) => {
-  const tTable = useTranslations("staffs.table");
+  const t = useTranslations("staffs");
   const { relativeTime } = useFormatter();
   const router = useRouter();
   const handleClick = (id: string) => {
@@ -32,23 +32,23 @@ export const StaffsTable = ({ data, totalPage }: StaffsTableProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{tTable("heading")}</CardTitle>
+        <CardTitle>{t("page.title")}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex justify-between md:items-center py-4 md:flex-row flex-col gap-2 items-end">
           <div className="w-[300px]">
-            <SearchBar placeholder="Search..." isPagination />
+            <SearchBar placeholder={t("search.placeholder")} isPagination />
           </div>
-          <StaffCreateButton label="Create" />
+          <StaffCreateButton />
         </div>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead></TableHead>
-              <TableHead>{tTable("thead.name")}</TableHead>
-              <TableHead>{tTable("thead.role")}</TableHead>
-              <TableHead>{tTable("thead.lastSignedIn")}</TableHead>
-              <TableHead>{tTable("thead.joined")} </TableHead>
+              <TableHead>{t("table.thead.name")}</TableHead>
+              <TableHead>{t("table.thead.role")}</TableHead>
+              <TableHead>{t("table.thead.lastSignedIn")}</TableHead>
+              <TableHead>{t("table.thead.joined")} </TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
@@ -74,7 +74,7 @@ export const StaffsTable = ({ data, totalPage }: StaffsTableProps) => {
                   <TableCell>
                     {staff.lastSignInAt
                       ? relativeTime(staff.lastSignInAt)
-                      : "Never signed"}
+                      : t("table.trow.lastSignedIn")}
                     {}
                   </TableCell>
                   <TableCell>{relativeTime(staff.createdAt)}</TableCell>

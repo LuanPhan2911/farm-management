@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { JobTable } from "@/types";
 import { JobPublishedSwitch } from "./job-published-switch";
 import { JobExpired } from "./job-expired";
+import { JobCreateButton } from "./job-create-button";
 
 interface JobsTableProps {
   data: JobTable[];
@@ -136,9 +137,12 @@ export const JobsTable = ({ data }: JobsTableProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("heading")}</CardTitle>
+        <CardTitle>{t("page.title")}</CardTitle>
       </CardHeader>
       <CardContent>
+        <div className="flex justify-end">
+          <JobCreateButton />
+        </div>
         <DataTable
           columns={columns}
           data={data}

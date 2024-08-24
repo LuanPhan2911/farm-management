@@ -18,44 +18,42 @@ export interface ComboBoxData {
 }
 interface ComboBoxProps {
   data: ComboBoxData[];
-  labelSelect: string;
-  labelSearch: string;
-  labelNotfound: string;
+  notFound: string;
+  label: string;
   onChange: (value: string) => void;
+  defaultValue?: string;
 }
 export const ComboBox = ({
   data,
-  labelSearch,
-  labelSelect,
-  labelNotfound,
+  notFound,
+  label,
+  defaultValue,
   onChange,
 }: ComboBoxProps) => {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState(defaultValue || "");
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
+          variant="success"
           role="combobox"
           aria-expanded={open}
-          className="w-[300px] justify-between"
+          className="w-[260px] justify-between"
         >
           <p className="h-full w-[240px] truncate">
-            {value
-              ? data.find((item) => item.value === value)?.label
-              : labelSelect}
+            {value ? data.find((item) => item.value === value)?.label : label}
           </p>
 
           <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[300px] p-0">
+      <PopoverContent className="w-[260px] p-0">
         <Command>
-          <CommandInput placeholder={labelSearch} />
+          <CommandInput placeholder={label} />
           <CommandList>
-            <CommandEmpty>{labelNotfound}</CommandEmpty>
+            <CommandEmpty>{notFound}</CommandEmpty>
             <CommandGroup>
               {data.map((item) => (
                 <CommandItem

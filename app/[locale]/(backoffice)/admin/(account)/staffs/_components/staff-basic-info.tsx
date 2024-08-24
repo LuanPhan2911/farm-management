@@ -34,8 +34,8 @@ interface StaffBasicInfoProps {
   data: User;
 }
 export const StaffBasicInfo = ({ data }: StaffBasicInfoProps) => {
-  const tSchema = useTranslations("users.schema");
-  const t = useTranslations("users");
+  const tSchema = useTranslations("staffs.schema");
+  const t = useTranslations("staffs");
   const formSchema = UserSchema(tSchema);
   const form = useForm<z.infer<typeof formSchema>>({
     mode: "onChange",
@@ -77,17 +77,14 @@ export const StaffBasicInfo = ({ data }: StaffBasicInfoProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>User basic information</CardTitle>
-        <CardDescription>Manage user profile</CardDescription>
+        <CardTitle>{t("page.detail.title")}</CardTitle>
+        <CardDescription>{t("page.detail.description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <StaffInfo data={data} />
         <Separator className="my-4" />
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8 max-w-4xl"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormItem>
               <FormLabel>{tSchema("id.label")}</FormLabel>
               <div className="flex gap-x-2">

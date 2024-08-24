@@ -16,7 +16,7 @@ interface UsersTableActionProps {
   data: User;
 }
 export const UsersTableAction = ({ data: user }: UsersTableActionProps) => {
-  const tAction = useTranslations("users.table.action");
+  const t = useTranslations("users.form");
 
   return (
     <DropdownMenu>
@@ -24,10 +24,8 @@ export const UsersTableAction = ({ data: user }: UsersTableActionProps) => {
         <Ellipsis className="h-6 w-6" />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>{tAction("label")}</DropdownMenuLabel>
-        <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <UserDeleteButton data={user} label={tAction("destroy")} />
+          <UserDeleteButton data={user} label={t("destroy.label")} />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

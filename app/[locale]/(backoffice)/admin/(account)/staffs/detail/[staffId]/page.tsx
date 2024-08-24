@@ -15,7 +15,7 @@ const StaffDetailPage = async ({ params }: StaffDetailPageProps) => {
   }
   return (
     <div className="flex flex-col gap-y-4 h-full py-4">
-      <div className="max-w-5xl">
+      <div className="max-w-6xl">
         <StaffBasicInfo data={structuredClone(staff)} />
       </div>
     </div>

@@ -40,7 +40,9 @@ export const StaffDeleteButton = ({ data, label }: StaffDeleteButtonProps) => {
         onClose();
       });
   };
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
     onOpen({
       title: t("form.destroy.title"),
       description: t("form.destroy.description"),
@@ -50,7 +52,7 @@ export const StaffDeleteButton = ({ data, label }: StaffDeleteButtonProps) => {
 
   return (
     <Button
-      variant={"destructive"}
+      variant={"destroy"}
       className="w-full"
       onClick={handleClick}
       size={"sm"}

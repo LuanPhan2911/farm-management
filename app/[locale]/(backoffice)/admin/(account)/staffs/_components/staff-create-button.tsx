@@ -25,16 +25,18 @@ import { z } from "zod";
 import { SelectRole } from "../../../_components/select-role";
 import { generateEmail, generatePassword } from "@/lib/utils";
 
-interface StaffCreateButtonProps {
-  label: string;
-}
-export const StaffCreateButton = ({ label }: StaffCreateButtonProps) => {
+export const StaffCreateButton = () => {
   const { onOpen } = useDialog();
+  const t = useTranslations("staffs.form.create");
 
   return (
-    <Button onClick={() => onOpen("staff.create")}>
+    <Button
+      onClick={() => onOpen("staff.create")}
+      size={"sm"}
+      variant={"success"}
+    >
       <Edit className="h-6 w-6 mr-2" />
-      {label}
+      {t("label")}
     </Button>
   );
 };
@@ -160,7 +162,11 @@ export const StaffCreateDialog = () => {
               <FormItem>
                 <FormLabel>{tSchema("role.label")}</FormLabel>
                 <FormControl>
-                  <SelectRole {...field} label="Select Role" />
+                  <SelectRole
+                    {...field}
+                    label="Select Role"
+                    disabled={isPending}
+                  />
                 </FormControl>
 
                 <FormMessage />

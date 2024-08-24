@@ -125,7 +125,7 @@ export const ApplicantsTable = ({ applicants, jobs }: ApplicantsTableProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("heading")}</CardTitle>
+        <CardTitle>{t("page.title")}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex justify-end">

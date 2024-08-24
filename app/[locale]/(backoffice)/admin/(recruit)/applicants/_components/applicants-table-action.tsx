@@ -17,7 +17,7 @@ interface ApplicantsTableActionProps {
   data: Applicant;
 }
 export const ApplicantsTableAction = ({ data }: ApplicantsTableActionProps) => {
-  const tAction = useTranslations("applicants.table.action");
+  const t = useTranslations("applicants.form");
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -26,13 +26,14 @@ export const ApplicantsTableAction = ({ data }: ApplicantsTableActionProps) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-fit">
-        <DropdownMenuLabel>{tAction("label")}</DropdownMenuLabel>
-        <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <ApplicantStaffCreateButton data={data} label="Create Staff" />
+          <ApplicantStaffCreateButton
+            data={data}
+            label={t("createStaff.label")}
+          />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <ApplicantDeleteButton data={data} label={tAction("destroy")} />
+          <ApplicantDeleteButton data={data} label={t("destroy.label")} />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

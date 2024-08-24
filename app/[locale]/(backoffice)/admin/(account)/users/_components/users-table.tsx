@@ -15,13 +15,14 @@ import { useFormatter, useTranslations } from "next-intl";
 import { SearchBar } from "@/components/search-bar";
 import { NavPagination } from "@/components/nav-pagination";
 import { useRouter } from "@/navigation";
+import { getEmailAddress, getFullName } from "@/lib/utils";
 
 interface UsersTableProps {
   data: User[];
   totalPage: number;
 }
 export const UsersTable = ({ data, totalPage }: UsersTableProps) => {
-  const tTable = useTranslations("users.table");
+  const t = useTranslations("users");
   const { relativeTime } = useFormatter();
   const router = useRouter();
   const handleClick = (id: string) => {
@@ -30,19 +31,19 @@ export const UsersTable = ({ data, totalPage }: UsersTableProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{tTable("heading")}</CardTitle>
+        <CardTitle>{t("page.title")}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="w-[400px] py-4">
-          <SearchBar placeholder="Search..." isPagination />
+          <SearchBar placeholder={t("search.placeholder")} isPagination />
         </div>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead></TableHead>
-              <TableHead>{tTable("thead.name")}</TableHead>
-              <TableHead>{tTable("thead.lastSignedIn")}</TableHead>
-              <TableHead>{tTable("thead.joined")} </TableHead>
+              <TableHead>{t("table.thead.name")}</TableHead>
+              <TableHead>{t("table.thead.lastSignedIn")}</TableHead>
+              <TableHead>{t("table.thead.joined")} </TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
@@ -61,12 +62,21 @@ export const UsersTable = ({ data, totalPage }: UsersTableProps) => {
                       className="rounded-full"
                     />
                   </TableCell>
-                  <TableCell>{user.emailAddresses[0].emailAddress}</TableCell>
+                  <TableCell>
+                    <div className="ml-4 space-y-1">
+                      <p className="text-sm font-medium leading-none">
+                        {getFullName(user) || t("table.trow.name")}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {getEmailAddress(user)}
+                      </p>
+                    </div>
+                  </TableCell>
 
                   <TableCell>
                     {user.lastSignInAt
                       ? relativeTime(user.lastSignInAt)
-                      : "Never signed"}
+                      : t("table.trow.lastSignedIn")}
                     {}
                   </TableCell>
                   <TableCell>{relativeTime(user.createdAt)}</TableCell>

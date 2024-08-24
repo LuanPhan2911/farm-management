@@ -76,8 +76,8 @@ export const StaffEditRoleDialog = () => {
   return (
     <DynamicDialog
       isOpen={isOpenDialog}
-      title={t("form.setRole.title")}
-      description={t("form.setRole.description")}
+      title={t("form.editRole.title")}
+      description={t("form.editRole.description")}
     >
       <SelectRole
         label="Select Role"

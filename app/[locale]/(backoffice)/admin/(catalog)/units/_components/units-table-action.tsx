@@ -16,7 +16,7 @@ interface UnitsTableActionProps {
   data: Unit;
 }
 export const UnitsTableAction = ({ data }: UnitsTableActionProps) => {
-  const tAction = useTranslations("units.table.action");
+  const t = useTranslations("units.form");
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -25,13 +25,11 @@ export const UnitsTableAction = ({ data }: UnitsTableActionProps) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-40">
-        <DropdownMenuLabel>{tAction("label")}</DropdownMenuLabel>
-        <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <UnitEditButton data={data} label={tAction("edit")} />
+          <UnitEditButton data={data} label={t("edit.label")} />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <UnitDeleteButton data={data} label={tAction("destroy")} />
+          <UnitDeleteButton data={data} label={t("destroy.label")} />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

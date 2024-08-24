@@ -41,7 +41,9 @@ export const UserDeleteButton = ({ data, label }: UserDeleteButtonProps) => {
         onClose();
       });
   };
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     onOpen({
       title: t("form.destroy.title"),
       description: t("form.destroy.description"),
@@ -51,7 +53,7 @@ export const UserDeleteButton = ({ data, label }: UserDeleteButtonProps) => {
 
   return (
     <Button
-      variant={"destructive"}
+      variant={"destroy"}
       className="w-full"
       onClick={handleClick}
       size={"sm"}

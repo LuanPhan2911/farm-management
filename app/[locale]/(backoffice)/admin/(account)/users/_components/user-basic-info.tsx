@@ -77,8 +77,8 @@ export const UserBasicInfo = ({ data }: UserBasicInfoProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>User basic information</CardTitle>
-        <CardDescription>Manage user profile</CardDescription>
+        <CardTitle>{t("page.detail.title")}</CardTitle>
+        <CardDescription>{t("page.detail.description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <UserInfo data={data} />

@@ -1,6 +1,5 @@
 import { getUserById } from "@/services/users";
 import { notFound } from "next/navigation";
-import { UserInfo } from "../../_components/user-info";
 import { UserBasicInfo } from "../../_components/user-basic-info";
 
 interface UserDetailPageProps {

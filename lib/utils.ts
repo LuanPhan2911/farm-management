@@ -1,6 +1,7 @@
 import { siteConfig } from "@/configs/siteConfig";
 import { getUserByEmail } from "@/services/users";
 import { ActionResponse } from "@/types";
+import { User } from "@clerk/nextjs/server";
 import { type ClassValue, clsx } from "clsx";
 import { format } from "date-fns";
 import { getFormatter, getNow } from "next-intl/server";
@@ -57,4 +58,11 @@ export function generateEmail(name: string) {
   const email = `${prefix}${time}${postfix}`;
 
   return email;
+}
+export function getFullName(user: User) {
+  return `${user.firstName || ""} ${user.lastName || ""}`.trim();
+}
+export function getEmailAddress(user: User) {
+  const email = user.emailAddresses;
+  return email[0].emailAddress;
 }

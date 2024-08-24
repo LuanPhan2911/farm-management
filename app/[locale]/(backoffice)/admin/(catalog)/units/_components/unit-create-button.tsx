@@ -30,6 +30,7 @@ import { Input } from "@/components/ui/input";
 import { useRef, useTransition } from "react";
 import { create } from "@/actions/unit";
 import { toast } from "sonner";
+import { Textarea } from "@/components/ui/textarea";
 
 export const UnitCreateButton = () => {
   const tSchema = useTranslations("units.schema");
@@ -65,7 +66,7 @@ export const UnitCreateButton = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>
+        <Button size={"sm"} variant={"success"}>
           <Plus className="h-6 w-6 mr-2" />{" "}
           <span className="text-sm font-semibold">
             {t("form.create.label")}
@@ -79,7 +80,7 @@ export const UnitCreateButton = () => {
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="name"
@@ -105,7 +106,7 @@ export const UnitCreateButton = () => {
                 <FormItem>
                   <FormLabel>{tSchema("description.label")}</FormLabel>
                   <FormControl>
-                    <Input
+                    <Textarea
                       placeholder={tSchema("description.placeholder")}
                       {...field}
                       disabled={isPending}

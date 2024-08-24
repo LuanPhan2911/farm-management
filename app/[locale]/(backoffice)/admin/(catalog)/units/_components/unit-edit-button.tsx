@@ -39,6 +39,8 @@ export const UnitEditButton = ({ data, label }: UnitEditButtonProps) => {
           unit: data,
         })
       }
+      size={"sm"}
+      variant={"edit"}
     >
       <Edit className="w-6 h-6 mr-2" />
       {label}
@@ -95,7 +97,7 @@ export const UnitEditDialog = () => {
       description={t("form.edit.description")}
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
             name="name"

@@ -2,8 +2,16 @@
 
 import { db } from "@/lib/db";
 import { errorResponse, successResponse } from "@/lib/utils";
+import { redirect } from "@/navigation";
 import { JobSchema } from "@/schemas";
-import { getJobBySlug } from "@/services/jobs";
+import {
+  createJob,
+  deleteJob,
+  deleteManyJob,
+  getJobBySlug,
+  updateJob,
+  updateJobPublished,
+} from "@/services/jobs";
 import { ActionResponse } from "@/types";
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
@@ -34,13 +42,14 @@ export const create = async (
         }
       );
     }
-    await db.job.create({
-      data: {
-        ...validatedFields.data,
-        slug,
-      },
+    const job = await createJob({
+      ...validatedFields.data,
+      slug,
     });
-    revalidatePath("/dashboard/jobs");
+    if (!job) {
+      return errorResponse(tStatus("failure.create"));
+    }
+    revalidatePath("/admin/jobs");
     return successResponse(tStatus("success.create"));
   } catch (error) {
     return errorResponse(tStatus("failure.create"));
@@ -72,15 +81,10 @@ export const edit = async (
         }
       );
     }
-    const job = await db.job.update({
-      where: {
-        id,
-      },
-      data: {
-        ...validatedFields.data,
-        slug,
-      },
-    });
+    const job = await updateJob(id, { ...validatedFields.data, slug });
+    if (!job) {
+      return errorResponse(tStatus("failure.edit"));
+    }
     revalidatePath(`/dashboard/jobs/edit/${job.id}`);
     return successResponse(tStatus("success.edit"));
   } catch (error) {
@@ -90,12 +94,12 @@ export const edit = async (
 export const destroy = async (id: string): Promise<ActionResponse> => {
   const tStatus = await getTranslations("jobs.status");
   try {
-    const job = await db.job.delete({
-      where: {
-        id,
-      },
-    });
-    revalidatePath("/dashboard/jobs");
+    const job = await deleteJob(id);
+    if (!job) {
+      return errorResponse(tStatus("failure.destroy"));
+    }
+    revalidatePath("/admin/jobs");
+
     return successResponse(tStatus("success.destroy"));
   } catch (error) {
     return errorResponse(tStatus("failure.destroy"));
@@ -104,14 +108,12 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
 export const destroyMany = async (ids: string[]): Promise<ActionResponse> => {
   const tStatus = await getTranslations("jobs.status");
   try {
-    await db.job.deleteMany({
-      where: {
-        id: {
-          in: ids,
-        },
-      },
-    });
-    revalidatePath("/dashboard/jobs");
+    const count = await deleteManyJob(ids);
+    if (!count) {
+      return errorResponse(tStatus("failure.destroy"));
+    }
+    revalidatePath("/admin/jobs");
+
     return successResponse(tStatus("success.destroy"));
   } catch (error) {
     return errorResponse(tStatus("failure.destroy"));
@@ -123,15 +125,11 @@ export const editPublished = async (
 ): Promise<ActionResponse> => {
   const tStatus = await getTranslations("jobs.status");
   try {
-    await db.job.update({
-      where: {
-        id,
-      },
-      data: {
-        published,
-      },
-    });
-    revalidatePath("/dashboard/jobs");
+    const job = await updateJobPublished(id, published);
+    if (!job) {
+      return errorResponse(tStatus("failure.editPublished"));
+    }
+    revalidatePath("/admin/jobs");
     return successResponse(tStatus("success.editPublished"));
   } catch (error) {
     return errorResponse(tStatus("failure.editPublished"));

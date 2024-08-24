@@ -3,6 +3,7 @@
 import { ComboBox, ComboBoxData } from "@/components/combobox";
 import { usePathname, useRouter } from "@/navigation";
 import { JobSelect } from "@/types";
+import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 
 interface ApplicantSelectJobProps {
@@ -12,6 +13,7 @@ export const ApplicantSelectJob = ({ data }: ApplicantSelectJobProps) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
+  const t = useTranslations("applicants.search");
 
   if (!data.length) {
     return null;
@@ -39,10 +41,10 @@ export const ApplicantSelectJob = ({ data }: ApplicantSelectJobProps) => {
   return (
     <ComboBox
       data={options}
-      labelNotfound="Jobs not found"
-      labelSearch="Search job..."
-      labelSelect="Select job..."
+      notFound={t("comboBox.notFound")}
+      label={t("comboBox.label")}
       onChange={handleChange}
+      defaultValue={"ALL"}
     />
   );
 };

@@ -16,7 +16,7 @@ interface StaffsTableActionProps {
   data: User;
 }
 export const StaffsTableAction = ({ data: staff }: StaffsTableActionProps) => {
-  const tAction = useTranslations("staffs.table.action");
+  const t = useTranslations("staffs.form");
 
   return (
     <DropdownMenu>
@@ -24,10 +24,8 @@ export const StaffsTableAction = ({ data: staff }: StaffsTableActionProps) => {
         <Ellipsis className="h-6 w-6" />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>{tAction("label")}</DropdownMenuLabel>
-        <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <StaffDeleteButton data={staff} label={tAction("destroy")} />
+          <StaffDeleteButton data={staff} label={t("destroy.label")} />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

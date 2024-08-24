@@ -44,6 +44,7 @@ export const ApplicantDeleteButton = ({
           onConfirm,
         })
       }
+      variant={"destroy"}
     >
       <Trash className="h-6 w-6 mr-2" />
       {label}

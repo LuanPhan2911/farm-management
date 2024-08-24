@@ -99,7 +99,7 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
     if (!staff) {
       return errorResponse(tStatus("failure.destroy"));
     }
-    revalidatePath("/dashboard/staffs");
+    revalidatePath("/admin/staffs");
     return successResponse(tStatus("success.destroy"));
   } catch (error) {
     return errorResponse(tStatus("failure.destroy"));
