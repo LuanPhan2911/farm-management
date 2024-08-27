@@ -62,24 +62,26 @@ export const AdminSidebar = () => {
         />
         <SidebarAccordionItem title="Account" icon={Users}>
           <SidebarItem
-            href="/admin/staffs"
-            active={pathname === "/admin/staffs"}
-            icon={SquareUserRound}
-            title="Staffs"
-          />
-          <SidebarItem
             href="/admin/users"
             active={pathname === "/admin/users"}
             icon={User}
             title="Users"
           />
+          <SidebarItem
+            href="/admin/staffs"
+            active={pathname === "/admin/staffs"}
+            icon={SquareUserRound}
+            title="Staffs"
+          />
+
+          <SidebarItem
+            href="/admin/organizations"
+            active={pathname === "/admin/organizations"}
+            icon={Building}
+            title="Organizations"
+          />
         </SidebarAccordionItem>
-        <SidebarItem
-          href="/admin/organizations"
-          active={pathname === "/admin/organizations"}
-          icon={Building}
-          title="Organizations"
-        />
+
         <SidebarItem
           href="/admin/fields"
           active={pathname === "/admin/fields"}
