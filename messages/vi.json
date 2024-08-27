@@ -375,11 +375,22 @@
         "min": "Người tạo tổ chức bắt buộc phải chọn",
         "notFound": "Không tìm thấy nhân viên"
       },
+      "memberId": {
+        "label": "Email thành viên",
+        "placeholder": "Chọn email thành viên",
+        "min": "Email là trường bắt buộc phải điền",
+        "notFound": "Không tìm thấy thành viên"
+      },
       "createdAt": {
         "label": "Ngày tạo tổ chức"
       },
       "logo": {
         "label": "Tải logo"
+      },
+      "role": {
+        "label": "Vai trò",
+        "placeholder": "Chọn vai trò",
+        "min": "Vai trò bắt buộc phải điền"
       }
     },
     "status": {
@@ -484,11 +495,13 @@
     "status": {
       "success": {
         "edit": "Nhân viên đã được cập nhật!",
-        "destroy": "Nhân viên đã được xóa!"
+        "destroy": "Nhân viên đã được xóa!",
+        "editRole": "Vai trò nhân viên đã được cập nhật"
       },
       "failure": {
         "edit": "Có lỗi xảy ra trong khi cập nhật nhân viên!",
-        "destroy": "Có lỗi xảy ra trong khi xóa nhân viên!"
+        "destroy": "Có lỗi xảy ra trong khi xóa nhân viên!",
+        "editRole": "Có lỗi xảy ra trong khi cập nhật vai trò nhân viên"
       }
     }
   },

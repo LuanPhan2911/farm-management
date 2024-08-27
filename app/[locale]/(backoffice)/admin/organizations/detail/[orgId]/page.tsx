@@ -31,8 +31,6 @@ const OrganizationDetailPage = async ({
 
   return (
     <div className="flex flex-col gap-y-4 h-full py-4">
-      <UserAvatar src={org.imageUrl} size={"lg"} />
-      <h3 className="text-lg font-semibold">{org.name}</h3>
       <Tabs defaultValue="profile">
         <TabsList className="grid w-[500px] grid-cols-3">
           <TabsTrigger value="profile">{t("profile.title")}</TabsTrigger>

@@ -13,7 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus, Send, X } from "lucide-react";
+import { Plus } from "lucide-react";
 import { z } from "zod";
 import { CategorySchema } from "@/schemas";
 import { useTranslations } from "next-intl";

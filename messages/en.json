@@ -370,7 +370,7 @@
         "placeholder": "Slug"
       },
       "createdBy": {
-        "min": "Create By is required!",
+        "min": "Create by is required!",
         "label": "Create by",
         "placeholder": "Select created by",
         "notFound": "Staff not found"
@@ -380,6 +380,18 @@
       },
       "logo": {
         "label": "Upload logo"
+      },
+
+      "memberId": {
+        "min": "Member email is required!",
+        "placeholder": "Select member email...",
+        "notFound": "Member email not found",
+        "label": "Member email"
+      },
+      "role": {
+        "label": "Role",
+        "placeholder": "Select role",
+        "min": "Role is required"
       }
     },
     "status": {
@@ -478,16 +490,28 @@
         "label": "Receiver email",
         "placeholder": "Receiver email",
         "max": "Receiver email's length must be less than 200 characters"
+      },
+      "firstName": {
+        "label": "First name",
+        "placeholder": "First name",
+        "min": "First name is required!"
+      },
+      "lastName": {
+        "label": "Last name",
+        "placeholder": "Last name",
+        "min": "Last name is required!"
       }
     },
     "status": {
       "success": {
         "edit": "Staff edited!",
-        "destroy": "Staff deleted!"
+        "destroy": "Staff deleted!",
+        "editRole": "Staff role edited"
       },
       "failure": {
         "edit": "Something went wrong while editing staff!",
-        "destroy": "Something went wrong while deleting staff!"
+        "destroy": "Something went wrong while deleting staff!",
+        "editRole": "Something went wrong while editing staff role"
       }
     }
   },

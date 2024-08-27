@@ -9,6 +9,7 @@ import {
   Compass,
   Flower,
   Globe,
+  Grid2X2,
   LayoutGrid,
   MountainSnow,
   Section,
@@ -78,6 +79,12 @@ export const AdminSidebar = () => {
           active={pathname === "/admin/organizations"}
           icon={Building}
           title="Organizations"
+        />
+        <SidebarItem
+          href="/admin/fields"
+          active={pathname === "/admin/fields"}
+          icon={Grid2X2}
+          title="Fields"
         />
         <SidebarAccordionItem title="Catalogue" icon={Flower}>
           <SidebarItem

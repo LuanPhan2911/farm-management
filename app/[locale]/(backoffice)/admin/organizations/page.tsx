@@ -10,24 +10,22 @@ interface OrganizationPageProps {
   searchParams: {
     page?: string;
     query?: string;
+    order_by?: "created_at" | "name" | "members_count";
   };
 }
 const OrganizationsPage = async ({ searchParams }: OrganizationPageProps) => {
   const query = searchParams.query || "";
   const page = searchParams.page ? Number(searchParams.page) : 1;
+  const orderBy = searchParams.order_by || "created_at";
   const { data: organizations, totalPage } = await getOrganizations(
     query,
-    page
+    page,
+    orderBy
   );
-  const orgCreatedBy = await getStaffsForCreatedByOrganization();
 
   return (
     <div className="flex flex-col gap-y-4 h-full py-4 ">
-      <OrgsTable
-        orgs={structuredClone(organizations)}
-        totalPage={totalPage}
-        orgCreatedBy={orgCreatedBy}
-      />
+      <OrgsTable orgs={structuredClone(organizations)} totalPage={totalPage} />
     </div>
   );
 };
