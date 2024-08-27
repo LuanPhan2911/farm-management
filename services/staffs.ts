@@ -42,12 +42,27 @@ export const getStaffByExternalId = async (externalId: string) => {
     return null;
   }
 };
-export const updateStaff = async (externalId: string, role: StaffRole) => {
+export const updateStaffRole = async (externalId: string, role: StaffRole) => {
   try {
     return await db.staff.update({
       where: { externalId },
       data: {
         role,
+      },
+    });
+  } catch (error) {
+    return null;
+  }
+};
+export const updateStaff = async (
+  externalId: string,
+  params: { imageUrl: string; name: string }
+) => {
+  try {
+    return await db.staff.update({
+      where: { externalId },
+      data: {
+        ...params,
       },
     });
   } catch (error) {
@@ -118,7 +133,7 @@ export const getStaffsForCreatedByOrganization = async () => {
     return [];
   }
 };
-export const getStaffsForAddMemberOrganization = async (orgId: string) => {
+export const getStaffsForAddMemberOrganization = async () => {
   try {
     const staffs = await db.staff.findMany();
     return staffs;

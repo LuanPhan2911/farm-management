@@ -1,5 +1,6 @@
 import { Gender, JobExperience, JobWorkingState } from "@prisma/client";
 
+export type OrgRole = "org:member" | "org:admin";
 export type ActionResponse = {
   message: string;
   ok: boolean;

@@ -13,7 +13,7 @@ export const StaffMetadataRole = ({ metadata }: StaffMetadataRoleProps) => {
     return <Badge variant={"success"}>Admin</Badge>;
   }
   if (role === "farmer") {
-    return <Badge variant={"secondary"}>Farmer</Badge>;
+    return <Badge variant={"info"}>Farmer</Badge>;
   }
   return <Badge variant={"default"}>Null</Badge>;
 };

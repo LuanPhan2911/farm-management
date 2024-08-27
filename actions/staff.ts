@@ -3,7 +3,6 @@
 import { sendStaffCreateUser } from "@/lib/mail";
 import { errorResponse, successResponse } from "@/lib/utils";
 import { StaffSchema, UserSchema } from "@/schemas";
-import { createStaff, deleteStaff, updateStaff } from "@/services/staffs";
 import {
   createUser,
   deleteUser,
@@ -29,7 +28,7 @@ export const create = async (
     if (!validatedFields.success) {
       return errorResponse(tSchema("errors.parse"));
     }
-    const { email, name, role, receiverEmail, password } = validatedFields.data;
+    const { email, name, receiverEmail, password } = validatedFields.data;
     const existingUser = await getUserByEmail(email);
     if (existingUser) {
       return errorResponse(tSchema("errors.exist"));
@@ -39,15 +38,7 @@ export const create = async (
     if (!user) {
       return errorResponse(tStatus("failure.create"));
     }
-    const staff = await createStaff(user.id, {
-      email,
-      name,
-      role,
-      imageUrl: user.imageUrl,
-    });
-    if (!staff) {
-      return errorResponse(tStatus("failure.create"));
-    }
+    //TODO: webhook for create staff
     if (!!receiverEmail) {
       sendStaffCreateUser(receiverEmail, {
         email,
@@ -66,7 +57,7 @@ export const editRole = async (
   userId: string,
   role: StaffRole
 ): Promise<ActionResponse> => {
-  const tStatus = await getTranslations("users.status");
+  const tStatus = await getTranslations("staffs.status");
   try {
     const user = await updateUserMetadata(userId, {
       role,
@@ -74,10 +65,7 @@ export const editRole = async (
     if (!user) {
       return errorResponse(tStatus("failure.editRole"));
     }
-    const staff = await updateStaff(user.id, role);
-    if (!staff) {
-      return errorResponse(tStatus("failure.editRole"));
-    }
+    //TODO webhook for update staff role
     revalidatePath("/admin/staffs");
     revalidatePath(`/admin/staffs/detail/${userId}`);
     return successResponse(tStatus("success.editRole"));
@@ -95,10 +83,8 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
     if (!user) {
       return errorResponse(tStatus("failure.destroy"));
     }
-    const staff = await deleteStaff(user.id);
-    if (!staff) {
-      return errorResponse(tStatus("failure.destroy"));
-    }
+
+    //TODO: webhook for delete staff
     revalidatePath("/admin/staffs");
     return successResponse(tStatus("success.destroy"));
   } catch (error) {

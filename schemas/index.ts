@@ -7,6 +7,7 @@ import {
 import { addDays } from "date-fns";
 import { z } from "zod";
 import validator from "validator";
+import { OrgRole } from "@/types";
 export const CategorySchema = (t: (arg: string) => string) =>
   z.object({
     name: z.string().min(1, t("name.min")).max(100),
@@ -137,10 +138,46 @@ export const OrganizationSchema = (t: (arg: string) => string) => {
   });
 };
 
+const orgRoles = ["org:admin", "org:member"] as const;
 export const OrganizationMemberSchema = (t: (arg: string) => string) => {
   return z.object({
-    email: z.string().min(1, {
-      message: t("email.min"),
+    memberId: z.string().min(1, t("memberId.min")),
+    role: z.enum(orgRoles),
+  });
+};
+
+export const FieldSchema = (t: (arg: string) => string) => {
+  return z.object({
+    name: z.string().min(1, t("name.min")).max(100, t("name.max")),
+    location: z.string().min(1, t("location.min")).max(100, t("location.max")),
+    orgId: z.string().min(1, t("orgId.min")),
+    height: z.object({
+      value: z.coerce
+        .number({
+          required_error: t("heightValue.required_error"),
+          invalid_type_error: t("heightValue.invalid_type"),
+        })
+        .min(0, t("heightValue.min")),
+      unitId: z.string().min(1, t("heightUnitId.min")),
     }),
+    width: z.object({
+      value: z.coerce
+        .number({
+          required_error: t("widthValue.required_error"),
+          invalid_type_error: t("widthValue.invalid_type"),
+        })
+        .min(0, t("widthValue.min")),
+      unitId: z.string().min(1, t("widthUnitId.min")),
+    }),
+    area: z.object({
+      value: z.coerce
+        .number({
+          required_error: t("areaValue.required_error"),
+          invalid_type_error: t("areaValue.invalid_type"),
+        })
+        .min(0, t("areaValue.min")),
+      unitId: z.string().min(1, t("areaUnitId.min")),
+    }),
+    shape: z.string().nullable(),
   });
 };

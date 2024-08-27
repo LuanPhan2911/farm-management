@@ -29,12 +29,13 @@ import { z } from "zod";
 import { Separator } from "@/components/ui/separator";
 import { StaffInfo } from "./staff-info";
 import { edit } from "@/actions/staff";
+import { getEmailAddress } from "@/lib/utils";
 
 interface StaffBasicInfoProps {
   data: User;
 }
 export const StaffBasicInfo = ({ data }: StaffBasicInfoProps) => {
-  const tSchema = useTranslations("staffs.schema");
+  const tSchema = useTranslations("users.schema");
   const t = useTranslations("staffs");
   const formSchema = UserSchema(tSchema);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -49,7 +50,7 @@ export const StaffBasicInfo = ({ data }: StaffBasicInfoProps) => {
     },
   });
   useEffect(() => {
-    const email = data.emailAddresses[0].emailAddress;
+    const email = getEmailAddress(data);
     const address = (data.publicMetadata?.address as string) || "";
     const phoneNumber = (data.publicMetadata?.phone as string) || "";
     form.setValue("email", email);
