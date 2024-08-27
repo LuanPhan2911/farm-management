@@ -19,8 +19,11 @@ import {
 import { UserAvatar } from "@/components/user-avatar";
 import { OrganizationMembership } from "@clerk/nextjs/server";
 import { useFormatter, useTranslations } from "next-intl";
-import { OrgAddMember } from "./org-add-member";
+import { OrgMemberAdd } from "./org-member-add";
 import { Staff } from "@prisma/client";
+import { OrgMemberAction } from "./org-member-action";
+import { OrgMemberRoleEditButton } from "./org-member-role-edit-button";
+import { OrgRole } from "@/types";
 interface OrgMemberProps {
   data: OrganizationMembership[];
   totalPage: number;
@@ -43,7 +46,7 @@ export const OrgMember = ({ data, totalPage, orgMembers }: OrgMemberProps) => {
               isPagination
             />
           </div>
-          <OrgAddMember data={orgMembers} />
+          <OrgMemberAdd data={orgMembers} />
         </div>
 
         <Table>
@@ -53,10 +56,11 @@ export const OrgMember = ({ data, totalPage, orgMembers }: OrgMemberProps) => {
               <TableHead>{t("table.thead.name")}</TableHead>
               <TableHead>{t("table.thead.role")}</TableHead>
               <TableHead>{t("table.thead.createdAt")}</TableHead>
+              <TableHead></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map(({ publicUserData, role, createdAt }) => {
+            {data.map(({ publicUserData, role, createdAt, id }) => {
               return (
                 <TableRow
                   key={publicUserData?.userId}
@@ -73,9 +77,16 @@ export const OrgMember = ({ data, totalPage, orgMembers }: OrgMemberProps) => {
                     <div>{publicUserData?.firstName}</div>
                     <div>{publicUserData?.identifier}</div>
                   </TableCell>
-
-                  <TableCell>{role}</TableCell>
+                  <TableCell>
+                    <OrgMemberRoleEditButton
+                      defaultRole={role as OrgRole}
+                      userId={publicUserData?.userId}
+                    />
+                  </TableCell>
                   <TableCell>{relativeTime(createdAt)}</TableCell>
+                  <TableCell>
+                    <OrgMemberAction data={publicUserData} />
+                  </TableCell>
                 </TableRow>
               );
             })}

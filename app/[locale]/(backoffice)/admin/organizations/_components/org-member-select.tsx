@@ -22,7 +22,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Staff } from "@prisma/client";
 import { Skeleton } from "@/components/ui/skeleton";
 
-interface OrgSelectCreatedByProps {
+interface OrgMemberSelectProps {
   onChange: (value: string) => void;
   defaultValue: string;
   disabled?: boolean;
@@ -30,19 +30,19 @@ interface OrgSelectCreatedByProps {
   notFound: string;
 }
 
-export const OrgSelectCreatedBy = ({
+export const OrgMemberSelect = ({
   onChange,
   defaultValue,
   disabled,
   label,
   notFound,
-}: OrgSelectCreatedByProps) => {
+}: OrgMemberSelectProps) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(defaultValue || "");
   const { data, isPending, isError, refetch } = useQuery({
-    queryKey: ["created_by_org"],
+    queryKey: ["members_select"],
     queryFn: async () => {
-      const res = await fetch("/api/staffs/created_by_org");
+      const res = await fetch("/api/staffs/members_select");
       return (await res.json()) as Staff[];
     },
   });

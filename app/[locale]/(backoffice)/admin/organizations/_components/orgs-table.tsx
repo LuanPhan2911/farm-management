@@ -17,24 +17,36 @@ import { UserAvatar } from "@/components/user-avatar";
 
 import { useRouter } from "@/navigation";
 import { OrgCreateButton } from "./org-create-button";
-import { Staff } from "@prisma/client";
+import { SortByDropdown, SortByOption } from "@/components/sort-by-dropdown";
+import { useSearchParams } from "next/navigation";
 
 interface OrgsTableProps {
   orgs: Organization[];
   totalPage: number;
-  orgCreatedBy: Staff[];
 }
-export const OrgsTable = ({
-  orgs,
-  totalPage,
-  orgCreatedBy,
-}: OrgsTableProps) => {
+export const OrgsTable = ({ orgs, totalPage }: OrgsTableProps) => {
   const t = useTranslations("organizations");
+  const searchParams = useSearchParams();
   const { relativeTime } = useFormatter();
   const router = useRouter();
   const handleClick = (org: Organization) => {
     router.push(`/admin/organizations/detail/${org.id}`);
   };
+  const sortByOptions: SortByOption[] = [
+    {
+      label: "Created At",
+      value: "created_at",
+    },
+    {
+      label: "Name",
+      value: "name",
+    },
+    {
+      label: "Members count",
+      value: "members_count",
+    },
+  ];
+  const defaultSortBy = searchParams.get("order_by") || "created_at";
   return (
     <Card>
       <CardHeader>
@@ -42,10 +54,14 @@ export const OrgsTable = ({
       </CardHeader>
       <CardContent>
         <div className="flex justify-between md:items-center py-4 md:flex-row flex-col gap-2 items-end">
-          <div className="w-[300px]">
+          <div className="flex gap-x-2">
             <SearchBar placeholder={t("search.placeholder")} isPagination />
+            <SortByDropdown
+              options={sortByOptions}
+              defaultValue={defaultSortBy}
+            />
           </div>
-          <OrgCreateButton orgCreatedBy={orgCreatedBy} />
+          <OrgCreateButton />
         </div>
         <Table>
           <TableHeader>

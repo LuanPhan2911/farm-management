@@ -1,4 +1,5 @@
 import { LIMIT } from "@/configs/paginationConfig";
+import { OrgRole } from "@/types";
 import { clerkClient } from "@clerk/nextjs/server";
 export const getOrganizationBySlug = async (slug: string) => {
   try {
@@ -20,6 +21,14 @@ export const createOrganization = async (params: {
     const org = await clerkClient().organizations.createOrganization({
       ...params,
     });
+    return org;
+  } catch (error) {
+    return null;
+  }
+};
+export const deleteOrganization = async (orgId: string) => {
+  try {
+    const org = await clerkClient().organizations.deleteOrganization(orgId);
     return org;
   } catch (error) {
     return null;
@@ -52,7 +61,11 @@ export const getOrganizationMembership = async (
   }
 };
 
-export const getOrganizations = async (query: string, currentPage: number) => {
+export const getOrganizations = async (
+  query: string,
+  currentPage: number,
+  orderBy?: "created_at" | "name" | "members_count"
+) => {
   try {
     const { data, totalCount } =
       await clerkClient().organizations.getOrganizationList({
@@ -60,6 +73,7 @@ export const getOrganizations = async (query: string, currentPage: number) => {
         limit: LIMIT,
         offset: (currentPage - 1) * LIMIT,
         query: query,
+        orderBy: orderBy,
       });
     const totalPage = Math.ceil(totalCount / LIMIT);
     return {
@@ -120,16 +134,50 @@ export const updateOrganization = async (
 
 export const createMemberOrganization = async (
   orgId: string,
-  userId: string
+  userId: string,
+  role: string
 ) => {
   try {
     const member =
       await clerkClient().organizations.createOrganizationMembership({
         organizationId: orgId,
         userId,
-        role: "org:member",
+        role,
       });
     return member;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const deleteMemberOrganization = async (
+  userId: string,
+  orgId: string
+) => {
+  try {
+    const orgMember =
+      await clerkClient().organizations.deleteOrganizationMembership({
+        organizationId: orgId,
+        userId,
+      });
+    return orgMember;
+  } catch (error) {
+    return null;
+  }
+};
+export const updateMemberRoleOrganization = async (
+  userId: string,
+  orgId: string,
+  role: OrgRole
+) => {
+  try {
+    const orgMember =
+      await clerkClient().organizations.updateOrganizationMembership({
+        organizationId: orgId,
+        role,
+        userId,
+      });
+    return orgMember;
   } catch (error) {
     return null;
   }

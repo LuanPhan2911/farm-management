@@ -28,6 +28,7 @@ import { z } from "zod";
 import { FileUploader } from "react-drag-drop-files";
 import { edit, editLogo } from "@/actions/organization";
 import slugify from "slugify";
+import { UserAvatar } from "@/components/user-avatar";
 interface OrgProfileProps {
   data: Organization;
 }
@@ -102,6 +103,8 @@ export const OrgProfile = ({ data }: OrgProfileProps) => {
       <CardHeader>
         <CardTitle>{t("tabs.profile.title")}</CardTitle>
         <CardDescription>{t("tabs.profile.description")}</CardDescription>
+        <UserAvatar src={data.imageUrl} size={"lg"} />
+        <h3 className="text-lg font-semibold">{data.name}</h3>
       </CardHeader>
       <CardContent>
         <Form {...form}>

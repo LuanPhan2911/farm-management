@@ -5,12 +5,15 @@ import { OrganizationMemberSchema, OrganizationSchema } from "@/schemas";
 import {
   createMemberOrganization,
   createOrganization,
+  deleteMemberOrganization,
+  deleteOrganization,
   getOrganizationBySlug,
+  updateMemberRoleOrganization,
   updateOrganization,
   updateOrganizationLogo,
 } from "@/services/organizations";
-import { getStaffByEmail } from "@/services/staffs";
-import { ActionResponse } from "@/types";
+import { getStaffByEmail, getStaffByExternalId } from "@/services/staffs";
+import { ActionResponse, OrgRole } from "@/types";
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -26,21 +29,20 @@ export const create = async (
   if (!validatedFields.success) {
     return errorResponse(tSchema("errors.parse"));
   }
-  const { name, slug } = validatedFields.data;
+  const { name, slug, createdBy } = validatedFields.data;
 
   try {
     const existingOrg = await getOrganizationBySlug(validatedFields.data.slug);
     if (existingOrg) {
       return errorResponse(tSchema("errors.exist"));
     }
-    const staff = await getStaffByEmail(validatedFields.data.createdBy);
+
+    const staff = await getStaffByExternalId(createdBy);
     if (!staff) {
       return errorResponse(tSchema("errors.existStaff"));
     }
     const org = await createOrganization({
-      name,
-      slug,
-      createdBy: staff.externalId,
+      ...validatedFields.data,
     });
     if (!org) {
       return errorResponse(tStatus("failure.create"));
@@ -122,12 +124,17 @@ export const createMember = async (
     return errorResponse(tSchema("errors.parse"));
   }
   try {
-    const staff = await getStaffByEmail(validatedFields.data.email);
+    const { memberId } = validatedFields.data;
+    const staff = await getStaffByExternalId(memberId);
     if (!staff) {
       return errorResponse(tSchema("error.existMember"));
     }
 
-    const member = await createMemberOrganization(orgId, staff.externalId);
+    const member = await createMemberOrganization(
+      orgId,
+      staff.externalId,
+      validatedFields.data.role
+    );
     if (!member) {
       return errorResponse(tStatus("failure.createMember"));
     }
@@ -135,5 +142,52 @@ export const createMember = async (
     return successResponse(tStatus("success.createMember"));
   } catch (error) {
     return errorResponse(tStatus("failure.createMember"));
+  }
+};
+
+export const destroyMember = async (
+  userId: string,
+  orgId: string
+): Promise<ActionResponse> => {
+  const tStatus = await getTranslations("organizations.status");
+  try {
+    const orgMember = await deleteMemberOrganization(userId, orgId);
+    if (!orgMember) {
+      return errorResponse(tStatus("failure.destroyMember"));
+    }
+    revalidatePath(`/admin/organizations/detail/${orgMember.organization.id}`);
+    return successResponse(tStatus("success.destroyMember"));
+  } catch (error) {
+    return errorResponse(tStatus("failure.destroyMember"));
+  }
+};
+export const destroy = async (orgId: string): Promise<ActionResponse> => {
+  const tStatus = await getTranslations("organizations.status");
+  try {
+    const org = await deleteOrganization(orgId);
+    if (!org) {
+      return errorResponse(tStatus("failure.destroy"));
+    }
+    revalidatePath("/admin/organizations");
+    return successResponse(tStatus("success.destroy"));
+  } catch (error) {
+    return errorResponse(tStatus("failure.destroy"));
+  }
+};
+export const editMemberRole = async (
+  userId: string,
+  orgId: string,
+  role: OrgRole
+): Promise<ActionResponse> => {
+  const tStatus = await getTranslations("organizations.status");
+  try {
+    const orgMember = await updateMemberRoleOrganization(userId, orgId, role);
+    if (!orgMember) {
+      return errorResponse(tStatus("failure.editMemberRole"));
+    }
+    revalidatePath(`/admin/organizations/detail/${orgMember.organization.id}`);
+    return successResponse(tStatus("success.editMemberRole"));
+  } catch (error) {
+    return errorResponse(tStatus("failure.editMemberRole"));
   }
 };
