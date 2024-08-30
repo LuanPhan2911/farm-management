@@ -3,7 +3,7 @@ import { destroy } from "@/actions/user";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "@/navigation";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
-import { useVerification } from "@/stores/use-verification";
+
 import { useSignUp } from "@clerk/nextjs";
 
 import { User } from "@clerk/nextjs/server";
@@ -19,8 +19,8 @@ interface UserDeleteButtonProps {
 export const UserDeleteButton = ({ data, label }: UserDeleteButtonProps) => {
   const { id } = data;
   const { onOpen, onClose } = useAlertDialog();
-  const tDestroy = useTranslations("users.form.destroy");
-  const tForm = useTranslations("form");
+  const t = useTranslations("users");
+
   const router = useRouter();
 
   const onConfirm = async () => {
@@ -35,23 +35,25 @@ export const UserDeleteButton = ({ data, label }: UserDeleteButtonProps) => {
         }
       })
       .catch((error) => {
-        toast.error(tForm("error"));
+        toast.error(t("status.failure.destroy"));
       })
       .finally(() => {
         onClose();
       });
   };
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     onOpen({
-      title: tDestroy("title"),
-      description: tDestroy("description"),
+      title: t("form.destroy.title"),
+      description: t("form.destroy.description"),
       onConfirm,
     });
   };
 
   return (
     <Button
-      variant={"destructive"}
+      variant={"destroy"}
       className="w-full"
       onClick={handleClick}
       size={"sm"}

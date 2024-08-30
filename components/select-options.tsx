@@ -6,13 +6,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+export type SelectData = {
+  option: string;
+  label: string;
+};
 interface SelectOptionsProps {
   label: string;
-  value: string;
-  options: {
-    option: string;
-    label: string;
-  }[];
+  value: string | undefined;
+  options: SelectData[];
   onChange: (value: string) => void;
   disabled?: boolean;
 }
@@ -23,8 +24,15 @@ export const SelectOptions = ({
   label,
   disabled,
 }: SelectOptionsProps) => {
+  const handleChange = (currentValue: string) => {
+    onChange(currentValue === value ? "" : currentValue);
+  };
   return (
-    <Select onValueChange={onChange} defaultValue={value} disabled={disabled}>
+    <Select
+      onValueChange={handleChange}
+      defaultValue={value}
+      disabled={disabled}
+    >
       <SelectTrigger>
         <SelectValue placeholder={label} />
       </SelectTrigger>

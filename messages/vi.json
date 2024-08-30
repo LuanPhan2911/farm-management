@@ -67,7 +67,7 @@
     }
   },
   "dashboard": {
-    "heading": "Tổng quan",
+    "title": "Tổng quan",
     "userButton": "Thông tin tài khoản",
     "notification": {
       "title": "Thông báo",
@@ -75,29 +75,12 @@
     }
   },
   "categories": {
-    "heading": "Quản lý thể loại",
-    "button": {
-      "create": "Thêm",
-      "edit": "Sửa",
-      "destroy": "Xóa"
-    },
+    "title": "Quản lý thể loại",
     "table": {
-      "heading": "Tất cả thể loại",
+      "title": "Tất cả thể loại",
       "thead": {
         "name": "Tên",
         "description": "Mô tả"
-      },
-      "action": {
-        "label": "Hành động",
-        "edit": "Sửa",
-        "destroy": "Xóa"
-      },
-      "bulkAction": {
-        "deleteSelected": {
-          "label": "Xóa tất cả đã chọn",
-          "title": "Xóa tất cả thể loại đã chọn?",
-          "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
-        }
       }
     },
     "search": {
@@ -106,15 +89,23 @@
 
     "form": {
       "create": {
+        "label": "Thêm",
         "title": "Thêm thể loại",
         "description": "Thể loại được dùng để phân loại sinh vật trong nông trại"
       },
       "edit": {
+        "label": "Sửa",
         "title": "Sửa thể loại",
         "description": "Thể loại có thể cập nhật"
       },
       "destroy": {
+        "label": "Xóa",
         "title": "Xóa thể loại?",
+        "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
+      },
+      "destroySelected": {
+        "label": "Xóa tất cả đã chọn",
+        "title": "Xóa tất cả thể loại đã chọn?",
         "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
       }
     },
@@ -123,12 +114,12 @@
         "parse": "Dữ liệu không hợp lệ!"
       },
       "name": {
-        "minlength": "Tên thể loại là trường bắt buộc!",
+        "min": "Tên thể loại là trường bắt buộc!",
         "label": "Tên",
         "placeholder": "Tên thể loại"
       },
       "description": {
-        "minlength": "Mô tả thể loại là trường bắt buộc!",
+        "min": "Mô tả thể loại là trường bắt buộc!",
         "label": "Mô tả",
         "placeholder": "Mô tả tên thể loại"
       }
@@ -147,29 +138,13 @@
     }
   },
   "units": {
-    "heading": "Quản lý đơn vị tính",
-    "button": {
-      "create": "Thêm",
-      "edit": "Sửa",
-      "destroy": "Xóa"
+    "page": {
+      "title": "Quản lý đơn vị tính"
     },
     "table": {
-      "heading": "Tất cả đơn vị tính",
       "thead": {
         "name": "Tên",
         "description": "Mô tả"
-      },
-      "action": {
-        "label": "Hành động",
-        "edit": "Sửa",
-        "destroy": "Xóa"
-      },
-      "bulkAction": {
-        "deleteSelected": {
-          "label": "Xóa tất cả đã chọn",
-          "title": "Xóa tất cả đơn vị tính đã chọn?",
-          "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
-        }
       }
     },
     "search": {
@@ -178,15 +153,23 @@
 
     "form": {
       "create": {
+        "label": "Thêm",
         "title": "Thêm đơn vị tính",
-        "description": "Đơn vị tính được dùng để phân loại sinh vật trong nông trại"
+        "description": "Đơn vị mô tả giá trị các thuộc tính của dữ liệu"
       },
       "edit": {
+        "label": "Sửa",
         "title": "Sửa đơn vị tính",
         "description": "Đơn vị tính có thể cập nhật"
       },
       "destroy": {
+        "label": "Xóa",
         "title": "Xóa đơn vị tính?",
+        "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
+      },
+      "destroySelected": {
+        "label": "Xóa tất cả đã chọn",
+        "title": "Xóa tất cả đơn vị tính đã chọn?",
         "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
       }
     },
@@ -195,12 +178,14 @@
         "parse": "Dữ liệu không hợp lệ!"
       },
       "name": {
-        "minlength": "Tên đơn vị tính là trường bắt buộc!",
+        "min": "Tên đơn vị tính là trường bắt buộc!",
+        "max": "Tên đơn vị có chiều dài phải lớn nhất là 50 ký tự",
         "label": "Tên",
         "placeholder": "Tên đơn vị tính"
       },
       "description": {
-        "minlength": "Mô tả đơn vị tính là trường bắt buộc!",
+        "min": "Mô tả đơn vị tính là trường bắt buộc!",
+        "max": "Mô tả đơn vị tính có chiều dài tối đa là 100 ký tự",
         "label": "Mô tả",
         "placeholder": "Mô tả tên đơn vị tính"
       }
@@ -219,32 +204,23 @@
     }
   },
   "users": {
-    "heading": "Quản lý người dùng",
-    "button": {
-      "create": "Thêm",
-      "edit": "Sửa",
-      "destroy": "Xóa"
+    "page": {
+      "title": "Quản lý người dùng",
+      "detail": {
+        "title": "Thông tin người dùng",
+        "description": "Quản lý người dùng"
+      }
     },
     "table": {
-      "heading": "Tất cả người dùng",
+      "title": "Tất cả người dùng",
       "thead": {
         "name": "Người dùng",
         "lastSignedIn": "Đăng nhập lần cuối",
-        "role": "Vai trò",
-        "joined": "Ngày tham gia"
+        "joined": "Ngày tham gia vào"
       },
-      "action": {
-        "label": "Hành động",
-        "edit": "Sửa",
-        "destroy": "Xóa",
-        "view": "Xem thông tin"
-      },
-      "bulkAction": {
-        "deleteSelected": {
-          "label": "Xóa tất cả đã chọn",
-          "title": "Xóa tất cả người dùng đã chọn?",
-          "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
-        }
+      "trow": {
+        "name": "Chưa điền tên",
+        "lastSignedIn": "Chưa bao giờ đăng nhập"
       }
     },
     "search": {
@@ -252,116 +228,324 @@
     },
 
     "form": {
-      "create": {
-        "title": "Thêm người dùng",
-        "description": "Người dùng được dùng để phân loại sinh vật trong nông trại"
-      },
       "edit": {
+        "label": "Sửa",
         "title": "Sửa người dùng",
         "description": "Người dùng có thể cập nhật"
       },
       "destroy": {
+        "label": "Xóa",
         "title": "Xóa người dùng?",
         "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
-      },
-      "setRole": {
-        "title": "Cập nhật vai trò cho người dùng",
-        "description": "Cập nhật"
       }
     },
     "schema": {
       "errors": {
         "parse": "Dữ liệu không hợp lệ!"
       },
+      "id": {
+        "label": "Mã người dùng"
+      },
       "firstName": {
-        "minlength": "Tên người dùng là trường bắt buộc!",
+        "min": "Tên người dùng là trường bắt buộc!",
         "label": "Tên",
         "placeholder": "Tên người dùng"
       },
       "lastName": {
-        "minlength": "Họ người dùng là trường bắt buộc!",
+        "min": "Họ người dùng là trường bắt buộc!",
         "label": "Họ",
         "placeholder": "Họ người dùng"
       },
       "email": {
-        "minlength": "Email là trường bắt buộc phải điền",
+        "min": "Email là trường bắt buộc phải điền",
         "isEmail": "Email không hợp lệ",
         "label": "Email",
         "placeholder": "Email"
       },
       "phone": {
-        "minlength": "Số điện thoại là trường bắt buộc phải điền",
+        "min": "Số điện thoại là trường bắt buộc phải điền",
         "label": "Số điện thoại",
         "placeholder": "Số điện thoại",
         "isPhone": "Số điện thoại không hợp lệ"
       },
       "address": {
-        "minlength": "Địa chỉ là trường bắt buộc phải điền",
+        "min": "Địa chỉ là trường bắt buộc phải điền",
         "label": "Địa chỉ",
         "placeholder": "Địa chỉ"
       }
     },
     "status": {
       "success": {
-        "create": "Người dùng đã được tạo!",
         "edit": "Người dùng đã được cập nhật!",
-        "destroy": "Người dùng đã được xóa!",
-        "updateRole": "Role của người dùng đã được cập nhật"
+        "destroy": "Người dùng đã được xóa!"
       },
       "failure": {
-        "create": "Có lỗi xảy ra trong khi tạo người dùng!",
         "edit": "Có lỗi xảy ra trong khi cập nhật người dùng!",
-        "destroy": "Có lỗi xảy ra trong khi xóa người dùng!",
-        "updateRole": "Có lỗi xảy ra trong khi cập nhật role cho người dùng"
+        "destroy": "Có lỗi xảy ra trong khi xóa người dùng!"
+      }
+    }
+  },
+  "organizations": {
+    "page": {
+      "title": "Quản lý tổ chức"
+    },
+    "tabs": {
+      "profile": {
+        "title": "Thông tin chung",
+        "description": "Quản lý thông tin tổ chức"
+      },
+      "member": {
+        "title": "Thành viên",
+        "description": "Quản lý danh sách thành viên"
+      },
+      "danger": {
+        "title": "Nguy hiểm",
+        "description": "Vùng nguy hiểm"
+      }
+    },
+    "table": {
+      "thead": {
+        "name": "Tên tổ chức",
+        "slug": "Slug",
+        "memberCount": "Số lượng thành viên",
+        "createdAt": "Ngày tạo",
+        "role": "Vai trò"
+      }
+    },
+    "search": {
+      "placeholder": "Lọc theo tên tổ chức...",
+      "member": {
+        "placeholder": "Tìm kiếm theo tên..."
+      }
+    },
+
+    "form": {
+      "create": {
+        "label": "Thêm",
+        "title": "Thêm tổ chức",
+        "description": "Tổ chức quản lý nhân viên"
+      },
+      "createMember": {
+        "label": "Thêm thành viên",
+        "title": "Thêm thành viên",
+        "description": "Thêm thành viên vào tổ chức"
+      },
+      "edit": {
+        "label": "Sửa",
+        "title": "Sửa tổ chức",
+        "description": "Tổ chức có thể cập nhật"
+      },
+      "destroy": {
+        "label": "Xóa",
+        "title": "Xóa tổ chức?",
+        "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
+      },
+      "destroySelected": {
+        "label": "Xóa tất cả đã chọn",
+        "title": "Xóa tất cả tổ chức đã chọn?",
+        "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Dữ liệu không hợp lệ!",
+        "exist": "Slug đã được sử dụng",
+        "existStaff": "Người tạo tổ chức không tồn tại",
+        "existMember": "Nhân viên được thêm vào tổ chức không tồn tại",
+        "existLogo": "Không tìm thấy logo để cập nhật"
+      },
+      "id": {
+        "label": "Mã tổ chức"
+      },
+      "name": {
+        "min": "Tên tổ chức là trường bắt buộc!",
+        "max": "Tên đơn vị có chiều dài phải lớn nhất là 100 ký tự",
+        "label": "Tên",
+        "placeholder": "Tên tổ chức"
+      },
+      "slug": {
+        "min": "Slug là trường bắt buộc!",
+        "max": "Slug có chiều dài phải lớn nhất là 100 ký tự",
+        "label": "Slug",
+        "placeholder": "Slug"
+      },
+      "createdBy": {
+        "label": "Người tạo tổ chức",
+        "placeholder": "Chọn người tạo tổ chức",
+        "min": "Người tạo tổ chức bắt buộc phải chọn",
+        "notFound": "Không tìm thấy nhân viên"
+      },
+      "memberId": {
+        "label": "Email thành viên",
+        "placeholder": "Chọn email thành viên",
+        "min": "Email là trường bắt buộc phải điền",
+        "notFound": "Không tìm thấy thành viên"
+      },
+      "createdAt": {
+        "label": "Ngày tạo tổ chức"
+      },
+      "logo": {
+        "label": "Tải logo"
+      },
+      "role": {
+        "label": "Vai trò",
+        "placeholder": "Chọn vai trò",
+        "min": "Vai trò bắt buộc phải điền"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Tổ chức đã được tạo!",
+        "createMember": "Thêm thành viên thành công",
+        "edit": "Tổ chức đã được cập nhật!",
+        "destroy": "Tổ chức đã được xóa!"
+      },
+      "failure": {
+        "create": "Có lỗi xảy ra trong khi tạo tổ chức!",
+        "createMember": "Có lỗi xảy ra trong khi thêm thành viên vào tổ chức!",
+        "edit": "Có lỗi xảy ra trong khi cập nhật tổ chức!",
+        "destroy": "Có lỗi xảy ra trong khi xóa tổ chức!"
+      }
+    }
+  },
+  "staffs": {
+    "page": {
+      "title": "Quản lý nhân viên",
+      "detail": {
+        "title": "Thông tin nhân viên",
+        "description": "Quản lý nhân viên"
+      }
+    },
+    "table": {
+      "title": "Tất cả nhân viên",
+      "thead": {
+        "name": "Nhân viên",
+        "role": "Vai trò",
+        "lastSignedIn": "Đăng nhập lần cuối",
+        "joined": "Ngày tham gia vào"
+      },
+      "trow": {
+        "name": "Chưa điền tên",
+        "lastSignedIn": "Chưa bao giờ đăng nhập"
+      }
+    },
+    "search": {
+      "placeholder": "Lọc theo tên nhân viên..."
+    },
+
+    "form": {
+      "create": {
+        "label": "Thêm nhân viên",
+        "description": "Thêm nhân viên mới",
+        "title": "Thêm nhân viên"
+      },
+      "edit": {
+        "label": "Sửa",
+        "title": "Sửa nhân viên",
+        "description": "Nhân viên có thể cập nhật"
+      },
+      "destroy": {
+        "label": "Xóa",
+        "title": "Xóa nhân viên?",
+        "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
+      },
+      "editRole": {
+        "label": "Cập nhật vai trò",
+        "title": "Cập nhật vai trò",
+        "description": "Cập nhật vai trò cho nhân viên"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Dữ liệu không hợp lệ!"
+      },
+      "id": {
+        "label": "Mã nhân viên"
+      },
+      "name": {
+        "label": "Tên nhân viên",
+        "placeholder": "Tên nhân viên",
+        "min": "Tên nhân viên bắt buộc phải điền",
+        "max": "Tên nhân viên tối đa 100 ký tự"
+      },
+      "email": {
+        "min": "Email là trường bắt buộc phải điền",
+        "isEmail": "Email không hợp lệ",
+        "label": "Email",
+        "placeholder": "Email",
+        "max": "Email nhân viên có chiều dài tối đa là 100 ký tự"
+      },
+      "password": {
+        "min": "Mật khẩu phải có ít nhất 8 ký tự",
+        "label": "Mật khẩu",
+        "placeholder": "Mật khẩu",
+        "max": "Mật khẩu có chiều dài tối đa là 100 ký tự"
+      },
+      "role": {
+        "native": "Chọn vai trò trong danh sách",
+        "label": "Vai trò",
+        "placeholder": "Chọn vai trò"
+      },
+      "receiverEmail": {
+        "label": "Email người nhận",
+        "placeholder": "Email người nhận",
+        "max": "Email người nhận có chiều dài tối đa là 200 ký tự"
+      }
+    },
+    "status": {
+      "success": {
+        "edit": "Nhân viên đã được cập nhật!",
+        "destroy": "Nhân viên đã được xóa!",
+        "editRole": "Vai trò nhân viên đã được cập nhật"
+      },
+      "failure": {
+        "edit": "Có lỗi xảy ra trong khi cập nhật nhân viên!",
+        "destroy": "Có lỗi xảy ra trong khi xóa nhân viên!",
+        "editRole": "Có lỗi xảy ra trong khi cập nhật vai trò nhân viên"
       }
     }
   },
   "applicants": {
-    "heading": "Quản lý ứng viên",
-    "button": {
-      "apply": "Nộp đơn",
-      "destroy": "Xóa",
-      "close": "Đóng",
-      "submit": "Gửi"
+    "page": {
+      "title": "Quản lý ứng viên"
     },
     "table": {
-      "heading": "Tất cả ứng viên",
       "thead": {
         "name": "Tên",
         "email": "Email",
         "address": "Địa chỉ",
         "phone": "Số điện thoại",
         "status": "Trạng thái"
-      },
-      "action": {
-        "label": "Hành động",
-        "destroy": "Xóa",
-        "updateRole": "Cập nhật quyền"
-      },
-      "bulkAction": {
-        "deleteSelected": {
-          "label": "Xóa tất cả đã chọn",
-          "title": "Xóa tất cả ứng viên đã chọn?",
-          "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
-        }
       }
     },
     "search": {
-      "placeholder": "Lọc theo tên ứng viên..."
+      "placeholder": "Lọc theo tên ứng viên...",
+      "comboBox": {
+        "notFound": "Không tìm thây công việc",
+        "label": "Chọn công việc"
+      }
     },
 
     "form": {
       "apply": {
+        "label": "Nộp đơn",
         "title": "Nộp đơn",
         "description": "Nộp đơn công việc này"
       },
       "destroy": {
+        "label": "Xóa",
         "title": "Xóa ứng viên?",
         "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
       },
-      "setRole": {
-        "title": "Cập nhật quyền cho ứng viên",
+      "createStaff": {
+        "label": "Thêm nhân viên",
+        "title": "Tạo nhân viên mới",
         "description": "Một tài khoản mới sẽ được tạo cho ứng viên với quyền được chọn"
+      },
+      "destroySelected": {
+        "label": "Xóa tất cả đã chọn",
+        "title": "Xóa tất cả ứng viên đã chọn?",
+        "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
       }
     },
     "schema": {
@@ -369,61 +553,60 @@
         "parse": "Dữ liệu không hợp lệ!",
         "jobIdInvalid": "Công việc không hợp lệ",
         "existingApplicant": "Bạn đã nộp đơn công việc này rồi",
-        "noExist": "Ứng viên không tồn tại"
+        "exist": "Ứng viên đã được tạo nhân viên hoặc không tồn tại",
+        "emailExist": "Email ứng viên dùng để tạo nhân viên đã tồn tại"
       },
       "name": {
-        "minlength": "Tên ứng viên là trường bắt buộc",
+        "min": "Tên ứng viên là trường bắt buộc",
+        "max": "Tên ứng viên có chiều dài tối đa là 100 ký tự",
         "label": "Tên ứng viên",
         "placeholder": "Tên ứng viên"
       },
       "email": {
-        "minlength": "Email ứng viên là trường bắt buộc phải điền",
+        "min": "Email ứng viên là trường bắt buộc phải điền",
+        "max": "Email ứng viên có chiều dài tối đa là 100 ký tự",
         "isEmail": "Email không hợp lệ",
         "label": "Email",
         "placeholder": "Email ứng viên"
       },
       "phone": {
-        "minlength": "Số điện thoại ứng viên là trường bắt buộc phải điền",
+        "min": "Số điện thoại ứng viên là trường bắt buộc phải điền",
+        "max": "Số điệnt thoại ứng viên có chiều dài tối đa là 15 số",
         "label": "Số điện thoại",
         "placeholder": "Số điện thoại",
         "isPhone": "Số điện thoại không hợp lệ"
       },
       "address": {
-        "minlength": "Địa chỉ ứng viên là trường bắt buộc phải điền",
+        "min": "Địa chỉ ứng viên là trường bắt buộc phải điền",
+        "max": "Địa chỉ ứng viên có chiều dài tối đa là 100 ký tự",
         "label": "Địa chỉ",
         "placeholder": "Địa chỉ"
       },
       "note": {
         "label": "Ghi chú",
-        "placeholder": "Ghi chú"
-      },
-      "role": {
-        "minlength": "Vai trò là trường bắt buộc phải điền",
-        "label": "Vai trò"
+        "placeholder": "Ghi chú",
+        "max": "Ghi chú có chiều dài tối đa là 200 ký tự"
       }
     },
     "status": {
       "success": {
         "create": "Nộp đơn cho công việc thành công",
         "destroy": "Ứng viên đã được xóa!",
-        "updateRole": "Role của ứng viên đã được cập nhật"
+        "createStaff": "Nhân viên đã được tạo"
       },
       "failure": {
         "create": "Có lỗi xảy ra trong khi nộp đơn",
         "destroy": "Có lỗi xảy ra trong khi xóa ứng viên!",
-        "updateRole": "Có lỗi xảy ra trong khi cập nhật role cho ứng viên"
+        "createStaff": "Có lỗi xảy ra trong khi thêm nhân viên"
       }
     }
   },
   "jobs": {
-    "heading": "Quản lý việc làm",
-    "button": {
-      "create": "Thêm",
-      "edit": "Sửa",
-      "destroy": "Xóa"
+    "page": {
+      "title": "Quản lý việc làm"
     },
+
     "table": {
-      "heading": "Tất cả việc làm",
       "thead": {
         "name": "Tên",
         "quantity": "Số lượng",
@@ -431,18 +614,6 @@
         "experience": "Kinh nghiệm làm việc",
         "published": "Công khai",
         "expiredAt": "Ngày hết hạng"
-      },
-      "action": {
-        "label": "Hành động",
-        "edit": "Sửa",
-        "destroy": "Xóa"
-      },
-      "bulkAction": {
-        "deleteSelected": {
-          "label": "Xóa tất cả đã chọn",
-          "title": "Xóa tất cả việc làm đã chọn?",
-          "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
-        }
       }
     },
     "search": {
@@ -451,15 +622,23 @@
 
     "form": {
       "create": {
+        "label": "Thêm việc làm",
         "title": "Thêm việc làm",
-        "description": "Việc làm được dùng để phân loại sinh vật trong nông trại"
+        "description": "Đăng tin tuyển dụng việc làm cho nông trại"
       },
       "edit": {
+        "label": "Sửa",
         "title": "Sửa việc làm",
         "description": "Việc làm có thể cập nhật"
       },
       "destroy": {
+        "label": "Xóa",
         "title": "Xóa việc làm?",
+        "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
+      },
+      "destroySelected": {
+        "label": "Xóa tất cả",
+        "title": "Xóa tất cả công việc đã chọn",
         "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
       }
     },
@@ -468,7 +647,8 @@
         "parse": "Dữ liệu không hợp lệ!"
       },
       "name": {
-        "minlength": "Tên việc làm là trường bắt buộc!",
+        "min": "Tên việc làm là trường bắt buộc!",
+        "max": "Tên việc làm có chiều dài tối đa là 100 ký tự",
         "label": "Tên",
         "placeholder": "Tên việc làm"
       },
@@ -521,27 +701,32 @@
       },
 
       "workingTime": {
-        "minlength": "Thời gian làm việc là trường bắt buộc!",
+        "min": "Thời gian làm việc là trường bắt buộc!",
+        "max": "Thời gian làm việc có chiều dài tối đa là 100 ký tự",
         "label": "Thời gian làm việc",
         "placeholder": "Thời gian làm việc"
       },
       "wage": {
-        "minlength": "Lương là trường bắt buộc!",
+        "min": "Lương là trường bắt buộc!",
+        "max": "Lương có chiều dài tối đa là 100 ký tự",
         "label": "Lương",
         "placeholder": "Lương công việc"
       },
       "description": {
-        "minlength": "Mô tả việc làm là trường bắt buộc!",
+        "min": "Mô tả việc làm là trường bắt buộc!",
+        "max": "Mô tả việc làm có chiều dài tối đa là 5000 ký tự",
         "label": "Mô tả",
         "placeholder": "Mô tả tên việc làm"
       },
       "requirement": {
-        "minlength": "Yêu cầu việc làm là trường bắt buộc!",
+        "min": "Yêu cầu việc làm là trường bắt buộc!",
+        "max": "Yêu cầu việc làm có chiều dài tối đa là 5000 ký tự",
         "label": "Yêu cầu việc làm",
         "placeholder": "Yêu cầu việc làm"
       },
       "rights": {
-        "minlength": "Quyền lợi việc làm là trường bắt buộc!",
+        "min": "Quyền lợi việc làm là trường bắt buộc!",
+        "max": "Quyền lợi việc làm có chiều dài tối đa là 5000 ký tự",
         "label": "Quyền lợi việc làm",
         "placeholder": "Quyền lợi việc làm"
       }
@@ -551,13 +736,13 @@
         "create": "Việc làm đã được tạo!",
         "edit": "Việc làm đã được cập nhật!",
         "destroy": "Việc làm đã được xóa!",
-        "updatePublished": "Việc làm trạng thái đã được cập nhật"
+        "editPublished": "Việc làm trạng thái đã được cập nhật"
       },
       "failure": {
         "create": "Có lỗi xảy ra trong khi tạo việc làm!",
         "edit": "Có lỗi xảy ra trong khi cập nhật việc làm!",
         "destroy": "Có lỗi xảy ra trong khi xóa việc làm!",
-        "updatePublished": "Có lỗi xảy ra khi cập nhật trạng thái công khai"
+        "editPublished": "Có lỗi xảy ra khi cập nhật trạng thái công khai"
       }
     },
     "notFound": {
@@ -595,6 +780,10 @@
     "/admin/jobs/edit": "Sửa",
     "/admin/applicants": "Ứng viên",
     "/admin/users": "Người dùng",
-    "/admin/users/detail": "Chi tiết"
+    "/admin/users/detail": "Chi tiết",
+    "/admin/staffs": "Nhân viên",
+    "/admin/staffs/detail": "Chi tiết",
+    "/admin/organizations": "Tổ chức",
+    "/admin/organizations/detail": "Chi tiết"
   }
 }

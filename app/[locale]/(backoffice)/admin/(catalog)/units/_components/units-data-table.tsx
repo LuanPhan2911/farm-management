@@ -2,26 +2,21 @@
 import { DataTable } from "@/components/datatable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslations } from "next-intl";
-
 import { Checkbox } from "@/components/ui/checkbox";
-
 import { ColumnDef } from "@tanstack/react-table";
-
 import { DataTableColumnHeader } from "@/components/datatable/datatable-column-header";
 import { Unit } from "@prisma/client";
 import { UnitsTableAction } from "./units-table-action";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
-import { deleteMany } from "@/actions/unit";
+import { destroyMany } from "@/actions/unit";
 import { toast } from "sonner";
+import { UnitCreateButton } from "./unit-create-button";
 
 interface UnitsTableProps {
   data: Unit[];
 }
 export const UnitsTable = ({ data }: UnitsTableProps) => {
-  const tTable = useTranslations("units.table");
-  const tSearch = useTranslations("units.search");
-  const tBulkAction = useTranslations("units.table.bulkAction");
-  const tForm = useTranslations("form");
+  const t = useTranslations("units");
   const { onOpen, onClose } = useAlertDialog();
 
   const columns: ColumnDef<Unit>[] = [
@@ -51,13 +46,16 @@ export const UnitsTable = ({ data }: UnitsTableProps) => {
       accessorKey: "name",
       header: ({ column }) => {
         return (
-          <DataTableColumnHeader column={column} title={tTable("thead.name")} />
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.thead.name")}
+          />
         );
       },
     },
     {
       accessorKey: "description",
-      header: tTable("thead.description"),
+      header: t("table.thead.description"),
     },
     {
       id: "actions",
@@ -70,14 +68,14 @@ export const UnitsTable = ({ data }: UnitsTableProps) => {
 
   const bulkActions = [
     {
-      label: tBulkAction("deleteSelected.label"),
+      label: t("form.destroySelected.label"),
       action: (rows: Unit[]) => {
         onOpen({
-          title: tBulkAction("deleteSelected.title"),
-          description: tBulkAction("deleteSelected.description"),
+          title: t("form.destroySelected.title"),
+          description: t("form.destroySelected.description"),
           onConfirm: () => {
             const ids = rows.map((row) => row.id);
-            deleteMany(ids)
+            destroyMany(ids)
               .then(({ message, ok }) => {
                 if (ok) {
                   toast.success(message);
@@ -86,7 +84,7 @@ export const UnitsTable = ({ data }: UnitsTableProps) => {
                 }
               })
               .catch((error: Error) => {
-                toast.error(tForm("error"));
+                toast.error(t("status.failure.destroy"));
               })
               .finally(() => {
                 onClose();
@@ -100,16 +98,19 @@ export const UnitsTable = ({ data }: UnitsTableProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{tTable("heading")}</CardTitle>
+        <CardTitle>{t("page.title")}</CardTitle>
       </CardHeader>
       <CardContent>
+        <div className="flex justify-end">
+          <UnitCreateButton />
+        </div>
         <DataTable
           columns={columns}
           data={data}
           filterColumn={{
             isShown: true,
             value: "name",
-            placeholder: tSearch("placeholder"),
+            placeholder: t("search.placeholder"),
           }}
           bulkActions={bulkActions}
         />

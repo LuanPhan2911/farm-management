@@ -51,12 +51,9 @@ export const CategoryEditButton = ({
 export const CategoryEditDialog = () => {
   const { isOpen, type, data, onClose } = useDialog();
   const isOpenDialog = isOpen && type === "category.edit";
-
   const tSchema = useTranslations("categories.schema");
-  const tEdit = useTranslations("categories.form.edit");
-  const tForm = useTranslations("form");
   const formSchema = CategorySchema(tSchema);
-
+  const t = useTranslations("categories");
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -88,15 +85,15 @@ export const CategoryEditDialog = () => {
           }
         })
         .catch((error) => {
-          toast.error(tForm("error"));
+          toast.error(t("status.failure.edit.error"));
         });
     });
   };
   return (
     <DynamicDialog
       isOpen={isOpenDialog}
-      title={tEdit("title")}
-      description={tEdit("description")}
+      title={t("form.edit.title")}
+      description={t("form.edit.description")}
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -139,11 +136,11 @@ export const CategoryEditDialog = () => {
           <DialogFooter>
             <DialogClose asChild>
               <Button type="button" variant="secondary">
-                {tForm("button.close")}
+                Close
               </Button>
             </DialogClose>
             <Button type="submit" disabled={isPending}>
-              {tForm("button.submit")}
+              Submit
             </Button>
           </DialogFooter>
         </form>

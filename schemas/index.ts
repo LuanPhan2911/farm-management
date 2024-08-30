@@ -1,84 +1,50 @@
-import { Gender, JobExperience, JobWorkingState } from "@prisma/client";
+import {
+  Gender,
+  JobExperience,
+  JobWorkingState,
+  StaffRole,
+} from "@prisma/client";
 import { addDays } from "date-fns";
 import { z } from "zod";
 import validator from "validator";
+import { OrgRole } from "@/types";
 export const CategorySchema = (t: (arg: string) => string) =>
   z.object({
-    name: z
-      .string()
-      .min(1, {
-        message: t("name.minlength"),
-      })
-      .max(100),
-    description: z.string().min(1, {
-      message: t("description.minlength"),
-    }),
+    name: z.string().min(1, t("name.min")).max(100),
+    description: z.string().min(1, t("description.min")),
   });
 export const UnitSchema = (t: (arg: string) => string) =>
   z.object({
-    name: z
-      .string()
-      .min(1, {
-        message: t("name.minlength"),
-      })
-      .max(100),
-    description: z.string().min(1, {
-      message: t("description.minlength"),
-    }),
+    name: z.string().min(1, t("name.min")).max(50, t("name.max")),
+    description: z.optional(
+      z.string().min(1, t("description.min")).max(100, t("description.max"))
+    ),
   });
 export const JobSchema = (t: (arg: string) => string) =>
   z.object({
-    name: z
-      .string()
-      .min(1, {
-        message: t("name.minlength"),
-      })
-      .max(100),
+    name: z.string().min(1, t("name.min")).max(100, t("name.max")),
     description: z
       .string()
-      .min(1, {
-        message: t("description.minlength"),
-      })
-      .max(5000),
+      .min(1, t("description.min"))
+      .max(5000, t("description.max")),
     requirement: z
       .string()
-      .min(1, {
-        message: t("requirement.minlength"),
-      })
-      .max(5000),
-    rights: z
-      .string()
-      .min(1, {
-        message: t("rights.minlength"),
-      })
-      .max(5000),
+      .min(1, t("requirement.min"))
+      .max(5000, t("requirement.max")),
+    rights: z.string().min(1, t("rights.min")).max(5000, t("rights.max")),
     workingTime: z
       .string()
-      .min(1, {
-        message: t("workingTime.minlength"),
-      })
-      .max(100),
-    wage: z
-      .string()
-      .min(1, {
-        message: t("wage.minlength"),
-      })
-      .max(100),
+      .min(1, t("workingTime.min"))
+      .max(100, t("workingTime.max")),
+    wage: z.string().min(1, t("wage.min")).max(100, t("wage.max")),
     quantity: z.coerce
       .number({
         required_error: t("quantity.required_error"),
         invalid_type_error: t("quantity.invalid_type"),
       })
-      .int()
-      .min(1, {
-        message: t("quantity.min"),
-      })
-      .max(100, {
-        message: t("quantity.max"),
-      })
-      .int({
-        message: t("quantity.int"),
-      }),
+      .min(1, t("quantity.min"))
+      .max(100, t("quantity.max"))
+      .int(t("quantity.int")),
     experience: z.nativeEnum(JobExperience, {
       message: t("experience.enum"),
     }),
@@ -88,59 +54,43 @@ export const JobSchema = (t: (arg: string) => string) =>
     workingState: z.nativeEnum(JobWorkingState, {
       message: t("workingState.enum"),
     }),
-    expiredAt: z.date().refine(
-      (expiredAt) => {
-        return expiredAt >= addDays(new Date(), -1);
-      },
-      {
-        message: t("expiredAt.min"),
-      }
-    ),
+    expiredAt: z.date().refine((expiredAt) => {
+      return expiredAt >= addDays(new Date(), -1);
+    }, t("expiredAt.min")),
   });
 export const ApplicantSchema = (t: (arg: string) => string) => {
   return z.object({
-    name: z
-      .string()
-      .min(1, {
-        message: t("name.minlength"),
-      })
-      .max(100),
+    name: z.string().min(1, t("name.min")).max(100, t("name.max")),
     email: z
       .string()
-      .min(1, {
-        message: t("email.minlength"),
-      })
-      .email({
-        message: t("email.isEmail"),
-      })
-      .max(100),
+      .min(1, t("email.min"))
+      .max(100, t("email.max"))
+      .email(t("email.isEmail")),
+
     phone: z
       .string()
-      .min(1, {
-        message: t("phone.minlength"),
-      })
-      .refine(validator.isMobilePhone, {
-        message: "phone.isPhone",
-      }),
-    address: z
-      .string()
-      .min(1, {
-        message: t("address.minlength"),
-      })
-      .max(100),
-    note: z.string().max(200),
+      .min(1, t("phone.min"))
+      .max(15, t("phone.max"))
+      .refine(validator.isMobilePhone, "phone.isPhone"),
+    address: z.string().min(1, t("address.min")).max(100, t("address.max")),
+    note: z.optional(z.string().max(200, t("note.max"))),
   });
 };
 
-export const ApplicantUpdateRoleSchema = (t: (arg: string) => string) => {
+export const StaffSchema = (t: (arg: string) => string) => {
   return z.object({
-    name: z
+    name: z.string().min(1, t("name.min")).max(100, t("name.max")),
+    email: z
       .string()
-      .min(1, {
-        message: t("name.minlength"),
-      })
-      .max(100),
-    role: z.string().min(1, { message: t("role.minlength") }),
+      .min(1, t("email.min"))
+      .email(t("email.isEmail"))
+      .max(100, t("email.max")),
+    password: z.string().min(8, t("password.min")).max(50, t("password.max")),
+
+    role: z.nativeEnum(StaffRole, {
+      message: t("role.native"),
+    }),
+    receiverEmail: z.optional(z.string().max(200, t("receiverEmail.max"))),
   });
 };
 
@@ -149,23 +99,23 @@ export const UserSchema = (t: (arg: string) => string) => {
     email: z
       .string()
       .min(1, {
-        message: t("email.minlength"),
+        message: t("email.min"),
       })
       .email({
         message: t("email.isEmail"),
       })
       .max(100),
     firstName: z.string().min(1, {
-      message: t("firstName.minlength"),
+      message: t("firstName.min"),
     }),
     lastName: z.string().min(1, {
-      message: t("lastName.minlength"),
+      message: t("lastName.min"),
     }),
 
     phone: z
       .string()
       .min(1, {
-        message: t("phone.minlength"),
+        message: t("phone.min"),
       })
       .refine(validator.isMobilePhone, {
         message: "phone.isPhone",
@@ -173,8 +123,55 @@ export const UserSchema = (t: (arg: string) => string) => {
     address: z
       .string()
       .min(1, {
-        message: t("address.minlength"),
+        message: t("address.min"),
       })
       .max(100),
+  });
+};
+
+export const OrganizationSchema = (t: (arg: string) => string) => {
+  return z.object({
+    name: z.string().min(1, t("name.min")).max(100, t("name.max")),
+    slug: z.string().min(1, t("slug.min")).max(100, t("slug.max")),
+    createdBy: z.string().min(1, t("createdBy.min")),
+  });
+};
+
+const orgRoles = ["org:admin", "org:member"] as const;
+export const OrganizationMemberSchema = (t: (arg: string) => string) => {
+  return z.object({
+    memberId: z.string().min(1, t("memberId.min")),
+    role: z.enum(orgRoles),
+  });
+};
+
+export const FieldSchema = (t: (arg: string) => string) => {
+  return z.object({
+    name: z.string().min(1, t("name.min")).max(100, t("name.max")),
+    location: z.string().min(1, t("location.min")).max(100, t("location.max")),
+    orgId: z.string().min(1, t("orgId.min")),
+    height: z.coerce
+      .number({
+        required_error: t("height.required_error"),
+        invalid_type_error: t("height.invalid_type"),
+      })
+      .min(0, t("heightValue.min")),
+    width: z.coerce
+      .number({
+        required_error: t("width.required_error"),
+        invalid_type_error: t("width.invalid_type"),
+      })
+      .min(0, t("widthValue.min")),
+
+    area: z.coerce
+      .number({
+        required_error: t("area.required_error"),
+        invalid_type_error: t("area.invalid_type"),
+      })
+      .min(0, t("areaValue.min")),
+    unitId: z.string().min(1, t("unitId.min")),
+    shape: z.optional(
+      z.string().min(1, t("shape.min")).max(100, t("shape.max"))
+    ),
   });
 };

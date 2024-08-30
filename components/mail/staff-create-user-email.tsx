@@ -12,23 +12,23 @@ import {
 
 import { siteConfig } from "@/configs/siteConfig";
 
-interface CreateUserEmailProps {
+interface StaffCreateUserEmailProps {
   senderName: string;
   receiveName: string;
-  jobTitle: string;
+  title: string;
   email: string;
   password: string;
 }
 
 const baseUrl = process.env.BASE_URL ? `${process.env.BASE_URL}` : "";
 
-export const CreateUserEmail = ({
-  jobTitle,
+export const StaffCreateUserEmail = ({
+  title,
   receiveName,
   senderName,
   email,
   password,
-}: CreateUserEmailProps) => {
+}: StaffCreateUserEmailProps) => {
   return (
     <Html>
       <Head />
@@ -49,17 +49,9 @@ export const CreateUserEmail = ({
           </Link>
           <Text style={paragraph}>Kính gửi {receiveName},</Text>
           <Text style={paragraph}>
-            Chúng tôi rất vui mừng thông báo rằng bạn đã được chọn cho vị trí{" "}
-            <span style={{ fontWeight: 700 }}>{jobTitle}</span> tại{" "}
-            {siteConfig.name}
+            Tài khoản trên {siteConfig.name} đã được tạo.
           </Text>
-          <Text style={paragraph}>
-            Chúng tôi đánh giá cao kinh nghiệm và kỹ năng của bạn. Chúng tôi tin
-            rằng bạn sẽ là một thành viên giá trị của đội ngũ chúng tôi.
-          </Text>
-          <Text style={paragraph}>
-            Chúng tôi sẽ sớm liên hệ với bạn để sắp xếp các thủ tục nhập việc.
-          </Text>
+
           <Text style={paragraph}>
             Bạn có thể đăng nhập vào website của chúng tôi bằng địa chỉ email:
             <span style={{ fontWeight: 700 }}>{email}</span>. Mật khẩu đăng nhập

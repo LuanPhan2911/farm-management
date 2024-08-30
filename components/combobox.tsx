@@ -18,17 +18,17 @@ export interface ComboBoxData {
 }
 interface ComboBoxProps {
   data: ComboBoxData[];
-  labelSelect: string;
-  labelSearch: string;
-  labelNotfound: string;
+  notFound: string;
+  label: string;
   onChange: (value: string) => void;
+  isSearch?: boolean;
 }
 export const ComboBox = ({
   data,
-  labelSearch,
-  labelSelect,
-  labelNotfound,
+  notFound,
+  label,
   onChange,
+  isSearch = true,
 }: ComboBoxProps) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
@@ -37,25 +37,26 @@ export const ComboBox = ({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
+          variant="success"
           role="combobox"
           aria-expanded={open}
-          className="w-[300px] justify-between"
+          className="w-[260px] justify-between"
         >
           <p className="h-full w-[240px] truncate">
             {value
               ? data.find((item) => item.value === value)?.label
-              : labelSelect}
+              : "Select jobs"}
           </p>
 
           <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[300px] p-0">
-        <Command>
-          <CommandInput placeholder={labelSearch} />
+      <PopoverContent className="w-[260px] p-0">
+        <Command shouldFilter={isSearch}>
+          {isSearch && <CommandInput placeholder={label} />}
           <CommandList>
-            <CommandEmpty>{labelNotfound}</CommandEmpty>
+            {isSearch && <CommandEmpty>{notFound}</CommandEmpty>}
+
             <CommandGroup>
               {data.map((item) => (
                 <CommandItem
@@ -64,7 +65,7 @@ export const ComboBox = ({
                   onSelect={(currentValue) => {
                     setValue(currentValue === value ? "" : currentValue);
                     setOpen(false);
-                    onChange(currentValue);
+                    onChange(currentValue === value ? "" : currentValue);
                   }}
                 >
                   <Check
