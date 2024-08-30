@@ -15,10 +15,11 @@ datasource db {
 
 model Unit {
   id          String      @id @default(uuid())
-  name        String
-  description String
+  name        String      @unique
+  description String?
   floatUnit   FloatUnit[]
   intUnit     IntUnit[]
+  field       Field[]
 }
 
 model FloatUnit {
@@ -26,10 +27,6 @@ model FloatUnit {
   value  Float
   unitId String
   unit   Unit   @relation(fields: [unitId], references: [id], onDelete: Cascade)
-
-  heightFields Field[] @relation(name: "height")
-  widthFields  Field[] @relation(name: "width")
-  areaFields   Field[] @relation(name: "area")
 
   tempuratureWeathers Weather[] @relation(name: "temperature")
 
@@ -191,14 +188,11 @@ model Field {
   orgId    String @unique
 
   //manage width, height, area, shape
-  heightId String
-  height   FloatUnit @relation(name: "height", fields: [heightId], references: [id])
-
-  widthId String
-  width   FloatUnit @relation(name: "width", fields: [widthId], references: [id])
-
-  areaId String
-  area   FloatUnit @relation(name: "area", fields: [areaId], references: [id])
+  width  Float
+  height Float
+  area   Float
+  unitId String?
+  unit   Unit?   @relation(fields: [unitId], references: [id], onDelete: SetNull)
   shape  String?
 
   createdAt DateTime @default(now())

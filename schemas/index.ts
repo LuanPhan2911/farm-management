@@ -16,10 +16,9 @@ export const CategorySchema = (t: (arg: string) => string) =>
 export const UnitSchema = (t: (arg: string) => string) =>
   z.object({
     name: z.string().min(1, t("name.min")).max(50, t("name.max")),
-    description: z
-      .string()
-      .min(1, t("description.min"))
-      .max(100, t("description.max")),
+    description: z.optional(
+      z.string().min(1, t("description.min")).max(100, t("description.max"))
+    ),
   });
 export const JobSchema = (t: (arg: string) => string) =>
   z.object({
@@ -151,33 +150,28 @@ export const FieldSchema = (t: (arg: string) => string) => {
     name: z.string().min(1, t("name.min")).max(100, t("name.max")),
     location: z.string().min(1, t("location.min")).max(100, t("location.max")),
     orgId: z.string().min(1, t("orgId.min")),
-    height: z.object({
-      value: z.coerce
-        .number({
-          required_error: t("heightValue.required_error"),
-          invalid_type_error: t("heightValue.invalid_type"),
-        })
-        .min(0, t("heightValue.min")),
-      unitId: z.string().min(1, t("heightUnitId.min")),
-    }),
-    width: z.object({
-      value: z.coerce
-        .number({
-          required_error: t("widthValue.required_error"),
-          invalid_type_error: t("widthValue.invalid_type"),
-        })
-        .min(0, t("widthValue.min")),
-      unitId: z.string().min(1, t("widthUnitId.min")),
-    }),
-    area: z.object({
-      value: z.coerce
-        .number({
-          required_error: t("areaValue.required_error"),
-          invalid_type_error: t("areaValue.invalid_type"),
-        })
-        .min(0, t("areaValue.min")),
-      unitId: z.string().min(1, t("areaUnitId.min")),
-    }),
-    shape: z.string().nullable(),
+    height: z.coerce
+      .number({
+        required_error: t("height.required_error"),
+        invalid_type_error: t("height.invalid_type"),
+      })
+      .min(0, t("heightValue.min")),
+    width: z.coerce
+      .number({
+        required_error: t("width.required_error"),
+        invalid_type_error: t("width.invalid_type"),
+      })
+      .min(0, t("widthValue.min")),
+
+    area: z.coerce
+      .number({
+        required_error: t("area.required_error"),
+        invalid_type_error: t("area.invalid_type"),
+      })
+      .min(0, t("areaValue.min")),
+    unitId: z.string().min(1, t("unitId.min")),
+    shape: z.optional(
+      z.string().min(1, t("shape.min")).max(100, t("shape.max"))
+    ),
   });
 };

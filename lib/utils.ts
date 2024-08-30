@@ -2,11 +2,13 @@ import { siteConfig } from "@/configs/siteConfig";
 import { getUserByEmail } from "@/services/users";
 import { ActionResponse } from "@/types";
 import { User } from "@clerk/nextjs/server";
+import { Unit } from "@prisma/client";
 import { type ClassValue, clsx } from "clsx";
 import { format } from "date-fns";
 import { getFormatter, getNow } from "next-intl/server";
 import slugify from "slugify";
 import { twMerge } from "tailwind-merge";
+import { any } from "zod";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -24,10 +26,11 @@ export function errorResponse(message: string): ActionResponse {
     ok: false,
   };
 }
-export function successResponse(message: string): ActionResponse {
+export function successResponse(message: string, data?: any): ActionResponse {
   return {
     message,
     ok: true,
+    data,
   };
 }
 export function generatePassword(length: number) {
