@@ -21,17 +21,17 @@ interface ComboBoxProps {
   notFound: string;
   label: string;
   onChange: (value: string) => void;
-  defaultValue?: string;
+  isSearch?: boolean;
 }
 export const ComboBox = ({
   data,
   notFound,
   label,
-  defaultValue,
   onChange,
+  isSearch = true,
 }: ComboBoxProps) => {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(defaultValue || "");
+  const [value, setValue] = useState("");
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -43,17 +43,20 @@ export const ComboBox = ({
           className="w-[260px] justify-between"
         >
           <p className="h-full w-[240px] truncate">
-            {value ? data.find((item) => item.value === value)?.label : label}
+            {value
+              ? data.find((item) => item.value === value)?.label
+              : "Select jobs"}
           </p>
 
           <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[260px] p-0">
-        <Command>
-          <CommandInput placeholder={label} />
+        <Command shouldFilter={isSearch}>
+          {isSearch && <CommandInput placeholder={label} />}
           <CommandList>
-            <CommandEmpty>{notFound}</CommandEmpty>
+            {isSearch && <CommandEmpty>{notFound}</CommandEmpty>}
+
             <CommandGroup>
               {data.map((item) => (
                 <CommandItem
@@ -62,7 +65,7 @@ export const ComboBox = ({
                   onSelect={(currentValue) => {
                     setValue(currentValue === value ? "" : currentValue);
                     setOpen(false);
-                    onChange(currentValue);
+                    onChange(currentValue === value ? "" : currentValue);
                   }}
                 >
                   <Check
