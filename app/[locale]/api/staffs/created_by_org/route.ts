@@ -1,7 +1,7 @@
 import { getStaffsForCreatedByOrganization } from "@/services/staffs";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export const GET = async (req: Request) => {
+export const GET = async (req: NextRequest) => {
   try {
     const staffsForCreatedByOrg = await getStaffsForCreatedByOrganization();
     return NextResponse.json(staffsForCreatedByOrg);
