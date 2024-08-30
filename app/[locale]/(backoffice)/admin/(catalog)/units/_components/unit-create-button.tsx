@@ -30,12 +30,11 @@ import { Input } from "@/components/ui/input";
 import { useRef, useTransition } from "react";
 import { create } from "@/actions/unit";
 import { toast } from "sonner";
+import { Textarea } from "@/components/ui/textarea";
 
 export const UnitCreateButton = () => {
   const tSchema = useTranslations("units.schema");
-  const tButton = useTranslations("units.button");
-  const tCreate = useTranslations("units.form.create");
-  const tForm = useTranslations("form");
+  const t = useTranslations("units");
 
   const formSchema = UnitSchema(tSchema);
   const [isPending, startTransition] = useTransition();
@@ -44,7 +43,6 @@ export const UnitCreateButton = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      description: "",
     },
   });
   const onSubmit = (values: z.infer<typeof formSchema>) => {
@@ -60,26 +58,28 @@ export const UnitCreateButton = () => {
           }
         })
         .catch((error: Error) => {
-          toast.error(tForm("error"));
+          toast.error(t("status.failure.create"));
         });
     });
   };
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>
+        <Button size={"sm"} variant={"success"}>
           <Plus className="h-6 w-6 mr-2" />{" "}
-          <span className="text-sm font-semibold">{tButton("create")}</span>
+          <span className="text-sm font-semibold">
+            {t("form.create.label")}
+          </span>
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{tCreate("title")}</DialogTitle>
-          <DialogDescription>{tCreate("description")}</DialogDescription>
+          <DialogTitle>{t("form.create.title")}</DialogTitle>
+          <DialogDescription>{t("form.create.description")}</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="name"
@@ -105,7 +105,7 @@ export const UnitCreateButton = () => {
                 <FormItem>
                   <FormLabel>{tSchema("description.label")}</FormLabel>
                   <FormControl>
-                    <Input
+                    <Textarea
                       placeholder={tSchema("description.placeholder")}
                       {...field}
                       disabled={isPending}
@@ -120,11 +120,11 @@ export const UnitCreateButton = () => {
             <DialogFooter>
               <DialogClose asChild>
                 <Button type="button" variant="secondary" ref={closeRef}>
-                  {tForm("button.close")}
+                  Close
                 </Button>
               </DialogClose>
               <Button type="submit" disabled={isPending}>
-                {tForm("button.submit")}
+                Submit
               </Button>
             </DialogFooter>
           </form>

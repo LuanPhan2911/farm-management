@@ -1,8 +1,13 @@
 "use server";
 
-import { db } from "@/lib/db";
 import { errorResponse, successResponse } from "@/lib/utils";
 import { UnitSchema } from "@/schemas";
+import {
+  createUnit,
+  deleteManyUnit,
+  deleteUnit,
+  updateUnit,
+} from "@/services/units";
 import { ActionResponse } from "@/types";
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
@@ -20,13 +25,10 @@ export const create = async (
     return errorResponse(tSchema("errors.parse"));
   }
   try {
-    await db.unit.create({
-      data: {
-        ...validatedFields.data,
-      },
-    });
-    revalidatePath("/dashboard/units");
-    return successResponse(tStatus("success.create"));
+    const unit = await createUnit({ ...validatedFields.data });
+
+    revalidatePath("/admin/units");
+    return successResponse(tStatus("success.create"), unit);
   } catch (error) {
     return errorResponse(tStatus("failure.create"));
   }
@@ -44,15 +46,8 @@ export const edit = async (
     return errorResponse(tSchema("errors.parse"));
   }
   try {
-    await db.unit.update({
-      where: {
-        id,
-      },
-      data: {
-        ...validatedFields.data,
-      },
-    });
-    revalidatePath("/dashboard/units");
+    await updateUnit(id, { ...validatedFields.data });
+    revalidatePath("/admin/units");
     return successResponse(tStatus("success.edit"));
   } catch (error) {
     return errorResponse(tStatus("failure.edit"));
@@ -61,28 +56,19 @@ export const edit = async (
 export const destroy = async (id: string): Promise<ActionResponse> => {
   const tStatus = await getTranslations("units.status");
   try {
-    await db.unit.delete({
-      where: {
-        id,
-      },
-    });
-    revalidatePath("/dashboard/units");
+    await deleteUnit(id);
+    revalidatePath("/admin/units");
     return successResponse(tStatus("success.destroy"));
   } catch (error) {
     return errorResponse(tStatus("failure.destroy"));
   }
 };
-export const deleteMany = async (ids: string[]): Promise<ActionResponse> => {
+export const destroyMany = async (ids: string[]): Promise<ActionResponse> => {
   const tStatus = await getTranslations("units.status");
   try {
-    await db.unit.deleteMany({
-      where: {
-        id: {
-          in: ids,
-        },
-      },
-    });
-    revalidatePath("/dashboard/units");
+    await deleteManyUnit(ids);
+
+    revalidatePath("/admin/units");
     return successResponse(tStatus("success.destroy"));
   } catch (error) {
     return errorResponse(tStatus("failure.destroy"));

@@ -11,17 +11,15 @@ import { DataTableColumnHeader } from "@/components/datatable/datatable-column-h
 import { Category } from "@prisma/client";
 import { CategoriesTableAction } from "./categories-table-action";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
-import { deleteMany } from "@/actions/category";
+import { destroyMany } from "@/actions/category";
 import { toast } from "sonner";
 
 interface CategoriesTableProps {
   data: Category[];
 }
 export const CategoriesTable = ({ data }: CategoriesTableProps) => {
-  const tTable = useTranslations("categories.table");
-  const tSearch = useTranslations("categories.search");
-  const tForm = useTranslations("form");
-  const tBulkAction = useTranslations("categories.table.bulkAction");
+  const t = useTranslations("categories");
+
   const { onOpen, onClose } = useAlertDialog();
 
   const columns: ColumnDef<Category>[] = [
@@ -51,7 +49,10 @@ export const CategoriesTable = ({ data }: CategoriesTableProps) => {
       accessorKey: "name",
       header: ({ column }) => {
         return (
-          <DataTableColumnHeader column={column} title={tTable("thead.name")} />
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.thead.name")}
+          />
         );
       },
     },
@@ -61,7 +62,7 @@ export const CategoriesTable = ({ data }: CategoriesTableProps) => {
     },
     {
       accessorKey: "description",
-      header: tTable("thead.description"),
+      header: t("table.thead.description"),
     },
     {
       id: "actions",
@@ -74,14 +75,14 @@ export const CategoriesTable = ({ data }: CategoriesTableProps) => {
 
   const bulkActions = [
     {
-      label: tBulkAction("deleteSelected.label"),
+      label: t("form.destroySelected.label"),
       action: (rows: Category[]) => {
         onOpen({
-          title: tBulkAction("deleteSelected.title"),
-          description: tBulkAction("deleteSelected.description"),
+          title: t("form.destroySelected.title"),
+          description: t("form.destroySelected.description"),
           onConfirm: () => {
             const ids = rows.map((row) => row.id);
-            deleteMany(ids)
+            destroyMany(ids)
               .then(({ message, ok }) => {
                 if (ok) {
                   onClose();
@@ -91,7 +92,7 @@ export const CategoriesTable = ({ data }: CategoriesTableProps) => {
                 }
               })
               .catch((error) => {
-                toast.error(tForm("error"));
+                toast.error(t("status.failure.destroy"));
               })
               .finally(() => {
                 onClose();
@@ -105,7 +106,7 @@ export const CategoriesTable = ({ data }: CategoriesTableProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{tTable("heading")}</CardTitle>
+        <CardTitle>{t("table.heading")}</CardTitle>
       </CardHeader>
       <CardContent>
         <DataTable
@@ -114,7 +115,7 @@ export const CategoriesTable = ({ data }: CategoriesTableProps) => {
           filterColumn={{
             isShown: true,
             value: "name",
-            placeholder: tSearch("placeholder"),
+            placeholder: t("search.placeholder"),
           }}
           bulkActions={bulkActions}
         />

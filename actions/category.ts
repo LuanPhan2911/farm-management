@@ -14,7 +14,7 @@ export const create = async (
   values: z.infer<ReturnType<typeof CategorySchema>>
 ): Promise<ActionResponse> => {
   const tSchema = await getTranslations("categories.schema");
-  const tStatus = await getTranslations("categories.status");
+  const t = await getTranslations("categories.status");
   const paramsSchema = CategorySchema(tSchema);
   const validatedFields = paramsSchema.safeParse(values);
 
@@ -38,10 +38,10 @@ export const create = async (
         slug,
       },
     });
-    revalidatePath("/dashboard/categories");
-    return successResponse(tStatus("success.create"));
+    revalidatePath("/admin/categories");
+    return successResponse(t("success.create"));
   } catch (error) {
-    return errorResponse(tStatus("failure.create"));
+    return errorResponse(t("failure.create"));
   }
 };
 export const edit = async (
@@ -49,7 +49,7 @@ export const edit = async (
   id: string
 ): Promise<ActionResponse> => {
   const tSchema = await getTranslations("categories.schema");
-  const tStatus = await getTranslations("categories.status");
+  const t = await getTranslations("categories.status");
   const paramsSchema = CategorySchema(tSchema);
   const validatedFields = paramsSchema.safeParse(values);
 
@@ -79,29 +79,29 @@ export const edit = async (
         slug,
       },
     });
-    revalidatePath("/dashboard/categories");
+    revalidatePath("/admin/categories");
 
-    return successResponse(tStatus("success.edit"));
+    return successResponse(t("success.edit"));
   } catch (error) {
-    return errorResponse(tStatus("failure.edit"));
+    return errorResponse(t("failure.edit"));
   }
 };
 export const destroy = async (id: string): Promise<ActionResponse> => {
-  const tStatus = await getTranslations("categories.status");
+  const t = await getTranslations("categories.status");
   try {
     await db.category.delete({
       where: {
         id,
       },
     });
-    revalidatePath("/dashboard/categories");
-    return successResponse(tStatus("success.destroy"));
+    revalidatePath("/admin/categories");
+    return successResponse(t("success.destroy"));
   } catch (error) {
-    return errorResponse(tStatus("failure.destroy"));
+    return errorResponse(t("failure.destroy"));
   }
 };
-export const deleteMany = async (ids: string[]): Promise<ActionResponse> => {
-  const tStatus = await getTranslations("categories.status");
+export const destroyMany = async (ids: string[]): Promise<ActionResponse> => {
+  const t = await getTranslations("categories.status");
   try {
     await db.category.deleteMany({
       where: {
@@ -110,9 +110,9 @@ export const deleteMany = async (ids: string[]): Promise<ActionResponse> => {
         },
       },
     });
-    revalidatePath("/dashboard/categories");
-    return successResponse(tStatus("success.destroy"));
+    revalidatePath("/admin/categories");
+    return successResponse(t("success.destroy"));
   } catch (error) {
-    return errorResponse(tStatus("failure.destroy"));
+    return errorResponse(t("failure.destroy"));
   }
 };

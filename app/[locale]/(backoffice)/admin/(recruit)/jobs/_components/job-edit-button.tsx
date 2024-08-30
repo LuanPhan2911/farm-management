@@ -46,6 +46,8 @@ export const JobEditButton = ({ data, label }: JobEditButtonProps) => {
     <Button
       className="w-full"
       onClick={() => router.push(`/admin/jobs/edit/${data.id}`)}
+      size={"sm"}
+      variant={"edit"}
     >
       <Edit className="w-6 h-6 mr-2" />
       {label}
@@ -59,8 +61,7 @@ export const JobEditForm = ({ job }: JobEditFormProps) => {
   const { id, ...other } = job;
   const tSchema = useTranslations("jobs.schema");
 
-  const tEdit = useTranslations("jobs.form.edit");
-  const tForm = useTranslations("form");
+  const t = useTranslations("jobs");
   const formSchema = JobSchema(tSchema);
 
   const [isPending, startTransition] = useTransition();
@@ -85,15 +86,15 @@ export const JobEditForm = ({ job }: JobEditFormProps) => {
           }
         })
         .catch((error: Error) => {
-          toast.error(tForm("error"));
+          toast.error(t("status.failure.edit"));
         });
     });
   };
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{tEdit("title")}</CardTitle>
-        <CardDescription>{tEdit("description")}</CardDescription>
+        <CardTitle>{t("page.edit.title")}</CardTitle>
+        <CardDescription>{t("page.edit.description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -315,11 +316,8 @@ export const JobEditForm = ({ job }: JobEditFormProps) => {
               )}
             />
             <div className="flex gap-x-2 justify-center">
-              <Button type="button" variant="secondary">
-                {tForm("button.close")}
-              </Button>
               <Button type="submit" disabled={isPending}>
-                {tForm("button.submit")}
+                Submit
               </Button>
             </div>
           </form>

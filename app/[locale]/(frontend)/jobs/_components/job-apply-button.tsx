@@ -34,8 +34,7 @@ interface JobApplyButtonProps {
 }
 export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
   const tSchema = useTranslations("applicants.schema");
-  const tForm = useTranslations("applicants.form");
-  const tButton = useTranslations("applicants.button");
+  const t = useTranslations("applicants");
   const formSchema = ApplicantSchema(tSchema);
   const [isPending, startTransition] = useTransition();
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -74,12 +73,12 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant={"gradient"}>{tButton("apply")}</Button>
+        <Button variant={"gradient"}>{t("form.apply.label")}</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{tForm("apply.title")}</DialogTitle>
-          <DialogDescription>{tForm("apply.description")}</DialogDescription>
+          <DialogTitle>{t("formapply.title")}</DialogTitle>
+          <DialogDescription>{t("apply.description")}</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
@@ -177,11 +176,11 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
             <DialogFooter className="gap-2">
               <DialogClose asChild>
                 <Button type="button" variant="secondary" ref={closeRef}>
-                  {tButton("close")}
+                  Close
                 </Button>
               </DialogClose>
               <Button type="submit" disabled={isPending}>
-                {tButton("submit")}
+                Submit
               </Button>
             </DialogFooter>
           </form>

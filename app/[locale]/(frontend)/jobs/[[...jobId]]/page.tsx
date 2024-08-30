@@ -6,7 +6,6 @@ import {
   JobCardDisplaySkeleton,
 } from "../_components/job-card-display";
 import { cn } from "@/lib/utils";
-import { getTranslations } from "next-intl/server";
 interface JobsPageProps {
   searchParams?: {
     query?: string;

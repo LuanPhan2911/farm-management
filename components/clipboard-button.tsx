@@ -18,7 +18,7 @@ export const ClipboardButton = ({ value }: ClipboardButtonProps) => {
   };
   return (
     <Hint asChild label="Copy clipboard">
-      <Button size={"sm"} onClick={onClick}>
+      <Button size={"sm"} onClick={onClick} type="button" variant={"blue"}>
         {active ? (
           <ClipboardCheck className="h-6 w-6" />
         ) : (

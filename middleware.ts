@@ -1,6 +1,6 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-import { adminRoutePrefix, protectedRoute } from "./routes";
+import { protectedRoute } from "./routes";
 
 const isProtectedRoute = createRouteMatcher(protectedRoute);
 

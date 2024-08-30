@@ -1,12 +1,12 @@
 import { siteConfig } from "@/configs/siteConfig";
 import { Applicant } from "@prisma/client";
 import { render } from "@react-email/components";
-import { getTranslations } from "next-intl/server";
+
 import { JobApplyEmail } from "@/components/mail/job-apply-email";
 import nodemailer from "nodemailer";
 import { currentUser } from "@clerk/nextjs/server";
-import { JobApplySuccessEmail } from "@/components/mail/job-apply-success-email";
-import { CreateUserEmail } from "@/components/mail/create-user-email";
+import { ApplicantCreateUserEmail } from "@/components/mail/applicant-create-user-email";
+import { StaffCreateUserEmail } from "@/components/mail/staff-create-user-email";
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -54,11 +54,39 @@ export const sendApplicantCreateUser = async (
     to: [applicant.email],
     subject: "Xin chúc mừng bạn đã trúng tuyển!",
     html: render(
-      <CreateUserEmail
+      <ApplicantCreateUserEmail
         jobTitle={applicant.job.name}
         email={email}
         password={password}
         receiveName={applicant.name}
+        senderName={user?.fullName || "Quản lý nhân sự"}
+      />
+    ),
+  });
+};
+export const sendStaffCreateUser = async (
+  receiverEmail: string,
+  {
+    email,
+    password,
+    name,
+  }: {
+    name: string;
+    email: string;
+    password: string;
+  }
+) => {
+  const user = await currentUser();
+  await transporter.sendMail({
+    from: `${siteConfig.name} <${process.env.GOOGLE_APP_ACCOUNT}>`,
+    to: [receiverEmail],
+    subject: "Xin chúc mừng bạn đã trúng tuyển!",
+    html: render(
+      <StaffCreateUserEmail
+        title="Email"
+        email={email}
+        password={password}
+        receiveName={name}
         senderName={user?.fullName || "Quản lý nhân sự"}
       />
     ),

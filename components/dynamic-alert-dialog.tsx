@@ -16,7 +16,7 @@ import { useTransition } from "react";
 export const DynamicAlertDialog = () => {
   const { isOpen, onClose, data } = useAlertDialog();
   const [isPending, startTransition] = useTransition();
-  const tButton = useTranslations("form.button");
+
   if (!data) {
     return null;
   }
@@ -35,11 +35,9 @@ export const DynamicAlertDialog = () => {
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isPending}>
-            {tButton("close")}
-          </AlertDialogCancel>
+          <AlertDialogCancel disabled={isPending}>Close</AlertDialogCancel>
           <AlertDialogAction disabled={isPending} onClick={handleClick}>
-            {tButton("confirm")}
+            Confirm
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

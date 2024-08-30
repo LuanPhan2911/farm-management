@@ -17,7 +17,7 @@ interface JobsTableActionProps {
   data: JobTable;
 }
 export const JobsTableAction = ({ data }: JobsTableActionProps) => {
-  const tAction = useTranslations("jobs.table.action");
+  const t = useTranslations("jobs.form");
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -26,13 +26,11 @@ export const JobsTableAction = ({ data }: JobsTableActionProps) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-40">
-        <DropdownMenuLabel>{tAction("label")}</DropdownMenuLabel>
-        <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <JobEditButton data={data} label={tAction("edit")} />
+          <JobEditButton data={data} label={t("edit.label")} />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <JobDeleteButton data={data} label={tAction("destroy")} />
+          <JobDeleteButton data={data} label={t("destroy.label")} />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -1,7 +1,6 @@
 "use client";
 import { useDashboardSidebar } from "@/stores/use-dashboard-sidebar";
 import { Navbar } from "./_components/navbar";
-import { Sidebar } from "./_components/sidebar";
 import { cn } from "@/lib/utils";
 
 interface BackOfficeLayoutProps {
@@ -21,11 +20,8 @@ const BackOfficeLayout = ({ children }: BackOfficeLayoutProps) => {
       >
         {/* Navbar */}
         <Navbar />
-        {/* Sidebar */}
-        <Sidebar />
-        <main className="min-h-full h-fit w-full py-16 sm:px-6 px-2 ">
-          {children}
-        </main>
+
+        {children}
       </div>
       {/* Main body */}
     </div>

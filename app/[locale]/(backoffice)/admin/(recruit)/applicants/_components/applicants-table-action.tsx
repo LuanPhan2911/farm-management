@@ -12,12 +12,12 @@ import { MoreHorizontal } from "lucide-react";
 
 import { useTranslations } from "next-intl";
 import { Applicant } from "@prisma/client";
-import { ApplicantSetRoleButton } from "./applicant-set-role-button";
+import { ApplicantStaffCreateButton } from "./applicant-staff-create-button";
 interface ApplicantsTableActionProps {
   data: Applicant;
 }
 export const ApplicantsTableAction = ({ data }: ApplicantsTableActionProps) => {
-  const tAction = useTranslations("applicants.table.action");
+  const t = useTranslations("applicants.form");
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -26,13 +26,14 @@ export const ApplicantsTableAction = ({ data }: ApplicantsTableActionProps) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-fit">
-        <DropdownMenuLabel>{tAction("label")}</DropdownMenuLabel>
-        <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <ApplicantSetRoleButton data={data} label={tAction("updateRole")} />
+          <ApplicantStaffCreateButton
+            data={data}
+            label={t("createStaff.label")}
+          />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <ApplicantDeleteButton data={data} label={tAction("destroy")} />
+          <ApplicantDeleteButton data={data} label={t("destroy.label")} />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

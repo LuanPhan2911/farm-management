@@ -1,31 +1,38 @@
-import { PaginatedResourceResponse, Roles } from "@/types";
-import { clerkClient, User } from "@clerk/nextjs/server";
-export const LIMIT = 5;
-export const getUsersTable = async (
-  query: string,
-  currentPage: number
-): Promise<PaginatedResourceResponse<User>> => {
+import { LIMIT } from "@/configs/paginationConfig";
+import { clerkClient } from "@clerk/nextjs/server";
+import { StaffRole } from "@prisma/client";
+import { getStaffExternalIds } from "./staffs";
+
+export const getUsersTable = async (query: string, currentPage: number) => {
   try {
-    const users = await clerkClient().users.getUserList({
+    const staffIds = await getStaffExternalIds();
+
+    const { data, totalCount } = await clerkClient().users.getUserList({
       limit: LIMIT,
       offset: (currentPage - 1) * LIMIT,
       query,
+      userId: staffIds.map((id) => `-${id}`),
     });
-    return users;
+
+    const totalPage = Math.ceil(totalCount / LIMIT);
+    return {
+      data,
+      totalPage,
+    };
   } catch (error) {
     return {
       data: [],
-      totalCount: 0,
+      totalPage: 0,
     };
   }
 };
 export const getUserByEmail = async (email: string) => {
   try {
-    const { data } = await clerkClient().users.getUserList({
+    const { data, totalCount } = await clerkClient().users.getUserList({
       emailAddress: [email],
       limit: 1,
     });
-    if (!data.length) {
+    if (totalCount === 0) {
       return null;
     }
     return data[0];
@@ -34,12 +41,17 @@ export const getUserByEmail = async (email: string) => {
   }
 };
 
-export const createUser = async (
-  name: string,
-  email: string,
-  password: string,
-  role: Roles
-) => {
+export const createUser = async ({
+  name,
+  email,
+  password,
+  role,
+}: {
+  name: string;
+  email: string;
+  password: string;
+  role: StaffRole;
+}) => {
   try {
     const user = await clerkClient().users.createUser({
       firstName: name,
@@ -49,6 +61,7 @@ export const createUser = async (
         role,
       },
     });
+
     return user;
   } catch (error) {
     return null;
@@ -56,12 +69,19 @@ export const createUser = async (
 };
 export const updateUserMetadata = async (
   userId: string,
-  params: {
-    publicMetadata?: UserPublicMetadata;
+  {
+    role,
+  }: {
+    role: StaffRole;
   }
 ) => {
   try {
-    const user = await clerkClient().users.updateUserMetadata(userId, params);
+    const user = await clerkClient().users.updateUserMetadata(userId, {
+      publicMetadata: {
+        role,
+      },
+    });
+
     return user;
   } catch (error) {
     return null;
@@ -69,20 +89,19 @@ export const updateUserMetadata = async (
 };
 export const updateUser = async (
   userId: string,
-  firstName: string,
-  lastName: string,
-  address: string,
-  phone: string
+  params: {
+    firstName?: string;
+    lastName?: string;
+  },
+  publicMetadata: UserPublicMetadata
 ) => {
   try {
-    const user = await clerkClient().users.updateUser(userId, {
-      firstName,
-      lastName,
+    await clerkClient().users.updateUser(userId, {
+      ...params,
     });
-    await updateUserMetadata(userId, {
+    const user = await clerkClient().users.updateUserMetadata(userId, {
       publicMetadata: {
-        address,
-        phone,
+        ...publicMetadata,
       },
     });
     return user;
@@ -105,4 +124,10 @@ export const getUserById = async (id: string) => {
   } catch (error) {
     return null;
   }
+};
+
+export const getUsersToAddOrganization = async () => {
+  try {
+    const {} = await clerkClient().users.getUserList({});
+  } catch (error) {}
 };
