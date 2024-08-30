@@ -37,7 +37,6 @@ export const deleteOrganization = async (orgId: string) => {
 
 export const getOrganizationMembership = async (
   orgId: string,
-  query: string,
   currentPage: number
 ) => {
   try {

@@ -30,8 +30,7 @@ import { useForm } from "react-hook-form";
 import slugify from "slugify";
 import { toast } from "sonner";
 import { z } from "zod";
-import { OrgSelectCreatedBy } from "./org-select-created-by";
-import { QueryProvider } from "@/components/providers/query-provider";
+import { StaffSelectWithQueryClient } from "../../../_components/staffs-select";
 interface OrgCreateButtonProps {}
 
 export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
@@ -77,6 +76,10 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
           toast.error(t("status.failure.create"));
         });
     });
+  };
+  const fetchCreatedByOrg = async () => {
+    const res = await fetch("/api/staffs/created_by_org");
+    return await res.json();
   };
   return (
     <Dialog>
@@ -138,15 +141,16 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
                     <FormLabel>{tSchema("createdBy.label")}</FormLabel>
                     <FormControl>
                       <div className="block">
-                        <QueryProvider>
-                          <OrgSelectCreatedBy
-                            defaultValue={field.value}
-                            onChange={field.onChange}
-                            disabled={isPending}
-                            label={tSchema("createdBy.placeholder")}
-                            notFound={tSchema("createdBy.notFound")}
-                          />
-                        </QueryProvider>
+                        <StaffSelectWithQueryClient
+                          queryKey={["org_created_by"]}
+                          queryFn={fetchCreatedByOrg}
+                          defaultValue={field.value}
+                          onChange={field.onChange}
+                          errorLabel="Something went wrong went load created by!"
+                          label="Select staff..."
+                          notFound="Staff not found"
+                          disabled={isPending}
+                        />
                       </div>
                     </FormControl>
 

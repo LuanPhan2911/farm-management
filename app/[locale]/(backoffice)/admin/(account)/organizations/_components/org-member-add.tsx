@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/form";
 import { OrganizationMemberSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Staff } from "@prisma/client";
+
 import { useTranslations } from "next-intl";
 import { useRef, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -29,13 +29,11 @@ import { createMember } from "@/actions/organization";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { OrgMemberRole } from "./org-member-role";
-import { QueryProvider } from "@/components/providers/query-provider";
-import { OrgMemberSelect } from "./org-member-select";
 
-interface OrgMemberAddProps {
-  data: Staff[];
-}
-export const OrgMemberAdd = ({ data }: OrgMemberAddProps) => {
+import { StaffSelectWithQueryClient } from "../../../_components/staffs-select";
+
+interface OrgMemberAddProps {}
+export const OrgMemberAdd = ({}: OrgMemberAddProps) => {
   const closeRef = useRef<HTMLButtonElement>(null);
   const params = useParams<{
     orgId: string;
@@ -74,6 +72,10 @@ export const OrgMemberAdd = ({ data }: OrgMemberAddProps) => {
         });
     });
   };
+  const fetchMembers = async () => {
+    const res = await fetch("/api/staffs/members_select");
+    return await res.json();
+  };
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -98,15 +100,16 @@ export const OrgMemberAdd = ({ data }: OrgMemberAddProps) => {
                     <FormLabel>{tSchema("memberId.label")}</FormLabel>
                     <FormControl>
                       <div className="block">
-                        <QueryProvider>
-                          <OrgMemberSelect
-                            defaultValue={field.value}
-                            label={tSchema("memberId.label")}
-                            notFound={tSchema("memberId.notFound")}
-                            onChange={field.onChange}
-                            disabled={isPending}
-                          />
-                        </QueryProvider>
+                        <StaffSelectWithQueryClient
+                          queryKey={["org_member_select"]}
+                          queryFn={fetchMembers}
+                          defaultValue={field.value}
+                          onChange={field.onChange}
+                          errorLabel="Something went wrong went load member!"
+                          label="Select member..."
+                          notFound="Member not found"
+                          disabled={isPending}
+                        />
                       </div>
                     </FormControl>
 
