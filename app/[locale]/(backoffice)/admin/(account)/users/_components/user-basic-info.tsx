@@ -29,6 +29,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { UserInfo } from "./user-info";
 import { Separator } from "@/components/ui/separator";
+import { InputClipboard } from "@/components/form/input-clipboard";
 
 interface UserBasicInfoProps {
   data: User;
@@ -88,17 +89,7 @@ export const UserBasicInfo = ({ data }: UserBasicInfoProps) => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-8 max-w-4xl"
           >
-            <FormItem>
-              <FormLabel>{tSchema("id.label")}</FormLabel>
-              <div className="flex gap-x-2">
-                <Input
-                  placeholder={tSchema("id.placeholder")}
-                  value={data.id}
-                  disabled={true}
-                />
-                <ClipboardButton value={data.id} />
-              </div>
-            </FormItem>
+            <InputClipboard label={tSchema("id.label")} value={data.id} />
             <FormField
               control={form.control}
               name="email"

@@ -43,7 +43,6 @@ export const UnitCreateButton = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      description: "",
     },
   });
   const onSubmit = (values: z.infer<typeof formSchema>) => {

@@ -13,15 +13,13 @@ import { useAlertDialog } from "@/stores/use-alert-dialog";
 import { destroyMany } from "@/actions/applicant";
 import { toast } from "sonner";
 import { Applicant, ApplicantStatus } from "@prisma/client";
-import { ApplicantSelectJob } from "./applicant-select-job";
-import { JobSelect } from "@/types";
 import { Badge } from "@/components/ui/badge";
+import { JobSelectWithQueryClient } from "../../../_components/jobs-select";
 
 interface ApplicantsTableProps {
   applicants: Applicant[];
-  jobs: JobSelect[];
 }
-export const ApplicantsTable = ({ applicants, jobs }: ApplicantsTableProps) => {
+export const ApplicantsTable = ({ applicants }: ApplicantsTableProps) => {
   const t = useTranslations("applicants");
 
   const { onOpen, onClose } = useAlertDialog();
@@ -129,7 +127,7 @@ export const ApplicantsTable = ({ applicants, jobs }: ApplicantsTableProps) => {
       </CardHeader>
       <CardContent>
         <div className="flex justify-end">
-          <ApplicantSelectJob data={jobs} />
+          <JobSelectWithQueryClient />
         </div>
         <DataTable
           columns={columns}

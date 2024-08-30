@@ -1,13 +1,20 @@
-import { Gender, JobExperience, JobWorkingState } from "@prisma/client";
+import {
+  Field,
+  Gender,
+  JobExperience,
+  JobWorkingState,
+  Unit,
+} from "@prisma/client";
 
 export type OrgRole = "org:member" | "org:admin";
 export type ActionResponse = {
   message: string;
   ok: boolean;
+  data?: any;
 };
-export type PaginatedResourceResponse<T> = {
+export type PaginatedResponse<T> = {
   data: T[];
-  totalCount: number;
+  totalPage: number;
 };
 export type BreadCrumb = {
   label: string;
@@ -36,4 +43,13 @@ export type JobCard = {
 export type JobSelect = {
   id: string;
   name: string;
+};
+
+export type UnitSelect = {
+  id: string;
+  name: string;
+};
+
+export type FieldWithUnit = Field & {
+  unit: Unit | null;
 };

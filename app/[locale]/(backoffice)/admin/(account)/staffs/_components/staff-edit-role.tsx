@@ -13,7 +13,7 @@ import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
-import { SelectRole } from "../../../_components/select-role";
+import { StaffSelectRole } from "../../../_components/staff-select-role";
 
 interface UserSetRoleProps {
   data: User;
@@ -79,7 +79,7 @@ export const StaffEditRoleDialog = () => {
       title={t("form.editRole.title")}
       description={t("form.editRole.description")}
     >
-      <SelectRole
+      <StaffSelectRole
         label="Select Role"
         onChange={(value) => {
           setRole(value as StaffRole);

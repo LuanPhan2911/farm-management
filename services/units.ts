@@ -4,15 +4,11 @@ export const createUnit = async (params: {
   name: string;
   description: string;
 }) => {
-  try {
-    return await db.unit.create({
-      data: {
-        ...params,
-      },
-    });
-  } catch (error) {
-    return null;
-  }
+  return await db.unit.create({
+    data: {
+      ...params,
+    },
+  });
 };
 
 export const updateUnit = async (
@@ -22,18 +18,14 @@ export const updateUnit = async (
     description: string;
   }
 ) => {
-  try {
-    return await db.unit.update({
-      where: {
-        id,
-      },
-      data: {
-        ...params,
-      },
-    });
-  } catch (error) {
-    return null;
-  }
+  return await db.unit.update({
+    where: {
+      id,
+    },
+    data: {
+      ...params,
+    },
+  });
 };
 export const getUnitsTable = async () => {
   try {
@@ -49,25 +41,31 @@ export const getUnitsTable = async () => {
 };
 
 export const deleteUnit = async (id: string) => {
-  try {
-    return await db.unit.delete({
-      where: { id },
-    });
-  } catch (error) {
-    return null;
-  }
+  return await db.unit.delete({
+    where: { id },
+  });
 };
 export const deleteManyUnit = async (ids: string[]) => {
+  const { count } = await db.unit.deleteMany({
+    where: {
+      id: {
+        in: ids,
+      },
+    },
+  });
+  return count;
+};
+
+export const getUnitsSelect = async () => {
   try {
-    const { count } = await db.unit.deleteMany({
-      where: {
-        id: {
-          in: ids,
-        },
+    const units = await db.unit.findMany({
+      select: {
+        id: true,
+        name: true,
       },
     });
-    return count;
+    return units;
   } catch (error) {
-    return 0;
+    return [];
   }
 };

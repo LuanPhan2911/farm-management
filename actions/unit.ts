@@ -26,11 +26,9 @@ export const create = async (
   }
   try {
     const unit = await createUnit({ ...validatedFields.data });
-    if (!unit) {
-      return errorResponse("failure.create");
-    }
+
     revalidatePath("/admin/units");
-    return successResponse(tStatus("success.create"));
+    return successResponse(tStatus("success.create"), unit);
   } catch (error) {
     return errorResponse(tStatus("failure.create"));
   }
@@ -48,10 +46,7 @@ export const edit = async (
     return errorResponse(tSchema("errors.parse"));
   }
   try {
-    const unit = await updateUnit(id, { ...validatedFields.data });
-    if (!unit) {
-      return errorResponse(tStatus("failure.edit"));
-    }
+    await updateUnit(id, { ...validatedFields.data });
     revalidatePath("/admin/units");
     return successResponse(tStatus("success.edit"));
   } catch (error) {
@@ -61,10 +56,7 @@ export const edit = async (
 export const destroy = async (id: string): Promise<ActionResponse> => {
   const tStatus = await getTranslations("units.status");
   try {
-    const unit = await deleteUnit(id);
-    if (!unit) {
-      return errorResponse(tStatus("failure.destroy"));
-    }
+    await deleteUnit(id);
     revalidatePath("/admin/units");
     return successResponse(tStatus("success.destroy"));
   } catch (error) {
@@ -74,10 +66,8 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
 export const destroyMany = async (ids: string[]): Promise<ActionResponse> => {
   const tStatus = await getTranslations("units.status");
   try {
-    const count = await deleteManyUnit(ids);
-    if (!count) {
-      return errorResponse(tStatus("failure.destroy"));
-    }
+    await deleteManyUnit(ids);
+
     revalidatePath("/admin/units");
     return successResponse(tStatus("success.destroy"));
   } catch (error) {

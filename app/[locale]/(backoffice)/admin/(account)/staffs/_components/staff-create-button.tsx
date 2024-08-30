@@ -22,7 +22,7 @@ import { useEffect, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { SelectRole } from "../../../_components/select-role";
+import { StaffSelectRole } from "../../../_components/staff-select-role";
 import { generateEmail, generatePassword } from "@/lib/utils";
 
 export const StaffCreateButton = () => {
@@ -162,7 +162,7 @@ export const StaffCreateDialog = () => {
               <FormItem>
                 <FormLabel>{tSchema("role.label")}</FormLabel>
                 <FormControl>
-                  <SelectRole
+                  <StaffSelectRole
                     {...field}
                     label="Select Role"
                     disabled={isPending}

@@ -22,7 +22,7 @@ import { useEffect, useTransition } from "react";
 
 import { toast } from "sonner";
 import { z } from "zod";
-import { SelectRole } from "../../../_components/select-role";
+import { StaffSelectRole } from "../../../_components/staff-select-role";
 import { useForm } from "react-hook-form";
 
 interface ApplicantStaffCreateButtonProps {
@@ -188,7 +188,7 @@ export const ApplicantStaffCreateDialog = () => {
               <FormItem>
                 <FormLabel>{tSchema("role.label")}</FormLabel>
                 <FormControl>
-                  <SelectRole {...field} label="Select Role" />
+                  <StaffSelectRole {...field} label="Select Role" />
                 </FormControl>
 
                 <FormMessage />
