@@ -5,31 +5,48 @@ import { ErrorButton } from "@/components/buttons/error-button";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { Skeleton } from "@/components/ui/skeleton";
 import { UnitSelect } from "@/types";
-import { Unit } from "@prisma/client";
+import { Unit, UnitType } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
+import queryString from "query-string";
 import { useTransition } from "react";
 import Creatable from "react-select/creatable";
 import { toast } from "sonner";
 
-interface UnitFloatSelectProps {
-  defaultValue: string;
+interface UnitsSelectProps {
+  defaultValue?: string;
+  unitType: UnitType;
   onChange: (value: string) => void;
   placeholder: string;
   disabled?: boolean;
+  className?: string;
 }
-const UnitFloatSelect = ({
+const UnitsSelect = ({
   defaultValue,
+  unitType: type,
   onChange,
   placeholder,
   disabled,
-}: UnitFloatSelectProps) => {
+  className,
+}: UnitsSelectProps) => {
   const [isCreating, startTransition] = useTransition();
   const t = useTranslations("units.status");
   const { data, isPending, isError, refetch } = useQuery({
-    queryKey: ["units_float_select"],
+    queryKey: ["units_select", type],
     queryFn: async () => {
-      const res = await fetch("/api/units/select");
+      const url = queryString.stringifyUrl(
+        {
+          url: "/api/units/select",
+          query: {
+            type,
+          },
+        },
+        {
+          skipNull: true,
+          skipEmptyString: true,
+        }
+      );
+      const res = await fetch(url);
       return (await res.json()) as UnitSelect[];
     },
   });
@@ -72,7 +89,6 @@ const UnitFloatSelect = ({
     };
   });
   const option = options.find((item) => item.value === defaultValue);
-  console.log(option);
 
   return (
     <Creatable
@@ -85,14 +101,15 @@ const UnitFloatSelect = ({
       }}
       onCreateOption={handleCreate}
       value={option}
-      isDisabled={disabled}
+      isDisabled={disabled || isCreating}
+      className={className}
     />
   );
 };
-export const UnitFloatSelectWithQueryClient = (props: UnitFloatSelectProps) => {
+export const UnitsSelectWithQueryClient = (props: UnitsSelectProps) => {
   return (
     <QueryProvider>
-      <UnitFloatSelect {...props} />
+      <UnitsSelect {...props} />
     </QueryProvider>
   );
 };

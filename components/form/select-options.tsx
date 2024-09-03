@@ -12,25 +12,25 @@ export type SelectData = {
 };
 interface SelectOptionsProps {
   label: string;
-  value: string | undefined;
+  defaultValue?: string;
   options: SelectData[];
   onChange: (value: string) => void;
   disabled?: boolean;
 }
 export const SelectOptions = ({
   onChange,
-  value,
+  defaultValue,
   options,
   label,
   disabled,
 }: SelectOptionsProps) => {
   const handleChange = (currentValue: string) => {
-    onChange(currentValue === value ? "" : currentValue);
+    onChange(currentValue === defaultValue ? "" : currentValue);
   };
   return (
     <Select
       onValueChange={handleChange}
-      defaultValue={value}
+      defaultValue={defaultValue}
       disabled={disabled}
     >
       <SelectTrigger>

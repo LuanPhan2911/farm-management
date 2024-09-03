@@ -25,7 +25,9 @@ export const create = async (
     return errorResponse(tSchema("errors.parse"));
   }
   try {
-    const unit = await createUnit({ ...validatedFields.data });
+    const unit = await createUnit({
+      ...validatedFields.data,
+    });
 
     revalidatePath("/admin/units");
     return successResponse(tStatus("success.create"), unit);

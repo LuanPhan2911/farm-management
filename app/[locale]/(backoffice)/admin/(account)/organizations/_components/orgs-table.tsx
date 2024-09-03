@@ -17,7 +17,10 @@ import { UserAvatar } from "@/components/user-avatar";
 
 import { useRouter } from "@/navigation";
 import { OrgCreateButton } from "./org-create-button";
-import { SortByDropdown, SortByOption } from "@/components/sort-by-dropdown";
+import {
+  SortByDropdown,
+  SortByOption,
+} from "@/components/form/sort-by-dropdown";
 import { useSearchParams } from "next/navigation";
 
 interface OrgsTableProps {
@@ -46,7 +49,7 @@ export const OrgsTable = ({ orgs, totalPage }: OrgsTableProps) => {
       value: "members_count",
     },
   ];
-  const defaultSortBy = searchParams.get("order_by") || "created_at";
+  const defaultSortBy = searchParams.get("orderBy") || "created_at";
   return (
     <Card>
       <CardHeader>

@@ -1,8 +1,7 @@
 "use client";
 
 import { editRole } from "@/actions/staff";
-import { DynamicDialog } from "@/components/dynamic-dialog";
-import { SelectOptions } from "@/components/select-options";
+import { DynamicDialog } from "@/components/dialog/dynamic-dialog";
 import { Button } from "@/components/ui/button";
 import { useDialog } from "@/stores/use-dialog";
 

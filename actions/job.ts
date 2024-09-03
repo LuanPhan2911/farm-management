@@ -129,7 +129,7 @@ export const editPublished = async (
     if (!job) {
       return errorResponse(tStatus("failure.editPublished"));
     }
-    revalidatePath("/admin/jobs");
+
     return successResponse(tStatus("success.editPublished"));
   } catch (error) {
     return errorResponse(tStatus("failure.editPublished"));

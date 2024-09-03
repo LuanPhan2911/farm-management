@@ -1,6 +1,6 @@
 "use client";
 
-import { ClipboardButton } from "../clipboard-button";
+import { ClipboardButton } from "../buttons/clipboard-button";
 import { FormItem, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
 

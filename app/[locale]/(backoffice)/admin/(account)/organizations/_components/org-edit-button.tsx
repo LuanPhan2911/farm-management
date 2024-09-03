@@ -1,6 +1,5 @@
 "use client";
 import { edit, editLogo } from "@/actions/organization";
-import { ClipboardButton } from "@/components/clipboard-button";
 import { InputClipboard } from "@/components/form/input-clipboard";
 import { Button } from "@/components/ui/button";
 import {

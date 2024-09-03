@@ -4,16 +4,16 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import { useSearchParams } from "next/navigation";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 export type SortByOption = {
   label: string;
   value: string;
 };
 interface SortByDropdownProps {
   options: SortByOption[];
-  defaultValue: string;
+  defaultValue?: string;
 }
 export const SortByDropdown = ({
   options,
@@ -25,14 +25,14 @@ export const SortByDropdown = ({
 
   const handleSort = (option: SortByOption) => {
     const params = new URLSearchParams(searchParams);
-    params.set("order_by", option.value);
+    params.set("orderBy", option.value);
     router.replace(`${pathname}?${params.toString()}`);
   };
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button size={"sm"} variant={"blue"}>
-          <span className="font-bold">Sort by: </span>
+          <span className="font-bold mr-2">Sort by: </span>
           {options.find((option) => option.value === defaultValue)?.label ||
             "Select sort by"}
         </Button>

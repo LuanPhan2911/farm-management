@@ -10,13 +10,13 @@ interface OrganizationPageProps {
   searchParams: {
     page?: string;
     query?: string;
-    order_by?: "created_at" | "name" | "members_count";
+    orderBy?: "created_at" | "name" | "members_count";
   };
 }
 const OrganizationsPage = async ({ searchParams }: OrganizationPageProps) => {
   const query = searchParams.query || "";
   const page = searchParams.page ? Number(searchParams.page) : 1;
-  const orderBy = searchParams.order_by || "created_at";
+  const orderBy = searchParams.orderBy || "created_at";
   const { data: organizations, totalPage } = await getOrganizations(
     query,
     page,

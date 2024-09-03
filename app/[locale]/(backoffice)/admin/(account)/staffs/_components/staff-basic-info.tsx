@@ -1,6 +1,6 @@
 "use client";
 
-import { ClipboardButton } from "@/components/clipboard-button";
+import { ClipboardButton } from "@/components/buttons/clipboard-button";
 import { Button } from "@/components/ui/button";
 import {
   Card,

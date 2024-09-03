@@ -1,9 +1,9 @@
 "use client";
 
 import { Clipboard, ClipboardCheck } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { useState } from "react";
-import { Hint } from "./hint";
+import { Hint } from "../hint";
 interface ClipboardButtonProps {
   value: string;
 }

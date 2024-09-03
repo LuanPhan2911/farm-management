@@ -12,7 +12,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
+} from "../ui/select";
 import { cn } from "@/lib/utils";
 import { Matcher } from "react-day-picker";
 
