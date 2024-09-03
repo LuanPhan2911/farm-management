@@ -1,7 +1,7 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { useFormatter, useNow } from "next-intl";
+import { useFormatter } from "next-intl";
 import { isFuture } from "date-fns";
 
 interface JobExpiredProps {

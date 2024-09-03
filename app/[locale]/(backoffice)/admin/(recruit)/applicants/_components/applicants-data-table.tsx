@@ -132,8 +132,7 @@ export const ApplicantsTable = ({ applicants }: ApplicantsTableProps) => {
         <DataTable
           columns={columns}
           data={applicants}
-          filterColumn={{
-            isShown: true,
+          searchable={{
             value: "name",
             placeholder: t("search.placeholder"),
           }}

@@ -27,10 +27,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { SelectOptions } from "@/components/select-options";
-import { DatePicker } from "@/components/date-picker";
+import { SelectOptions } from "@/components/form/select-options";
+import { DatePicker } from "@/components/form/date-picker";
 import { addDays } from "date-fns";
-import { RadioOptions } from "@/components/radio-options";
+import { RadioOptions } from "@/components/form/radio-options";
 import { Tiptap } from "@/components/tiptap";
 import { useTransition } from "react";
 import { JobTable } from "@/types";
@@ -132,7 +132,7 @@ export const JobEditForm = ({ job }: JobEditFormProps) => {
                         label={tSchema("experience.placeholder")}
                         onChange={field.onChange}
                         disabled={isPending}
-                        value={field.value}
+                        defaultValue={field.value}
                         options={Object.values(JobExperience).map((value) => {
                           return {
                             label: tSchema(`experience.options.${value}`),

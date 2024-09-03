@@ -1,4 +1,4 @@
-import { SelectOptions } from "@/components/select-options";
+import { SelectOptions } from "@/components/form/select-options";
 import { StaffRole } from "@prisma/client";
 
 interface StaffSelectRoleProps {
@@ -29,7 +29,7 @@ export const StaffSelectRole = ({
       label={label}
       options={options}
       onChange={onChange}
-      value={value}
+      defaultValue={value}
       disabled={disabled}
     />
   );

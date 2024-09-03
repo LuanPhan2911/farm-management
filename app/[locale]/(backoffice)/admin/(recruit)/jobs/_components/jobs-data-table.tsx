@@ -146,8 +146,7 @@ export const JobsTable = ({ data }: JobsTableProps) => {
         <DataTable
           columns={columns}
           data={data}
-          filterColumn={{
-            isShown: true,
+          searchable={{
             value: "name",
             placeholder: t("search.placeholder"),
           }}

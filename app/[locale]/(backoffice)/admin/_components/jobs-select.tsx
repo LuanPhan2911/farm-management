@@ -1,7 +1,7 @@
 "use client";
 
 import { ErrorButton } from "@/components/buttons/error-button";
-import { ComboBox, ComboBoxData } from "@/components/combobox";
+import { ComboBox, ComboBoxData } from "@/components/form/combobox";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePathname, useRouter } from "@/navigation";

@@ -28,10 +28,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tiptap } from "@/components/tiptap";
-import { DatePicker } from "@/components/date-picker";
-import { SelectOptions } from "@/components/select-options";
+import { DatePicker } from "@/components/form/date-picker";
+import { SelectOptions } from "@/components/form/select-options";
 import { Gender, JobExperience, JobWorkingState } from "@prisma/client";
-import { RadioOptions } from "@/components/radio-options";
+import { RadioOptions } from "@/components/form/radio-options";
 
 import { addDays } from "date-fns";
 import { useRouter } from "@/navigation";
@@ -134,7 +134,7 @@ export const JobCreateForm = () => {
                         label={tSchema("experience.placeholder")}
                         onChange={field.onChange}
                         disabled={isPending}
-                        value={field.value}
+                        defaultValue={field.value}
                         options={Object.values(JobExperience).map((value) => {
                           return {
                             label: tSchema(`experience.options.${value}`),

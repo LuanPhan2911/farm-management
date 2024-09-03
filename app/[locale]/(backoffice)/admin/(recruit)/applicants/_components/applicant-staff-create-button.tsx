@@ -1,6 +1,6 @@
 "use client";
 import { createApplicantStaff } from "@/actions/applicant";
-import { DynamicDialog } from "@/components/dynamic-dialog";
+import { DynamicDialog } from "@/components/dialog/dynamic-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Form,

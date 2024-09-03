@@ -2,7 +2,7 @@ import { UserAvatar } from "@/components/user-avatar";
 import { StaffMetadataRole } from "./staff-metadata-role";
 import { StaffRole } from "@prisma/client";
 interface StaffSelectItemProps {
-  imageUrl: string | undefined;
+  imageUrl: string | undefined | null;
   name: string;
   email: string;
   role: StaffRole;
@@ -15,7 +15,11 @@ export const StaffSelectItem = ({
 }: StaffSelectItemProps) => {
   return (
     <div className="flex items-center p-1">
-      <UserAvatar src={imageUrl} size={"default"} className="rounded-full" />
+      <UserAvatar
+        src={imageUrl || undefined}
+        size={"default"}
+        className="rounded-full"
+      />
       <div className="ml-4">
         <div className="text-sm font-medium leading-none text-start">
           {name}
