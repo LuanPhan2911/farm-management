@@ -1,6 +1,6 @@
 import { LIMIT } from "@/configs/paginationConfig";
 import { db } from "@/lib/db";
-import { clerkClient } from "@clerk/nextjs/server";
+import { clerkClient, currentUser } from "@clerk/nextjs/server";
 import { StaffRole } from "@prisma/client";
 
 export const createStaff = async (
@@ -139,5 +139,22 @@ export const getStaffsForAddMemberOrganization = async () => {
     return staffs;
   } catch (error) {
     return [];
+  }
+};
+
+export const currentStaff = async () => {
+  try {
+    const user = await currentUser();
+    if (!user) {
+      return null;
+    }
+    const staff = await db.staff.findUnique({
+      where: {
+        externalId: user.id,
+      },
+    });
+    return staff;
+  } catch (error) {
+    return null;
   }
 };

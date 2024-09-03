@@ -1,14 +1,10 @@
 import { siteConfig } from "@/configs/siteConfig";
-import { getUserByEmail } from "@/services/users";
 import { ActionResponse } from "@/types";
 import { User } from "@clerk/nextjs/server";
-import { Unit } from "@prisma/client";
 import { type ClassValue, clsx } from "clsx";
 import { format } from "date-fns";
-import { getFormatter, getNow } from "next-intl/server";
 import slugify from "slugify";
 import { twMerge } from "tailwind-merge";
-import { any } from "zod";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -68,4 +64,34 @@ export function getFullName(user: User) {
 export function getEmailAddress(user: User) {
   const email = user.emailAddresses;
   return email[0].emailAddress;
+}
+export function removeLanguagePrefix(url: string) {
+  return url.replace(/^\/(en|vi)/, "");
+}
+export function splitUnitValue(unit: string) {
+  // Regular expression to match the unit and optional exponent
+  const regex = /^([a-zA-Z]+)(\d*)$/;
+  const match = unit.match(regex);
+
+  if (match) {
+    const baseUnit = match[1]; // The unit (e.g., km, m, kg)
+    const exponent = match[2]; // The exponent (e.g., 2, 3) or empty string if no exponent
+    return exponent ? [baseUnit, exponent] : [baseUnit];
+  }
+
+  return [unit]; // Fallback for cases that don't match the expected format
+}
+
+export function orderBySplit(input: string | null | undefined) {
+  if (!input) {
+    return {};
+  }
+  const parts = input.split("_");
+
+  if (parts.length !== 2) {
+    return {};
+  }
+
+  const [key, value] = parts;
+  return { [key]: value };
 }

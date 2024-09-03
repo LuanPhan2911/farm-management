@@ -1,9 +1,13 @@
 import {
   Field,
+  FloatUnit,
   Gender,
+  IntUnit,
   JobExperience,
   JobWorkingState,
+  Staff,
   Unit,
+  Weather,
 } from "@prisma/client";
 
 export type OrgRole = "org:member" | "org:admin";
@@ -52,4 +56,28 @@ export type UnitSelect = {
 
 export type FieldWithUnit = Field & {
   unit: Unit | null;
+};
+
+export type WeatherTable = Weather & {
+  confirmedBy: Staff | null;
+  temperature: FloatUnit & {
+    unit: {
+      name: string;
+    };
+  };
+  humidity: IntUnit & {
+    unit: {
+      name: string;
+    };
+  };
+  atmosphericPressure: FloatUnit & {
+    unit: {
+      name: string;
+    };
+  };
+  rainfall: IntUnit & {
+    unit: {
+      name: string;
+    };
+  };
 };

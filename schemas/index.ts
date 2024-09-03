@@ -3,11 +3,13 @@ import {
   JobExperience,
   JobWorkingState,
   StaffRole,
+  UnitType,
+  WeatherStatus,
 } from "@prisma/client";
 import { addDays } from "date-fns";
 import { z } from "zod";
 import validator from "validator";
-import { OrgRole } from "@/types";
+
 export const CategorySchema = (t: (arg: string) => string) =>
   z.object({
     name: z.string().min(1, t("name.min")).max(100),
@@ -16,6 +18,9 @@ export const CategorySchema = (t: (arg: string) => string) =>
 export const UnitSchema = (t: (arg: string) => string) =>
   z.object({
     name: z.string().min(1, t("name.min")).max(50, t("name.max")),
+    type: z.optional(z.nativeEnum(UnitType), {
+      message: t("type.enum"),
+    }),
     description: z.optional(
       z.string().min(1, t("description.min")).max(100, t("description.max"))
     ),
@@ -173,5 +178,53 @@ export const FieldSchema = (t: (arg: string) => string) => {
     shape: z.optional(
       z.string().min(1, t("shape.min")).max(100, t("shape.max"))
     ),
+  });
+};
+export const WeatherSchema = (t: (arg: string) => string) => {
+  return z.object({
+    temperature: z.object({
+      unitId: z.string().min(1, t("temperature.unitId.min")),
+      value: z.coerce
+        .number({
+          required_error: t("temperature.value.required_error"),
+          invalid_type_error: t("temperature.value.invalid_type"),
+        })
+        .min(-100, t("temperature.value.min"))
+        .max(1000, t("temperature.value.max")),
+    }),
+    humidity: z.object({
+      unitId: z.string().min(1, t("humidity.unitId.min")),
+      value: z.coerce
+        .number({
+          required_error: t("humidity.value.required_error"),
+          invalid_type_error: t("humidity.value.invalid_type"),
+        })
+        .min(0, t("humidity.value.min"))
+        .max(100, t("humidity.value.max")),
+    }),
+    atmosphericPressure: z.object({
+      unitId: z.string().min(1, t("atmosphericPressure.unitId.min")),
+      value: z.coerce
+        .number({
+          required_error: t("atmosphericPressure.value.required_error"),
+          invalid_type_error: t("atmosphericPressure.value.invalid_type"),
+        })
+        .min(870, t("atmosphericPressure.value.min"))
+        .max(1084, t("atmosphericPressure.value.max")),
+    }),
+    rainfall: z.object({
+      unitId: z.string().min(1, t("rainfall.unitId.min")),
+      value: z.coerce
+        .number({
+          required_error: t("rainfall.value.required_error"),
+          invalid_type_error: t("rainfall.value.invalid_type"),
+        })
+        .min(0, t("rainfall.value.min"))
+        .max(3000, t("rainfall.value.max")),
+    }),
+    status: z.nativeEnum(WeatherStatus, {
+      message: t("status.enum"),
+    }),
+    fieldId: z.string().min(1, t("fieldId.min")),
   });
 };
