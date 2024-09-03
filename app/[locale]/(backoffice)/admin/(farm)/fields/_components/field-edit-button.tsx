@@ -18,22 +18,14 @@ import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { OrgsSelectWithQueryClient } from "../../../_components/orgs-select";
-import { UnitFloatSelectWithQueryClient } from "../../../_components/unit-float-select";
+import { UnitsSelectWithQueryClient } from "../../../_components/units-select";
 import { Link, useRouter } from "@/navigation";
 import { toast } from "sonner";
-import { create, edit } from "@/actions/field";
+import { edit } from "@/actions/field";
 import { useParams } from "next/navigation";
 import { FieldWithUnit } from "@/types";
+import { UnitType } from "@prisma/client";
 
-export const FieldEditButton = () => {
-  return (
-    <Link href={"/admin/fields/create"}>
-      <Button variant={"success"} size={"sm"}>
-        <Plus className="mr-2" /> Create Field
-      </Button>
-    </Link>
-  );
-};
 interface FieldEditFormProps {
   data: FieldWithUnit;
 }
@@ -145,8 +137,9 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
                     control={form.control}
                     name="unitId"
                     render={({ field }) => (
-                      <UnitFloatSelectWithQueryClient
+                      <UnitsSelectWithQueryClient
                         defaultValue={field.value}
+                        unitType={UnitType.LENGTH}
                         onChange={field.onChange}
                         placeholder="Select unit..."
                         disabled={isPending}

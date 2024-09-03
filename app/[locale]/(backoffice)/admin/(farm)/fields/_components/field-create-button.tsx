@@ -18,16 +18,17 @@ import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { OrgsSelectWithQueryClient } from "../../../_components/orgs-select";
-import { UnitFloatSelectWithQueryClient } from "../../../_components/unit-float-select";
+import { UnitsSelectWithQueryClient } from "../../../_components/units-select";
 import { Link, useRouter } from "@/navigation";
 import { toast } from "sonner";
 import { create } from "@/actions/field";
+import { UnitType } from "@prisma/client";
 
 export const FieldCreateButton = () => {
   return (
-    <Link href={"/admin/fields/edit"}>
+    <Link href={"/admin/fields/create"}>
       <Button variant={"success"} size={"sm"}>
-        <Plus className="mr-2" /> Edit Field
+        <Plus className="mr-2" /> Create Field
       </Button>
     </Link>
   );
@@ -133,8 +134,9 @@ export const FieldCreateForm = () => {
                     control={form.control}
                     name="unitId"
                     render={({ field }) => (
-                      <UnitFloatSelectWithQueryClient
+                      <UnitsSelectWithQueryClient
                         defaultValue={field.value}
+                        unitType={UnitType.LENGTH}
                         onChange={field.onChange}
                         placeholder="Select unit..."
                         disabled={isPending}
@@ -172,7 +174,7 @@ export const FieldCreateForm = () => {
                 <FormLabel>{tSchema("width.label")}</FormLabel>
 
                 <FormControl>
-                  <Input {...field} type="number" placeholder="Height" />
+                  <Input {...field} type="number" placeholder="Width" />
                 </FormControl>
 
                 <FormMessage />
@@ -187,7 +189,7 @@ export const FieldCreateForm = () => {
                 <FormLabel>{tSchema("area.label")}</FormLabel>
 
                 <FormControl>
-                  <Input {...field} type="number" placeholder="Height" />
+                  <Input {...field} type="number" placeholder="Area" />
                 </FormControl>
 
                 <FormMessage />

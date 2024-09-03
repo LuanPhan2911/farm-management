@@ -9,6 +9,10 @@ import { useTranslations } from "next-intl";
 import { FieldCreateButton } from "./field-create-button";
 import { FieldWithUnit } from "@/types";
 import { FieldsTableAction } from "./fields-table-action";
+import {
+  UnitSuperscript,
+  UnitSuperscriptWithValue,
+} from "../../../_components/unit-superscript";
 
 interface FieldsDataTableProps {
   data: FieldWithUnit[];
@@ -60,21 +64,20 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
       cell: ({ row }) => {
         const data = row.original;
         return (
-          <span>
-            {data.height}({data.unit?.name})
-          </span>
+          <UnitSuperscriptWithValue
+            value={data.height}
+            unit={data.unit?.name}
+          />
         );
       },
     },
     {
-      accessorKey: "height",
+      accessorKey: "width",
       header: t("table.thead.width"),
       cell: ({ row }) => {
         const data = row.original;
         return (
-          <span>
-            {data.width}({data.unit?.name})
-          </span>
+          <UnitSuperscriptWithValue value={data.width} unit={data.unit?.name} />
         );
       },
     },
@@ -83,12 +86,8 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
       header: t("table.thead.area"),
       cell: ({ row }) => {
         const data = row.original;
-        return (
-          <span>
-            {data.area}({data.unit?.name}
-            <sup>2</sup>)
-          </span>
-        );
+        const unit = data.unit?.name ? `${data.unit.name}2` : "";
+        return <UnitSuperscriptWithValue value={data.area} unit={unit} />;
       },
     },
     {
@@ -111,8 +110,7 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
         <DataTable
           columns={columns}
           data={data}
-          filterColumn={{
-            isShown: true,
+          searchable={{
             value: "name",
             placeholder: t("search.placeholder"),
           }}
