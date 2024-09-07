@@ -47,9 +47,7 @@ export const ComboBox = ({
           className="w-[260px] justify-between"
         >
           <p className="h-full w-[240px] truncate">
-            {value
-              ? data.find((item) => item.value === value)?.label
-              : "Select jobs"}
+            {value ? data.find((item) => item.value === value)?.label : label}
           </p>
 
           <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />

@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 import { Matcher } from "react-day-picker";
 
 interface DatePickerProps {
-  date: Date;
+  date: Date | undefined;
   onChange: (date: Date | undefined) => void;
   disabled?: boolean;
   disabledDateRange?: Matcher | Matcher[];
@@ -34,7 +34,7 @@ export const DatePicker = ({
         <Button
           variant={"outline"}
           className={cn(
-            "w-[280px] justify-start text-left font-normal",
+            "w-full justify-start text-left font-normal",
             !date && "text-muted-foreground"
           )}
           disabled={disabled}
@@ -43,7 +43,7 @@ export const DatePicker = ({
           {date ? format(date, "PPP") : <span>Pick a date</span>}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="flex w-auto flex-col space-y-2 p-2">
+      <PopoverContent className="flex w-full flex-col space-y-2 p-2">
         <Select
           onValueChange={(value) =>
             onChange(addDays(new Date(), parseInt(value)))

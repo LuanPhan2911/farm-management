@@ -15,21 +15,14 @@ interface ToolbarProps {
 }
 export const Toolbar = ({ editor, disabled }: ToolbarProps) => {
   return (
-    <div className="flex gap-1 items-start h-fit py-3 rounded-md flex-col md:flex-row md:flex-wrap">
-      <div className="flex gap-1">
-        <RedoAndUndoButton editor={editor} disabled={disabled} />
-        <FontFamilyButton disabled={disabled} />
-        <FontSizeButton disabled={disabled} />
-      </div>
-      <Separator orientation="horizontal" className="md:hidden block" />
+    <div className="flex gap-1 items-start h-fit py-3 rounded-md flex-row flex-wrap">
+      <RedoAndUndoButton editor={editor} disabled={disabled} />
+      <FontFamilyButton disabled={disabled} />
+      <FontSizeButton disabled={disabled} />
       <AlignButton editor={editor} disabled={disabled} />
-      <Separator orientation="horizontal" className="md:hidden block" />
+      <SuperscriptAndSubscriptButton disabled={disabled} />
       <MarkButton editor={editor} disabled={disabled} />
-      <Separator orientation="horizontal" className="md:hidden block" />
-      <div className="flex gap-1">
-        <BulletAndOrderListButton editor={editor} disabled={disabled} />
-        <SuperscriptAndSubscriptButton disabled={disabled} />
-      </div>
+      <BulletAndOrderListButton editor={editor} disabled={disabled} />
     </div>
   );
 };

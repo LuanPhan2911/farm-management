@@ -24,14 +24,14 @@ export function DataTablePagination<TData>({
 }: DataTablePaginationProps<TData>) {
   const tPagination = useTranslations("datatable.pagination");
   return (
-    <div className="flex lg:items-center items-end justify-between px-2 gap-4 my-2 lg:flex-row flex-col-reverse">
+    <div className="flex lg:items-center items-end justify-between px-2 gap-2 my-2 lg:flex-row flex-col-reverse">
       <div className="flex-1 text-sm text-muted-foreground">
         {tPagination("rowSelected", {
           selectedRow: table.getFilteredSelectedRowModel().rows.length,
           allRow: table.getFilteredRowModel().rows.length,
         })}
       </div>
-      <div className="flex lg:items-center items-end space-x-6 lg:space-x-8 lg:flex-row flex-col-reverse gap-4">
+      <div className="flex lg:items-center items-end space-x-6 lg:space-x-8 lg:flex-row flex-col-reverse gap-2">
         <div className="flex items-center space-x-2">
           <div className="text-sm font-medium">{tPagination("rowPerPage")}</div>
           <Select

@@ -7,7 +7,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 export type SelectData = {
-  option: string;
+  value: string;
   label: string;
 };
 interface SelectOptionsProps {
@@ -38,9 +38,9 @@ export const SelectOptions = ({
       </SelectTrigger>
 
       <SelectContent>
-        {options.map(({ label, option }) => {
+        {options.map(({ label, value }) => {
           return (
-            <SelectItem key={option} value={option}>
+            <SelectItem key={value} value={value}>
               {label}
             </SelectItem>
           );

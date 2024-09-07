@@ -35,7 +35,7 @@ export function DataTableToolbar<TData, TValue>({
 }: DataTableToolbarProps<TData, TValue>) {
   return (
     <div className="flex py-4 lg:flex-row flex-col-reverse gap-4">
-      <div className="flex gap-x-2">
+      <div className="flex gap-4 lg:flex-row flex-col">
         {searchable && <DataTableSearchColumn table={table} {...searchable} />}
         {facetedFilters?.map((item) => {
           return (
