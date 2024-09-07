@@ -1,4 +1,4 @@
-import { SelectOptions } from "@/components/form/select-options";
+import { SelectData, SelectOptions } from "@/components/form/select-options";
 import { StaffRole } from "@prisma/client";
 
 interface StaffSelectRoleProps {
@@ -14,14 +14,14 @@ export const StaffSelectRole = ({
   value,
   disabled,
 }: StaffSelectRoleProps) => {
-  const options: { label: string; option: StaffRole }[] = [
+  const options: SelectData[] = [
     {
       label: "Admin",
-      option: "admin",
+      value: "admin",
     },
     {
       label: "Farmer",
-      option: "farmer",
+      value: "farmer",
     },
   ];
   return (

@@ -74,7 +74,7 @@ function StaffsSelect({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between"
+          className="w-full justify-between px-2"
           disabled={disabled}
           size={"lg"}
         >

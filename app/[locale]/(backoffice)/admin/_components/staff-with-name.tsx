@@ -6,7 +6,7 @@ interface StaffWithNameProps {
 }
 export const StaffWithName = ({ imageUrl, name }: StaffWithNameProps) => {
   return (
-    <div className="flex items-center p-1">
+    <div className="flex items-center p-1 w-40">
       <UserAvatar
         src={imageUrl || undefined}
         size={"default"}

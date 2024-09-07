@@ -4,6 +4,7 @@ import { create } from "@/actions/unit";
 import { ErrorButton } from "@/components/buttons/error-button";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 import { UnitSelect } from "@/types";
 import { Unit, UnitType } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
@@ -20,6 +21,8 @@ interface UnitsSelectProps {
   placeholder: string;
   disabled?: boolean;
   className?: string;
+  errorLabel: string;
+  notFound: string;
 }
 const UnitsSelect = ({
   defaultValue,
@@ -28,6 +31,8 @@ const UnitsSelect = ({
   placeholder,
   disabled,
   className,
+  errorLabel,
+  notFound,
 }: UnitsSelectProps) => {
   const [isCreating, startTransition] = useTransition();
   const t = useTranslations("units.status");
@@ -74,12 +79,7 @@ const UnitsSelect = ({
     return <Skeleton className="w-full h-12" />;
   }
   if (isError) {
-    return (
-      <ErrorButton
-        title="Something went wrong when load units"
-        refresh={refetch}
-      />
-    );
+    return <ErrorButton title={errorLabel} refresh={refetch} />;
   }
 
   const options = data.map((item) => {
@@ -102,7 +102,8 @@ const UnitsSelect = ({
       onCreateOption={handleCreate}
       value={option}
       isDisabled={disabled || isCreating}
-      className={className}
+      className={cn("my-react-select-container", className)}
+      classNamePrefix="my-react-select"
     />
   );
 };
