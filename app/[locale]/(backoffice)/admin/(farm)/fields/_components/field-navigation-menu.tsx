@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 import { Link, usePathname } from "@/navigation";
+import { useTranslations } from "next-intl";
 
 import { useParams } from "next/navigation";
 
@@ -15,27 +16,28 @@ export const FieldNavigationMenu = () => {
     fieldId: string;
   }>();
   const pathname = usePathname();
+  const t = useTranslations("fields.tabs");
   const getHref = `/admin/fields/detail/${params.fieldId}`;
   const menu = [
     {
       href: `${getHref}`,
-      label: "Info",
+      label: t("info.label"),
     },
     {
       href: `${getHref}/crops`,
-      label: "Crops",
+      label: t("crops.label"),
     },
     {
       href: `${getHref}/weathers`,
-      label: "Weathers",
+      label: t("weathers.label"),
     },
     {
       href: `${getHref}/soils`,
-      label: "Soils",
+      label: t("soils.label"),
     },
     {
       href: `${getHref}/danger`,
-      label: "Danger",
+      label: t("danger.label"),
     },
   ];
   return (

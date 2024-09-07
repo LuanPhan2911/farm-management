@@ -1,12 +1,13 @@
 import { db } from "@/lib/db";
 import { UnitType } from "@prisma/client";
-import { strict } from "assert";
 
-export const createUnit = async (params: {
+type UnitParams = {
   name: string;
   description?: string | undefined;
   type?: UnitType | undefined;
-}) => {
+};
+
+export const createUnit = async (params: UnitParams) => {
   return await db.unit.create({
     data: {
       ...params,
@@ -14,14 +15,7 @@ export const createUnit = async (params: {
   });
 };
 
-export const updateUnit = async (
-  id: string,
-  params: {
-    name: string;
-    description?: string | undefined;
-    type?: UnitType | undefined;
-  }
-) => {
+export const updateUnit = async (id: string, params: UnitParams) => {
   return await db.unit.update({
     where: {
       id,

@@ -1,22 +1,17 @@
-import { getOrganizations } from "@/services/organizations";
-import { OrgCreateButton } from "./_components/org-create-button";
+import { getOrganizations, OrganizationSortBy } from "@/services/organizations";
 import { OrgsTable } from "./_components/orgs-table";
-
-import { currentUser } from "@clerk/nextjs/server";
-import { redirect } from "@/navigation";
-import { getStaffsForCreatedByOrganization } from "@/services/staffs";
 
 interface OrganizationPageProps {
   searchParams: {
     page?: string;
     query?: string;
-    orderBy?: "created_at" | "name" | "members_count";
+    orderBy?: OrganizationSortBy;
   };
 }
 const OrganizationsPage = async ({ searchParams }: OrganizationPageProps) => {
   const query = searchParams.query || "";
   const page = searchParams.page ? Number(searchParams.page) : 1;
-  const orderBy = searchParams.orderBy || "created_at";
+  const orderBy = searchParams.orderBy;
   const { data: organizations, totalPage } = await getOrganizations(
     query,
     page,

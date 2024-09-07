@@ -11,9 +11,13 @@ import { toast } from "sonner";
 
 interface OrgMemberRemoveButtonProps {
   data: OrganizationMembershipPublicUserData;
+  label: string;
 }
 
-export const OrgMemberRemoveButton = ({ data }: OrgMemberRemoveButtonProps) => {
+export const OrgMemberRemoveButton = ({
+  data,
+  label,
+}: OrgMemberRemoveButtonProps) => {
   const { onOpen, onClose } = useAlertDialog();
   const t = useTranslations("organizations");
   const params = useParams<{
@@ -53,7 +57,7 @@ export const OrgMemberRemoveButton = ({ data }: OrgMemberRemoveButtonProps) => {
       className="w-full"
       onClick={handleClick}
     >
-      Remove member
+      {label}
     </Button>
   );
 };

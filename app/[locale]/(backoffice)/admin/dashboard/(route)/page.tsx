@@ -12,7 +12,7 @@ const Dashboard = async () => {
   const data = await getData();
   return (
     <div className="flex flex-col gap-y-4 h-full">
-      <Heading title={t("heading")} />
+      <Heading title={t("page.title")} />
       {/* Large cards */}
       <LargeCards />
       {/* Small card */}

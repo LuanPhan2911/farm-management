@@ -38,7 +38,6 @@ export const UserBasicInfo = ({ data }: UserBasicInfoProps) => {
   const t = useTranslations("users");
   const formSchema = UserSchema(tSchema);
   const form = useForm<z.infer<typeof formSchema>>({
-    mode: "onChange",
     resolver: zodResolver(formSchema),
     defaultValues: {
       firstName: "",

@@ -39,26 +39,16 @@ export const StaffBasicInfo = ({ data }: StaffBasicInfoProps) => {
   const t = useTranslations("staffs");
   const formSchema = UserSchema(tSchema);
   const form = useForm<z.infer<typeof formSchema>>({
-    mode: "onChange",
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      address: "",
-      email: "",
-      phone: "",
+      firstName: data.firstName || "",
+      lastName: data.lastName || "",
+      address: (data.publicMetadata?.address as string) || "",
+      email: getEmailAddress(data),
+      phone: (data.publicMetadata?.phone as string) || "",
     },
   });
-  useEffect(() => {
-    const email = getEmailAddress(data);
-    const address = (data.publicMetadata?.address as string) || "";
-    const phoneNumber = (data.publicMetadata?.phone as string) || "";
-    form.setValue("email", email);
-    form.setValue("firstName", data.firstName || "");
-    form.setValue("lastName", data.lastName || "");
-    form.setValue("address", address);
-    form.setValue("phone", phoneNumber);
-  }, [data, form]);
+
   const [isPending, startTransition] = useTransition();
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {

@@ -103,34 +103,22 @@ export const UserSchema = (t: (arg: string) => string) => {
   return z.object({
     email: z
       .string()
-      .min(1, {
-        message: t("email.min"),
-      })
-      .email({
-        message: t("email.isEmail"),
-      })
-      .max(100),
-    firstName: z.string().min(1, {
-      message: t("firstName.min"),
-    }),
-    lastName: z.string().min(1, {
-      message: t("lastName.min"),
-    }),
+      .min(1, t("email.min"))
+      .max(100, t("email.max"))
+      .email(t("email.isEmail")),
+
+    firstName: z
+      .string()
+      .min(1, t("firstName.min"))
+      .max(100, t("firstName.max")),
+    lastName: z.string().min(1, t("lastName.min")).max(100, t("lastName.max")),
 
     phone: z
       .string()
-      .min(1, {
-        message: t("phone.min"),
-      })
-      .refine(validator.isMobilePhone, {
-        message: "phone.isPhone",
-      }),
-    address: z
-      .string()
-      .min(1, {
-        message: t("address.min"),
-      })
-      .max(100),
+      .min(1, t("phone.min"))
+      .max(15, t("phone.max"))
+      .refine(validator.isMobilePhone, t("phone.isPhone")),
+    address: z.string().min(1, t("address.min")).max(100, t("address.max")),
   });
 };
 
@@ -138,7 +126,10 @@ export const OrganizationSchema = (t: (arg: string) => string) => {
   return z.object({
     name: z.string().min(1, t("name.min")).max(100, t("name.max")),
     slug: z.string().min(1, t("slug.min")).max(100, t("slug.max")),
-    createdBy: z.string().min(1, t("createdBy.min")),
+    createdBy: z
+      .string()
+      .min(1, t("createdBy.min"))
+      .max(100, t("createdBy.max")),
   });
 };
 
@@ -146,7 +137,9 @@ const orgRoles = ["org:admin", "org:member"] as const;
 export const OrganizationMemberSchema = (t: (arg: string) => string) => {
   return z.object({
     memberId: z.string().min(1, t("memberId.min")),
-    role: z.enum(orgRoles),
+    role: z.enum(orgRoles, {
+      message: "role.enum",
+    }),
   });
 };
 
@@ -154,27 +147,31 @@ export const FieldSchema = (t: (arg: string) => string) => {
   return z.object({
     name: z.string().min(1, t("name.min")).max(100, t("name.max")),
     location: z.string().min(1, t("location.min")).max(100, t("location.max")),
-    orgId: z.string().min(1, t("orgId.min")),
+    orgId: z.string({
+      required_error: t("orgId.required_error"),
+    }),
     height: z.coerce
       .number({
         required_error: t("height.required_error"),
         invalid_type_error: t("height.invalid_type"),
       })
-      .min(0, t("heightValue.min")),
+      .min(0, t("height.min")),
     width: z.coerce
       .number({
         required_error: t("width.required_error"),
         invalid_type_error: t("width.invalid_type"),
       })
-      .min(0, t("widthValue.min")),
+      .min(0, t("width.min")),
 
     area: z.coerce
       .number({
         required_error: t("area.required_error"),
         invalid_type_error: t("area.invalid_type"),
       })
-      .min(0, t("areaValue.min")),
-    unitId: z.string().min(1, t("unitId.min")),
+      .min(0, t("area.min")),
+    unitId: z.string({
+      required_error: t("unitId.required_error"),
+    }),
     shape: z.optional(
       z.string().min(1, t("shape.min")).max(100, t("shape.max"))
     ),
@@ -183,17 +180,21 @@ export const FieldSchema = (t: (arg: string) => string) => {
 export const WeatherSchema = (t: (arg: string) => string) => {
   return z.object({
     temperature: z.object({
-      unitId: z.string().min(1, t("temperature.unitId.min")),
+      unitId: z.string({
+        required_error: t("temperature.unitId.required_error"),
+      }),
       value: z.coerce
         .number({
           required_error: t("temperature.value.required_error"),
           invalid_type_error: t("temperature.value.invalid_type"),
         })
-        .min(-100, t("temperature.value.min"))
-        .max(1000, t("temperature.value.max")),
+        .min(-20, t("temperature.value.min"))
+        .max(50, t("temperature.value.max")),
     }),
     humidity: z.object({
-      unitId: z.string().min(1, t("humidity.unitId.min")),
+      unitId: z.string({
+        required_error: t("humidity.unitId.required_error"),
+      }),
       value: z.coerce
         .number({
           required_error: t("humidity.value.required_error"),
@@ -203,7 +204,9 @@ export const WeatherSchema = (t: (arg: string) => string) => {
         .max(100, t("humidity.value.max")),
     }),
     atmosphericPressure: z.object({
-      unitId: z.string().min(1, t("atmosphericPressure.unitId.min")),
+      unitId: z.string({
+        required_error: t("atmosphericPressure.unitId.required_error"),
+      }),
       value: z.coerce
         .number({
           required_error: t("atmosphericPressure.value.required_error"),
@@ -213,7 +216,9 @@ export const WeatherSchema = (t: (arg: string) => string) => {
         .max(1084, t("atmosphericPressure.value.max")),
     }),
     rainfall: z.object({
-      unitId: z.string().min(1, t("rainfall.unitId.min")),
+      unitId: z.string({
+        required_error: t("rainfall.unitId.required_error"),
+      }),
       value: z.coerce
         .number({
           required_error: t("rainfall.value.required_error"),
@@ -225,6 +230,6 @@ export const WeatherSchema = (t: (arg: string) => string) => {
     status: z.nativeEnum(WeatherStatus, {
       message: t("status.enum"),
     }),
-    fieldId: z.string().min(1, t("fieldId.min")),
+    fieldId: z.string(),
   });
 };

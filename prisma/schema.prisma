@@ -148,7 +148,7 @@ model Applicant {
   note    String?
 
   jobId String
-  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  job   Job    @relation(fields: [jobId], references: [id])
 
   status ApplicantStatus @default(NEW)
 

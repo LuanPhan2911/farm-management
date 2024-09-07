@@ -26,7 +26,7 @@ export const FieldsTableAction = ({ data }: FieldsTableActionProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
-          <FieldDetailButton data={data} />
+          <FieldDetailButton data={data} label={t("viewDetail.label")} />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

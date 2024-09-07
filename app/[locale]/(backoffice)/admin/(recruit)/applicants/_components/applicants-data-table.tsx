@@ -60,15 +60,37 @@ export const ApplicantsTable = ({ applicants }: ApplicantsTableProps) => {
     },
     {
       accessorKey: "email",
-      header: t("table.thead.email"),
+      header: ({ column }) => {
+        return (
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.thead.email")}
+          />
+        );
+      },
     },
     {
       accessorKey: "address",
-      header: t("table.thead.address"),
+      header: ({ column }) => {
+        return (
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.thead.address")}
+          />
+        );
+      },
     },
     {
       accessorKey: "phone",
       header: t("table.thead.phone"),
+    },
+    {
+      accessorKey: "note",
+      header: t("table.thead.note"),
+      cell: ({ row }) => {
+        const data = row.original;
+        return data.note || t("table.trow.note");
+      },
     },
     {
       accessorKey: "status",

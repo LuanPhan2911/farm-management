@@ -17,6 +17,8 @@ import { useRouter } from "@/navigation";
 import { StaffMetadataRole } from "../../../_components/staff-metadata-role";
 import { StaffsTableAction } from "./staffs-table-action";
 import { StaffCreateButton } from "./staff-create-button";
+import { getEmailAddress } from "@/lib/utils";
+import { StaffsTableSortBy } from "./staffs-table-sort-by";
 
 interface StaffsTableProps {
   data: User[];
@@ -35,11 +37,12 @@ export const StaffsTable = ({ data, totalPage }: StaffsTableProps) => {
         <CardTitle>{t("page.title")}</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex justify-between md:items-center py-4 md:flex-row flex-col gap-2 items-end">
-          <div className="w-[300px]">
-            <SearchBar placeholder={t("search.placeholder")} isPagination />
-          </div>
+        <div className="flex justify-end">
           <StaffCreateButton />
+        </div>
+        <div className="py-4 flex gap-2 lg:flex-row flex-col items-start lg:items-center">
+          <SearchBar placeholder={t("search.placeholder")} isPagination />
+          <StaffsTableSortBy />
         </div>
         <Table>
           <TableHeader>
@@ -47,8 +50,9 @@ export const StaffsTable = ({ data, totalPage }: StaffsTableProps) => {
               <TableHead></TableHead>
               <TableHead>{t("table.thead.name")}</TableHead>
               <TableHead>{t("table.thead.role")}</TableHead>
-              <TableHead>{t("table.thead.lastSignedIn")}</TableHead>
-              <TableHead>{t("table.thead.joined")} </TableHead>
+              <TableHead>{t("table.thead.lastActiveAt")}</TableHead>
+              <TableHead>{t("table.thead.lastSignedInAt")}</TableHead>
+              <TableHead>{t("table.thead.joinedAt")} </TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
@@ -67,15 +71,19 @@ export const StaffsTable = ({ data, totalPage }: StaffsTableProps) => {
                       className="rounded-full"
                     />
                   </TableCell>
-                  <TableCell>{staff.emailAddresses[0].emailAddress}</TableCell>
+                  <TableCell>{getEmailAddress(staff)}</TableCell>
                   <TableCell>
                     <StaffMetadataRole metadata={staff.publicMetadata} />
                   </TableCell>
                   <TableCell>
+                    {staff.lastActiveAt
+                      ? relativeTime(staff.lastActiveAt)
+                      : t("table.trow.lastActiveAt")}
+                  </TableCell>
+                  <TableCell>
                     {staff.lastSignInAt
                       ? relativeTime(staff.lastSignInAt)
-                      : t("table.trow.lastSignedIn")}
-                    {}
+                      : t("table.trow.lastSignedInAt")}
                   </TableCell>
                   <TableCell>{relativeTime(staff.createdAt)}</TableCell>
                   <TableCell>

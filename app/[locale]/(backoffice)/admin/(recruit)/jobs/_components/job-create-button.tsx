@@ -138,7 +138,7 @@ export const JobCreateForm = () => {
                         options={Object.values(JobExperience).map((value) => {
                           return {
                             label: tSchema(`experience.options.${value}`),
-                            option: value,
+                            value: value,
                           };
                         })}
                       />
@@ -204,7 +204,7 @@ export const JobCreateForm = () => {
                         options={Object.values(Gender).map((value) => {
                           return {
                             label: tSchema(`gender.options.${value}`),
-                            option: value,
+                            value: value,
                           };
                         })}
                       />
@@ -228,7 +228,7 @@ export const JobCreateForm = () => {
                         options={Object.values(JobWorkingState).map((value) => {
                           return {
                             label: tSchema(`workingState.options.${value}`),
-                            option: value,
+                            value: value,
                           };
                         })}
                       />

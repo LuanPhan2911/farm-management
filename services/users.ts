@@ -3,7 +3,30 @@ import { clerkClient } from "@clerk/nextjs/server";
 import { StaffRole } from "@prisma/client";
 import { getStaffExternalIds } from "./staffs";
 
-export const getUsersTable = async (query: string, currentPage: number) => {
+type UserParams = {
+  name: string;
+  email: string;
+  password: string;
+  role: StaffRole;
+};
+export type UserOrderBy =
+  | "created_at"
+  | "email_address"
+  | "last_sign_in_at"
+  | "last_active_at"
+  | "-created_at"
+  | "-email_address"
+  | "-last_sign_in_at"
+  | "-last_active_at";
+export const getUsersTable = async ({
+  query,
+  currentPage,
+  orderBy,
+}: {
+  query: string;
+  currentPage: number;
+  orderBy?: UserOrderBy;
+}) => {
   try {
     const staffIds = await getStaffExternalIds();
 
@@ -12,6 +35,7 @@ export const getUsersTable = async (query: string, currentPage: number) => {
       offset: (currentPage - 1) * LIMIT,
       query,
       userId: staffIds.map((id) => `-${id}`),
+      orderBy,
     });
 
     const totalPage = Math.ceil(totalCount / LIMIT);
@@ -46,26 +70,17 @@ export const createUser = async ({
   email,
   password,
   role,
-}: {
-  name: string;
-  email: string;
-  password: string;
-  role: StaffRole;
-}) => {
-  try {
-    const user = await clerkClient().users.createUser({
-      firstName: name,
-      emailAddress: [email],
-      password,
-      publicMetadata: {
-        role,
-      },
-    });
+}: UserParams) => {
+  const user = await clerkClient().users.createUser({
+    firstName: name,
+    emailAddress: [email],
+    password,
+    publicMetadata: {
+      role,
+    },
+  });
 
-    return user;
-  } catch (error) {
-    return null;
-  }
+  return user;
 };
 export const updateUserMetadata = async (
   userId: string,
@@ -75,47 +90,36 @@ export const updateUserMetadata = async (
     role: StaffRole;
   }
 ) => {
-  try {
-    const user = await clerkClient().users.updateUserMetadata(userId, {
-      publicMetadata: {
-        role,
-      },
-    });
+  const user = await clerkClient().users.updateUserMetadata(userId, {
+    publicMetadata: {
+      role,
+    },
+  });
 
-    return user;
-  } catch (error) {
-    return null;
-  }
+  return user;
 };
-export const updateUser = async (
-  userId: string,
-  params: {
-    firstName?: string;
-    lastName?: string;
-  },
-  publicMetadata: UserPublicMetadata
-) => {
-  try {
-    await clerkClient().users.updateUser(userId, {
-      ...params,
-    });
-    const user = await clerkClient().users.updateUserMetadata(userId, {
-      publicMetadata: {
-        ...publicMetadata,
-      },
-    });
-    return user;
-  } catch (error) {
-    return null;
-  }
+type UpdateUserParams = {
+  firstName?: string;
+  lastName?: string;
+  phone: string;
+  address: string;
+};
+export const updateUser = async (userId: string, params: UpdateUserParams) => {
+  await clerkClient().users.updateUser(userId, {
+    firstName: params.firstName,
+    lastName: params.lastName,
+  });
+  const user = await clerkClient().users.updateUserMetadata(userId, {
+    publicMetadata: {
+      phone: params.phone,
+      address: params.address,
+    },
+  });
+  return user;
 };
 export const deleteUser = async (userId: string) => {
-  try {
-    const user = await clerkClient().users.deleteUser(userId);
-    return user;
-  } catch (error) {
-    return null;
-  }
+  const user = await clerkClient().users.deleteUser(userId);
+  return user;
 };
 export const getUserById = async (id: string) => {
   try {

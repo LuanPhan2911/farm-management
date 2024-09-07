@@ -108,12 +108,12 @@ export const UnitCreateButton = () => {
                   <FormLabel>{tSchema("type.label")}</FormLabel>
                   <FormControl>
                     <SelectOptions
-                      label={tSchema("type.label")}
+                      label={tSchema("type.placeholder")}
                       onChange={field.onChange}
                       options={Object.values(UnitType).map((item) => {
                         return {
-                          label: item,
-                          option: item,
+                          label: t(`schema.type.options.${item}`),
+                          value: item,
                         };
                       })}
                       disabled={isPending}

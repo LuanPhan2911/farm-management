@@ -49,13 +49,12 @@ export const StaffCreateDialog = () => {
   const tSchema = useTranslations("staffs.schema");
   const formSchema = StaffSchema(tSchema);
   const form = useForm<z.infer<typeof formSchema>>({
-    mode: "onChange",
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       role: "farmer",
       email: "",
-      password: "",
+      password: generatePassword(8),
       receiverEmail: "",
     },
   });

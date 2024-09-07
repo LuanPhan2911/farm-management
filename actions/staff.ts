@@ -35,9 +35,7 @@ export const create = async (
     }
 
     const user = await createUser({ ...validatedFields.data });
-    if (!user) {
-      return errorResponse(tStatus("failure.create"));
-    }
+
     //TODO: webhook for create staff
     if (!!receiverEmail) {
       sendStaffCreateUser(receiverEmail, {
@@ -62,9 +60,7 @@ export const editRole = async (
     const user = await updateUserMetadata(userId, {
       role,
     });
-    if (!user) {
-      return errorResponse(tStatus("failure.editRole"));
-    }
+
     //TODO webhook for update staff role
     revalidatePath("/admin/staffs");
     revalidatePath(`/admin/staffs/detail/${userId}`);
@@ -79,10 +75,6 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
 
   try {
     const user = await deleteUser(id);
-
-    if (!user) {
-      return errorResponse(tStatus("failure.destroy"));
-    }
 
     //TODO: webhook for delete staff
     revalidatePath("/admin/staffs");
@@ -103,22 +95,9 @@ export const edit = async (
   if (!validatedFields.success) {
     return errorResponse(tSchema("errors.parse"));
   }
-  const { firstName, lastName, address, phone } = validatedFields.data;
+
   try {
-    const user = await updateUser(
-      userId,
-      {
-        firstName,
-        lastName,
-      },
-      {
-        phone,
-        address,
-      }
-    );
-    if (!user) {
-      return errorResponse(tStatus("failure.edit"));
-    }
+    const user = await updateUser(userId, validatedFields.data);
 
     revalidatePath("/admin/users");
     revalidatePath(`/admin/users/detail/${user.id}`);

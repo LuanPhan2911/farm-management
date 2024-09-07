@@ -1,7 +1,7 @@
 "use client";
 import { DataTable } from "@/components/datatable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 
 import { Checkbox } from "@/components/ui/checkbox";
 
@@ -16,6 +16,7 @@ import { JobTable } from "@/types";
 import { JobPublishedSwitch } from "./job-published-switch";
 import { JobExpired } from "./job-expired";
 import { JobCreateButton } from "./job-create-button";
+import { JobExperience } from "@prisma/client";
 
 interface JobsTableProps {
   data: JobTable[];
@@ -23,7 +24,7 @@ interface JobsTableProps {
 export const JobsTable = ({ data }: JobsTableProps) => {
   const tSchema = useTranslations("jobs.schema");
   const t = useTranslations("jobs");
-
+  const { dateTime } = useFormatter();
   const { onOpen, onClose } = useAlertDialog();
 
   const columns: ColumnDef<JobTable>[] = [
@@ -71,6 +72,9 @@ export const JobsTable = ({ data }: JobsTableProps) => {
         const data = row.original.experience;
         return tSchema(`experience.options.${data}`);
       },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
     },
     {
       accessorKey: "gender",
@@ -82,7 +86,22 @@ export const JobsTable = ({ data }: JobsTableProps) => {
     },
     {
       accessorKey: "expiredAt",
-      header: t("table.thead.expiredAt"),
+      header: ({ column }) => {
+        return (
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.thead.expiredAt")}
+          />
+        );
+      },
+      cell: ({ row }) => {
+        const data = row.original.expiredAt;
+        return dateTime(data);
+      },
+    },
+    {
+      accessorKey: "status",
+      header: t("table.thead.status"),
       cell: ({ row }) => {
         const data = row.original.expiredAt;
         return <JobExpired expiredAt={data} />;
@@ -133,6 +152,18 @@ export const JobsTable = ({ data }: JobsTableProps) => {
       },
     },
   ];
+  const facetedFilters = [
+    {
+      column: "experience",
+      label: t("search.faceted.experience.placeholder"),
+      options: Object.values(JobExperience).map((item) => {
+        return {
+          label: t(`schema.experience.options.${item}`),
+          value: item,
+        };
+      }),
+    },
+  ];
 
   return (
     <Card>
@@ -151,6 +182,7 @@ export const JobsTable = ({ data }: JobsTableProps) => {
             placeholder: t("search.placeholder"),
           }}
           bulkActions={bulkActions}
+          facetedFilters={facetedFilters}
         />
       </CardContent>
     </Card>

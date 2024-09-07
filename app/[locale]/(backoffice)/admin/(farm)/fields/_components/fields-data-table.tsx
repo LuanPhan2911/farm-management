@@ -9,10 +9,7 @@ import { useTranslations } from "next-intl";
 import { FieldCreateButton } from "./field-create-button";
 import { FieldWithUnit } from "@/types";
 import { FieldsTableAction } from "./fields-table-action";
-import {
-  UnitSuperscript,
-  UnitSuperscriptWithValue,
-} from "../../../_components/unit-superscript";
+import { UnitSuperscriptWithValue } from "../../../_components/unit-superscript";
 
 interface FieldsDataTableProps {
   data: FieldWithUnit[];
@@ -56,11 +53,25 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
 
     {
       accessorKey: "location",
-      header: t("table.thead.location"),
+      header: ({ column }) => {
+        return (
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.thead.location")}
+          />
+        );
+      },
     },
     {
       accessorKey: "height",
-      header: t("table.thead.height"),
+      header: ({ column }) => {
+        return (
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.thead.height")}
+          />
+        );
+      },
       cell: ({ row }) => {
         const data = row.original;
         return (
@@ -73,7 +84,14 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
     },
     {
       accessorKey: "width",
-      header: t("table.thead.width"),
+      header: ({ column }) => {
+        return (
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.thead.width")}
+          />
+        );
+      },
       cell: ({ row }) => {
         const data = row.original;
         return (
@@ -83,7 +101,14 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
     },
     {
       accessorKey: "area",
-      header: t("table.thead.area"),
+      header: ({ column }) => {
+        return (
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.thead.area")}
+          />
+        );
+      },
       cell: ({ row }) => {
         const data = row.original;
         const unit = data.unit?.name ? `${data.unit.name}2` : "";
@@ -101,7 +126,7 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("table.heading")}</CardTitle>
+        <CardTitle>{t("page.title")}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex justify-end">

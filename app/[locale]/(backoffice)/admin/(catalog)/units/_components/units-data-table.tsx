@@ -60,9 +60,20 @@ export const UnitsTable = ({ data }: UnitsTableProps) => {
     },
     {
       accessorKey: "type",
-      header: t("table.thead.type"),
+      header: ({ column }) => {
+        return (
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.thead.type")}
+          />
+        );
+      },
       filterFn: (row, id, value) => {
         return value.includes(row.getValue(id));
+      },
+      cell: ({ row }) => {
+        const data = row.original;
+        return t(`schema.type.options.${data.type}`);
       },
     },
     {
@@ -109,10 +120,10 @@ export const UnitsTable = ({ data }: UnitsTableProps) => {
   const facetedFilters = [
     {
       column: "type",
-      label: "Select type",
+      label: t("search.faceted.type.placeholder"),
       options: Object.values(UnitType).map((item) => {
         return {
-          label: item,
+          label: t(`schema.type.options.${item}`),
           value: item,
         };
       }),

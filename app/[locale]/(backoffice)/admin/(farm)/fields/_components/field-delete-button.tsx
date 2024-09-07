@@ -45,7 +45,7 @@ export const FieldDeleteButton = () => {
   };
   return (
     <Button variant={"destroy"} size={"sm"} onClick={handleClick}>
-      <Trash className="mr-2" /> Delete field
+      <Trash className="mr-2" /> {t("form.destroy.label")}
     </Button>
   );
 };

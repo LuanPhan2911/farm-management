@@ -19,7 +19,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { OrgsSelectWithQueryClient } from "../../../_components/orgs-select";
 import { UnitsSelectWithQueryClient } from "../../../_components/units-select";
-import { Link, useRouter } from "@/navigation";
+import { useRouter } from "@/navigation";
 import { toast } from "sonner";
 import { edit } from "@/actions/field";
 import { useParams } from "next/navigation";
@@ -34,7 +34,7 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
   const formSchema = FieldSchema(tSchema);
   const t = useTranslations("fields");
   const [isPending, startTransition] = useTransition();
-  const router = useRouter();
+
   const params = useParams<{
     fieldId: string;
   }>();
@@ -115,9 +115,9 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
                   <OrgsSelectWithQueryClient
                     defaultValue={field.value}
                     onChange={field.onChange}
-                    errorLabel="Something went wrong went load organizations"
-                    label="Select organization..."
-                    notFound="Organization not found"
+                    errorLabel={tSchema("orgId.error")}
+                    label={tSchema("orgId.placeholder")}
+                    notFound={tSchema("orgId.notFound")}
                     disabled={isPending}
                   />
                 </FormControl>
@@ -133,18 +133,14 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
               <FormItem>
                 <FormLabel>{tSchema("unitId.label")}</FormLabel>
                 <FormControl>
-                  <FormField
-                    control={form.control}
-                    name="unitId"
-                    render={({ field }) => (
-                      <UnitsSelectWithQueryClient
-                        defaultValue={field.value}
-                        unitType={UnitType.LENGTH}
-                        onChange={field.onChange}
-                        placeholder="Select unit..."
-                        disabled={isPending}
-                      />
-                    )}
+                  <UnitsSelectWithQueryClient
+                    defaultValue={field.value}
+                    unitType={UnitType.LENGTH}
+                    onChange={field.onChange}
+                    placeholder={tSchema("unitId.placeholder")}
+                    errorLabel={tSchema("unitId.error")}
+                    notFound={tSchema("unitId.notFound")}
+                    disabled={isPending}
                   />
                 </FormControl>
 
@@ -162,7 +158,11 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
                 <FormLabel>{tSchema("height.label")}</FormLabel>
 
                 <FormControl>
-                  <Input {...field} type="number" placeholder="Height" />
+                  <Input
+                    {...field}
+                    type="number"
+                    placeholder={tSchema("height.placeholder")}
+                  />
                 </FormControl>
 
                 <FormMessage />
@@ -177,7 +177,11 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
                 <FormLabel>{tSchema("width.label")}</FormLabel>
 
                 <FormControl>
-                  <Input {...field} type="number" placeholder="Height" />
+                  <Input
+                    {...field}
+                    type="number"
+                    placeholder={tSchema("width.placeholder")}
+                  />
                 </FormControl>
 
                 <FormMessage />
@@ -192,7 +196,11 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
                 <FormLabel>{tSchema("area.label")}</FormLabel>
 
                 <FormControl>
-                  <Input {...field} type="number" placeholder="Height" />
+                  <Input
+                    {...field}
+                    type="number"
+                    placeholder={tSchema("area.placeholder")}
+                  />
                 </FormControl>
 
                 <FormMessage />

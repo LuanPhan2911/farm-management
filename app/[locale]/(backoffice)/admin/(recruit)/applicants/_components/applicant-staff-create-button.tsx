@@ -75,6 +75,7 @@ export const ApplicantStaffCreateDialog = () => {
       form.setValue("name", data.applicant.name);
       form.setValue("email", generateEmail(data.applicant.name));
       form.setValue("receiverEmail", data.applicant.email);
+      form.setValue("password", generatePassword(8));
     }
   }, [form, data]);
   const watchName = form.watch("name");
@@ -102,7 +103,7 @@ export const ApplicantStaffCreateDialog = () => {
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.editRole"));
+          toast.error(t("status.failure.createStaff"));
         })
         .finally(() => {
           onClose();

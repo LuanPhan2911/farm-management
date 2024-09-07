@@ -20,7 +20,7 @@ export type PaginatedResponse<T> = {
   data: T[];
   totalPage: number;
 };
-export type BreadCrumb = {
+export type Breadcrumb = {
   label: string;
   href?: string;
 };

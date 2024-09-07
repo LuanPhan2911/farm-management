@@ -22,7 +22,7 @@ export const OrgTabs = ({
 
   return (
     <Tabs value={active} onValueChange={setActive}>
-      <TabsList className="grid w-[500px] grid-cols-3">
+      <TabsList className="grid grid-cols-3 lg:w-[500px] w-full">
         <TabsTrigger value="profile">{t("profile.title")}</TabsTrigger>
         <TabsTrigger value="member">{t("member.title")}</TabsTrigger>
         <TabsTrigger value="danger">{t("danger.title")}</TabsTrigger>

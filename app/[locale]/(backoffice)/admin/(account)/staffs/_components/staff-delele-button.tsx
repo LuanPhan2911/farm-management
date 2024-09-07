@@ -2,10 +2,12 @@
 
 import { destroy } from "@/actions/staff";
 import { Button } from "@/components/ui/button";
+import { useRole } from "@/hooks/use-role";
 import { useRouter } from "@/navigation";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
 
 import { User } from "@clerk/nextjs/server";
+import { StaffRole } from "@prisma/client";
 
 import { Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -19,6 +21,7 @@ export const StaffDeleteButton = ({ data, label }: StaffDeleteButtonProps) => {
   const { id } = data;
   const { onOpen, onClose } = useAlertDialog();
   const t = useTranslations("staffs");
+  const { isSuperAdmin } = useRole(data.publicMetadata.role as StaffRole);
 
   const router = useRouter();
 
@@ -56,6 +59,7 @@ export const StaffDeleteButton = ({ data, label }: StaffDeleteButtonProps) => {
       className="w-full"
       onClick={handleClick}
       size={"sm"}
+      disabled={isSuperAdmin}
     >
       <Trash className="h-6 w-6 mr-2" />
       {label}

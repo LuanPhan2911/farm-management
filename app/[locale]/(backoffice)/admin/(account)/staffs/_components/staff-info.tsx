@@ -31,15 +31,21 @@ export const StaffInfo = ({ data }: StaffInfoProps) => {
           <StaffMetadataRole metadata={data.publicMetadata} />
         </div>
         <p className="text-sm font-semibold">{getEmailAddress(data)}</p>
-        <p className="text-sm text-muted-foreground">
-          {t("table.thead.lastSignedIn")}:{" "}
+        <p className="text-sm">
+          {t("table.thead.lastActiveAt")}:{" "}
+          {data.lastActiveAt
+            ? relativeTime(data.lastActiveAt)
+            : t("table.trow.lastActiveAt")}
+        </p>
+        <p className="text-sm ">
+          {t("table.thead.lastSignedInAt")}:{" "}
           {data.lastSignInAt
             ? relativeTime(data.lastSignInAt)
-            : t("table.trow.lastSignedIn")}
+            : t("table.trow.lastSignedInAt")}
         </p>
       </div>
-      <div className="text-sm text-muted-foreground ">
-        {t("table.thead.joined")}:{" "}
+      <div className="text-sm">
+        {t("table.thead.joinedAt")}:{" "}
         <span className="font-semibold">{relativeTime(data.createdAt)}</span>
       </div>
 

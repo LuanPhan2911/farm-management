@@ -126,8 +126,8 @@ export const UnitEditDialog = () => {
                     onChange={field.onChange}
                     options={Object.values(UnitType).map((item) => {
                       return {
-                        label: item,
-                        option: item,
+                        label: t(`schema.type.options.${item}`),
+                        value: item,
                       };
                     })}
                     defaultValue={field.value}

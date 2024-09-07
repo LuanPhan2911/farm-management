@@ -5,9 +5,11 @@ import { OrganizationMembershipPublicUserData } from "@clerk/nextjs/server";
 
 interface OrgMemberViewProfileButtonProps {
   data: OrganizationMembershipPublicUserData;
+  label: string;
 }
 export const OrgMemberViewProfileButton = ({
   data,
+  label,
 }: OrgMemberViewProfileButtonProps) => {
   const router = useRouter();
   const handleClick = (e: React.MouseEvent) => {
@@ -23,7 +25,7 @@ export const OrgMemberViewProfileButton = ({
       onClick={handleClick}
       className="w-full"
     >
-      View profile
+      {label}
     </Button>
   );
 };

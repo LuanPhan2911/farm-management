@@ -2,8 +2,8 @@
 
 import { errorResponse, successResponse } from "@/lib/utils";
 import { WeatherSchema } from "@/schemas";
-import { currentStaff, getStaffByExternalId } from "@/services/staffs";
-import { createFloatUnit } from "@/services/units";
+import { currentStaff } from "@/services/staffs";
+
 import {
   confirmWeather,
   createWeather,
@@ -11,7 +11,6 @@ import {
   updateWeather,
 } from "@/services/weathers";
 import { ActionResponse } from "@/types";
-import { auth, currentUser } from "@clerk/nextjs/server";
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";

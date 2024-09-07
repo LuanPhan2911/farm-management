@@ -46,7 +46,6 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
       address: "",
       email: "",
       phone: "",
-      note: "",
     },
   });
   useEffect(() => {
@@ -75,10 +74,10 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
       <DialogTrigger asChild>
         <Button variant={"gradient"}>{t("form.apply.label")}</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{t("formapply.title")}</DialogTitle>
-          <DialogDescription>{t("apply.description")}</DialogDescription>
+          <DialogTitle>{t("form.apply.title")}</DialogTitle>
+          <DialogDescription>{t("form.apply.description")}</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">

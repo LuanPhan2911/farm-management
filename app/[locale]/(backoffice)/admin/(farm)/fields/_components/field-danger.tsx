@@ -7,15 +7,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { FieldDeleteButton } from "./field-delete-button";
+import { useTranslations } from "next-intl";
 
 export const FieldDanger = () => {
+  const t = useTranslations("fields.form");
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Delete field</CardTitle>
-        <CardDescription>
-          This action is permanent and irreversible.
-        </CardDescription>
+        <CardTitle>{t("destroy.title")}</CardTitle>
+        <CardDescription>{t("destroy.description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <FieldDeleteButton />
