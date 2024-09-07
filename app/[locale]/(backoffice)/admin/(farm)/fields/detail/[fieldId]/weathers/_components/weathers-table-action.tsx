@@ -29,7 +29,7 @@ export const WeathersTableAction = ({ data }: WeathersTableActionProps) => {
           <WeatherEditButton data={data} label={t("edit.label")} />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <WeatherDeleteButton data={data} label={t("delete.label")} />
+          <WeatherDeleteButton data={data} label={t("destroy.label")} />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

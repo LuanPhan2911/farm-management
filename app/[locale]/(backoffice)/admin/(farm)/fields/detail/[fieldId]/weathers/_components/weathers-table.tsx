@@ -18,15 +18,25 @@ import { WeathersTableAction } from "./weathers-table-action";
 import { WeatherConfirmButton } from "./weather-confirm-button";
 import { StaffWithName } from "@/app/[locale]/(backoffice)/admin/_components/staff-with-name";
 import { WeatherStatusValue } from "./weather-status-value";
-import { useSearchParams } from "next/navigation";
+
 import { OrderByButton } from "@/components/buttons/order-by-button";
+import { WeatherStatus } from "@prisma/client";
+import { FacetedFilterStringButton } from "@/components/buttons/faceted-filter-string-button";
+import { FacetedFilterNumberButton } from "@/components/buttons/faceted-filter-number-button";
+import { DatePickerWithRange } from "@/components/form/date-picker-with-range";
+import { DateRange } from "react-day-picker";
+import { addDays, format } from "date-fns";
+import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "@/navigation";
+import { useState } from "react";
+import { DatePickerWithRangeButton } from "@/components/buttons/date-picker-range-button";
+import { WeatherTableFaceted } from "./weathers-table-faceted";
 interface WeathersTableProps {
   data: WeatherTable[];
   totalPage: number;
 }
 export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
   const t = useTranslations("weathers");
-  const searchParams = useSearchParams();
   const { dateTime, relativeTime } = useFormatter();
 
   return (
@@ -38,18 +48,43 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
         <div className="flex justify-end">
           <WeatherCreateButton />
         </div>
+        <DatePickerWithRangeButton from={new Date()} />
+        <WeatherTableFaceted />
+
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="flex items-center gap-x-2">
-                {t("table.thead.createdAt")}{" "}
-                <OrderByButton value="createdAt_desc" />{" "}
+              <TableHead>
+                <OrderByButton
+                  column="createdAt"
+                  label={t("table.thead.createdAt")}
+                />
               </TableHead>
               <TableHead>{t("table.thead.status")} </TableHead>
-              <TableHead>{t("table.thead.temperature")}</TableHead>
-              <TableHead>{t("table.thead.humidity")}</TableHead>
-              <TableHead>{t("table.thead.atmosphericPressure")} </TableHead>
-              <TableHead>{t("table.thead.rainfall")} </TableHead>
+              <TableHead>
+                <OrderByButton
+                  column="temperature.value"
+                  label={t("table.thead.temperature")}
+                />
+              </TableHead>
+              <TableHead>
+                <OrderByButton
+                  column="humidity.value"
+                  label={t("table.thead.humidity")}
+                />
+              </TableHead>
+              <TableHead>
+                <OrderByButton
+                  column="atmosphericPressure.value"
+                  label={t("table.thead.atmosphericPressure")}
+                />
+              </TableHead>
+              <TableHead>
+                <OrderByButton
+                  column="rainfall.value"
+                  label={t("table.thead.rainfall")}
+                />
+              </TableHead>
               <TableHead>{t("table.thead.confirmed")} </TableHead>
               <TableHead>{t("table.thead.confirmedAt")} </TableHead>
               <TableHead>{t("table.thead.confirmedBy")} </TableHead>
@@ -106,13 +141,13 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
                   <TableCell>
                     {item.confirmedAt
                       ? relativeTime(item.confirmedAt)
-                      : "No confirmed"}
+                      : t("table.trow.confirmedAt")}
                   </TableCell>
                   <TableCell>
                     {item.confirmedBy ? (
                       <StaffWithName {...item.confirmedBy} />
                     ) : (
-                      "No confirmed"
+                      t("table.trow.confirmedBy")
                     )}
                   </TableCell>
                   <TableCell>

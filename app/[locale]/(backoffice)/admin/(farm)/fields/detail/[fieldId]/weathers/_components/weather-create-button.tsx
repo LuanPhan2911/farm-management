@@ -76,7 +76,7 @@ export const WeatherCreateButton = () => {
           </span>
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-3xl overflow-y-auto max-h-screen">
         <DialogHeader>
           <DialogTitle>{t("form.create.title")}</DialogTitle>
           <DialogDescription>{t("form.create.description")}</DialogDescription>
@@ -85,173 +85,202 @@ export const WeatherCreateButton = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="temperature.value"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{tSchema("temperature.label")}</FormLabel>
-                    <div className="flex gap-x-2">
+              <div className="grid grid-cols-4 gap-2">
+                <div className="col-span-3">
+                  <FormField
+                    control={form.control}
+                    name="temperature.value"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{tSchema("temperature.label")}</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder={tSchema("temperature.placeholder")}
+                            {...field}
+                            disabled={isPending}
+                            type="number"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <FormField
+                  control={form.control}
+                  name="temperature.unitId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        {tSchema("temperature.unitId.label")}
+                      </FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder={tSchema("temperature.placeholder")}
-                          {...field}
+                        <UnitsSelectWithQueryClient
+                          onChange={field.onChange}
+                          placeholder={tSchema(
+                            "temperature.unitId.placeholder"
+                          )}
+                          unitType={UnitType.TEMPERATURE}
                           disabled={isPending}
-                          type="number"
+                          className="w-full"
+                          errorLabel={tSchema("temperature.unitId.error")}
+                          notFound={tSchema("temperature.unitId.notFound")}
                         />
                       </FormControl>
 
-                      <FormField
-                        control={form.control}
-                        name="temperature.unitId"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <UnitsSelectWithQueryClient
-                                onChange={field.onChange}
-                                placeholder={"Unit"}
-                                unitType={UnitType.TEMPERATURE}
-                                disabled={isPending}
-                                className="w-[7rem]"
-                              />
-                            </FormControl>
-
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="humidity.value"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{tSchema("humidity.label")}</FormLabel>
-                    <div className="flex gap-x-2">
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid grid-cols-4 gap-2">
+                <div className="col-span-3">
+                  <FormField
+                    control={form.control}
+                    name="humidity.value"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{tSchema("humidity.label")}</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder={tSchema("humidity.placeholder")}
+                            {...field}
+                            disabled={isPending}
+                            type="number"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <FormField
+                  control={form.control}
+                  name="humidity.unitId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{tSchema("humidity.unitId.label")}</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder={tSchema("humidity.placeholder")}
-                          {...field}
+                        <UnitsSelectWithQueryClient
+                          onChange={field.onChange}
+                          placeholder={tSchema("humidity.unitId.placeholder")}
+                          unitType={UnitType.PERCENT}
                           disabled={isPending}
-                          type="number"
+                          className="w-full"
+                          errorLabel={tSchema("humidity.unitId.error")}
+                          notFound={tSchema("humidity.unitId.notFound")}
                         />
                       </FormControl>
 
-                      <FormField
-                        control={form.control}
-                        name="humidity.unitId"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <UnitsSelectWithQueryClient
-                                onChange={field.onChange}
-                                placeholder={"Unit"}
-                                unitType={UnitType.PERCENT}
-                                disabled={isPending}
-                                className="w-[7rem]"
-                              />
-                            </FormControl>
-
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="atmosphericPressure.value"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      {tSchema("atmosphericPressure.label")}
-                    </FormLabel>
-                    <div className="flex gap-x-2">
+              <div className="grid grid-cols-4 gap-2">
+                <div className="col-span-3">
+                  <FormField
+                    control={form.control}
+                    name="atmosphericPressure.value"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          {tSchema("atmosphericPressure.label")}
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder={tSchema(
+                              "atmosphericPressure.placeholder"
+                            )}
+                            {...field}
+                            disabled={isPending}
+                            type="number"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <FormField
+                  control={form.control}
+                  name="atmosphericPressure.unitId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        {tSchema("atmosphericPressure.unitId.label")}
+                      </FormLabel>
                       <FormControl>
-                        <Input
+                        <UnitsSelectWithQueryClient
+                          onChange={field.onChange}
                           placeholder={tSchema(
-                            "atmosphericPressure.placeholder"
+                            "atmosphericPressure.unitId.placeholder"
                           )}
-                          {...field}
+                          unitType={UnitType.ATMOSPHERICPRESSURE}
                           disabled={isPending}
-                          type="number"
+                          className="w-full"
+                          errorLabel={tSchema(
+                            "atmosphericPressure.unitId.error"
+                          )}
+                          notFound={tSchema(
+                            "atmosphericPressure.unitId.notFound"
+                          )}
                         />
                       </FormControl>
 
-                      <FormField
-                        control={form.control}
-                        name="atmosphericPressure.unitId"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <UnitsSelectWithQueryClient
-                                onChange={field.onChange}
-                                placeholder={"Unit"}
-                                unitType={UnitType.ATMOSPHERICPRESSURE}
-                                disabled={isPending}
-                                className="w-[7rem]"
-                              />
-                            </FormControl>
-
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="rainfall.value"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{tSchema("rainfall.label")}</FormLabel>
-                    <div className="flex gap-x-2">
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid grid-cols-4 gap-2">
+                <div className="col-span-3">
+                  <FormField
+                    control={form.control}
+                    name="rainfall.value"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{tSchema("rainfall.label")}</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder={tSchema("rainfall.placeholder")}
+                            {...field}
+                            disabled={isPending}
+                            type="number"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <FormField
+                  control={form.control}
+                  name="rainfall.unitId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{tSchema("rainfall.unitId.label")}</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder={tSchema("rainfall.placeholder")}
-                          {...field}
+                        <UnitsSelectWithQueryClient
+                          onChange={field.onChange}
+                          placeholder={tSchema("rainfall.unitId.placeholder")}
+                          unitType={UnitType.RAINFALL}
                           disabled={isPending}
-                          type="number"
+                          className="w-full"
+                          errorLabel={tSchema("rainfall.unitId.error")}
+                          notFound={tSchema("rainfall.unitId.notFound")}
                         />
                       </FormControl>
 
-                      <FormField
-                        control={form.control}
-                        name="rainfall.unitId"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <UnitsSelectWithQueryClient
-                                onChange={field.onChange}
-                                placeholder={"Unit"}
-                                unitType={UnitType.RAINFALL}
-                                disabled={isPending}
-                                className="w-[7rem]"
-                              />
-                            </FormControl>
-
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
+
             <FormField
               control={form.control}
               name="status"
@@ -265,8 +294,8 @@ export const WeatherCreateButton = () => {
                         onChange={field.onChange}
                         options={Object.keys(WeatherStatus).map((item) => {
                           return {
-                            label: item,
-                            option: item,
+                            label: tSchema(`status.options.${item}`),
+                            value: item,
                           };
                         })}
                         disabled={isPending}

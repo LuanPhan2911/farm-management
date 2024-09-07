@@ -1,8 +1,12 @@
 import { LIMIT } from "@/configs/paginationConfig";
 import { db } from "@/lib/db";
-import { orderBySplit } from "@/lib/utils";
+import {
+  getObjectFilterNumber,
+  getObjectFilterString,
+  getObjectSortOrder,
+} from "@/lib/utils";
 import { PaginatedResponse, WeatherTable } from "@/types";
-import { Weather, WeatherStatus } from "@prisma/client";
+import { WeatherStatus } from "@prisma/client";
 
 export const createWeather = async (params: {
   temperature: {
@@ -83,7 +87,11 @@ export const confirmWeather = async (
   });
 };
 export const getWeatherById = async (id: string) => {
-  return await db.weather.findUnique({ where: { id } });
+  try {
+    return await db.weather.findUnique({ where: { id } });
+  } catch (error) {
+    return null;
+  }
 };
 
 export const deleteWeather = async (id: string) => {
@@ -191,15 +199,21 @@ export const getWeathersOnField = async ({
   fieldId,
   page = 1,
   orderBy,
+  filterString,
+  filterNumber,
   begin,
   end,
 }: {
   fieldId: string;
   page?: number;
   orderBy?: string;
+  filterString?: string;
+  filterNumber?: string;
   begin?: Date;
   end?: Date;
 }): Promise<PaginatedResponse<WeatherTable>> => {
+  // try {
+
   const weathers = await db.weather.findMany({
     where: {
       fieldId,
@@ -207,9 +221,11 @@ export const getWeathersOnField = async ({
         ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
         ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
       },
+      ...(filterString && getObjectFilterString(filterString)),
+      ...(filterNumber && getObjectFilterNumber(filterNumber)),
     },
     orderBy: {
-      ...orderBySplit(orderBy),
+      ...(orderBy && getObjectSortOrder(orderBy)),
     },
     include: {
       confirmedBy: true,
@@ -259,4 +275,11 @@ export const getWeathersOnField = async ({
     data: weathers,
     totalPage,
   };
+  // } catch (error) {
+
+  //   return {
+  //     data: [],
+  //     totalPage: 0,
+  //   };
+  // }
 };

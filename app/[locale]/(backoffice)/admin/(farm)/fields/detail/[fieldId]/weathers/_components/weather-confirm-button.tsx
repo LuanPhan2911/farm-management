@@ -17,7 +17,7 @@ export const WeatherConfirmButton = ({
 }: WeatherConfirmButtonProps) => {
   const { onOpen } = useAlertDialog();
   const [isPending, startTransition] = useTransition();
-  const t = useTranslations("weathers.status");
+  const t = useTranslations("weathers");
   const [status, setStatus] = useState(confirmed);
   const onClick = () => {
     startTransition(() => {
@@ -31,7 +31,7 @@ export const WeatherConfirmButton = ({
           }
         })
         .catch((error: Error) => {
-          toast.error(t("failure.editConfirmed"));
+          toast.error(t("status.failure.editConfirmed"));
         });
     });
   };
@@ -40,8 +40,8 @@ export const WeatherConfirmButton = ({
       checked={status}
       onCheckedChange={() =>
         onOpen({
-          title: "Confirm weather?",
-          description: "This action cannot be undone",
+          title: t("form.editConfirmed.title"),
+          description: t("form.editConfirmed.description"),
           onConfirm: onClick,
         })
       }

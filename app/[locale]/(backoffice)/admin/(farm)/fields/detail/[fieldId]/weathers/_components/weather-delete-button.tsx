@@ -19,7 +19,7 @@ export const WeatherDeleteButton = ({
 }: WeatherDeleteButtonProps) => {
   const { id } = data;
   const { onOpen, onClose } = useAlertDialog();
-  const t = useTranslations("weathers.status");
+  const t = useTranslations("weathers");
   const onConfirm = async () => {
     destroy(id)
       .then(({ message, ok }) => {
@@ -30,7 +30,7 @@ export const WeatherDeleteButton = ({
         }
       })
       .catch((error: Error) => {
-        toast.error(t("failure.destroy"));
+        toast.error(t("status.failure.destroy"));
       })
       .finally(() => {
         onClose();
