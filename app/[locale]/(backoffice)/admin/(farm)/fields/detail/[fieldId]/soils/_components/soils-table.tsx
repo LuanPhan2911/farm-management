@@ -49,6 +49,7 @@ export const SoilsTable = ({ data, totalPage }: SoilsTableProps) => {
                 <OrderByButton
                   column="createdAt"
                   label={t("table.thead.createdAt")}
+                  defaultValue="desc"
                 />
               </TableHead>
               <TableHead>

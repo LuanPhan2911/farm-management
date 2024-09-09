@@ -40,6 +40,10 @@ export const createSoil = async (params: SoilParams) => {
     return soil;
   });
 };
+export const createManySoil = async (params: SoilParams[]) => {
+  const soils = params.map((param) => createSoil(param));
+  return await Promise.all(soils);
+};
 export const updateSoil = async (id: string, params: SoilParams) => {
   return await db.$transaction(async (ctx) => {
     const { moisture: moistureParam, ...others } = params;
@@ -191,4 +195,29 @@ export const getCountSoilType = async ({
   } catch (error) {
     return [];
   }
+};
+export const getSoilUnitForGenerateSoil = async () => {
+  return await db.$transaction(async (ctx) => {
+    const moistureUnit = await ctx.unit.findFirst({
+      where: {
+        type: "PERCENT",
+      },
+      select: {
+        id: true,
+      },
+    });
+    const nutrientUnit = await ctx.unit.findFirst({
+      where: {
+        type: "NUTRIENT",
+      },
+      select: {
+        id: true,
+      },
+    });
+    const soilUnits = {
+      moistureUnitId: moistureUnit?.id,
+      nutrientUnitId: nutrientUnit?.id,
+    };
+    return soilUnits;
+  });
 };

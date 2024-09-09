@@ -73,7 +73,18 @@ export const getFieldById = async (id: string) => {
     return null;
   }
 };
-
+export const getFieldIds = async () => {
+  try {
+    const fields = await db.field.findMany({
+      select: {
+        id: true,
+      },
+    });
+    return fields.map((field) => field.id);
+  } catch (error) {
+    return [];
+  }
+};
 export const getFieldByOrganizationId = async (orgId: string) => {
   try {
     const field = await db.field.findUnique({ where: { orgId } });

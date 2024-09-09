@@ -135,13 +135,16 @@ export function getObjectSortOrder(input: string): Record<string, any> {
 
   return nestedObject;
 }
-export function getPostfixSortOrder(input: string) {
+export function getPostfixSortOrder(
+  input: string,
+  defaultValue: "asc" | "desc" = "asc"
+) {
   // Split the input by the underscore
   const parts = input.split("_");
 
   // If the format isn't correct, return an empty array
   if (parts.length !== 2) {
-    return "asc";
+    return defaultValue;
   }
   return parts[1] === "asc" ? "asc" : "desc";
 }

@@ -27,14 +27,20 @@ const WeathersFacetedStatus = () => {
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["weathers_count_status", filterString, begin, end],
     queryFn: async () => {
-      const url = queryString.stringifyUrl({
-        url: `/api/fields/${fieldId}/weathers/count_status`,
-        query: {
-          filterString,
-          begin,
-          end,
+      const url = queryString.stringifyUrl(
+        {
+          url: `/api/fields/${fieldId}/weathers/count_status`,
+          query: {
+            filterString,
+            begin,
+            end,
+          },
         },
-      });
+        {
+          skipEmptyString: true,
+          skipNull: true,
+        }
+      );
       const res = await fetch(url);
       return (await res.json()) as WeatherStatusCount[];
     },

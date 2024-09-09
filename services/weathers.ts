@@ -6,7 +6,8 @@ import {
   getObjectSortOrder,
 } from "@/lib/utils";
 import { PaginatedResponse, WeatherStatusCount, WeatherTable } from "@/types";
-import { WeatherStatus } from "@prisma/client";
+import { UnitType, WeatherStatus } from "@prisma/client";
+import { getUnitsSelect } from "./units";
 
 type WeatherParams = {
   temperature: {
@@ -69,6 +70,10 @@ export const createWeather = async (params: WeatherParams) => {
     });
     return weather;
   });
+};
+export const createManyWeather = async (params: WeatherParams[]) => {
+  const weathers = params.map((param) => createWeather(param));
+  return await Promise.all(weathers);
 };
 export const confirmWeather = async (
   id: string,
@@ -292,4 +297,49 @@ export const getCountWeatherStatus = async ({
   } catch (error) {
     return [];
   }
+};
+
+export const getWeatherUnitsForGenerateWeather = async () => {
+  return await db.$transaction(async (ctx) => {
+    const temperatureUnit = await ctx.unit.findFirst({
+      where: {
+        type: "TEMPERATURE",
+      },
+      select: {
+        id: true,
+      },
+    });
+    const humidityUnit = await ctx.unit.findFirst({
+      where: {
+        type: "PERCENT",
+      },
+      select: {
+        id: true,
+      },
+    });
+    const atmosphericPressureUnit = await ctx.unit.findFirst({
+      where: {
+        type: "ATMOSPHERICPRESSURE",
+      },
+      select: {
+        id: true,
+      },
+    });
+    const rainfallUnit = await ctx.unit.findFirst({
+      where: {
+        type: "RAINFALL",
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    const weatherUnitIds = {
+      temperatureUnitId: temperatureUnit?.id,
+      humidityUnitId: humidityUnit?.id,
+      atmosphericPressureUnitId: atmosphericPressureUnit?.id,
+      rainfallUnitId: rainfallUnit?.id,
+    };
+    return weatherUnitIds;
+  });
 };

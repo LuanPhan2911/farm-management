@@ -256,7 +256,7 @@ export const SoilSchema = (t: (arg: string) => string) => {
         })
         .int(t("moisture.value.int"))
         .min(0, t("moisture.value.min"))
-        .max(100, t("moisture.value.max")),
+        .max(60, t("moisture.value.max")),
     }),
     type: z.nativeEnum(SoilType, {
       message: t("type.enum"),

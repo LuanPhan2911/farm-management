@@ -27,14 +27,20 @@ const SoilsFacetedType = () => {
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["soils_count_type", filterString, begin, end],
     queryFn: async () => {
-      const url = queryString.stringifyUrl({
-        url: `/api/fields/${fieldId}/soils/count_type`,
-        query: {
-          filterString,
-          begin,
-          end,
+      const url = queryString.stringifyUrl(
+        {
+          url: `/api/fields/${fieldId}/soils/count_type`,
+          query: {
+            filterString,
+            begin,
+            end,
+          },
         },
-      });
+        {
+          skipEmptyString: true,
+          skipNull: true,
+        }
+      );
       const res = await fetch(url);
       return (await res.json()) as SoilTypeCount[];
     },

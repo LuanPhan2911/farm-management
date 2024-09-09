@@ -1293,7 +1293,7 @@
           "required_error": "Moisture value is required",
           "invalid_type": "Moisture value must be number",
           "min": "Min Moisture value is 0",
-          "max": "Max Moisture value is 100",
+          "max": "Max Moisture value is 60",
           "int": "Moisture value must be integer number"
         },
         "label": "Moisture",
