@@ -18,14 +18,11 @@ export const UnitSuperscript = ({ unit }: UnitSuperscriptProps) => {
     </span>
   );
 };
-interface UnitSuperscriptWithValueProps {
+interface UnitWithValueProps {
   value: number | null | undefined | string;
   unit?: string;
 }
-export const UnitSuperscriptWithValue = ({
-  unit,
-  value,
-}: UnitSuperscriptWithValueProps) => {
+export const UnitWithValue = ({ unit, value }: UnitWithValueProps) => {
   if (!unit) {
     return null;
   }
@@ -34,7 +31,7 @@ export const UnitSuperscriptWithValue = ({
     return (
       <span>
         {value}
-        {baseUnit}
+        <span className="ml-1">{baseUnit}</span>
       </span>
     );
   }
@@ -42,7 +39,7 @@ export const UnitSuperscriptWithValue = ({
   return (
     <span>
       {value}
-      {baseUnit}
+      <span className="ml-1">{baseUnit}</span>
       <sup>{exponent}</sup>
     </span>
   );

@@ -12,8 +12,8 @@
     },
     "sort": {
       "label": "Sort",
-      "asc": "ASC",
-      "desc": "DESC"
+      "asc": "Ascending",
+      "desc": "Descending"
     },
     "pagination": {
       "rowSelected": "{selectedRow} of {allRow} row(s) selected",
@@ -196,7 +196,8 @@
           "PERCENT": "Percent",
           "WEIGHT": "Weight",
           "LENGTH": "Length",
-          "VOLUME": "Volume"
+          "VOLUME": "Volume",
+          "NUTRIENT": "Nutrient"
         }
       },
       "description": {
@@ -1065,13 +1066,17 @@
     "search": {
       "faceted": {
         "status": {
-          "placeholder": "Status"
+          "placeholder": "Status",
+          "error": "Something went wrong went load weather status"
         },
         "temperature": {
           "placeholder": "Temperature"
         },
         "humidity": {
           "placeholder": "Humidity"
+        },
+        "rainfall": {
+          "placeholder": "Rainfall"
         }
       }
     },
@@ -1084,7 +1089,7 @@
       "edit": {
         "label": "Edit",
         "title": "Edit weather",
-        "description": "Weather can edit"
+        "description": "Update weather"
       },
       "destroy": {
         "label": "Delete",
@@ -1130,8 +1135,9 @@
         "value": {
           "required_error": "Humidity value is required",
           "invalid_type": "Humidity value must be number",
-          "min": "Min humidity value is -20",
-          "max": "Max humidity value is 50"
+          "min": "Min humidity value is 0",
+          "max": "Max humidity value is 100",
+          "int": "Humidity value must be integer number"
         },
         "label": "Humidity",
         "placeholder": "Humidity"
@@ -1147,8 +1153,8 @@
         "value": {
           "required_error": "Atmospheric pressure value is required",
           "invalid_type": "Atmospheric pressure value must be number",
-          "min": "Min Atmospheric pressure value is -20",
-          "max": "Max Atmospheric pressure value is 50"
+          "min": "Min Atmospheric pressure value is 870",
+          "max": "Max Atmospheric pressure value is 1084"
         },
         "label": "Atmospheric pressure",
         "placeholder": "Atmospheric pressure"
@@ -1164,8 +1170,9 @@
         "value": {
           "required_error": "Rainfall value is required",
           "invalid_type": "Rainfall value must be number",
-          "min": "Min Rainfall value is -20",
-          "max": "Max Rainfall value is 50"
+          "min": "Min Rainfall value is 0",
+          "max": "Max Rainfall value is 100",
+          "int": "Rainfall value must be integer number"
         },
         "label": "Rainfall",
         "placeholder": "Rainfall"
@@ -1200,6 +1207,156 @@
       }
     }
   },
+  "soils": {
+    "page": {
+      "title": "Manage soils"
+    },
+    "table": {
+      "thead": {
+        "createdAt": "CreateAt",
+        "ph": "PH",
+        "moisture": "Moisture",
+        "type": "Type",
+        "nutrientNitrogen": "Nutrient nitrogen",
+        "nutrientPhosphorus": "Nutrient phosphorus",
+        "nutrientPotassium": "Nutrient potassium",
+        "confirmed": "Confirmed",
+        "confirmedAt": "ConfirmedAt",
+        "confirmedBy": "ConfirmedBy"
+      },
+      "trow": {
+        "confirmedAt": "No confirmed",
+        "confirmedBy": "No confirmed"
+      }
+    },
+    "search": {
+      "faceted": {
+        "type": {
+          "placeholder": "Select type",
+          "error": "Something went wrong went load soil count type"
+        },
+        "nutrientNitrogen": {
+          "placeholder": "Nitrogen"
+        },
+        "nutrientPhosphorus": {
+          "placeholder": "Phosphorus"
+        },
+        "nutrientPotassium": {
+          "placeholder": "Potassium"
+        }
+      }
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add soil",
+        "description": "Add soil to fields"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit soil",
+        "description": "Update soil"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete soil?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      },
+
+      "editConfirmed": {
+        "label": "Edit confirmed",
+        "title": "Confirm soil?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid soils!"
+      },
+      "ph": {
+        "label": "PH",
+        "placeholder": "PH",
+        "required_error": "PH value is required",
+        "invalid_type": "PH value must be number",
+        "min": "PH value minimum is 0",
+        "max": "PH value maximum is 14"
+      },
+      "moisture": {
+        "unitId": {
+          "required_error": "Required unit",
+          "placeholder": "Unit",
+          "label": "Unit",
+          "error": "Something went wrong went load units",
+          "notFound": "Units not found"
+        },
+        "value": {
+          "required_error": "Moisture value is required",
+          "invalid_type": "Moisture value must be number",
+          "min": "Min Moisture value is 0",
+          "max": "Max Moisture value is 100",
+          "int": "Moisture value must be integer number"
+        },
+        "label": "Moisture",
+        "placeholder": "Moisture"
+      },
+      "type": {
+        "label": "Type",
+        "placeholder": "Soil type",
+        "enum": "Please select type in list",
+        "options": {
+          "SAND": "Sand",
+          "CLAY": "Clay",
+          "ALLUVIUM": "Alluvium",
+          "LOAM": "Loam"
+        }
+      },
+      "nutrientPhosphorus": {
+        "label": "Nutrient Phosphorus",
+        "placeholder": "Nutrient Phosphorus",
+        "required_error": "Nutrient Phosphorus value is required",
+        "invalid_type": "Nutrient Phosphorus value must be number",
+        "min": "Nutrient Phosphorus value minimum is 0",
+        "max": "Nutrient Phosphorus value maximum is 5"
+      },
+      "nutrientPotassium": {
+        "label": "Nutrient Potassium",
+        "placeholder": "Nutrient Potassium",
+        "required_error": "Nutrient Potassium value is required",
+        "invalid_type": "Nutrient Potassium value must be number",
+        "min": "Nutrient Potassium value minimum is 0",
+        "max": "Nutrient Potassium value maximum is 8"
+      },
+      "nutrientNitrogen": {
+        "label": "Nutrient Nitrogen",
+        "placeholder": "Nutrient Nitrogen",
+        "required_error": "Nutrient Nitrogen value is required",
+        "invalid_type": "Nutrient Nitrogen value must be number",
+        "min": "Nutrient Nitrogen value minimum is 0",
+        "max": "Nutrient Nitrogen value maximum is 10"
+      },
+      "nutrientUnitId": {
+        "label": "Nutrient unit",
+        "placeholder": "Select unit...",
+        "required_error": "Nutrient unit is required",
+        "error": "Something went wrong went load units",
+        "notFound": "Units not found"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Soil created!",
+        "edit": "Soil edited!",
+        "destroy": "Soil deleted!",
+        "editConfirmed": "Soil confirmed"
+      },
+      "failure": {
+        "create": "Something went wrong while creating soil!",
+        "edit": "Something went wrong while editing soil!",
+        "destroy": "Something went wrong while deleting soil!",
+        "editConfirmed": "Something went wrong whiling confirming soil"
+      }
+    }
+  },
   "errors": {
     "error": "Something went wrong!"
   },
@@ -1223,6 +1380,7 @@
     "/admin/fields/create": "Create",
     "/admin/fields/detail": "Detail",
     "/admin/fields/detail/danger": "Danger",
-    "/admin/fields/detail/weathers": "Weathers"
+    "/admin/fields/detail/weathers": "Weathers",
+    "/admin/fields/detail/soils": "Soils"
   }
 }

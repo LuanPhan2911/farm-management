@@ -29,23 +29,21 @@ interface FacetedFilterStringButtonProps {
     value: string;
     icon?: LucideIcon;
   }[];
-  defaultFilterValue?: string[];
   column: string;
+  counts?: Record<string, number>;
 }
 export const FacetedFilterStringButton = ({
   options,
   title,
-  defaultFilterValue,
   column,
+  counts,
 }: FacetedFilterStringButtonProps) => {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const selectedValues = defaultFilterValue
-    ? new Set(defaultFilterValue as string[])
-    : new Set(
-        getPostfixArrayFilterString(searchParams.get("filterString") || "")
-      );
+  const selectedValues = new Set(
+    getPostfixArrayFilterString(searchParams.get("filterString") || "")
+  );
 
   const handlePushUrl = (values: string[] | undefined) => {
     const params = new URLSearchParams(searchParams);
@@ -59,7 +57,11 @@ export const FacetedFilterStringButton = ({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="h-8 border-dashed">
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-8 border-dashed justify-start"
+        >
           <PlusCircleIcon className="mr-2 h-4 w-4" />
           {title}
           {selectedValues?.size > 0 && (
@@ -136,7 +138,7 @@ export const FacetedFilterStringButton = ({
                     <span>{option.label}</span>
 
                     <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
-                      1
+                      {counts?.[option.value] || 0}
                     </span>
                   </CommandItem>
                 );

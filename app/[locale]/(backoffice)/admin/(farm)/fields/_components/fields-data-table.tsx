@@ -2,14 +2,13 @@
 import { DataTable } from "@/components/datatable";
 import { DataTableColumnHeader } from "@/components/datatable/datatable-column-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Field, Unit } from "@prisma/client";
 import { Checkbox } from "@radix-ui/react-checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
 import { FieldCreateButton } from "./field-create-button";
 import { FieldWithUnit } from "@/types";
 import { FieldsTableAction } from "./fields-table-action";
-import { UnitSuperscriptWithValue } from "../../../_components/unit-superscript";
+import { UnitWithValue } from "../../../_components/unit-with-value";
 
 interface FieldsDataTableProps {
   data: FieldWithUnit[];
@@ -74,12 +73,7 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
       },
       cell: ({ row }) => {
         const data = row.original;
-        return (
-          <UnitSuperscriptWithValue
-            value={data.height}
-            unit={data.unit?.name}
-          />
-        );
+        return <UnitWithValue value={data.height} unit={data.unit?.name} />;
       },
     },
     {
@@ -94,9 +88,7 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
       },
       cell: ({ row }) => {
         const data = row.original;
-        return (
-          <UnitSuperscriptWithValue value={data.width} unit={data.unit?.name} />
-        );
+        return <UnitWithValue value={data.width} unit={data.unit?.name} />;
       },
     },
     {
@@ -112,7 +104,7 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
       cell: ({ row }) => {
         const data = row.original;
         const unit = data.unit?.name ? `${data.unit.name}2` : "";
-        return <UnitSuperscriptWithValue value={data.area} unit={unit} />;
+        return <UnitWithValue value={data.area} unit={unit} />;
       },
     },
     {

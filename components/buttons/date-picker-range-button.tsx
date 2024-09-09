@@ -43,7 +43,7 @@ export const DatePickerWithRangeButton = ({
     <DatePickerWithRange
       date={dateRange}
       handleChange={handelChangeDate}
-      className="my-2"
+      className="my-2 "
     />
   );
 };

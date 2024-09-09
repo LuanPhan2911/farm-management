@@ -11,7 +11,7 @@ import { useAlertDialog } from "@/stores/use-alert-dialog";
 import { destroyMany } from "@/actions/unit";
 import { toast } from "sonner";
 import { UnitCreateButton } from "./unit-create-button";
-import { UnitSuperscript } from "../../../_components/unit-superscript";
+import { UnitSuperscript } from "../../../_components/unit-with-value";
 
 interface UnitsTableProps {
   data: Unit[];

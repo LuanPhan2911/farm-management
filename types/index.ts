@@ -5,9 +5,12 @@ import {
   IntUnit,
   JobExperience,
   JobWorkingState,
+  Soil,
+  SoilType,
   Staff,
   Unit,
   Weather,
+  WeatherStatus,
 } from "@prisma/client";
 
 export type OrgRole = "org:member" | "org:admin";
@@ -79,5 +82,24 @@ export type WeatherTable = Weather & {
     unit: {
       name: string;
     };
+  };
+};
+export type WeatherStatusCount = {
+  status: WeatherStatus;
+  _count: number;
+};
+export type SoilTypeCount = {
+  type: SoilType;
+  _count: number;
+};
+export type SoilTable = Soil & {
+  confirmedBy: Staff | null;
+  moisture: IntUnit & {
+    unit: {
+      name: string;
+    };
+  };
+  nutrientUnit: {
+    name: string;
   };
 };

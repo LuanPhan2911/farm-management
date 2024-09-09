@@ -2,6 +2,7 @@ import {
   Gender,
   JobExperience,
   JobWorkingState,
+  SoilType,
   StaffRole,
   UnitType,
   WeatherStatus,
@@ -200,6 +201,7 @@ export const WeatherSchema = (t: (arg: string) => string) => {
           required_error: t("humidity.value.required_error"),
           invalid_type_error: t("humidity.value.invalid_type"),
         })
+        .int(t("humidity.value.int"))
         .min(0, t("humidity.value.min"))
         .max(100, t("humidity.value.max")),
     }),
@@ -224,11 +226,64 @@ export const WeatherSchema = (t: (arg: string) => string) => {
           required_error: t("rainfall.value.required_error"),
           invalid_type_error: t("rainfall.value.invalid_type"),
         })
+        .int(t("rainfall.value.int"))
         .min(0, t("rainfall.value.min"))
-        .max(3000, t("rainfall.value.max")),
+        .max(100, t("rainfall.value.max")),
     }),
     status: z.nativeEnum(WeatherStatus, {
       message: t("status.enum"),
+    }),
+    fieldId: z.string(),
+  });
+};
+export const SoilSchema = (t: (arg: string) => string) => {
+  return z.object({
+    ph: z.coerce
+      .number({
+        required_error: t("ph.required_error"),
+        invalid_type_error: t("ph.invalid_type"),
+      })
+      .min(0, t("ph.min"))
+      .max(14, t("ph.max")),
+    moisture: z.object({
+      unitId: z.string({
+        required_error: t("moisture.unitId.required_error"),
+      }),
+      value: z.coerce
+        .number({
+          required_error: t("moisture.value.required_error"),
+          invalid_type_error: t("moisture.value.invalid_type"),
+        })
+        .int(t("moisture.value.int"))
+        .min(0, t("moisture.value.min"))
+        .max(100, t("moisture.value.max")),
+    }),
+    type: z.nativeEnum(SoilType, {
+      message: t("type.enum"),
+    }),
+    nutrientNitrogen: z.coerce
+      .number({
+        required_error: t("nutrientNitrogen.required_error"),
+        invalid_type_error: t("nutrientNitrogen.invalid_type"),
+      })
+      .min(0, t("nutrientNitrogen.min"))
+      .max(10, t("nutrientNitrogen.max")),
+    nutrientPhosphorus: z.coerce
+      .number({
+        required_error: t("nutrientPhosphorus.required_error"),
+        invalid_type_error: t("nutrientPhosphorus.invalid_type"),
+      })
+      .min(0, t("nutrientPhosphorus.min"))
+      .max(5, t("nutrientPhosphorus.max")),
+    nutrientPotassium: z.coerce
+      .number({
+        required_error: t("nutrientPotassium.required_error"),
+        invalid_type_error: t("nutrientPotassium.invalid_type"),
+      })
+      .min(0, t("nutrientPotassium.min"))
+      .max(8, t("nutrientPotassium.max")),
+    nutrientUnitId: z.string({
+      required_error: t("nutrientUnitId.required_error"),
     }),
     fieldId: z.string(),
   });

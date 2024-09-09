@@ -8,6 +8,7 @@ import { StaffCreateDialog } from "@/app/[locale]/(backoffice)/admin/(account)/s
 import { ApplicantStaffCreateDialog } from "@/app/[locale]/(backoffice)/admin/(recruit)/applicants/_components/applicant-staff-create-button";
 import { StaffEditRoleDialog } from "@/app/[locale]/(backoffice)/admin/(account)/staffs/_components/staff-edit-role";
 import { WeatherEditDialog } from "@/app/[locale]/(backoffice)/admin/(farm)/fields/detail/[fieldId]/weathers/_components/weather-edit-button";
+import { SoilEditDialog } from "@/app/[locale]/(backoffice)/admin/(farm)/fields/detail/[fieldId]/soils/_components/soil-edit-button";
 
 export const DialogProvider = () => {
   return (
@@ -20,6 +21,7 @@ export const DialogProvider = () => {
       <StaffCreateDialog />
       <ApplicantStaffCreateDialog />
       <WeatherEditDialog />
+      <SoilEditDialog />
     </>
   );
 };

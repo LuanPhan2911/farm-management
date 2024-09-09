@@ -3,7 +3,6 @@
 import {
   cn,
   getArrayFilterNumber,
-  getPostfixArrayFilterString,
   getPostfixValueFilterNumber,
 } from "@/lib/utils";
 
@@ -35,13 +34,11 @@ interface FacetedFilterNumberButtonProps {
     value: string;
     icon?: LucideIcon;
   }[];
-  defaultFilterValue?: string;
   column: string;
 }
 export const FacetedFilterNumberButton = ({
   options,
   title,
-  defaultFilterValue,
   column,
 }: FacetedFilterNumberButtonProps) => {
   const pathname = usePathname();
@@ -52,12 +49,12 @@ export const FacetedFilterNumberButton = ({
   );
 
   const [value, setValue] = useState(() => {
-    return defaultFilterValue
-      ? defaultFilterValue
-      : getPostfixValueFilterNumber(
-          searchParams.get("filterNumber") || "",
-          column
-        ) || "";
+    return (
+      getPostfixValueFilterNumber(
+        searchParams.get("filterNumber") || "",
+        column
+      ) || ""
+    );
   });
 
   const handlePushUrl = (value: string | undefined) => {
@@ -67,9 +64,15 @@ export const FacetedFilterNumberButton = ({
     if (postfixValue) {
       selectedValues.delete(`${column}_${postfixValue}`);
     }
+    // has value: set select
     if (value) {
       selectedValues.add(`${column}_${value}`);
+    } else {
+      setValue("");
+
+      selectedValues.clear();
     }
+    //no value: clear set
     if (selectedValues.size === 0) {
       params.delete("filterNumber");
     } else {
@@ -78,10 +81,15 @@ export const FacetedFilterNumberButton = ({
 
     router.replace(`${pathname}?${params}`);
   };
+
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="h-8 border-dashed">
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-8 border-dashed justify-start"
+        >
           <PlusCircleIcon className="mr-2 h-4 w-4" />
           {title}
           {!!value && (
@@ -136,10 +144,10 @@ export const FacetedFilterNumberButton = ({
                       <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
                     )}
                     <span>{option.label}</span>
-
-                    <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
+                    {/* Not show count */}
+                    {/* <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
                       1
-                    </span>
+                    </span> */}
                   </CommandItem>
                 );
               })}

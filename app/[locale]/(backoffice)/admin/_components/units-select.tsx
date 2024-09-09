@@ -59,6 +59,7 @@ const UnitsSelect = ({
     startTransition(() => {
       create({
         name: inputValue,
+        type,
       })
         .then(({ message, ok, data }) => {
           if (ok) {
