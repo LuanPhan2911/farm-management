@@ -31,6 +31,7 @@ import { toast } from "sonner";
 import { OrgMemberRole } from "./org-member-role";
 
 import { StaffSelectWithQueryClient } from "../../../_components/staffs-select";
+import { Plus } from "lucide-react";
 
 interface OrgMemberAddProps {}
 export const OrgMemberAdd = ({}: OrgMemberAddProps) => {
@@ -80,7 +81,7 @@ export const OrgMemberAdd = ({}: OrgMemberAddProps) => {
     <Dialog>
       <DialogTrigger asChild>
         <Button variant={"success"} size={"sm"}>
-          {t("form.createMember.label")}
+          <Plus className="mr-2" /> {t("form.createMember.label")}
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -90,66 +91,66 @@ export const OrgMemberAdd = ({}: OrgMemberAddProps) => {
             {" "}
             {t("form.createMember.description")}
           </DialogDescription>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="memberId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{tSchema("memberId.label")}</FormLabel>
-                    <FormControl>
-                      <div className="block">
-                        <StaffSelectWithQueryClient
-                          queryKey={["org_member_select"]}
-                          queryFn={fetchMembers}
-                          defaultValue={field.value}
-                          onChange={field.onChange}
-                          errorLabel="Something went wrong went load member!"
-                          label="Select member..."
-                          notFound="Member not found"
-                          disabled={isPending}
-                        />
-                      </div>
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="role"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{tSchema("role.label")}</FormLabel>
-                    <FormControl>
-                      <div className="block">
-                        <OrgMemberRole
-                          onChange={field.onChange}
-                          value={field.value}
-                        />
-                      </div>
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <DialogFooter>
-                <DialogClose asChild>
-                  <Button type="button" variant="secondary" ref={closeRef}>
-                    Close
-                  </Button>
-                </DialogClose>
-                <Button type="submit" disabled={isPending}>
-                  Submit
-                </Button>
-              </DialogFooter>
-            </form>
-          </Form>
         </DialogHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="memberId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("memberId.label")}</FormLabel>
+                  <FormControl>
+                    <div className="block">
+                      <StaffSelectWithQueryClient
+                        queryKey={["org_member_select"]}
+                        queryFn={fetchMembers}
+                        defaultValue={field.value}
+                        onChange={field.onChange}
+                        errorLabel={tSchema("memberId.error")}
+                        label={tSchema("memberId.placeholder")}
+                        notFound={tSchema("memberId.notFound")}
+                        disabled={isPending}
+                      />
+                    </div>
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="role"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("role.label")}</FormLabel>
+                  <FormControl>
+                    <div className="block">
+                      <OrgMemberRole
+                        onChange={field.onChange}
+                        value={field.value}
+                      />
+                    </div>
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button type="button" variant="secondary" ref={closeRef}>
+                  Close
+                </Button>
+              </DialogClose>
+              <Button type="submit" disabled={isPending}>
+                Submit
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

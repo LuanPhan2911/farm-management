@@ -13,9 +13,7 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
 
   try {
     const user = await deleteUser(id);
-    if (!user) {
-      return errorResponse(tStatus("failure.destroy"));
-    }
+
     revalidatePath("/admin/users");
     return successResponse(tStatus("success.destroy"));
   } catch (error) {
@@ -35,22 +33,9 @@ export const edit = async (
   if (!validatedFields.success) {
     return errorResponse(tSchema("errors.parse"));
   }
-  const { firstName, lastName, address, phone } = validatedFields.data;
+
   try {
-    const user = await updateUser(
-      userId,
-      {
-        firstName,
-        lastName,
-      },
-      {
-        phone,
-        address,
-      }
-    );
-    if (!user) {
-      return errorResponse(tStatus("failure.edit"));
-    }
+    const user = await updateUser(userId, validatedFields.data);
 
     revalidatePath("/admin/users");
     revalidatePath(`/admin/users/detail/${user.id}`);

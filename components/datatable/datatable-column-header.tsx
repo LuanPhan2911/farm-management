@@ -53,11 +53,11 @@ export function DataTableColumnHeader<TData, TValue>({
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => column.toggleSorting(false)}>
             <ArrowUpIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-            {tSort("asc")}
+            {tSort("desc")}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => column.toggleSorting(true)}>
             <ArrowDownIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-            {tSort("desc")}
+            {tSort("asc")}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
         </DropdownMenuContent>

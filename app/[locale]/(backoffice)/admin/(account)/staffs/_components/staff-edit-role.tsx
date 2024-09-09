@@ -1,8 +1,7 @@
 "use client";
 
 import { editRole } from "@/actions/staff";
-import { DynamicDialog } from "@/components/dynamic-dialog";
-import { SelectOptions } from "@/components/select-options";
+import { DynamicDialog } from "@/components/dialog/dynamic-dialog";
 import { Button } from "@/components/ui/button";
 import { useDialog } from "@/stores/use-dialog";
 
@@ -15,12 +14,15 @@ import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { StaffSelectRole } from "../../../_components/staff-select-role";
 
+import { useRole } from "@/hooks/use-role";
+
 interface UserSetRoleProps {
   data: User;
   label: string;
 }
 export const StaffEditRole = ({ data, label }: UserSetRoleProps) => {
   const { onOpen } = useDialog();
+  const { isSuperAdmin } = useRole(data.publicMetadata.role as StaffRole);
 
   return (
     <Button
@@ -31,6 +33,7 @@ export const StaffEditRole = ({ data, label }: UserSetRoleProps) => {
         })
       }
       variant={"success"}
+      disabled={isSuperAdmin}
     >
       <Edit className="h-6 w-6 mr-2" />
       {label}

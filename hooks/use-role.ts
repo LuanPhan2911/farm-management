@@ -1,17 +1,10 @@
-import { useAuth, useUser } from "@clerk/nextjs";
+"use client";
 
-export const useRole = () => {
-  const { user, isSignedIn } = useUser();
-  if (!isSignedIn) {
-    return {
-      isAdmin: false,
-      isSuperAdmin: false,
-      isFarmer: false,
-    };
-  }
-  const role = user.publicMetadata.role;
-  const isSuperAdmin = role === "superadmin";
-  const isAdmin = role === "admin";
-  const isFarmer = role === "farmer";
+import { StaffRole } from "@prisma/client";
+
+export const useRole = (role?: StaffRole) => {
+  const isSuperAdmin = role === StaffRole.superadmin;
+  const isAdmin = role === StaffRole.admin || StaffRole.superadmin;
+  const isFarmer = role === StaffRole.farmer;
   return { isAdmin, isSuperAdmin, isFarmer };
 };

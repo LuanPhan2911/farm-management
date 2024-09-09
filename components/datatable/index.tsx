@@ -11,6 +11,8 @@ import {
   ColumnFiltersState,
   getFilteredRowModel,
   VisibilityState,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
 } from "@tanstack/react-table";
 
 import {
@@ -24,15 +26,13 @@ import {
 
 import { useState } from "react";
 import { DataTablePagination } from "@/components/datatable/datatable-pagination";
-import { DataTableViewOptions } from "@/components/datatable/datatable-view-options";
-import { DataTableFilterColumn } from "@/components/datatable/datatable-filter-column";
-import { DataTableBulkAction } from "./datatable-bulk-action";
+import { DataTableToolbar } from "./datatable-toolbar";
+import { LucideIcon } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  filterColumn?: {
-    isShown: boolean;
+  searchable?: {
     value: string;
     placeholder: string;
   };
@@ -40,13 +40,23 @@ interface DataTableProps<TData, TValue> {
     label: string;
     action: (rows: TData[]) => void;
   }[];
+  facetedFilters?: {
+    column: string;
+    label: string;
+    options: {
+      label: string;
+      value: string;
+      icon?: LucideIcon;
+    }[];
+  }[];
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  filterColumn,
+  searchable,
   bulkActions,
+  facetedFilters,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -63,6 +73,8 @@ export function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
     state: {
       sorting,
       columnFilters,
@@ -73,19 +85,12 @@ export function DataTable<TData, TValue>({
 
   return (
     <>
-      <div className="flex py-4 lg:flex-row flex-col-reverse gap-4">
-        {filterColumn?.isShown && (
-          <DataTableFilterColumn
-            column={filterColumn.value}
-            placeholder={filterColumn.placeholder}
-            table={table}
-          />
-        )}
-        <div className="flex ml-auto gap-x-2">
-          <DataTableBulkAction table={table} actions={bulkActions} />
-          <DataTableViewOptions table={table} />
-        </div>
-      </div>
+      <DataTableToolbar
+        table={table}
+        searchable={searchable}
+        bulkActions={bulkActions}
+        facetedFilters={facetedFilters}
+      />
 
       <div className="rounded-md border">
         <Table>

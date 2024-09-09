@@ -27,7 +27,7 @@ export const SearchBar = ({ placeholder, isPagination }: SearchBarProps) => {
     router.replace(`${pathname}?${params.toString()}`);
   }, 300);
   return (
-    <div className="relative">
+    <div className="relative lg:w-[250px] w-full">
       <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
       <Input
         placeholder={placeholder}

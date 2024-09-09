@@ -1,7 +1,7 @@
 "use client";
 
 import { ErrorButton } from "@/components/buttons/error-button";
-import { ComboBox, ComboBoxData } from "@/components/combobox";
+import { ComboBox, ComboBoxData } from "@/components/form/combobox";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePathname, useRouter } from "@/navigation";
@@ -15,7 +15,7 @@ const JobsSelect = ({}: JobsSelectProps) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
-  const t = useTranslations("applicants.search");
+  const t = useTranslations("applicants.search.comboBox.job");
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["jobs"],
     queryFn: async () => {
@@ -26,23 +26,18 @@ const JobsSelect = ({}: JobsSelectProps) => {
   const handleChange = (value: string) => {
     const params = new URLSearchParams(searchParams);
     if (!value) {
-      params.delete("filter");
+      params.delete("jobId");
     } else {
-      params.set("filter", value);
+      params.set("jobId", value);
     }
 
     router.replace(`${pathname}?${params.toString()}`);
   };
   if (isPending) {
-    return <Skeleton className="h-12 w-full" />;
+    return <Skeleton className="h-12 w-60" />;
   }
   if (isError) {
-    return (
-      <ErrorButton
-        refresh={refetch}
-        title="Something went wrong went load jobs"
-      />
-    );
+    return <ErrorButton refresh={refetch} title={t("error")} />;
   }
   const options: ComboBoxData[] = data.map((item) => {
     return {
@@ -53,8 +48,8 @@ const JobsSelect = ({}: JobsSelectProps) => {
   return (
     <ComboBox
       data={options}
-      notFound={t("comboBox.notFound")}
-      label={t("comboBox.label")}
+      notFound={t("notFound")}
+      label={t("label")}
       onChange={handleChange}
       isSearch={false}
     />

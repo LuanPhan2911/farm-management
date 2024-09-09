@@ -16,6 +16,8 @@ import { SearchBar } from "@/components/search-bar";
 import { NavPagination } from "@/components/nav-pagination";
 import { useRouter } from "@/navigation";
 import { getEmailAddress, getFullName } from "@/lib/utils";
+import { OrderByButton } from "@/components/buttons/order-by-button";
+import { UsersTableSortBy } from "./users-table-sort-by";
 
 interface UsersTableProps {
   data: User[];
@@ -34,16 +36,18 @@ export const UsersTable = ({ data, totalPage }: UsersTableProps) => {
         <CardTitle>{t("page.title")}</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="w-[400px] py-4">
+        <div className="py-4 flex gap-2 lg:flex-row flex-col items-start lg:items-center">
           <SearchBar placeholder={t("search.placeholder")} isPagination />
+          <UsersTableSortBy />
         </div>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead></TableHead>
               <TableHead>{t("table.thead.name")}</TableHead>
-              <TableHead>{t("table.thead.lastSignedIn")}</TableHead>
-              <TableHead>{t("table.thead.joined")} </TableHead>
+              <TableHead>{t("table.thead.lastSignedInAt")}</TableHead>
+              <TableHead>{t("table.thead.lastActiveAt")}</TableHead>
+              <TableHead>{t("table.thead.joinedAt")} </TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
@@ -76,10 +80,15 @@ export const UsersTable = ({ data, totalPage }: UsersTableProps) => {
                   <TableCell>
                     {user.lastSignInAt
                       ? relativeTime(user.lastSignInAt)
-                      : t("table.trow.lastSignedIn")}
-                    {}
+                      : t("table.trow.lastSignedInAt")}
+                  </TableCell>
+                  <TableCell>
+                    {user.lastActiveAt
+                      ? relativeTime(user.lastActiveAt)
+                      : t("table.trow.lastActiveAt")}
                   </TableCell>
                   <TableCell>{relativeTime(user.createdAt)}</TableCell>
+
                   <TableCell>
                     <UsersTableAction data={user} />
                   </TableCell>

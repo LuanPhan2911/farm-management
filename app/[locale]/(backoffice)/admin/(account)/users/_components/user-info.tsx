@@ -32,14 +32,20 @@ export const UserInfo = ({ data }: UserInfoProps) => {
         </div>
         <p className="text-sm font-semibold">{getEmailAddress(data)}</p>
         <p className="text-sm text-muted-foreground">
-          {t("table.thead.lastSignedIn")}:{" "}
+          {t("table.thead.lastSignedInAt")}:{" "}
           {data.lastSignInAt
             ? relativeTime(data.lastSignInAt)
-            : t("table.trow.lastSignedIn")}
+            : t("table.trow.lastSignedInAt")}
+        </p>
+        <p className="text-sm text-muted-foreground">
+          {t("table.thead.lastActiveAt")}:{" "}
+          {data.lastActiveAt
+            ? relativeTime(data.lastActiveAt)
+            : t("table.trow.lastActiveAt")}
         </p>
       </div>
       <div className="text-sm text-muted-foreground ">
-        {t("table.thead.joined")}:{" "}
+        {t("table.thead.joinedAt")}:{" "}
         <span className="font-semibold">{relativeTime(data.createdAt)}</span>
       </div>
 

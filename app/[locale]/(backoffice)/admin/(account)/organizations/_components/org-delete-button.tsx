@@ -45,7 +45,7 @@ export const OrgDeleteButton = () => {
   };
   return (
     <Button variant={"destroy"} size={"sm"} onClick={handleClick}>
-      <Trash className="mr-2" /> Delete organization
+      <Trash className="mr-2" /> {t("form.destroy.label")}
     </Button>
   );
 };

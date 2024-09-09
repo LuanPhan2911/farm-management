@@ -2,8 +2,9 @@
 
 import { editPublished } from "@/actions/job";
 import { Switch } from "@/components/ui/switch";
+import { useAlertDialog } from "@/stores/use-alert-dialog";
 import { useTranslations } from "next-intl";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
 interface JobPublishedSwitchProps {
@@ -15,15 +16,15 @@ export const JobPublishedSwitch = ({
   published,
 }: JobPublishedSwitchProps) => {
   const [isPending, startTransition] = useTransition();
+  const { onOpen } = useAlertDialog();
+  const [status, setStatus] = useState(published);
   const t = useTranslations("jobs.status.failure");
-  const onToggle = (value: boolean) => {
-    if (!id) {
-      return;
-    }
+  const onToggle = () => {
     startTransition(() => {
-      editPublished(id, value)
+      editPublished(id, !published)
         .then(({ message, ok }) => {
           if (ok) {
+            setStatus(!published);
             toast.success(message);
           } else {
             toast.error(message);
@@ -36,8 +37,14 @@ export const JobPublishedSwitch = ({
   };
   return (
     <Switch
-      checked={published}
-      onCheckedChange={onToggle}
+      checked={status}
+      onCheckedChange={() => {
+        onOpen({
+          title: "Published job",
+          description: "Everyone can read",
+          onConfirm: onToggle,
+        });
+      }}
       disabled={isPending}
     />
   );

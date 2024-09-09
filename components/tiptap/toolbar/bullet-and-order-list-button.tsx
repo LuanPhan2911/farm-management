@@ -1,7 +1,7 @@
 import {
   ToggleButton,
   ToggleGroupButton,
-} from "@/components/toggle-group-button";
+} from "@/components/buttons/toggle-group-button";
 import { Editor } from "@tiptap/react";
 import { List, ListOrdered } from "lucide-react";
 import { useTranslations } from "next-intl";

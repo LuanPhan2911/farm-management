@@ -1,17 +1,16 @@
 import { LIMIT } from "@/configs/paginationConfig";
 import { db } from "@/lib/db";
-import { clerkClient } from "@clerk/nextjs/server";
+import { clerkClient, currentUser } from "@clerk/nextjs/server";
 import { StaffRole } from "@prisma/client";
+import { UserOrderBy } from "./users";
 
-export const createStaff = async (
-  externalId: string,
-  params: {
-    email: string;
-    name: string;
-    role: StaffRole;
-    imageUrl: string | null;
-  }
-) => {
+type StaffParams = {
+  email: string;
+  name: string;
+  role: StaffRole;
+  imageUrl: string | null;
+};
+export const createStaff = async (externalId: string, params: StaffParams) => {
   try {
     const staff = await db.staff.create({
       data: {
@@ -95,7 +94,15 @@ export const getStaffExternalIds = async (): Promise<string[]> => {
   }
 };
 
-export const getStaffsTable = async (query: string, currentPage: number) => {
+export const getStaffsTable = async ({
+  query,
+  currentPage,
+  orderBy,
+}: {
+  query: string;
+  currentPage: number;
+  orderBy?: UserOrderBy;
+}) => {
   try {
     const staffIds = await getStaffExternalIds();
 
@@ -104,6 +111,7 @@ export const getStaffsTable = async (query: string, currentPage: number) => {
       offset: (currentPage - 1) * LIMIT,
       query,
       userId: staffIds.map((id) => `+${id}`),
+      orderBy,
     });
 
     const totalPage = Math.ceil(totalCount / LIMIT);
@@ -139,5 +147,22 @@ export const getStaffsForAddMemberOrganization = async () => {
     return staffs;
   } catch (error) {
     return [];
+  }
+};
+
+export const currentStaff = async () => {
+  try {
+    const user = await currentUser();
+    if (!user) {
+      return null;
+    }
+    const staff = await db.staff.findUnique({
+      where: {
+        externalId: user.id,
+      },
+    });
+    return staff;
+  } catch (error) {
+    return null;
   }
 };

@@ -95,83 +95,86 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
         <DialogHeader>
           <DialogTitle>{t("form.create.title")}</DialogTitle>
           <DialogDescription>{t("form.create.description")}</DialogDescription>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{tSchema("name.label")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={tSchema("name.placeholder")}
-                        {...field}
-                        disabled={isPending}
-                      />
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="slug"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{tSchema("slug.label")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={tSchema("slug.placeholder")}
-                        {...field}
-                        disabled={isPending}
-                      />
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="createdBy"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{tSchema("createdBy.label")}</FormLabel>
-                    <FormControl>
-                      <div className="block">
-                        <StaffSelectWithQueryClient
-                          queryKey={["org_created_by"]}
-                          queryFn={fetchCreatedByOrg}
-                          defaultValue={field.value}
-                          onChange={field.onChange}
-                          errorLabel="Something went wrong went load created by!"
-                          label="Select staff..."
-                          notFound="Staff not found"
-                          disabled={isPending}
-                        />
-                      </div>
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <DialogFooter>
-                <DialogClose asChild>
-                  <Button type="button" variant="secondary" ref={closeRef}>
-                    Close
-                  </Button>
-                </DialogClose>
-                <Button type="submit" disabled={isPending}>
-                  Submit
-                </Button>
-              </DialogFooter>
-            </form>
-          </Form>
         </DialogHeader>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4 w-full"
+          >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("name.label")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={tSchema("name.placeholder")}
+                      {...field}
+                      disabled={isPending}
+                    />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="slug"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("slug.label")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={tSchema("slug.placeholder")}
+                      {...field}
+                      disabled={isPending}
+                    />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="createdBy"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("createdBy.label")}</FormLabel>
+                  <FormControl>
+                    <div className="block">
+                      <StaffSelectWithQueryClient
+                        queryKey={["org_created_by"]}
+                        queryFn={fetchCreatedByOrg}
+                        defaultValue={field.value}
+                        onChange={field.onChange}
+                        errorLabel={tSchema("createdBy.error")}
+                        label={tSchema("createdBy.placeholder")}
+                        notFound={tSchema("createdBy.notFound")}
+                        disabled={isPending}
+                      />
+                    </div>
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button type="button" variant="secondary" ref={closeRef}>
+                  Close
+                </Button>
+              </DialogClose>
+              <Button type="submit" disabled={isPending}>
+                Submit
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

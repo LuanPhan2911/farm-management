@@ -1,6 +1,5 @@
 "use server";
 
-import { db } from "@/lib/db";
 import { errorResponse, successResponse } from "@/lib/utils";
 import { redirect } from "@/navigation";
 import { JobSchema } from "@/schemas";
@@ -46,9 +45,7 @@ export const create = async (
       ...validatedFields.data,
       slug,
     });
-    if (!job) {
-      return errorResponse(tStatus("failure.create"));
-    }
+
     revalidatePath("/admin/jobs");
     return successResponse(tStatus("success.create"));
   } catch (error) {
@@ -82,9 +79,7 @@ export const edit = async (
       );
     }
     const job = await updateJob(id, { ...validatedFields.data, slug });
-    if (!job) {
-      return errorResponse(tStatus("failure.edit"));
-    }
+
     revalidatePath(`/dashboard/jobs/edit/${job.id}`);
     return successResponse(tStatus("success.edit"));
   } catch (error) {
@@ -94,10 +89,8 @@ export const edit = async (
 export const destroy = async (id: string): Promise<ActionResponse> => {
   const tStatus = await getTranslations("jobs.status");
   try {
-    const job = await deleteJob(id);
-    if (!job) {
-      return errorResponse(tStatus("failure.destroy"));
-    }
+    await deleteJob(id);
+
     revalidatePath("/admin/jobs");
 
     return successResponse(tStatus("success.destroy"));
@@ -109,9 +102,7 @@ export const destroyMany = async (ids: string[]): Promise<ActionResponse> => {
   const tStatus = await getTranslations("jobs.status");
   try {
     const count = await deleteManyJob(ids);
-    if (!count) {
-      return errorResponse(tStatus("failure.destroy"));
-    }
+
     revalidatePath("/admin/jobs");
 
     return successResponse(tStatus("success.destroy"));
@@ -126,10 +117,7 @@ export const editPublished = async (
   const tStatus = await getTranslations("jobs.status");
   try {
     const job = await updateJobPublished(id, published);
-    if (!job) {
-      return errorResponse(tStatus("failure.editPublished"));
-    }
-    revalidatePath("/admin/jobs");
+
     return successResponse(tStatus("success.editPublished"));
   } catch (error) {
     return errorResponse(tStatus("failure.editPublished"));

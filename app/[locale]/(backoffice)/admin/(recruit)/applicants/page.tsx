@@ -1,15 +1,14 @@
 import { getApplicants } from "@/services/applicants";
 
 import { ApplicantsTable } from "./_components/applicants-data-table";
-import { ApplicantSelectJob } from "./_components/applicant-select-job";
-import { getJobsSelection } from "@/services/jobs";
+
 interface ApplicantsPageProps {
-  searchParams?: {
-    filter?: string;
+  searchParams: {
+    jobId?: string;
   };
 }
 const ApplicantsPage = async ({ searchParams }: ApplicantsPageProps) => {
-  const jobId = searchParams?.filter || null;
+  const jobId = searchParams?.jobId || undefined;
   const applicants = await getApplicants(jobId);
 
   return (

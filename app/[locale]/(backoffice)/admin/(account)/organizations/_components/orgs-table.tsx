@@ -17,8 +17,7 @@ import { UserAvatar } from "@/components/user-avatar";
 
 import { useRouter } from "@/navigation";
 import { OrgCreateButton } from "./org-create-button";
-import { SortByDropdown, SortByOption } from "@/components/sort-by-dropdown";
-import { useSearchParams } from "next/navigation";
+import { OrgsTableSortBy } from "./orgs-table-sort-by";
 
 interface OrgsTableProps {
   orgs: Organization[];
@@ -26,43 +25,26 @@ interface OrgsTableProps {
 }
 export const OrgsTable = ({ orgs, totalPage }: OrgsTableProps) => {
   const t = useTranslations("organizations");
-  const searchParams = useSearchParams();
   const { relativeTime } = useFormatter();
   const router = useRouter();
   const handleClick = (org: Organization) => {
     router.push(`/admin/organizations/detail/${org.id}`);
   };
-  const sortByOptions: SortByOption[] = [
-    {
-      label: "Created At",
-      value: "created_at",
-    },
-    {
-      label: "Name",
-      value: "name",
-    },
-    {
-      label: "Members count",
-      value: "members_count",
-    },
-  ];
-  const defaultSortBy = searchParams.get("order_by") || "created_at";
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>{t("page.title")}</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex justify-between md:items-center py-4 md:flex-row flex-col gap-2 items-end">
-          <div className="flex gap-x-2">
-            <SearchBar placeholder={t("search.placeholder")} isPagination />
-            <SortByDropdown
-              options={sortByOptions}
-              defaultValue={defaultSortBy}
-            />
-          </div>
+        <div className="flex justify-end">
           <OrgCreateButton />
         </div>
+        <div className="py-4 flex gap-2 lg:flex-row flex-col items-start lg:items-center">
+          <SearchBar placeholder={t("search.placeholder")} isPagination />
+          <OrgsTableSortBy />
+        </div>
+
         <Table>
           <TableHeader>
             <TableRow>

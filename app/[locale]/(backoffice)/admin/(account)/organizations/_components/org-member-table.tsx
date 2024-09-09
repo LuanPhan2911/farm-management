@@ -16,6 +16,7 @@ import { OrgMemberRoleEditButton } from "./org-member-role-edit-button";
 import { OrgRole } from "@/types";
 import { useFormatter, useTranslations } from "next-intl";
 import { OrganizationMembership } from "@clerk/nextjs/server";
+import { OrgMemberTableSortBy } from "./org-member-table-sort-by";
 interface OrgMemberTableProps {
   data: OrganizationMembership[];
   totalPage: number;
@@ -25,41 +26,40 @@ export const OrgMemberTable = ({ data, totalPage }: OrgMemberTableProps) => {
   const { relativeTime } = useFormatter();
   return (
     <>
-      <div className="flex justify-between md:items-center py-4 md:flex-row flex-col gap-2 items-end">
-        <div className="w-[300px]">
-          <SearchBar
-            placeholder={t("search.member.placeholder")}
-            isPagination
-          />
-        </div>
+      <div className="flex justify-end">
         <OrgMemberAdd />
+      </div>
+      <div className="py-4 flex gap-2 lg:flex-row flex-col items-start lg:items-center">
+        <SearchBar placeholder={t("search.placeholder")} isPagination />
+        {/* <OrgMemberTableSortBy /> */}
       </div>
 
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead></TableHead>
-            <TableHead>{t("table.thead.name")}</TableHead>
-            <TableHead>{t("table.thead.role")}</TableHead>
-            <TableHead>{t("table.thead.createdAt")}</TableHead>
+            <TableHead>{t("table.member.thead.firstName")}</TableHead>
+            <TableHead>{t("table.member.thead.lastName")}</TableHead>
+            <TableHead>{t("table.member.thead.email")}</TableHead>
+            <TableHead>{t("table.member.thead.role")}</TableHead>
+            <TableHead>{t("table.member.thead.createdAt")}</TableHead>
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.map(({ publicUserData, role, createdAt, id }) => {
+          {data.map(({ publicUserData, role, createdAt }) => {
             return (
               <TableRow key={publicUserData?.userId} className="cursor-pointer">
                 <TableCell>
                   <UserAvatar
-                    src={publicUserData?.imageUrl}
+                    src={publicUserData?.imageUrl || undefined}
                     size={"default"}
                     className="rounded-full"
                   />
                 </TableCell>
-                <TableCell>
-                  <div>{publicUserData?.firstName}</div>
-                  <div>{publicUserData?.identifier}</div>
-                </TableCell>
+                <TableCell>{publicUserData?.firstName}</TableCell>
+                <TableCell>{publicUserData?.lastName}</TableCell>
+                <TableCell>{publicUserData?.identifier}</TableCell>
                 <TableCell>
                   <OrgMemberRoleEditButton
                     defaultRole={role as OrgRole}

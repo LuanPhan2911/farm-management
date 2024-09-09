@@ -10,3 +10,12 @@ export const checkRole = (role: StaffRole) => {
 
   return currentRole === role;
 };
+export const isSuperAdmin = (role: StaffRole) => {
+  return role === StaffRole.superadmin;
+};
+export const isAdmin = (role: StaffRole) => {
+  return role === StaffRole.superadmin || role == StaffRole.admin;
+};
+export const isFarmer = (role: StaffRole) => {
+  return role === StaffRole.farmer;
+};

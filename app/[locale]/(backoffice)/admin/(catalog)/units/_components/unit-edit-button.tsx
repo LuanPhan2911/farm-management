@@ -1,10 +1,10 @@
 "use client";
-import { DynamicDialog } from "@/components/dynamic-dialog";
+import { DynamicDialog } from "@/components/dialog/dynamic-dialog";
 import { Button } from "@/components/ui/button";
 import { UnitSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Unit } from "@prisma/client";
+import { Unit, UnitType } from "@prisma/client";
 import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
@@ -23,6 +23,7 @@ import { edit } from "@/actions/unit";
 import { Input } from "@/components/ui/input";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { SelectOptions } from "@/components/form/select-options";
 
 interface UnitEditButtonProps {
   data: Unit;
@@ -58,16 +59,13 @@ export const UnitEditDialog = () => {
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      description: "",
-    },
   });
   const [id, setId] = useState("");
   useEffect(() => {
     if (data?.unit) {
       form.setValue("name", data.unit.name);
-      form.setValue("description", data.unit.description);
+      form.setValue("description", data.unit.description || undefined);
+      form.setValue("type", data.unit.type || undefined);
       setId(data.unit.id);
     }
   }, [data, form]);
@@ -108,6 +106,31 @@ export const UnitEditDialog = () => {
                   <Input
                     placeholder={tSchema("name.placeholder")}
                     {...field}
+                    disabled={isPending}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("type.label")}</FormLabel>
+                <FormControl>
+                  <SelectOptions
+                    label={tSchema("type.label")}
+                    onChange={field.onChange}
+                    options={Object.values(UnitType).map((item) => {
+                      return {
+                        label: t(`schema.type.options.${item}`),
+                        value: item,
+                      };
+                    })}
+                    defaultValue={field.value}
                     disabled={isPending}
                   />
                 </FormControl>
