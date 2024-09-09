@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/table";
 import { useFormatter, useTranslations } from "next-intl";
 import { WeatherCreateButton } from "./weather-create-button";
-import { UnitSuperscriptWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-superscript";
+import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-with-value";
 import { WeatherTable } from "@/types";
 import { WeathersTableAction } from "./weathers-table-action";
 import { WeatherConfirmButton } from "./weather-confirm-button";
@@ -20,15 +20,6 @@ import { StaffWithName } from "@/app/[locale]/(backoffice)/admin/_components/sta
 import { WeatherStatusValue } from "./weather-status-value";
 
 import { OrderByButton } from "@/components/buttons/order-by-button";
-import { WeatherStatus } from "@prisma/client";
-import { FacetedFilterStringButton } from "@/components/buttons/faceted-filter-string-button";
-import { FacetedFilterNumberButton } from "@/components/buttons/faceted-filter-number-button";
-import { DatePickerWithRange } from "@/components/form/date-picker-with-range";
-import { DateRange } from "react-day-picker";
-import { addDays, format } from "date-fns";
-import { useSearchParams } from "next/navigation";
-import { usePathname, useRouter } from "@/navigation";
-import { useState } from "react";
 import { DatePickerWithRangeButton } from "@/components/buttons/date-picker-range-button";
 import { WeatherTableFaceted } from "./weathers-table-faceted";
 interface WeathersTableProps {
@@ -48,7 +39,7 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
         <div className="flex justify-end">
           <WeatherCreateButton />
         </div>
-        <DatePickerWithRangeButton from={new Date()} />
+        <DatePickerWithRangeButton from={undefined} />
         <WeatherTableFaceted />
 
         <Table>
@@ -115,19 +106,19 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
                     </span>
                   </TableCell>
                   <TableCell>
-                    <UnitSuperscriptWithValue
+                    <UnitWithValue
                       value={item.humidity.value}
                       unit={item.humidity.unit.name}
                     />
                   </TableCell>
                   <TableCell>
-                    <UnitSuperscriptWithValue
+                    <UnitWithValue
                       value={item.atmosphericPressure.value}
                       unit={item.atmosphericPressure.unit.name}
                     />
                   </TableCell>
                   <TableCell>
-                    <UnitSuperscriptWithValue
+                    <UnitWithValue
                       value={item.rainfall.value}
                       unit={item.rainfall.unit.name}
                     />

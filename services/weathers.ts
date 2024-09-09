@@ -5,10 +5,10 @@ import {
   getObjectFilterString,
   getObjectSortOrder,
 } from "@/lib/utils";
-import { PaginatedResponse, WeatherTable } from "@/types";
+import { PaginatedResponse, WeatherStatusCount, WeatherTable } from "@/types";
 import { WeatherStatus } from "@prisma/client";
 
-export const createWeather = async (params: {
+type WeatherParams = {
   temperature: {
     value: number;
     unitId: string;
@@ -27,7 +27,8 @@ export const createWeather = async (params: {
   };
   fieldId: string;
   status: WeatherStatus;
-}) => {
+};
+export const createWeather = async (params: WeatherParams) => {
   return db.$transaction(async (ctx) => {
     //Create temperature
     const temperature = await ctx.floatUnit.create({
@@ -119,29 +120,7 @@ export const deleteWeather = async (id: string) => {
     return weather;
   });
 };
-export const updateWeather = async (
-  id: string,
-  params: {
-    temperature: {
-      value: number;
-      unitId: string;
-    };
-    humidity: {
-      value: number;
-      unitId: string;
-    };
-    atmosphericPressure: {
-      value: number;
-      unitId: string;
-    };
-    rainfall: {
-      value: number;
-      unitId: string;
-    };
-    fieldId: string;
-    status: WeatherStatus;
-  }
-) => {
+export const updateWeather = async (id: string, params: WeatherParams) => {
   return db.$transaction(async (ctx) => {
     //update weather;
     const { status, fieldId } = params;
@@ -195,6 +174,15 @@ export const updateWeather = async (
   });
 };
 
+type WeatherQuery = {
+  fieldId: string;
+  page?: number;
+  orderBy?: string;
+  filterString?: string;
+  filterNumber?: string;
+  begin?: Date;
+  end?: Date;
+};
 export const getWeathersOnField = async ({
   fieldId,
   page = 1,
@@ -203,83 +191,105 @@ export const getWeathersOnField = async ({
   filterNumber,
   begin,
   end,
-}: {
-  fieldId: string;
-  page?: number;
-  orderBy?: string;
-  filterString?: string;
-  filterNumber?: string;
-  begin?: Date;
-  end?: Date;
-}): Promise<PaginatedResponse<WeatherTable>> => {
-  // try {
+}: WeatherQuery): Promise<PaginatedResponse<WeatherTable>> => {
+  try {
+    const weathers = await db.weather.findMany({
+      where: {
+        fieldId,
+        createdAt: {
+          ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
+          ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
+        },
+        ...(filterString && getObjectFilterString(filterString)),
+        ...(filterNumber && getObjectFilterNumber(filterNumber)),
+      },
+      orderBy: {
+        ...(orderBy && getObjectSortOrder(orderBy)),
+      },
+      include: {
+        confirmedBy: true,
+        atmosphericPressure: {
+          include: {
+            unit: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
 
-  const weathers = await db.weather.findMany({
-    where: {
-      fieldId,
-      createdAt: {
-        ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
-        ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
-      },
-      ...(filterString && getObjectFilterString(filterString)),
-      ...(filterNumber && getObjectFilterNumber(filterNumber)),
-    },
-    orderBy: {
-      ...(orderBy && getObjectSortOrder(orderBy)),
-    },
-    include: {
-      confirmedBy: true,
-      atmosphericPressure: {
-        include: {
-          unit: {
-            select: {
-              name: true,
+        humidity: {
+          include: {
+            unit: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+        rainfall: {
+          include: {
+            unit: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+        temperature: {
+          include: {
+            unit: {
+              select: {
+                name: true,
+              },
             },
           },
         },
       },
+      take: LIMIT,
+      skip: (page - 1) * LIMIT,
+    });
+    const totalPage = Math.ceil(weathers.length / LIMIT);
+    return {
+      data: weathers,
+      totalPage,
+    };
+  } catch (error) {
+    return {
+      data: [],
+      totalPage: 0,
+    };
+  }
+};
 
-      humidity: {
-        include: {
-          unit: {
-            select: {
-              name: true,
-            },
-          },
+export const getCountWeatherStatus = async ({
+  fieldId,
+  begin,
+  end,
+  filterString,
+}: WeatherQuery): Promise<WeatherStatusCount[]> => {
+  try {
+    const result = await db.weather.groupBy({
+      by: "status",
+      where: {
+        fieldId,
+        createdAt: {
+          ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
+          ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
         },
+        ...(filterString && getObjectFilterString(filterString)),
       },
-      rainfall: {
-        include: {
-          unit: {
-            select: {
-              name: true,
-            },
-          },
-        },
+      _count: {
+        _all: true,
       },
-      temperature: {
-        include: {
-          unit: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      },
-    },
-    take: LIMIT,
-    skip: (page - 1) * LIMIT,
-  });
-  const totalPage = Math.ceil(weathers.length / LIMIT);
-  return {
-    data: weathers,
-    totalPage,
-  };
-  // } catch (error) {
-
-  //   return {
-  //     data: [],
-  //     totalPage: 0,
-  //   };
-  // }
+    });
+    return result.map((item) => {
+      return {
+        status: item.status,
+        _count: item._count._all,
+      };
+    });
+  } catch (error) {
+    return [];
+  }
 };

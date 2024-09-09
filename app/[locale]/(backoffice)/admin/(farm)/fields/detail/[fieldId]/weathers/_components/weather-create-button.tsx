@@ -290,7 +290,7 @@ export const WeatherCreateButton = () => {
                   <div className="flex gap-x-2">
                     <FormControl>
                       <SelectOptions
-                        label="Select status"
+                        label={tSchema("status.placeholder")}
                         onChange={field.onChange}
                         options={Object.keys(WeatherStatus).map((item) => {
                           return {

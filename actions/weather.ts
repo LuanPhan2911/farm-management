@@ -70,7 +70,7 @@ export const editConfirmed = async (id: string) => {
       confirmedAt: new Date(),
       confirmedById: staff.id,
     });
-
+    revalidatePath(`/admin/fields/detail/${weather.fieldId}/weathers`);
     return successResponse(tStatus("success.editConfirmed"));
   } catch (error) {
     return errorResponse(tStatus("failure.editConfirmed"));
@@ -79,7 +79,8 @@ export const editConfirmed = async (id: string) => {
 export const destroy = async (id: string) => {
   const tStatus = await getTranslations("weathers.status");
   try {
-    await deleteWeather(id);
+    const weather = await deleteWeather(id);
+    revalidatePath(`/admin/fields/detail/${weather.fieldId}/weathers`);
     return successResponse(tStatus("success.destroy"));
   } catch (error) {
     return errorResponse(tStatus("failure.destroy"));
