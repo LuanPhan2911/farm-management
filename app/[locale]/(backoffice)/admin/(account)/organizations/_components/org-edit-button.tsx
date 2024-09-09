@@ -1,6 +1,5 @@
 "use client";
 import { edit, editLogo } from "@/actions/organization";
-import { ClipboardButton } from "@/components/clipboard-button";
 import { InputClipboard } from "@/components/form/input-clipboard";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,6 +39,7 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
     defaultValues: {
       name: data.name,
       slug: data.slug || "",
+      createdBy: data.createdBy,
     },
   });
   const watchName = form.watch("name");
@@ -95,7 +95,7 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
   };
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full">
         <FormItem>
           <InputClipboard label={tSchema("id.label")} value={data.id} />
         </FormItem>

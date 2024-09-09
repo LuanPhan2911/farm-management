@@ -2,8 +2,8 @@
 
 import { LucideIcon } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { Hint } from "./hint";
-import { useState } from "react";
+import { Hint } from "@/components/hint";
+
 export interface ToggleButton {
   icon: LucideIcon;
   label: string;

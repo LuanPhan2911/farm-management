@@ -1,5 +1,5 @@
 "use client";
-import { DynamicDialog } from "@/components/dynamic-dialog";
+import { DynamicDialog } from "@/components/dialog/dynamic-dialog";
 import { Button } from "@/components/ui/button";
 import { CategorySchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";

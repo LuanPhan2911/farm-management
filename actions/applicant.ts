@@ -1,16 +1,15 @@
 "use server";
-import { db } from "@/lib/db";
+
 import { sendApplicantApply, sendApplicantCreateUser } from "@/lib/mail";
-import {
-  errorResponse,
-  generateEmail,
-  generatePassword,
-  successResponse,
-} from "@/lib/utils";
+import { errorResponse, successResponse } from "@/lib/utils";
 import { ApplicantSchema, StaffSchema } from "@/schemas";
 import {
+  createApplicant,
+  deleteApplicant,
+  deleteManyApplicant,
   getApplicantByEmailAndJobId,
   getApplicantById,
+  updateApplicantStatus,
 } from "@/services/applicants";
 import { getJobById } from "@/services/jobs";
 import { ActionResponse } from "@/types";
@@ -45,18 +44,9 @@ export const create = async (
     return errorResponse(tSchema("errors.existingApplicant"));
   }
   try {
-    const applicant = await db.applicant.create({
-      data: {
-        ...validatedFields.data,
-        jobId: job.id,
-      },
-      include: {
-        job: {
-          select: {
-            name: true,
-          },
-        },
-      },
+    const applicant = await createApplicant({
+      ...validatedFields.data,
+      jobId,
     });
     sendApplicantApply(applicant);
 
@@ -68,11 +58,7 @@ export const create = async (
 export const destroy = async (id: string): Promise<ActionResponse> => {
   const tStatus = await getTranslations("applicants.status");
   try {
-    await db.applicant.delete({
-      where: {
-        id,
-      },
-    });
+    await deleteApplicant(id);
     revalidatePath("/admin/applicants");
     return successResponse(tStatus("success.destroy"));
   } catch (error) {
@@ -82,13 +68,7 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
 export const destroyMany = async (ids: string[]): Promise<ActionResponse> => {
   const tStatus = await getTranslations("applicants.status");
   try {
-    await db.applicant.deleteMany({
-      where: {
-        id: {
-          in: ids,
-        },
-      },
-    });
+    await deleteManyApplicant(ids);
     revalidatePath("/admin/applicants");
     return successResponse(tStatus("success.destroy"));
   } catch (error) {
@@ -115,7 +95,7 @@ export const createApplicantStaff = async (
       return errorResponse(tSchema("errors.exist"));
     }
 
-    const { email, name, password, role } = validatedFields.data;
+    const { email, password } = validatedFields.data;
 
     const existingUser = await getUserByEmail(email);
     if (existingUser) {
@@ -123,9 +103,6 @@ export const createApplicantStaff = async (
     }
 
     const user = await createUser({ ...validatedFields.data });
-    if (!user) {
-      return errorResponse(tStatus("failure.createStaff"));
-    }
 
     // TODO: use webhook to create staff
 
@@ -133,14 +110,9 @@ export const createApplicantStaff = async (
 
     // send mail notification
 
-    await db.applicant.updateMany({
-      where: {
-        email: applicant.email,
-      },
-      data: {
-        status: ApplicantStatus.CONFIRM,
-      },
-    });
+    // update this applicant status to confirmed
+
+    await updateApplicantStatus(applicant.email);
     revalidatePath("/admin/applicants");
     return successResponse(tStatus("success.createStaff"));
   } catch (error) {

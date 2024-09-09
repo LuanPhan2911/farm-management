@@ -31,6 +31,8 @@ import { useRef, useTransition } from "react";
 import { create } from "@/actions/unit";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
+import { SelectOptions } from "@/components/form/select-options";
+import { UnitType } from "@prisma/client";
 
 export const UnitCreateButton = () => {
   const tSchema = useTranslations("units.schema");
@@ -90,6 +92,30 @@ export const UnitCreateButton = () => {
                     <Input
                       placeholder={tSchema("name.placeholder")}
                       {...field}
+                      disabled={isPending}
+                    />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("type.label")}</FormLabel>
+                  <FormControl>
+                    <SelectOptions
+                      label={tSchema("type.placeholder")}
+                      onChange={field.onChange}
+                      options={Object.values(UnitType).map((item) => {
+                        return {
+                          label: t(`schema.type.options.${item}`),
+                          value: item,
+                        };
+                      })}
                       disabled={isPending}
                     />
                   </FormControl>

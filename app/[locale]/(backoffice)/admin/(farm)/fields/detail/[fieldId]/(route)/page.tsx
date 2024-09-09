@@ -1,6 +1,6 @@
 import { getFieldById } from "@/services/fields";
 import { notFound } from "next/navigation";
-import { FieldTabs } from "../../_components/field-tabs";
+import { FieldInfo } from "../../../_components/field-info";
 
 interface FieldDetailPageProps {
   params: {
@@ -14,7 +14,7 @@ const FieldDetailPage = async ({ params }: FieldDetailPageProps) => {
   }
   return (
     <div className="flex flex-col gap-y-4 py-4 h-full">
-      <FieldTabs data={field} />
+      <FieldInfo data={field} />
     </div>
   );
 };

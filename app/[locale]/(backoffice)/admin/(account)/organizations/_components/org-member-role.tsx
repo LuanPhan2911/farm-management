@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { OrgRole } from "@/types";
 import { ChevronDown } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface OrgMemberRoleProps {
   value?: string;
@@ -21,19 +22,20 @@ export const OrgMemberRole = ({
   disabled,
   onChange,
 }: OrgMemberRoleProps) => {
+  const t = useTranslations("organizations.schema.role.options");
   const options: { label: string; value: OrgRole }[] = [
     {
-      label: "Admin",
+      label: t("admin"),
       value: "org:admin",
     },
     {
-      label: "Member",
+      label: t("member"),
       value: "org:member",
     },
   ];
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>
         <Button
           variant={"outline"}
           className="justify-start"

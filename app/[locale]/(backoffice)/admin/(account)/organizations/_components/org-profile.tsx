@@ -16,7 +16,7 @@ interface OrgProfileProps {
 export const OrgProfile = ({ data }: OrgProfileProps) => {
   const t = useTranslations("organizations");
   return (
-    <Card className="grid grid-cols-1 lg:grid-cols-3 p-6">
+    <Card className="grid grid-cols-1 lg:grid-cols-3">
       <CardHeader>
         <CardTitle>{t("tabs.profile.title")}</CardTitle>
         <CardDescription>{t("tabs.profile.description")}</CardDescription>

@@ -25,7 +25,7 @@ export const UserAvatar = ({
   ...props
 }: UserAvatarProps) => {
   return (
-    <Avatar>
+    <Avatar className={cn(avatarSizes({ size, className }))}>
       <AvatarImage
         src={src}
         className={cn(avatarSizes({ size, className }))}

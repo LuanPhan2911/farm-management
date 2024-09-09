@@ -1,7 +1,6 @@
 "use client";
 
-import { toast } from "sonner";
-import { UploadButton } from "./uploadthing";
+import { UploadButton } from "../uploadthing";
 import { ClientUploadedFileData } from "uploadthing/types";
 import {
   Carousel,
@@ -10,12 +9,12 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "./ui/carousel";
+} from "../ui/carousel";
 import { useEffect, useState } from "react";
-import { Card, CardContent } from "./ui/card";
+import { Card, CardContent } from "../ui/card";
 import Image from "next/image";
 import { X } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 
 type UploadImage = { key: string; url: string };
 interface UploadImagesProps {

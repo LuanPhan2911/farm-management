@@ -11,6 +11,7 @@ import {
   locales,
   pathnames,
 } from "@/configs/localeConfig";
+import { removeLanguagePrefix } from "./lib/utils";
 
 const intlMiddleware = createMiddleware({
   locales: locales,
@@ -19,6 +20,7 @@ const intlMiddleware = createMiddleware({
   pathnames: pathnames,
 });
 export default clerkMiddleware((auth, req, event) => {
+  req.headers.set("x-current-path", removeLanguagePrefix(req.nextUrl.pathname));
   if (isProtectedRoute(req)) auth().protect();
 
   return intlMiddleware(req);

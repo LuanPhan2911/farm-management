@@ -15,7 +15,7 @@ import { useTranslations } from "next-intl";
 
 interface DataTableBulkActionProps<TData> {
   table: Table<TData>;
-  actions?: {
+  actions: {
     label: string;
     action: (rows: TData[]) => void;
   }[];
@@ -25,15 +25,12 @@ export function DataTableBulkAction<TData>({
   actions,
 }: DataTableBulkActionProps<TData>) {
   const tBulkAction = useTranslations("datatable.bulkAction");
-  if (!actions) {
-    return;
-  }
   const disabled = table.getSelectedRowModel().rows.length === 0;
 
-  const handleClick = (callblack: (rows: TData[]) => void) => {
+  const handleClick = (callback: (rows: TData[]) => void) => {
     const rows = table.getSelectedRowModel().rows;
     const rawRows = rows.map((row) => row.original);
-    callblack(rawRows);
+    callback(rawRows);
   };
   return (
     <DropdownMenu>

@@ -15,8 +15,7 @@ export const RecentOrders = async ({ data }: RecentOrdersProps) => {
         <DataTable
           columns={columns}
           data={data}
-          filterColumn={{
-            isShown: true,
+          searchable={{
             placeholder: "Filter email...",
             value: "email",
           }}

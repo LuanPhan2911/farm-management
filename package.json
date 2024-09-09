@@ -61,6 +61,7 @@
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.1.8",
     "lucide-react": "^0.424.0",
+    "mergent": "^1.7.0",
     "next": "14.2.5",
     "next-intl": "^3.17.2",
     "next-themes": "^0.3.0",
@@ -90,6 +91,7 @@
     "zustand": "^4.5.4"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.0.0",
     "@types/node": "^20",
     "@types/nodemailer": "^6.4.15",
     "@types/react": "^18",

@@ -24,18 +24,3 @@ interface FieldActiveTab {
   active: string;
   setActive: (value: string) => void;
 }
-
-export const useFieldActiveTab = create<FieldActiveTab>()(
-  persist(
-    (set) => {
-      return {
-        active: "info",
-        setActive: (value) => set({ active: value }),
-      };
-    },
-    {
-      name: "field-tabs",
-      storage: createJSONStorage(() => localStorage),
-    }
-  )
-);

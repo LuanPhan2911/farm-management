@@ -39,8 +39,8 @@ export const ApplicantDeleteButton = ({
       className="w-full"
       onClick={() =>
         onOpen({
-          title: t("form.title"),
-          description: t("form.description"),
+          title: t("form.destroy.title"),
+          description: t("form.destroy.description"),
           onConfirm,
         })
       }

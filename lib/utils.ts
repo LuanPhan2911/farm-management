@@ -1,14 +1,10 @@
 import { siteConfig } from "@/configs/siteConfig";
-import { getUserByEmail } from "@/services/users";
 import { ActionResponse } from "@/types";
 import { User } from "@clerk/nextjs/server";
-import { Unit } from "@prisma/client";
 import { type ClassValue, clsx } from "clsx";
 import { format } from "date-fns";
-import { getFormatter, getNow } from "next-intl/server";
 import slugify from "slugify";
 import { twMerge } from "tailwind-merge";
-import { any } from "zod";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -69,3 +65,225 @@ export function getEmailAddress(user: User) {
   const email = user.emailAddresses;
   return email[0].emailAddress;
 }
+export function removeLanguagePrefix(url: string) {
+  return url.replace(/^\/(en|vi)/, "");
+}
+export function splitUnitValue(unit: string) {
+  // Regular expression to match the unit and optional exponent
+  const regex = /^([a-zA-Z]+)(\d*)$/;
+  const match = unit.match(regex);
+
+  if (match) {
+    const baseUnit = match[1]; // The unit (e.g., km, m, kg)
+    const exponent = match[2]; // The exponent (e.g., 2, 3) or empty string if no exponent
+    return exponent ? [baseUnit, exponent] : [baseUnit];
+  }
+
+  return [unit]; // Fallback for cases that don't match the expected format
+}
+
+export function toggleSortOrder(input: string): string {
+  // Split the input string by the underscore
+  const parts = input.split("_");
+
+  // If there are not exactly two parts, return the input as is
+  if (parts.length !== 2) {
+    return input;
+  }
+
+  const [keyPath, sortOrder] = parts;
+
+  // Toggle the sort order between 'asc' and 'desc'
+  const newSortOrder = sortOrder === "asc" ? "desc" : "asc";
+
+  // Reconstruct the string with the new sort order
+  return `${keyPath}_${newSortOrder}`;
+}
+export function getObjectSortOrder(input: string): Record<string, any> {
+  // Split the input string by the underscore
+  const parts = input.split("_");
+
+  // If there are not exactly two parts, return an empty object
+  if (parts.length !== 2) {
+    return {};
+  }
+
+  const [keyPath, sortOrder] = parts;
+
+  // Validate that the sortOrder is either 'asc' or 'desc'
+  if (sortOrder !== "asc" && sortOrder !== "desc") {
+    return {};
+  }
+
+  // Split the keyPath by '.' to create nested keys
+  const keys = keyPath.split(".");
+
+  // Create a nested object from the keys
+  let nestedObject: Record<string, any> = {};
+  let currentLevel = nestedObject;
+
+  keys.forEach((key, index) => {
+    if (index === keys.length - 1) {
+      // If it's the last key, assign the sortOrder
+      currentLevel[key] = sortOrder;
+    } else {
+      // Otherwise, create an empty object at this level if it doesn't exist
+      currentLevel[key] = {};
+      currentLevel = currentLevel[key];
+    }
+  });
+
+  return nestedObject;
+}
+export function getPostfixSortOrder(
+  input: string,
+  defaultValue: "asc" | "desc" = "asc"
+) {
+  // Split the input by the underscore
+  const parts = input.split("_");
+
+  // If the format isn't correct, return an empty array
+  if (parts.length !== 2) {
+    return defaultValue;
+  }
+  return parts[1] === "asc" ? "asc" : "desc";
+}
+
+export function getObjectFilterString(input: string): Record<string, any> {
+  // Split the input by the underscore
+  const parts = input.split("_");
+
+  // If the format isn't correct, return an empty object
+  if (parts.length !== 2) {
+    return {};
+  }
+
+  const [key, values] = parts;
+
+  // Split the values part by commas and filter out empty strings
+  const valueArray = values.split(",").filter((value) => value.trim() !== "");
+
+  // If the value array is empty, return an empty object
+  if (valueArray.length === 0) {
+    return {};
+  }
+
+  // Construct the object in the desired format
+  return {
+    [key]: {
+      in: valueArray,
+    },
+  };
+}
+
+export function getPostfixArrayFilterString(input: string): string[] {
+  // Split the input by the underscore
+  const parts = input.split("_");
+
+  // If the format isn't correct, return an empty array
+  if (parts.length !== 2) {
+    return [];
+  }
+
+  const values = parts[1];
+
+  // Split the values part by commas, filter out empty strings, and ensure uniqueness
+  const valueArray = values
+    .split(",")
+    .map((value) => value.trim())
+    .filter((value) => value !== "")
+    .filter((value, index, self) => self.indexOf(value) === index); // Ensure uniqueness
+
+  return valueArray;
+}
+
+export function getObjectFilterNumber(input: string): Record<string, any> {
+  // Define the supported operators and their Prisma equivalents
+  const operators: Record<string, string> = {
+    "<=": "lte",
+    ">=": "gte",
+    "<": "lt",
+    ">": "gt",
+    "=": "equals",
+  };
+
+  // Split the input string by commas to get individual conditions
+  const conditions = input.split(",");
+
+  // Initialize an empty object to hold the final filter
+  const filter: Record<string, any> = {};
+
+  // Iterate over each condition
+  for (const condition of conditions) {
+    // Extract the key path and condition/value part by splitting at the last underscore
+    const lastUnderscoreIndex = condition.lastIndexOf("_");
+    if (lastUnderscoreIndex === -1) {
+      continue; // Skip invalid format
+    }
+
+    const keyPath = condition.substring(0, lastUnderscoreIndex);
+    const conditionValue = condition.substring(lastUnderscoreIndex + 1);
+
+    // Find the operator in the conditionValue part
+    const operator = Object.keys(operators).find((op) =>
+      conditionValue.startsWith(op)
+    );
+    if (!operator) {
+      continue; // Skip if no valid operator is found
+    }
+
+    // Extract the numerical value from the conditionValue part
+    const value = parseFloat(conditionValue.substring(operator.length));
+    if (isNaN(value)) {
+      continue; // Skip if the value is not a valid number
+    }
+
+    // Split the key path into nested keys (e.g., 'humidity.value' => ['humidity', 'value'])
+    const keys = keyPath.split(".");
+
+    // Build the nested object structure
+    let currentLevel = filter;
+    keys.forEach((key, index) => {
+      if (index === keys.length - 1) {
+        // If it's the last key, assign the Prisma condition
+        currentLevel[key] = { [operators[operator]]: value };
+      } else {
+        // Otherwise, create an empty object at this level if it doesn't exist
+        if (!currentLevel[key]) {
+          currentLevel[key] = {};
+        }
+        currentLevel = currentLevel[key];
+      }
+    });
+  }
+
+  return filter;
+}
+export function getPostfixValueFilterNumber(
+  input: string,
+  key: string
+): string | undefined {
+  // Split the input string by commas to get individual key-value pairs
+  const pairs = input.split(",");
+
+  // Iterate over each key-value pair
+  for (const pair of pairs) {
+    // Split the pair by the underscore to separate the key and value
+    const [pairKey, pairValue] = pair.split("_");
+
+    // Check if the current key matches the input key
+    if (pairKey === key) {
+      return pairValue; // Return the corresponding value if a match is found
+    }
+  }
+
+  // Return undefined if the key is not found
+  return undefined;
+}
+export const getArrayFilterNumber = (input: string) => {
+  return input
+    .split(",")
+    .map((value) => value.trim())
+    .filter((value) => value !== "")
+    .filter((value, index, self) => self.indexOf(value) === index); // Ensure uniqueness;
+};

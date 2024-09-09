@@ -5,12 +5,13 @@ import { useTranslations } from "next-intl";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/datatable/datatable-column-header";
-import { Unit } from "@prisma/client";
+import { Unit, UnitType } from "@prisma/client";
 import { UnitsTableAction } from "./units-table-action";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
 import { destroyMany } from "@/actions/unit";
 import { toast } from "sonner";
 import { UnitCreateButton } from "./unit-create-button";
+import { UnitSuperscript } from "../../../_components/unit-with-value";
 
 interface UnitsTableProps {
   data: Unit[];
@@ -51,6 +52,28 @@ export const UnitsTable = ({ data }: UnitsTableProps) => {
             title={t("table.thead.name")}
           />
         );
+      },
+      cell: ({ row }) => {
+        const data = row.original;
+        return <UnitSuperscript unit={data.name} />;
+      },
+    },
+    {
+      accessorKey: "type",
+      header: ({ column }) => {
+        return (
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.thead.type")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ row }) => {
+        const data = row.original;
+        return t(`schema.type.options.${data.type}`);
       },
     },
     {
@@ -94,7 +117,18 @@ export const UnitsTable = ({ data }: UnitsTableProps) => {
       },
     },
   ];
-
+  const facetedFilters = [
+    {
+      column: "type",
+      label: t("search.faceted.type.placeholder"),
+      options: Object.values(UnitType).map((item) => {
+        return {
+          label: t(`schema.type.options.${item}`),
+          value: item,
+        };
+      }),
+    },
+  ];
   return (
     <Card>
       <CardHeader>
@@ -107,12 +141,12 @@ export const UnitsTable = ({ data }: UnitsTableProps) => {
         <DataTable
           columns={columns}
           data={data}
-          filterColumn={{
-            isShown: true,
+          searchable={{
             value: "name",
             placeholder: t("search.placeholder"),
           }}
           bulkActions={bulkActions}
+          facetedFilters={facetedFilters}
         />
       </CardContent>
     </Card>

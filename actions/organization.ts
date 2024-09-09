@@ -12,7 +12,7 @@ import {
   updateOrganization,
   updateOrganizationLogo,
 } from "@/services/organizations";
-import { getStaffByEmail, getStaffByExternalId } from "@/services/staffs";
+import { getStaffByExternalId } from "@/services/staffs";
 import { ActionResponse, OrgRole } from "@/types";
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
@@ -29,7 +29,7 @@ export const create = async (
   if (!validatedFields.success) {
     return errorResponse(tSchema("errors.parse"));
   }
-  const { name, slug, createdBy } = validatedFields.data;
+  const { createdBy } = validatedFields.data;
 
   try {
     const existingOrg = await getOrganizationBySlug(validatedFields.data.slug);
@@ -44,9 +44,6 @@ export const create = async (
     const org = await createOrganization({
       ...validatedFields.data,
     });
-    if (!org) {
-      return errorResponse(tStatus("failure.create"));
-    }
 
     revalidatePath("/admin/organizations");
     return successResponse(tStatus("success.create"));
@@ -76,9 +73,7 @@ export const edit = async (
       validatedFields.data.name,
       validatedFields.data.slug
     );
-    if (!org) {
-      return errorResponse(tStatus("failure.edit"));
-    }
+
     revalidatePath(`/admin/organizations/detail/${org.id}`);
     return successResponse(tStatus("success.edit"));
   } catch (error) {
@@ -91,23 +86,19 @@ export const editLogo = async (
   userId: string,
   formData: FormData
 ): Promise<ActionResponse> => {
-  const t = await getTranslations("organizations.status");
+  const t = await getTranslations("organizations");
   const file = formData.get("file");
   if (!file) {
-    return errorResponse("existLogo");
+    return errorResponse("schema.errors.existLogo");
   }
 
   try {
     const org = await updateOrganizationLogo(orgId, userId, file as File);
 
-    if (!org) {
-      return errorResponse(t("failure.editLogo"));
-    }
-
     revalidatePath(`/admin/organizations/detail/${org.id}`);
-    return successResponse(t("success.editLogo"));
+    return successResponse(t("status.success.editLogo"));
   } catch (error) {
-    return errorResponse(t("failure.editLogo"));
+    return errorResponse(t("status.failure.editLogo"));
   }
 };
 
@@ -135,9 +126,7 @@ export const createMember = async (
       staff.externalId,
       validatedFields.data.role
     );
-    if (!member) {
-      return errorResponse(tStatus("failure.createMember"));
-    }
+
     revalidatePath(`/admin/organizations/detail/${member.organization.id}`);
     return successResponse(tStatus("success.createMember"));
   } catch (error) {
@@ -152,9 +141,7 @@ export const destroyMember = async (
   const tStatus = await getTranslations("organizations.status");
   try {
     const orgMember = await deleteMemberOrganization(userId, orgId);
-    if (!orgMember) {
-      return errorResponse(tStatus("failure.destroyMember"));
-    }
+
     revalidatePath(`/admin/organizations/detail/${orgMember.organization.id}`);
     return successResponse(tStatus("success.destroyMember"));
   } catch (error) {
@@ -165,9 +152,7 @@ export const destroy = async (orgId: string): Promise<ActionResponse> => {
   const tStatus = await getTranslations("organizations.status");
   try {
     const org = await deleteOrganization(orgId);
-    if (!org) {
-      return errorResponse(tStatus("failure.destroy"));
-    }
+
     revalidatePath("/admin/organizations");
     return successResponse(tStatus("success.destroy"));
   } catch (error) {
@@ -182,9 +167,7 @@ export const editMemberRole = async (
   const tStatus = await getTranslations("organizations.status");
   try {
     const orgMember = await updateMemberRoleOrganization(userId, orgId, role);
-    if (!orgMember) {
-      return errorResponse(tStatus("failure.editMemberRole"));
-    }
+
     revalidatePath(`/admin/organizations/detail/${orgMember.organization.id}`);
     return successResponse(tStatus("success.editMemberRole"));
   } catch (error) {

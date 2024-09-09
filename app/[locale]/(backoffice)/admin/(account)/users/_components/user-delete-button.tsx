@@ -4,8 +4,6 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "@/navigation";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
 
-import { useSignUp } from "@clerk/nextjs";
-
 import { User } from "@clerk/nextjs/server";
 
 import { Trash } from "lucide-react";

@@ -112,8 +112,7 @@ export const CategoriesTable = ({ data }: CategoriesTableProps) => {
         <DataTable
           columns={columns}
           data={data}
-          filterColumn={{
-            isShown: true,
+          searchable={{
             value: "name",
             placeholder: t("search.placeholder"),
           }}

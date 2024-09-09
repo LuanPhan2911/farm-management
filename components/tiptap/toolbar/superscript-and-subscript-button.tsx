@@ -1,7 +1,7 @@
 import {
   ToggleButton,
   ToggleGroupButton,
-} from "@/components/toggle-group-button";
+} from "@/components/buttons/toggle-group-button";
 import { useEditorAttribute } from "@/stores/use-editor-attribute";
 import { Subscript, Superscript } from "lucide-react";
 import { useTranslations } from "next-intl";

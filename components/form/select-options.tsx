@@ -7,30 +7,30 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 export type SelectData = {
-  option: string;
+  value: string;
   label: string;
 };
 interface SelectOptionsProps {
   label: string;
-  value: string | undefined;
+  defaultValue?: string;
   options: SelectData[];
   onChange: (value: string) => void;
   disabled?: boolean;
 }
 export const SelectOptions = ({
   onChange,
-  value,
+  defaultValue,
   options,
   label,
   disabled,
 }: SelectOptionsProps) => {
   const handleChange = (currentValue: string) => {
-    onChange(currentValue === value ? "" : currentValue);
+    onChange(currentValue === defaultValue ? "" : currentValue);
   };
   return (
     <Select
       onValueChange={handleChange}
-      defaultValue={value}
+      defaultValue={defaultValue}
       disabled={disabled}
     >
       <SelectTrigger>
@@ -38,9 +38,9 @@ export const SelectOptions = ({
       </SelectTrigger>
 
       <SelectContent>
-        {options.map(({ label, option }) => {
+        {options.map(({ label, value }) => {
           return (
-            <SelectItem key={option} value={option}>
+            <SelectItem key={value} value={value}>
               {label}
             </SelectItem>
           );

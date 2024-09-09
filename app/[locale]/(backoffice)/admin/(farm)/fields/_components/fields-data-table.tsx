@@ -2,13 +2,13 @@
 import { DataTable } from "@/components/datatable";
 import { DataTableColumnHeader } from "@/components/datatable/datatable-column-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Field, Unit } from "@prisma/client";
 import { Checkbox } from "@radix-ui/react-checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
 import { FieldCreateButton } from "./field-create-button";
 import { FieldWithUnit } from "@/types";
 import { FieldsTableAction } from "./fields-table-action";
+import { UnitWithValue } from "../../../_components/unit-with-value";
 
 interface FieldsDataTableProps {
   data: FieldWithUnit[];
@@ -52,43 +52,59 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
 
     {
       accessorKey: "location",
-      header: t("table.thead.location"),
-    },
-    {
-      accessorKey: "height",
-      header: t("table.thead.height"),
-      cell: ({ row }) => {
-        const data = row.original;
+      header: ({ column }) => {
         return (
-          <span>
-            {data.height}({data.unit?.name})
-          </span>
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.thead.location")}
+          />
         );
       },
     },
     {
       accessorKey: "height",
-      header: t("table.thead.width"),
+      header: ({ column }) => {
+        return (
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.thead.height")}
+          />
+        );
+      },
       cell: ({ row }) => {
         const data = row.original;
+        return <UnitWithValue value={data.height} unit={data.unit?.name} />;
+      },
+    },
+    {
+      accessorKey: "width",
+      header: ({ column }) => {
         return (
-          <span>
-            {data.width}({data.unit?.name})
-          </span>
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.thead.width")}
+          />
         );
+      },
+      cell: ({ row }) => {
+        const data = row.original;
+        return <UnitWithValue value={data.width} unit={data.unit?.name} />;
       },
     },
     {
       accessorKey: "area",
-      header: t("table.thead.area"),
+      header: ({ column }) => {
+        return (
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.thead.area")}
+          />
+        );
+      },
       cell: ({ row }) => {
         const data = row.original;
-        return (
-          <span>
-            {data.area}({data.unit?.name}
-            <sup>2</sup>)
-          </span>
-        );
+        const unit = data.unit?.name ? `${data.unit.name}2` : "";
+        return <UnitWithValue value={data.area} unit={unit} />;
       },
     },
     {
@@ -102,7 +118,7 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("table.heading")}</CardTitle>
+        <CardTitle>{t("page.title")}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex justify-end">
@@ -111,8 +127,7 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
         <DataTable
           columns={columns}
           data={data}
-          filterColumn={{
-            isShown: true,
+          searchable={{
             value: "name",
             placeholder: t("search.placeholder"),
           }}

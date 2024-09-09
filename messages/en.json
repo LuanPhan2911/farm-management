@@ -12,8 +12,8 @@
     },
     "sort": {
       "label": "Sort",
-      "asc": "ASC",
-      "desc": "DESC"
+      "asc": "Ascending",
+      "desc": "Descending"
     },
     "pagination": {
       "rowSelected": "{selectedRow} of {allRow} row(s) selected",
@@ -59,7 +59,10 @@
     }
   },
   "dashboard": {
-    "title": "Dashboard Overview",
+    "page": {
+      "title": "Dashboard Overview"
+    },
+
     "userButton": "Profile",
     "notification": {
       "title": "Notification",
@@ -133,15 +136,20 @@
     "page": {
       "title": "Manage Units"
     },
-
     "table": {
       "thead": {
         "name": "Name",
-        "description": "Description"
+        "description": "Description",
+        "type": "Type"
       }
     },
     "search": {
-      "placeholder": "Filter by unit name..."
+      "placeholder": "Filter by unit name...",
+      "faceted": {
+        "type": {
+          "placeholder": "Select type..."
+        }
+      }
     },
     "form": {
       "create": {
@@ -152,12 +160,12 @@
       "edit": {
         "label": "Edit",
         "title": "Edit unit",
-        "description": "Unit can edit"
+        "description": "Be careful when editing unit type. That may affect other data!"
       },
       "destroy": {
         "label": "Delete",
         "title": "Delete unit?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "Are you absolutely sure? This action can not be undone! If unit in use, you cannot to delete."
       },
       "destroySelected": {
         "label": "Delete all selected",
@@ -174,6 +182,23 @@
         "max": "Unit name's length must be less than 50 characters",
         "label": "Name",
         "placeholder": "Unit name"
+      },
+      "type": {
+        "label": "Type of unit",
+        "placeholder": "Select type...",
+        "enum": "Please select type in list",
+        "options": {
+          "AREA": "Area",
+          "QUANTITY": "Quantity",
+          "TEMPERATURE": "Temperature",
+          "ATMOSPHERICPRESSURE": "Atmospheric pressure",
+          "RAINFALL": "Rainfall",
+          "PERCENT": "Percent",
+          "WEIGHT": "Weight",
+          "LENGTH": "Length",
+          "VOLUME": "Volume",
+          "NUTRIENT": "Nutrient"
+        }
       },
       "description": {
         "min": "Unit description is required!",
@@ -207,16 +232,28 @@
       "title": "All users",
       "thead": {
         "name": "User",
-        "lastSignedIn": "Last Signed In",
-        "joined": "Joined at"
+        "lastSignedInAt": "Last signed in at",
+        "lastActiveAt": "Last active at",
+        "joinedAt": "Joined at"
       },
       "trow": {
-        "name": "No filled name",
-        "lastSignedIn": "Never signed"
+        "name": "No filled",
+        "lastSignedInAt": "Never signed in",
+        "lastActiveAt": "Never active"
       }
     },
     "search": {
-      "placeholder": "Filter by user name..."
+      "placeholder": "Filter by user name...",
+      "sortByDropdown": {
+        "label": "Sort by: ",
+        "placeholder": "Select sort by...",
+        "options": {
+          "email": "Email",
+          "createdAt": "Created at",
+          "lastSignInAt": "Last sign in at",
+          "lastActiveAt": "Last active at"
+        }
+      }
     },
     "form": {
       "create": {
@@ -250,27 +287,32 @@
       "firstName": {
         "label": "First name",
         "placeholder": "First name",
-        "min": "First name is required!"
+        "min": "First name is required!",
+        "max": "First name's length must be less than 100 characters"
       },
       "lastName": {
         "label": "Last name",
         "placeholder": "Last name",
-        "min": "Last name is required!"
+        "min": "Last name is required!",
+        "max": "Last name's length must be less than 100 characters"
       },
       "email": {
         "min": "Email is required!",
         "isEmail": "Email is invalid!",
         "label": "Email",
-        "placeholder": "Email"
+        "placeholder": "Email",
+        "max": "Email's length must be less than 100 characters"
       },
       "phone": {
         "min": "Phone number is required!",
+        "max": "Phone number must be less than 15 number",
         "label": "Phone",
         "placeholder": "Phone",
         "isPhone": "Phone number is invalid"
       },
       "address": {
         "min": "Address is required!",
+        "max": "Address's length must be less than 100 characters",
         "label": "Address",
         "placeholder": "Address"
       }
@@ -309,14 +351,41 @@
         "name": "Name",
         "slug": "Slug",
         "memberCount": "Member count",
-        "createdAt": "Create at",
-        "role": "Role"
+        "createdAt": "Create at"
+      },
+      "member": {
+        "thead": {
+          "firstName": "First name",
+          "lastName": "Last name",
+          "email": "Email",
+          "createdAt": "Create at",
+          "role": "Role"
+        }
       }
     },
     "search": {
       "placeholder": "Filter by organization name...",
       "member": {
-        "placeholder": "Search by name..."
+        "placeholder": "Search by name...",
+        "sortByDropdown": {
+          "label": "Sort by: ",
+          "placeholder": "Select sort by...",
+          "options": {
+            "createdAt": "Create at",
+            "email": "Email",
+            "firstName": "First name",
+            "lastName": "Last name"
+          }
+        }
+      },
+      "sortByDropdown": {
+        "label": "Sort by: ",
+        "placeholder": "Select sort by...",
+        "options": {
+          "createdAt": "Create at",
+          "name": "Name",
+          "membersCount": "Member count"
+        }
       }
     },
     "form": {
@@ -344,6 +413,19 @@
         "label": "Delete all selected",
         "title": "Delete all selected organizations?",
         "description": "Are you absolutely sure? This action can not be undone!"
+      },
+      "viewProfile": {
+        "label": "View profile"
+      },
+      "destroyMember": {
+        "label": "Remove member",
+        "title": "Remove member?",
+        "description": "Remove member from organizations. This action can not be undone!"
+      },
+      "editMemberRole": {
+        "label": "Edit role",
+        "title": "Edit member role",
+        "description": "Update role for member in organization."
       }
     },
     "schema": {
@@ -372,8 +454,10 @@
       "createdBy": {
         "min": "Create by is required!",
         "label": "Create by",
-        "placeholder": "Select created by",
-        "notFound": "Staff not found"
+        "placeholder": "Select created by...",
+        "error": "Something went wrong went load created by!",
+        "notFound": "Staff not found",
+        "max": "Created by id's length must be less than 100 characters"
       },
       "createdAt": {
         "label": "Created at"
@@ -384,28 +468,40 @@
 
       "memberId": {
         "min": "Member email is required!",
-        "placeholder": "Select member email...",
+        "placeholder": "Select member...",
         "notFound": "Member email not found",
-        "label": "Member email"
+        "error": "Something went wrong went load member!",
+        "label": "Member"
       },
       "role": {
         "label": "Role",
         "placeholder": "Select role",
-        "min": "Role is required"
+        "min": "Role is required",
+        "enum": "Please select role in list",
+        "options": {
+          "admin": "Admin",
+          "member": "Member"
+        }
       }
     },
     "status": {
       "success": {
         "create": "Organization created!",
-        "createMember": "Member added",
         "edit": "Organization edited!",
-        "destroy": "Organization deleted!"
+        "destroy": "Organization deleted!",
+        "editLogo": "Organization logo updated!",
+        "createMember": "Member added",
+        "destroyMember": "Member deleted!",
+        "editMemberRole": "Member role edited"
       },
       "failure": {
         "create": "Something went wrong while creating organization!",
-        "createMember": "Something went wrong while adding member to organization!",
         "edit": "Something went wrong while editing organization!",
-        "destroy": "Something went wrong while deleting organization!"
+        "destroy": "Something went wrong while deleting organization!",
+        "editLogo": "Something went wrong while editing organization logo",
+        "createMember": "Something went wrong while adding member to organization!",
+        "destroyMember": "Something went wrong while deleting member",
+        "editMemberRole": "Something went wrong while editing member role"
       }
     }
   },
@@ -422,22 +518,33 @@
       "thead": {
         "name": "Staff",
         "role": "Role",
-        "lastSignedIn": "Last Signed In",
-        "joined": "Joined at"
+        "lastSignedInAt": "Last signed in",
+        "lastActiveAt": "Last active at",
+        "joinedAt": "Joined at"
       },
       "trow": {
-        "name": "No filled name",
-        "lastSignedIn": "Never signed"
+        "lastActiveAt": "Never active",
+        "lastSignedInAt": "Never signed"
       }
     },
     "search": {
-      "placeholder": "Filter by staff name..."
+      "placeholder": "Filter by staff name...",
+      "sortByDropdown": {
+        "label": "Sort by: ",
+        "placeholder": "Select sort by...",
+        "options": {
+          "email": "Email",
+          "createdAt": "Created at",
+          "lastSignInAt": "Last sign in at",
+          "lastActiveAt": "Last active at"
+        }
+      }
     },
     "form": {
       "create": {
         "label": "Add",
         "title": "Add staff",
-        "description": "Staff use for "
+        "description": "Create a new staff"
       },
       "edit": {
         "label": "Edit",
@@ -451,13 +558,14 @@
       },
       "editRole": {
         "label": "Edit role",
-        "title": "Update role for staff",
-        "description": "Update role"
+        "title": "Update role",
+        "description": "Update role for staff"
       }
     },
     "schema": {
       "errors": {
-        "parse": "Invalid fields!"
+        "parse": "Invalid fields!",
+        "exist": "Staff email address is in use"
       },
       "id": {
         "label": "Id"
@@ -504,11 +612,13 @@
     },
     "status": {
       "success": {
+        "create": "Staff created!",
         "edit": "Staff edited!",
         "destroy": "Staff deleted!",
         "editRole": "Staff role edited"
       },
       "failure": {
+        "create": "Something went wrong while creating staff!",
         "edit": "Something went wrong while editing staff!",
         "destroy": "Something went wrong while deleting staff!",
         "editRole": "Something went wrong while editing staff role"
@@ -526,14 +636,21 @@
         "email": "Email",
         "address": "Address",
         "phone": "Phone number",
+        "note": "Note",
         "status": "Status"
+      },
+      "trow": {
+        "note": "..."
       }
     },
     "search": {
       "placeholder": "Filter by applicant name...",
       "comboBox": {
-        "notFound": "Job's not found",
-        "label": "Select job..."
+        "job": {
+          "notFound": "Job's not found",
+          "label": "Select job...",
+          "error": "Something went wrong went load jobs"
+        }
       }
     },
     "form": {
@@ -603,7 +720,6 @@
       "success": {
         "create": "Apply this job success",
         "destroy": "Applicant deleted!",
-
         "createStaff": "Create staff success"
       },
       "failure": {
@@ -622,22 +738,28 @@
       },
       "edit": {
         "title": "Edit job",
-        "description": "Job can edit"
+        "description": "Update job information"
       }
     },
 
     "table": {
       "thead": {
-        "name": "Name",
+        "name": "Job name",
         "quantity": "Quantity",
         "gender": "Gender",
         "experience": "Experience",
         "published": "Published",
-        "expiredAt": "Expired date"
+        "expiredAt": "ExpiredAt",
+        "status": "Status"
       }
     },
     "search": {
-      "placeholder": "Filter by job name..."
+      "placeholder": "Filter by job name...",
+      "faceted": {
+        "experience": {
+          "placeholder": "Select experience..."
+        }
+      }
     },
     "form": {
       "create": {
@@ -692,7 +814,7 @@
       "expiredAt": {
         "label": "Expired Date Apply",
         "placeholder": "Expired date apply",
-        "min": "Today is expired date minimize value"
+        "min": "Expired date must be at least today"
       },
       "gender": {
         "label": "Gender",
@@ -779,6 +901,462 @@
       }
     }
   },
+  "fields": {
+    "page": {
+      "title": "Manage fields"
+    },
+    "table": {
+      "thead": {
+        "name": "Name",
+        "location": "Location",
+        "height": "Height",
+        "width": "Width",
+        "area": "Area"
+      }
+    },
+    "tabs": {
+      "info": {
+        "label": "Info",
+        "title": "Info",
+        "description": "Information of field"
+      },
+      "crops": {
+        "label": "Crops",
+        "title": "Crops",
+        "description": "Crops of field"
+      },
+      "weathers": {
+        "label": "Weathers",
+        "title": "Weathers",
+        "description": "Weathers of field"
+      },
+      "soils": {
+        "label": "Soils",
+        "title": "Soils",
+        "description": "Soils of field"
+      },
+      "danger": {
+        "label": "Danger",
+        "title": "Danger",
+        "description": "Danger of field"
+      }
+    },
+    "search": {
+      "placeholder": "Filter by field name..."
+    },
+    "form": {
+      "viewDetail": {
+        "label": "View detail",
+        "title": "View detail",
+        "description": ""
+      },
+      "create": {
+        "label": "Add",
+        "title": "Add field",
+        "description": ""
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit field",
+        "description": "Field can edit"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete field?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      },
+      "destroySelected": {
+        "label": "Delete all selected",
+        "title": "Delete all selected fields?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid fields!"
+      },
+      "name": {
+        "min": "Field name is required!",
+        "max": "Field name's length must be less than 100 characters",
+        "label": "Name",
+        "placeholder": "Field name"
+      },
+      "location": {
+        "min": "Field location is required!",
+        "max": "Field location's length must be less than 100 characters",
+        "label": "Location",
+        "placeholder": "Field location"
+      },
+      "orgId": {
+        "label": "Organization",
+        "placeholder": "Select organization...",
+        "required_error": "Organization is required",
+        "error": "Something went wrong went load organizations",
+        "notFound": "Organization not found"
+      },
+      "width": {
+        "label": "Width",
+        "placeholder": "Width of field",
+        "required_error": "Width is required",
+        "invalid_type": "Width value must be number",
+        "min": "Width value must be positive number"
+      },
+      "height": {
+        "label": "Height",
+        "placeholder": "Height of field",
+        "required_error": "Height is required",
+        "invalid_type": "Height value must be number",
+        "min": "Height value must be positive number"
+      },
+      "area": {
+        "label": "Area",
+        "placeholder": "Area of field",
+        "required_error": "Area is required",
+        "invalid_type": "Area value must be number",
+        "min": "Area value must be positive number"
+      },
+      "unitId": {
+        "label": "Unit",
+        "placeholder": "Select unit...",
+        "required_error": "Unit is required",
+        "error": "Something went wrong went load units",
+        "notFound": "Units not found"
+      },
+      "shape": {
+        "label": "Shape",
+        "placeholder": "Shape of field",
+        "min": "Shape must be more than 1 character",
+        "max": "Shape must be less than 100 characters"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Field created!",
+        "edit": "Field edited!",
+        "destroy": "Field deleted!"
+      },
+      "failure": {
+        "create": "Something went wrong while creating field!",
+        "edit": "Something went wrong while editing field!",
+        "destroy": "Something went wrong while deleting field!"
+      }
+    }
+  },
+  "weathers": {
+    "page": {
+      "title": "Manage weathers"
+    },
+    "table": {
+      "thead": {
+        "createdAt": "CreateAt",
+        "status": "Status",
+        "temperature": "Temperature",
+        "humidity": "Humidity",
+        "atmosphericPressure": "Atmospheric Pressure",
+        "rainfall": "Rainfall",
+        "confirmed": "Confirmed",
+        "confirmedAt": "ConfirmedAt",
+        "confirmedBy": "ConfirmedBy"
+      },
+      "trow": {
+        "confirmedAt": "No confirmed",
+        "confirmedBy": "No confirmed"
+      }
+    },
+    "search": {
+      "faceted": {
+        "status": {
+          "placeholder": "Status",
+          "error": "Something went wrong went load weather status"
+        },
+        "temperature": {
+          "placeholder": "Temperature"
+        },
+        "humidity": {
+          "placeholder": "Humidity"
+        },
+        "rainfall": {
+          "placeholder": "Rainfall"
+        }
+      }
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add weather",
+        "description": "Add weather to fields"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit weather",
+        "description": "Update weather"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete weather?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      },
+
+      "editConfirmed": {
+        "label": "Edit confirmed",
+        "title": "Confirm weather?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid weathers!"
+      },
+      "temperature": {
+        "unitId": {
+          "required_error": "Required unit",
+          "placeholder": "Unit",
+          "error": "Something went wrong went load units",
+          "notFound": "Units not found",
+          "label": "Unit"
+        },
+        "value": {
+          "required_error": "Temperature value is required",
+          "invalid_type": "Temperature value must be number",
+          "min": "Min temperature value is -20",
+          "max": "Max temperature value is 50"
+        },
+        "label": "Temperature",
+        "placeholder": "Temperature"
+      },
+      "humidity": {
+        "unitId": {
+          "required_error": "Required unit",
+          "placeholder": "Unit",
+          "label": "Unit",
+          "error": "Something went wrong went load units",
+          "notFound": "Units not found"
+        },
+        "value": {
+          "required_error": "Humidity value is required",
+          "invalid_type": "Humidity value must be number",
+          "min": "Min humidity value is 0",
+          "max": "Max humidity value is 100",
+          "int": "Humidity value must be integer number"
+        },
+        "label": "Humidity",
+        "placeholder": "Humidity"
+      },
+      "atmosphericPressure": {
+        "unitId": {
+          "required_error": "Required unit",
+          "placeholder": "Unit",
+          "label": "Unit",
+          "error": "Something went wrong went load units",
+          "notFound": "Units not found"
+        },
+        "value": {
+          "required_error": "Atmospheric pressure value is required",
+          "invalid_type": "Atmospheric pressure value must be number",
+          "min": "Min Atmospheric pressure value is 870",
+          "max": "Max Atmospheric pressure value is 1084"
+        },
+        "label": "Atmospheric pressure",
+        "placeholder": "Atmospheric pressure"
+      },
+      "rainfall": {
+        "unitId": {
+          "required_error": "Required unit",
+          "placeholder": "Unit",
+          "label": "Unit",
+          "error": "Something went wrong went load units",
+          "notFound": "Units not found"
+        },
+        "value": {
+          "required_error": "Rainfall value is required",
+          "invalid_type": "Rainfall value must be number",
+          "min": "Min Rainfall value is 0",
+          "max": "Max Rainfall value is 100",
+          "int": "Rainfall value must be integer number"
+        },
+        "label": "Rainfall",
+        "placeholder": "Rainfall"
+      },
+      "status": {
+        "label": "Status",
+        "placeholder": "Weather status",
+        "enum": "Please select status in list",
+        "options": {
+          "SUNNY": "Sunny",
+          "CLOUDY": "Cloudy",
+          "RAINY": "Rainy",
+          "FOGGY": "Foggy",
+          "SNOWY": "Snowy",
+          "WINDY": "Windy",
+          "STORMY": "Stormy"
+        }
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Weather created!",
+        "edit": "Weather edited!",
+        "destroy": "Weather deleted!",
+        "editConfirmed": "Weather confirmed"
+      },
+      "failure": {
+        "create": "Something went wrong while creating weather!",
+        "edit": "Something went wrong while editing weather!",
+        "destroy": "Something went wrong while deleting weather!",
+        "editConfirmed": "Something went wrong whiling confirming weather"
+      }
+    }
+  },
+  "soils": {
+    "page": {
+      "title": "Manage soils"
+    },
+    "table": {
+      "thead": {
+        "createdAt": "CreateAt",
+        "ph": "PH",
+        "moisture": "Moisture",
+        "type": "Type",
+        "nutrientNitrogen": "Nutrient nitrogen",
+        "nutrientPhosphorus": "Nutrient phosphorus",
+        "nutrientPotassium": "Nutrient potassium",
+        "confirmed": "Confirmed",
+        "confirmedAt": "ConfirmedAt",
+        "confirmedBy": "ConfirmedBy"
+      },
+      "trow": {
+        "confirmedAt": "No confirmed",
+        "confirmedBy": "No confirmed"
+      }
+    },
+    "search": {
+      "faceted": {
+        "type": {
+          "placeholder": "Select type",
+          "error": "Something went wrong went load soil count type"
+        },
+        "nutrientNitrogen": {
+          "placeholder": "Nitrogen"
+        },
+        "nutrientPhosphorus": {
+          "placeholder": "Phosphorus"
+        },
+        "nutrientPotassium": {
+          "placeholder": "Potassium"
+        }
+      }
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add soil",
+        "description": "Add soil to fields"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit soil",
+        "description": "Update soil"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete soil?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      },
+
+      "editConfirmed": {
+        "label": "Edit confirmed",
+        "title": "Confirm soil?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid soils!"
+      },
+      "ph": {
+        "label": "PH",
+        "placeholder": "PH",
+        "required_error": "PH value is required",
+        "invalid_type": "PH value must be number",
+        "min": "PH value minimum is 0",
+        "max": "PH value maximum is 14"
+      },
+      "moisture": {
+        "unitId": {
+          "required_error": "Required unit",
+          "placeholder": "Unit",
+          "label": "Unit",
+          "error": "Something went wrong went load units",
+          "notFound": "Units not found"
+        },
+        "value": {
+          "required_error": "Moisture value is required",
+          "invalid_type": "Moisture value must be number",
+          "min": "Min Moisture value is 0",
+          "max": "Max Moisture value is 60",
+          "int": "Moisture value must be integer number"
+        },
+        "label": "Moisture",
+        "placeholder": "Moisture"
+      },
+      "type": {
+        "label": "Type",
+        "placeholder": "Soil type",
+        "enum": "Please select type in list",
+        "options": {
+          "SAND": "Sand",
+          "CLAY": "Clay",
+          "ALLUVIUM": "Alluvium",
+          "LOAM": "Loam"
+        }
+      },
+      "nutrientPhosphorus": {
+        "label": "Nutrient Phosphorus",
+        "placeholder": "Nutrient Phosphorus",
+        "required_error": "Nutrient Phosphorus value is required",
+        "invalid_type": "Nutrient Phosphorus value must be number",
+        "min": "Nutrient Phosphorus value minimum is 0",
+        "max": "Nutrient Phosphorus value maximum is 5"
+      },
+      "nutrientPotassium": {
+        "label": "Nutrient Potassium",
+        "placeholder": "Nutrient Potassium",
+        "required_error": "Nutrient Potassium value is required",
+        "invalid_type": "Nutrient Potassium value must be number",
+        "min": "Nutrient Potassium value minimum is 0",
+        "max": "Nutrient Potassium value maximum is 8"
+      },
+      "nutrientNitrogen": {
+        "label": "Nutrient Nitrogen",
+        "placeholder": "Nutrient Nitrogen",
+        "required_error": "Nutrient Nitrogen value is required",
+        "invalid_type": "Nutrient Nitrogen value must be number",
+        "min": "Nutrient Nitrogen value minimum is 0",
+        "max": "Nutrient Nitrogen value maximum is 10"
+      },
+      "nutrientUnitId": {
+        "label": "Nutrient unit",
+        "placeholder": "Select unit...",
+        "required_error": "Nutrient unit is required",
+        "error": "Something went wrong went load units",
+        "notFound": "Units not found"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Soil created!",
+        "edit": "Soil edited!",
+        "destroy": "Soil deleted!",
+        "editConfirmed": "Soil confirmed"
+      },
+      "failure": {
+        "create": "Something went wrong while creating soil!",
+        "edit": "Something went wrong while editing soil!",
+        "destroy": "Something went wrong while deleting soil!",
+        "editConfirmed": "Something went wrong whiling confirming soil"
+      }
+    }
+  },
   "errors": {
     "error": "Something went wrong!"
   },
@@ -797,6 +1375,12 @@
     "/admin/staffs": "Staff",
     "/admin/staffs/detail": "Detail",
     "/admin/organizations": "Organization",
-    "/admin/organizations/detail": "Detail"
+    "/admin/organizations/detail": "Detail",
+    "/admin/fields": "Field",
+    "/admin/fields/create": "Create",
+    "/admin/fields/detail": "Detail",
+    "/admin/fields/detail/danger": "Danger",
+    "/admin/fields/detail/weathers": "Weathers",
+    "/admin/fields/detail/soils": "Soils"
   }
 }

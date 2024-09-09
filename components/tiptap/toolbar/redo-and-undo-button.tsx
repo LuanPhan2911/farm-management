@@ -17,7 +17,7 @@ export const RedoAndUndoButton = ({
     <div className="flex gap-x-1">
       <Hint asChild label={tHistory("undo")}>
         <Button
-          size={"icon"}
+          size={"sm"}
           variant={"outline"}
           onClick={() => editor.chain().focus().undo().run()}
           type="button"
@@ -29,7 +29,7 @@ export const RedoAndUndoButton = ({
       </Hint>
       <Hint asChild label={tHistory("redo")}>
         <Button
-          size={"icon"}
+          size={"sm"}
           variant={"outline"}
           onClick={() => editor.chain().focus().redo().run()}
           type="button"

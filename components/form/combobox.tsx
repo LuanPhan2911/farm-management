@@ -1,7 +1,11 @@
 "use client";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { Button } from "./ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Command,
   CommandEmpty,
@@ -9,7 +13,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "./ui/command";
+} from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 export interface ComboBoxData {
@@ -43,9 +47,7 @@ export const ComboBox = ({
           className="w-[260px] justify-between"
         >
           <p className="h-full w-[240px] truncate">
-            {value
-              ? data.find((item) => item.value === value)?.label
-              : "Select jobs"}
+            {value ? data.find((item) => item.value === value)?.label : label}
           </p>
 
           <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />

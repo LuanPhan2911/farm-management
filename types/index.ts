@@ -1,9 +1,16 @@
 import {
   Field,
+  FloatUnit,
   Gender,
+  IntUnit,
   JobExperience,
   JobWorkingState,
+  Soil,
+  SoilType,
+  Staff,
   Unit,
+  Weather,
+  WeatherStatus,
 } from "@prisma/client";
 
 export type OrgRole = "org:member" | "org:admin";
@@ -16,7 +23,7 @@ export type PaginatedResponse<T> = {
   data: T[];
   totalPage: number;
 };
-export type BreadCrumb = {
+export type Breadcrumb = {
   label: string;
   href?: string;
 };
@@ -52,4 +59,47 @@ export type UnitSelect = {
 
 export type FieldWithUnit = Field & {
   unit: Unit | null;
+};
+
+export type WeatherTable = Weather & {
+  confirmedBy: Staff | null;
+  temperature: FloatUnit & {
+    unit: {
+      name: string;
+    };
+  };
+  humidity: IntUnit & {
+    unit: {
+      name: string;
+    };
+  };
+  atmosphericPressure: FloatUnit & {
+    unit: {
+      name: string;
+    };
+  };
+  rainfall: IntUnit & {
+    unit: {
+      name: string;
+    };
+  };
+};
+export type WeatherStatusCount = {
+  status: WeatherStatus;
+  _count: number;
+};
+export type SoilTypeCount = {
+  type: SoilType;
+  _count: number;
+};
+export type SoilTable = Soil & {
+  confirmedBy: Staff | null;
+  moisture: IntUnit & {
+    unit: {
+      name: string;
+    };
+  };
+  nutrientUnit: {
+    name: string;
+  };
 };

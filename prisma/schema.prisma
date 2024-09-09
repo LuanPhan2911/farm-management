@@ -17,9 +17,24 @@ model Unit {
   id          String      @id @default(uuid())
   name        String      @unique
   description String?
-  floatUnit   FloatUnit[]
-  intUnit     IntUnit[]
-  field       Field[]
+  type        UnitType?
+  floatUnits  FloatUnit[]
+  intUnits    IntUnit[]
+  fields      Field[]
+  soils       Soil[]
+}
+
+enum UnitType {
+  AREA
+  QUANTITY
+  TEMPERATURE
+  ATMOSPHERICPRESSURE
+  RAINFALL
+  PERCENT
+  WEIGHT
+  LENGTH
+  VOLUME
+  NUTRIENT
 }
 
 model FloatUnit {
@@ -29,6 +44,7 @@ model FloatUnit {
   unit   Unit   @relation(fields: [unitId], references: [id], onDelete: Cascade)
 
   tempuratureWeathers Weather[] @relation(name: "temperature")
+  atmosphericPressure Weather[] @relation(name: "atmosphericPressure")
 
   outputs  Crop[] @relation(name: "output")
   expenses Crop[] @relation(name: "expense")
@@ -119,6 +135,9 @@ model Staff {
   role       StaffRole
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
+
+  weatherConfirmations Weather[]
+  soilConfirmations    Soil[]
 }
 
 model Applicant {
@@ -131,7 +150,7 @@ model Applicant {
   note    String?
 
   jobId String
-  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  job   Job    @relation(fields: [jobId], references: [id])
 
   status ApplicantStatus @default(NEW)
 
@@ -141,6 +160,16 @@ model Applicant {
   @@unique([email, jobId])
 }
 
+enum WeatherStatus {
+  SUNNY
+  CLOUDY
+  RAINY
+  FOGGY
+  SNOWY
+  WINDY
+  STORMY
+}
+
 model Weather {
   id String @id @default(uuid())
 
@@ -148,36 +177,58 @@ model Weather {
   temperature   FloatUnit @relation(name: "temperature", fields: [temperatureId], references: [id])
 
   humidityId String
-  humidtidy  IntUnit @relation(name: "humidity", fields: [humidityId], references: [id])
+  humidity   IntUnit @relation(name: "humidity", fields: [humidityId], references: [id])
+
+  atmosphericPressureId String
+  atmosphericPressure   FloatUnit @relation(name: "atmosphericPressure", fields: [atmosphericPressureId], references: [id])
 
   rainfallId String
   rainfall   IntUnit @relation(name: "rainfall", fields: [rainfallId], references: [id])
 
+  status WeatherStatus
+
   fieldId String
   field   Field  @relation(fields: [fieldId], references: [id])
 
-  confirmed   Boolean @default(false)
-  confimrerId String
+  confirmed     Boolean   @default(false)
+  confirmedAt   DateTime?
+  confirmedById String?
+  confirmedBy   Staff?    @relation(fields: [confirmedById], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
+enum SoilType {
+  SAND
+  CLAY
+  ALLUVIUM
+  LOAM
+}
+
 model Soil {
   id String @id @default(uuid())
 
-  ph Float
-
+  ph         Float
   moistureId String
-  moisture   IntUnit @relation("moisture", fields: [moistureId], references: [id])
+  moisture   IntUnit  @relation("moisture", fields: [moistureId], references: [id])
+  type       SoilType
 
-  fieldId String
-  field   Field  @relation(fields: [fieldId], references: [id])
+  nutrientNitrogen   Float
+  nutrientPhosphorus Float
+  nutrientPotassium  Float
+  nutrientUnitId     String
+  nutrientUnit       Unit   @relation(fields: [nutrientUnitId], references: [id])
+  fieldId            String
 
-  confirmed   Boolean  @default(false)
-  confimrerId String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  field Field @relation(fields: [fieldId], references: [id])
+
+  confirmed     Boolean   @default(false)
+  confirmedAt   DateTime?
+  confirmedById String?
+  confirmedBy   Staff?    @relation(fields: [confirmedById], references: [id])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
 model Field {

@@ -183,6 +183,11 @@
         "label": "Tên",
         "placeholder": "Tên đơn vị tính"
       },
+      "type": {
+        "label": "Loại đơn vị",
+        "placeholder": "Chọn loại đơn vị",
+        "enum": "Vui lòng chọn loại đơn vị trong danh sách"
+      },
       "description": {
         "min": "Mô tả đơn vị tính là trường bắt buộc!",
         "max": "Mô tả đơn vị tính có chiều dài tối đa là 100 ký tự",
@@ -766,6 +771,122 @@
       }
     }
   },
+  "fields": {
+    "page": {
+      "title": "Quản lý khu gieo trồng"
+    },
+    "table": {
+      "thead": {
+        "name": "Tên khu gieo trông",
+        "location": "Vị trí",
+        "height": "Chiều dài",
+        "width": "Chiều rộng",
+        "area": "Diện tích"
+      }
+    },
+    "search": {
+      "placeholder": "Lọc theo tên khu gieo trồng..."
+    },
+
+    "form": {
+      "viewDetail": {
+        "label": "Xem chi tiết",
+        "title": "Xem chi tiết",
+        "description": ""
+      },
+      "create": {
+        "label": "Thêm",
+        "title": "Thêm khu gieo trồng",
+        "description": "Thêm khu vực gieo trồng"
+      },
+      "edit": {
+        "label": "Sửa",
+        "title": "Sửa khu gieo trồng",
+        "description": "Khu gieo trồng có thể cập nhật"
+      },
+      "destroy": {
+        "label": "Xóa",
+        "title": "Xóa khu gieo trồng?",
+        "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
+      },
+      "destroySelected": {
+        "label": "Xóa tất cả đã chọn",
+        "title": "Xóa tất cả khu gieo trồng đã chọn?",
+        "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Dữ liệu không hợp lệ!"
+      },
+      "name": {
+        "min": "Tên khu vực giao trồng bắt buộc phải điền!",
+        "max": "Tên khu vực giao trồng phải ít hơn 100 ký tự",
+        "label": "Tên khu vực giao trồng",
+        "placeholder": "Tên khu vực gieo trồng"
+      },
+      "location": {
+        "min": "Vị trí khu vực giao trồng bắt buộc phải điền!",
+        "max": "Vị trí khu vực giao trồng phải ít hơn 100 ký tự",
+        "label": "Vị trí",
+        "placeholder": "Vị trí gieo trồng"
+      },
+      "orgId": {
+        "label": "Tổ chức",
+        "placeholder": "Chọn tổ chức...",
+        "required_error": "Tổ chức bắt buộc phải điền",
+        "error": "Có lỗi xảy ra trong khi lấy dữ liệu tổ chức",
+        "notFound": "Không tìm thấy tổ chức"
+      },
+      "width": {
+        "label": "Chiều rộng",
+        "placeholder": "Chiều rộng khu gieo trồng",
+        "required_error": "Chiều rộng khu gieo trồng bắt buộc phải điền",
+        "invalid_type": "Chiều rộng khu gieo trồng phải là số",
+        "min": "Chiều rộng khu gieo trồng phải là số dương"
+      },
+      "height": {
+        "label": "Chiều cao",
+        "placeholder": "Chiều cao khu gieo trồng",
+        "required_error": "Chiều cao khu gieo trồng bắt buộc phải điền",
+        "invalid_type": "Chiều cao khu gieo trồng phải là số",
+        "min": "Chiều cao khu gieo trồng phải là số dương"
+      },
+      "area": {
+        "label": "Chiều diện tích",
+        "placeholder": "Chiều diện tích khu gieo trồng",
+        "required_error": "Chiều diện tích khu gieo trồng bắt buộc phải điền",
+        "invalid_type": "Chiều diện tích khu gieo trồng phải là số",
+        "min": "Chiều diện tích khu gieo trồng phải là số dương"
+      },
+      "unitId": {
+        "label": "Đơn vị tính",
+        "placeholder": "Chọn đơn vị tính...",
+        "required_error": "Đơn vị tính bắt buộc phải chọn",
+        "error": "Có lỗi xảy ra trong khi lấy dữ liệu đơn vị tính",
+        "notFound": "Không tìm thấy đơn vị tính"
+      },
+      "shape": {
+        "label": "Hình dạng khu vực trồng",
+        "placeholder": "Hình dạng khu vực trồng",
+        "min": "Hình dạng khu vực trồng ít nhất 1 ký tự",
+        "max": "Hình dạng khu vực trồng nhiều nhất 100 ký tự"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Khu gieo trồng đã được tạo!",
+        "edit": "Khu gieo trồng đã được cập nhật!",
+        "destroy": "Khu gieo trồng đã được xóa!"
+      },
+      "failure": {
+        "create": "Có lỗi xảy ra trong khi tạo khu gieo trồng!",
+        "edit": "Có lỗi xảy ra trong khi cập nhật khu gieo trồng!",
+        "destroy": "Có lỗi xảy ra trong khi xóa khu gieo trồng!"
+      }
+    }
+  },
+
   "errors": {
     "error": "Có lỗi xảy ra với hệ thống!"
   },
@@ -784,6 +905,8 @@
     "/admin/staffs": "Nhân viên",
     "/admin/staffs/detail": "Chi tiết",
     "/admin/organizations": "Tổ chức",
-    "/admin/organizations/detail": "Chi tiết"
+    "/admin/organizations/detail": "Chi tiết",
+    "/admin/fields": "Khu gieo trồng",
+    "/admin/fields/create": "Thêm"
   }
 }
