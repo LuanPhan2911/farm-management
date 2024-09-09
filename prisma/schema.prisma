@@ -18,9 +18,10 @@ model Unit {
   name        String      @unique
   description String?
   type        UnitType?
-  floatUnit   FloatUnit[]
-  intUnit     IntUnit[]
-  field       Field[]
+  floatUnits  FloatUnit[]
+  intUnits    IntUnit[]
+  fields      Field[]
+  soils       Soil[]
 }
 
 enum UnitType {
@@ -33,6 +34,7 @@ enum UnitType {
   WEIGHT
   LENGTH
   VOLUME
+  NUTRIENT
 }
 
 model FloatUnit {
@@ -197,23 +199,36 @@ model Weather {
   updatedAt DateTime @updatedAt
 }
 
+enum SoilType {
+  SAND
+  CLAY
+  ALLUVIUM
+  LOAM
+}
+
 model Soil {
   id String @id @default(uuid())
 
-  ph Float
-
+  ph         Float
   moistureId String
-  moisture   IntUnit @relation("moisture", fields: [moistureId], references: [id])
+  moisture   IntUnit  @relation("moisture", fields: [moistureId], references: [id])
+  type       SoilType
 
-  fieldId String
-  field   Field  @relation(fields: [fieldId], references: [id])
+  nutrientNitrogen   Float
+  nutrientPhosphorus Float
+  nutrientPotassium  Float
+  nutrientUnitId     String
+  nutrientUnit       Unit   @relation(fields: [nutrientUnitId], references: [id])
+  fieldId            String
 
-  confirmed   Boolean  @default(false)
-  confirmAt   DateTime
-  comfirmerId String
-  comfirmer   Staff    @relation(fields: [comfirmerId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  field Field @relation(fields: [fieldId], references: [id])
+
+  confirmed     Boolean   @default(false)
+  confirmedAt   DateTime?
+  confirmedById String?
+  confirmedBy   Staff?    @relation(fields: [confirmedById], references: [id])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
 model Field {
