@@ -8,11 +8,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 
 import { DataTableColumnHeader } from "@/components/datatable/datatable-column-header";
-import { Category } from "@prisma/client";
+import { Category, CategoryType } from "@prisma/client";
 import { CategoriesTableAction } from "./categories-table-action";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
 import { destroyMany } from "@/actions/category";
 import { toast } from "sonner";
+import { CategoryCreateButton } from "./category-create-button";
 
 interface CategoriesTableProps {
   data: Category[];
@@ -58,11 +59,46 @@ export const CategoriesTable = ({ data }: CategoriesTableProps) => {
     },
     {
       accessorKey: "slug",
-      header: "Slug",
+      header: ({ column }) => {
+        return (
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.thead.slug")}
+          />
+        );
+      },
+    },
+    {
+      accessorKey: "type",
+      header: ({ column }) => {
+        return (
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.thead.type")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ row }) => {
+        const data = row.original;
+        if (!data.type) {
+          return t("table.trow.type");
+        }
+        return t(`schema.type.options.${data.type}`);
+      },
     },
     {
       accessorKey: "description",
       header: t("table.thead.description"),
+      cell: ({ row }) => {
+        const data = row.original;
+        if (!data.description) {
+          return t("table.trow.description");
+        }
+        return data.description;
+      },
     },
     {
       id: "actions",
@@ -102,13 +138,28 @@ export const CategoriesTable = ({ data }: CategoriesTableProps) => {
       },
     },
   ];
+  const facetedFilters = [
+    {
+      column: "type",
+      label: t("search.faceted.type.placeholder"),
+      options: Object.values(CategoryType).map((item) => {
+        return {
+          label: t(`schema.type.options.${item}`),
+          value: item,
+        };
+      }),
+    },
+  ];
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("table.heading")}</CardTitle>
+        <CardTitle>{t("page.title")}</CardTitle>
       </CardHeader>
       <CardContent>
+        <div className="flex justify-end">
+          <CategoryCreateButton />
+        </div>
         <DataTable
           columns={columns}
           data={data}
@@ -117,6 +168,7 @@ export const CategoriesTable = ({ data }: CategoriesTableProps) => {
             placeholder: t("search.placeholder"),
           }}
           bulkActions={bulkActions}
+          facetedFilters={facetedFilters}
         />
       </CardContent>
     </Card>

@@ -1,12 +1,17 @@
 "use server";
 
-import { db } from "@/lib/db";
 import { CategorySchema } from "@/schemas";
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import slugify from "slugify";
-import { getCategoryBySlug } from "@/services/categories";
+import {
+  createCategory,
+  deleteCategory,
+  deleteManyCategory,
+  getCategoryBySlug,
+  updateCategory,
+} from "@/services/categories";
 import { ActionResponse } from "@/types";
 import { errorResponse, successResponse } from "@/lib/utils";
 
@@ -22,9 +27,7 @@ export const create = async (
     return errorResponse(tSchema("errors.parse"));
   }
   try {
-    let slug = slugify(validatedFields.data.name, {
-      lower: true,
-    });
+    let { slug, name, description, type } = validatedFields.data;
     const existingCategorySlug = await getCategoryBySlug(slug);
     if (existingCategorySlug) {
       slug = slugify(
@@ -32,11 +35,11 @@ export const create = async (
         { lower: true }
       );
     }
-    await db.category.create({
-      data: {
-        ...validatedFields.data,
-        slug,
-      },
+    await createCategory({
+      name,
+      description,
+      type,
+      slug,
     });
     revalidatePath("/admin/categories");
     return successResponse(t("success.create"));
@@ -57,9 +60,7 @@ export const edit = async (
     return errorResponse(tSchema("errors.parse"));
   }
   try {
-    let slug = slugify(validatedFields.data.name, {
-      lower: true,
-    });
+    let { slug, name, description, type } = validatedFields.data;
     const existingCategorySlug = await getCategoryBySlug(slug);
 
     if (existingCategorySlug && id !== existingCategorySlug.id) {
@@ -70,15 +71,7 @@ export const edit = async (
         }
       );
     }
-    await db.category.update({
-      where: {
-        id,
-      },
-      data: {
-        ...validatedFields.data,
-        slug,
-      },
-    });
+    await updateCategory(id, { name, slug, description, type });
     revalidatePath("/admin/categories");
 
     return successResponse(t("success.edit"));
@@ -89,11 +82,7 @@ export const edit = async (
 export const destroy = async (id: string): Promise<ActionResponse> => {
   const t = await getTranslations("categories.status");
   try {
-    await db.category.delete({
-      where: {
-        id,
-      },
-    });
+    await deleteCategory(id);
     revalidatePath("/admin/categories");
     return successResponse(t("success.destroy"));
   } catch (error) {
@@ -103,13 +92,7 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
 export const destroyMany = async (ids: string[]): Promise<ActionResponse> => {
   const t = await getTranslations("categories.status");
   try {
-    await db.category.deleteMany({
-      where: {
-        id: {
-          in: ids,
-        },
-      },
-    });
+    await deleteManyCategory(ids);
     revalidatePath("/admin/categories");
     return successResponse(t("success.destroy"));
   } catch (error) {
