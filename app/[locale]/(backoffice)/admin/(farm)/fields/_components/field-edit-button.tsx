@@ -12,14 +12,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { FieldSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { OrgsSelectWithQueryClient } from "../../../_components/orgs-select";
 import { UnitsSelectWithQueryClient } from "../../../_components/units-select";
-import { useRouter } from "@/navigation";
 import { toast } from "sonner";
 import { edit } from "@/actions/field";
 import { useParams } from "next/navigation";
@@ -57,7 +55,7 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
           }
         })
         .catch((error) => {
-          toast.error(t("status.failure.create"));
+          toast.error(t("status.failure.edit"));
         });
     });
   };

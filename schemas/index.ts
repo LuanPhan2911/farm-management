@@ -1,7 +1,10 @@
 import {
+  CategoryType,
+  FertilizerType,
   Gender,
   JobExperience,
   JobWorkingState,
+  Season,
   SoilType,
   StaffRole,
   UnitType,
@@ -13,8 +16,14 @@ import validator from "validator";
 
 export const CategorySchema = (t: (arg: string) => string) =>
   z.object({
-    name: z.string().min(1, t("name.min")).max(100),
-    description: z.string().min(1, t("description.min")),
+    name: z.string().min(1, t("name.min")).max(100, t("name.max")),
+    slug: z.string().min(1, t("slug.min")).max(100, t("slug.max")),
+    description: z.optional(z.string().max(255, t("description.max"))),
+    type: z.optional(
+      z.nativeEnum(CategoryType, {
+        message: t("type.enum"),
+      })
+    ),
   });
 export const UnitSchema = (t: (arg: string) => string) =>
   z.object({
@@ -286,5 +295,73 @@ export const SoilSchema = (t: (arg: string) => string) => {
       required_error: t("nutrientUnitId.required_error"),
     }),
     fieldId: z.string(),
+  });
+};
+
+export const PlantSchema = (t: (arg: string) => string) => {
+  return z.object({
+    name: z.string().min(1, t("name.min")).max(100, t("name.max")),
+    imageUrl: z.optional(z.string().max(255, t("imageUrl.max"))),
+    categoryId: z.string({ required_error: t("categoryId.required_error") }),
+    growthDuration: z.coerce
+      .number({
+        required_error: t("growthDuration.required_error"),
+        invalid_type_error: t("growthDuration.invalid_type"),
+      })
+      .int(t("growthDuration.int"))
+      .min(7, t("growthDuration.min"))
+      .max(365, t("growthDuration.max")),
+
+    season: z.optional(
+      z.nativeEnum(Season, {
+        message: "season.enum",
+      })
+    ),
+    fertilizerType: z.nativeEnum(FertilizerType, {
+      message: t("fertilizerType.enum"),
+    }),
+    idealTemperature: z.optional(
+      z.object({
+        unitId: z.string({
+          required_error: t("idealTemperature.unitId.required_error"),
+        }),
+        value: z.coerce
+          .number({
+            required_error: t("idealTemperature.value.required_error"),
+            invalid_type_error: t("idealTemperature.value.invalid_type"),
+          })
+          .min(-20, t("idealTemperature.value.min"))
+          .max(50, t("idealTemperature.value.max")),
+      })
+    ),
+    idealHumidity: z.optional(
+      z.object({
+        unitId: z.string({
+          required_error: t("idealHumidity.unitId.required_error"),
+        }),
+        value: z.coerce
+          .number({
+            required_error: t("idealHumidity.value.required_error"),
+            invalid_type_error: t("idealHumidity.value.invalid_type"),
+          })
+          .int(t("idealHumidity.value.int"))
+          .min(0, t("idealHumidity.value.min"))
+          .max(100, t("idealHumidity.value.max")),
+      })
+    ),
+    waterRequirement: z.optional(
+      z.object({
+        unitId: z.string({
+          required_error: t("waterRequirement.unitId.required_error"),
+        }),
+        value: z.coerce
+          .number({
+            required_error: t("waterRequirement.value.required_error"),
+            invalid_type_error: t("waterRequirement.value.invalid_type"),
+          })
+          .min(0, t("waterRequirement.value.min"))
+          .max(100, t("waterRequirement.value.max")),
+      })
+    ),
   });
 };

@@ -1,10 +1,12 @@
 import {
+  Category,
   Field,
   FloatUnit,
   Gender,
   IntUnit,
   JobExperience,
   JobWorkingState,
+  Plant,
   Soil,
   SoilType,
   Staff,
@@ -56,7 +58,10 @@ export type UnitSelect = {
   id: string;
   name: string;
 };
-
+export type CategorySelect = {
+  id: string;
+  name: string;
+};
 export type FieldWithUnit = Field & {
   unit: Unit | null;
 };
@@ -102,4 +107,28 @@ export type SoilTable = Soil & {
   nutrientUnit: {
     name: string;
   };
+};
+export type PlantTable = Plant & {
+  category: Category;
+  idealTemperature:
+    | (FloatUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+  idealHumidity:
+    | (IntUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+  waterRequirement:
+    | (FloatUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
 };

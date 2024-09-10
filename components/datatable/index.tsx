@@ -28,6 +28,7 @@ import { useState } from "react";
 import { DataTablePagination } from "@/components/datatable/datatable-pagination";
 import { DataTableToolbar } from "./datatable-toolbar";
 import { LucideIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -49,6 +50,7 @@ interface DataTableProps<TData, TValue> {
       icon?: LucideIcon;
     }[];
   }[];
+  onViewDetail?: (data: TData) => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -57,6 +59,7 @@ export function DataTable<TData, TValue>({
   searchable,
   bulkActions,
   facetedFilters,
+  onViewDetail,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -118,6 +121,8 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  className={cn(onViewDetail && "cursor-pointer")}
+                  onClick={() => onViewDetail && onViewDetail(row.original)}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

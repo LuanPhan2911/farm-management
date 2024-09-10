@@ -9,12 +9,14 @@ import { FieldCreateButton } from "./field-create-button";
 import { FieldWithUnit } from "@/types";
 import { FieldsTableAction } from "./fields-table-action";
 import { UnitWithValue } from "../../../_components/unit-with-value";
+import { useRouter } from "@/navigation";
 
 interface FieldsDataTableProps {
   data: FieldWithUnit[];
 }
 export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
   const t = useTranslations("fields");
+  const router = useRouter();
   const columns: ColumnDef<FieldWithUnit>[] = [
     {
       id: "select",
@@ -115,6 +117,9 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
       },
     },
   ];
+  const onViewDetail = (item: FieldWithUnit) => {
+    router.push(`/admin/fields/detail/${item.id}`);
+  };
   return (
     <Card>
       <CardHeader>
@@ -131,6 +136,7 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
             value: "name",
             placeholder: t("search.placeholder"),
           }}
+          onViewDetail={onViewDetail}
         />
       </CardContent>
     </Card>

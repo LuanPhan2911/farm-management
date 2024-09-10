@@ -8,8 +8,10 @@ import {
   Columns2,
   Compass,
   Flower,
+  Flower2,
   Globe,
   Grid2X2,
+  House,
   LayoutGrid,
   MountainSnow,
   Section,
@@ -82,12 +84,20 @@ export const AdminSidebar = () => {
           />
         </SidebarAccordionItem>
 
-        <SidebarItem
-          href="/admin/fields"
-          active={pathname === "/admin/fields"}
-          icon={Grid2X2}
-          title="Fields"
-        />
+        <SidebarAccordionItem title="Farm" icon={House}>
+          <SidebarItem
+            href="/admin/fields"
+            active={pathname === "/admin/fields"}
+            icon={Grid2X2}
+            title="Fields"
+          />
+          <SidebarItem
+            href="/admin/plants"
+            active={pathname === "/admin/plants"}
+            icon={Flower2}
+            title="Plants"
+          />
+        </SidebarAccordionItem>
         <SidebarAccordionItem title="Catalogue" icon={Flower}>
           <SidebarItem
             href="/admin/categories"

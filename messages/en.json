@@ -71,16 +71,28 @@
   },
 
   "categories": {
-    "title": "Manage Categories",
+    "page": {
+      "title": "Manage Categories"
+    },
     "table": {
-      "title": "All categories",
       "thead": {
         "name": "Name",
+        "slug": "Slug",
+        "type": "Type",
         "description": "Description"
+      },
+      "trow": {
+        "type": "...",
+        "description": "..."
       }
     },
     "search": {
-      "placeholder": "Filter by category name..."
+      "placeholder": "Filter by category name...",
+      "faceted": {
+        "type": {
+          "placeholder": "Select type..."
+        }
+      }
     },
     "form": {
       "create": {
@@ -110,13 +122,28 @@
       },
       "name": {
         "min": "Category name is required!",
+        "max": "Category name's length must be less than 100 characters",
         "label": "Name",
         "placeholder": "Category name"
       },
+      "slug": {
+        "label": "Slug",
+        "placeholder": "Slug",
+        "min": "Slug is required!",
+        "max": "Slug's length must be less than 100 characters"
+      },
+      "type": {
+        "label": "Category type",
+        "placeholder": "Select category type...",
+        "enum": "Please choose category type in list",
+        "options": {
+          "PLANT": "Plant"
+        }
+      },
       "description": {
-        "min": "Category description is required!",
         "label": "Description",
-        "placeholder": "Category description"
+        "placeholder": "Category description",
+        "max": "Description's length must be less than 255 characters"
       }
     },
     "status": {
@@ -1357,6 +1384,204 @@
       }
     }
   },
+  "plants": {
+    "page": {
+      "title": "Manage plants"
+    },
+    "table": {
+      "thead": {
+        "imageUrl": "Image",
+        "name": "Name",
+        "category": "Category",
+        "growthDuration": "Grow duration",
+        "fertilizerType": "Fertilizer type",
+        "season": "Season",
+        "idealTemperature": "Ideal temperature",
+        "idealHumidity": "Ideal humidity",
+        "waterRequirement": "Water requirement"
+      },
+      "trow": {
+        "season": "Any season",
+        "idealTemperature": "...",
+        "idealHumidity": "...",
+        "waterRequirement": "...",
+        "growDuration": "days"
+      }
+    },
+    "tabs": {
+      "info": {
+        "label": "Info",
+        "title": "Info",
+        "description": "Information of plant"
+      },
+      "fertilizers": {
+        "label": "Fertilizers",
+        "title": "Fertilizers",
+        "description": "Fertilizers can use"
+      },
+      "pesticides": {
+        "label": "Pesticides",
+        "title": "Pesticides",
+        "description": "Pesticides can use"
+      },
+      "danger": {
+        "label": "Danger",
+        "title": "Danger",
+        "description": "Danger of plant"
+      }
+    },
+    "search": {
+      "placeholder": "Search by name...",
+      "faceted": {
+        "category": {
+          "placeholder": "Category",
+          "error": "Something went wrong went load plant category"
+        },
+        "season": {
+          "placeholder": "Season",
+          "error": "Something went wrong went load plant season"
+        },
+        "fertilizerType": {
+          "placeholder": "Fertilizer type",
+          "error": "Something went wrong went load plant fertilizer type!"
+        }
+      }
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add plant",
+        "description": "Add plant to fields"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete plant?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      },
+      "viewDetail": {
+        "label": "View detail",
+        "title": "Info",
+        "description": "Information of plant"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid plants!"
+      },
+      "name": {
+        "label": "Plant name",
+        "placeholder": "Plant name",
+        "min": "Name is required!",
+        "max": "Name's length must be less than 100 characters"
+      },
+      "imageUrl": {
+        "label": "Image",
+        "placeholder": "Image plant",
+        "max": "Image url's length must be less than 255 characters"
+      },
+      "categoryId": {
+        "label": "Category",
+        "placeholder": "Select category...",
+        "required_error": "Category is required",
+        "notFound": "Category not found",
+        "error": "Something went wrong went load category!"
+      },
+      "growthDuration": {
+        "label": "Grow duration",
+        "placeholder": "Grow duration of plant(days)",
+        "required_error": "Grow duration is required",
+        "invalid_type": "Grow duration must be number",
+        "int": "Grow duration must be integer",
+        "min": "Min grow duration must be 7 days",
+        "max": "Max grow duration must be 365 days"
+      },
+      "season": {
+        "label": "Season",
+        "placeholder": "Select season...",
+        "enum": "Select season in list",
+        "options": {
+          "SPRING": "Spring",
+          "SUMMER": "Summer",
+          "AUTUMN": "Autumn",
+          "WINTER": "Winter"
+        }
+      },
+      "fertilizerType": {
+        "label": "Fertilizer type",
+        "placeholder": "Select fertilizer type...",
+        "enum": "Select fertilizer in list",
+        "options": {
+          "ORGANIC": "Organic",
+          "INORGANIC": "Inorganic",
+          "BIO": "Bio"
+        }
+      },
+      "idealTemperature": {
+        "unitId": {
+          "required_error": "Required unit",
+          "placeholder": "Unit",
+          "error": "Something went wrong went load units",
+          "notFound": "Units not found",
+          "label": "Unit"
+        },
+        "value": {
+          "required_error": "Temperature value is required",
+          "invalid_type": "Temperature value must be number",
+          "min": "Min temperature value is -20",
+          "max": "Max temperature value is 50"
+        },
+        "label": "Temperature",
+        "placeholder": "Temperature"
+      },
+      "idealHumidity": {
+        "unitId": {
+          "required_error": "Required unit",
+          "placeholder": "Unit",
+          "label": "Unit",
+          "error": "Something went wrong went load units",
+          "notFound": "Units not found"
+        },
+        "value": {
+          "required_error": "Humidity value is required",
+          "invalid_type": "Humidity value must be number",
+          "min": "Min humidity value is 0",
+          "max": "Max humidity value is 100",
+          "int": "Humidity value must be integer number"
+        },
+        "label": "Humidity",
+        "placeholder": "Humidity"
+      },
+      "waterRequirement": {
+        "unitId": {
+          "required_error": "Required unit",
+          "placeholder": "Unit",
+          "label": "Unit",
+          "error": "Something went wrong went load units",
+          "notFound": "Units not found"
+        },
+        "value": {
+          "required_error": "Water requirement value is required",
+          "invalid_type": "Water requirement  value must be number",
+          "min": "Min Water requirement  value is 0",
+          "max": "Max Water requirement  value is 100"
+        },
+        "label": "Water requirement ",
+        "placeholder": "Water requirement "
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Plant created!",
+        "edit": "Plant edited!",
+        "destroy": "Plant deleted!"
+      },
+      "failure": {
+        "create": "Something went wrong while creating plant!",
+        "edit": "Something went wrong while editing plant!",
+        "destroy": "Something went wrong while deleting plant!"
+      }
+    }
+  },
   "errors": {
     "error": "Something went wrong!"
   },
@@ -1381,6 +1606,10 @@
     "/admin/fields/detail": "Detail",
     "/admin/fields/detail/danger": "Danger",
     "/admin/fields/detail/weathers": "Weathers",
-    "/admin/fields/detail/soils": "Soils"
+    "/admin/fields/detail/soils": "Soils",
+    "/admin/plants": "Plants",
+    "/admin/plants/create": "Create",
+    "/admin/plants/detail": "Detail",
+    "/admin/plants/detail/danger": "Danger"
   }
 }
