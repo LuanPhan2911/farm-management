@@ -15,15 +15,34 @@ import { toast } from "sonner";
 import { Applicant, ApplicantStatus } from "@prisma/client";
 import { Badge } from "@/components/ui/badge";
 import { JobSelectWithQueryClient } from "../../../_components/jobs-select";
+import { useTransition } from "react";
 
 interface ApplicantsTableProps {
   applicants: Applicant[];
 }
 export const ApplicantsTable = ({ applicants }: ApplicantsTableProps) => {
   const t = useTranslations("applicants");
-
+  const [isPending, startTransition] = useTransition();
   const { onOpen, onClose } = useAlertDialog();
-
+  const handleConfirm = (rows: Applicant[]) => {
+    startTransition(() => {
+      const ids = rows.map((row) => row.id);
+      destroyMany(ids)
+        .then(({ message, ok }) => {
+          if (ok) {
+            toast.success(message);
+          } else {
+            toast.error(message);
+          }
+        })
+        .catch((error: Error) => {
+          toast.error(t("status.failure.destroy"));
+        })
+        .finally(() => {
+          onClose();
+        });
+    });
+  };
   const columns: ColumnDef<Applicant>[] = [
     {
       id: "select",
@@ -120,23 +139,8 @@ export const ApplicantsTable = ({ applicants }: ApplicantsTableProps) => {
         onOpen({
           title: t("form.destroySelected.title"),
           description: t("form.destroySelected.description"),
-          onConfirm: () => {
-            const ids = rows.map((row) => row.id);
-            destroyMany(ids)
-              .then(({ message, ok }) => {
-                if (ok) {
-                  toast.success(message);
-                } else {
-                  toast.error(message);
-                }
-              })
-              .catch((error: Error) => {
-                toast.error(t("status.failure.destroy"));
-              })
-              .finally(() => {
-                onClose();
-              });
-          },
+          onConfirm: () => handleConfirm(rows),
+          isPending,
         });
       },
     },

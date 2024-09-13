@@ -12,6 +12,7 @@ import { destroyMany } from "@/actions/unit";
 import { toast } from "sonner";
 import { UnitCreateButton } from "./unit-create-button";
 import { UnitSuperscript } from "../../../_components/unit-with-value";
+import { useTransition } from "react";
 
 interface UnitsTableProps {
   data: Unit[];
@@ -19,6 +20,26 @@ interface UnitsTableProps {
 export const UnitsTable = ({ data }: UnitsTableProps) => {
   const t = useTranslations("units");
   const { onOpen, onClose } = useAlertDialog();
+  const [isPending, startTransition] = useTransition();
+  const handleConfirm = (rows: Unit[]) => {
+    startTransition(() => {
+      const ids = rows.map((row) => row.id);
+      destroyMany(ids)
+        .then(({ message, ok }) => {
+          if (ok) {
+            toast.success(message);
+          } else {
+            toast.error(message);
+          }
+        })
+        .catch((error: Error) => {
+          toast.error(t("status.failure.destroy"));
+        })
+        .finally(() => {
+          onClose();
+        });
+    });
+  };
 
   const columns: ColumnDef<Unit>[] = [
     {
@@ -96,23 +117,8 @@ export const UnitsTable = ({ data }: UnitsTableProps) => {
         onOpen({
           title: t("form.destroySelected.title"),
           description: t("form.destroySelected.description"),
-          onConfirm: () => {
-            const ids = rows.map((row) => row.id);
-            destroyMany(ids)
-              .then(({ message, ok }) => {
-                if (ok) {
-                  toast.success(message);
-                } else {
-                  toast.error(message);
-                }
-              })
-              .catch((error: Error) => {
-                toast.error(t("status.failure.destroy"));
-              })
-              .finally(() => {
-                onClose();
-              });
-          },
+          onConfirm: () => handleConfirm(rows),
+          isPending,
         });
       },
     },

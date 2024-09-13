@@ -5,6 +5,7 @@ import { useAlertDialog } from "@/stores/use-alert-dialog";
 import { Applicant } from "@prisma/client";
 import { Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useTransition } from "react";
 import { toast } from "sonner";
 
 interface ApplicantDeleteButtonProps {
@@ -17,22 +18,25 @@ export const ApplicantDeleteButton = ({
 }: ApplicantDeleteButtonProps) => {
   const { id } = data;
   const { onOpen, onClose } = useAlertDialog();
+  const [isPending, startTransition] = useTransition();
   const t = useTranslations("applicants");
   const onConfirm = async () => {
-    destroy(id)
-      .then(({ message, ok }) => {
-        if (ok) {
-          toast.success(message);
-        } else {
-          toast.error(message);
-        }
-      })
-      .catch((error: Error) => {
-        toast.error(t("status.failure.destroy"));
-      })
-      .finally(() => {
-        onClose();
-      });
+    startTransition(() => {
+      destroy(id)
+        .then(({ message, ok }) => {
+          if (ok) {
+            toast.success(message);
+          } else {
+            toast.error(message);
+          }
+        })
+        .catch((error: Error) => {
+          toast.error(t("status.failure.destroy"));
+        })
+        .finally(() => {
+          onClose();
+        });
+    });
   };
   return (
     <Button
@@ -42,6 +46,7 @@ export const ApplicantDeleteButton = ({
           title: t("form.destroy.title"),
           description: t("form.destroy.description"),
           onConfirm,
+          isPending,
         })
       }
       variant={"destroy"}

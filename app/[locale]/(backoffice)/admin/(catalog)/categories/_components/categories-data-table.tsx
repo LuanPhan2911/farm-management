@@ -14,6 +14,7 @@ import { useAlertDialog } from "@/stores/use-alert-dialog";
 import { destroyMany } from "@/actions/category";
 import { toast } from "sonner";
 import { CategoryCreateButton } from "./category-create-button";
+import { useTransition } from "react";
 
 interface CategoriesTableProps {
   data: Category[];
@@ -22,7 +23,27 @@ export const CategoriesTable = ({ data }: CategoriesTableProps) => {
   const t = useTranslations("categories");
 
   const { onOpen, onClose } = useAlertDialog();
-
+  const [isPending, startTransition] = useTransition();
+  const handleConfirm = (rows: Category[]) => {
+    const ids = rows.map((row) => row.id);
+    startTransition(() => {
+      destroyMany(ids)
+        .then(({ message, ok }) => {
+          if (ok) {
+            onClose();
+            toast.success(message);
+          } else {
+            toast.error(message);
+          }
+        })
+        .catch((error) => {
+          toast.error(t("status.failure.destroy"));
+        })
+        .finally(() => {
+          onClose();
+        });
+    });
+  };
   const columns: ColumnDef<Category>[] = [
     {
       id: "select",
@@ -116,24 +137,8 @@ export const CategoriesTable = ({ data }: CategoriesTableProps) => {
         onOpen({
           title: t("form.destroySelected.title"),
           description: t("form.destroySelected.description"),
-          onConfirm: () => {
-            const ids = rows.map((row) => row.id);
-            destroyMany(ids)
-              .then(({ message, ok }) => {
-                if (ok) {
-                  onClose();
-                  toast.success(message);
-                } else {
-                  toast.error(message);
-                }
-              })
-              .catch((error) => {
-                toast.error(t("status.failure.destroy"));
-              })
-              .finally(() => {
-                onClose();
-              });
-          },
+          onConfirm: () => handleConfirm(rows),
+          isPending,
         });
       },
     },

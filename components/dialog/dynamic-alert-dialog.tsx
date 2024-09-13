@@ -10,25 +10,17 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
-import { useTranslations } from "next-intl";
-import { useTransition } from "react";
 
 export const DynamicAlertDialog = () => {
   const { isOpen, onClose, data } = useAlertDialog();
-  const [isPending, startTransition] = useTransition();
 
   if (!data) {
     return null;
   }
-  const { description, onConfirm, title } = data;
-  const handleClick = () => {
-    startTransition(() => {
-      onConfirm();
-    });
-  };
+  const { description, onConfirm, title, isPending } = data;
 
   return (
-    <AlertDialog open={isOpen} onOpenChange={onClose}>
+    <AlertDialog open={isOpen || isPending} onOpenChange={onClose}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
@@ -36,7 +28,7 @@ export const DynamicAlertDialog = () => {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isPending}>Close</AlertDialogCancel>
-          <AlertDialogAction disabled={isPending} onClick={handleClick}>
+          <AlertDialogAction disabled={isPending} onClick={onConfirm}>
             Confirm
           </AlertDialogAction>
         </AlertDialogFooter>
