@@ -1,7 +1,10 @@
 import {
   Category,
+  Fertilizer,
+  FertilizerType,
   Field,
   FloatUnit,
+  Frequency,
   Gender,
   IntUnit,
   JobExperience,
@@ -131,4 +134,21 @@ export type PlantTable = Plant & {
         };
       })
     | null;
+};
+export type FertilizerTable = Fertilizer & {
+  recommendedDosage:
+    | (FloatUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+};
+export type FertilizerTypeCount = {
+  type: FertilizerType;
+  _count: number;
+};
+export type FertilizerFrequencyCount = {
+  frequencyOfUse: Frequency;
+  _count: number;
 };

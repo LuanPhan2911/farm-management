@@ -1442,8 +1442,7 @@
           "error": "Something went wrong went load plant season"
         },
         "fertilizerType": {
-          "placeholder": "Fertilizer type",
-          "error": "Something went wrong went load plant fertilizer type!"
+          "placeholder": "Fertilizer type"
         }
       }
     },
@@ -1582,6 +1581,143 @@
       }
     }
   },
+  "fertilizers": {
+    "page": {
+      "title": "Manage fertilizers"
+    },
+    "table": {
+      "thead": {
+        "name": "Name",
+        "type": "Type",
+        "nutrientOfNPK": "Nutrient of NPK",
+        "frequencyOfUse": "Frequency of use",
+        "applicationMethod": "Application method",
+        "manufacturer": "Manufacturer"
+      },
+      "trow": {
+        "manufacturer": "...",
+        "applicationMethod": "...",
+        "frequencyOfUse": "..."
+      }
+    },
+    "search": {
+      "placeholder": "Search by name...",
+      "faceted": {
+        "type": {
+          "placeholder": "Fertilizer type",
+          "error": "Something went wrong went load fertilizer count"
+        },
+        "frequencyOfUse": {
+          "placeholder": "Frequency of use",
+          "error": "Something went wrong went load frequency count"
+        }
+      }
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add fertilizer",
+        "description": "Add fertilizer use for plant"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit fertilizer",
+        "description": "Update of fertilizer"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete fertilizer?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid fertilizers!"
+      },
+      "name": {
+        "label": "Fertilizer name",
+        "placeholder": "Fertilizer name",
+        "min": "Name is required!",
+        "max": "Name's length must be less than 100 characters"
+      },
+      "type": {
+        "label": "Fertilizer type",
+        "placeholder": "Select fertilizer type...",
+        "enum": "Select fertilizer in list",
+        "options": {
+          "ORGANIC": "Organic",
+          "INORGANIC": "Inorganic",
+          "BIO": "Bio"
+        }
+      },
+      "nutrientOfNPK": {
+        "label": "NPK ratio",
+        "placeholder": "1/2/1 mean 25% nitrogen, 50% potassium, 25% phosphorus",
+        "min": "NPK ratio is required!",
+        "max": "Max NPK ratio's length is 100 characters"
+      },
+      "composition": {
+        "label": "Composition",
+        "placeholder": "Other composition is such as Mn, Bo...",
+        "min": "Min composition length is 1 character",
+        "max": "Max composition length is 255 characters"
+      },
+      "manufacturer": {
+        "label": "Manufacturer",
+        "placeholder": "Name of manufacturer",
+        "min": "Min manufacturer length is 1 character",
+        "max": "Max manufacturer length is 255 characters"
+      },
+      "applicationMethod": {
+        "label": "Method",
+        "placeholder": "Root watering, spray on leaves",
+        "min": "Min method length is 1 character",
+        "max": "Max method length is 100 characters"
+      },
+      "frequencyOfUse": {
+        "label": "Frequency of use",
+        "placeholder": "Select frequency...",
+        "enum": "Select frequency in list",
+        "options": {
+          "WEEKLY": "Weekly",
+          "MONTHLY": "Monthly",
+          "YEARLY": "Yearly",
+          "CROP": "Crop"
+        }
+      },
+
+      "recommendedDosage": {
+        "unitId": {
+          "required_error": "Required unit",
+          "placeholder": "Unit",
+          "error": "Something went wrong went load units",
+          "notFound": "Units not found",
+          "label": "Unit"
+        },
+        "value": {
+          "required_error": "Dosage value is required",
+          "invalid_type": "Dosage value must be number",
+          "min": "Min dosage value is 0",
+          "max": "Max dosage value is 10000",
+          "int": "Dosage value must be integer"
+        },
+        "label": "Recommended dosage",
+        "placeholder": "Recommended dosage"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Fertilizer created!",
+        "edit": "Fertilizer edited!",
+        "destroy": "Fertilizer deleted!"
+      },
+      "failure": {
+        "create": "Something went wrong while creating fertilizer!",
+        "edit": "Something went wrong while editing fertilizer!",
+        "destroy": "Something went wrong while deleting fertilizer!"
+      }
+    }
+  },
   "errors": {
     "error": "Something went wrong!"
   },
@@ -1610,6 +1746,7 @@
     "/admin/plants": "Plants",
     "/admin/plants/create": "Create",
     "/admin/plants/detail": "Detail",
-    "/admin/plants/detail/danger": "Danger"
+    "/admin/plants/detail/danger": "Danger",
+    "/admin/fertilizers": "Fertilizer"
   }
 }

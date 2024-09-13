@@ -74,55 +74,70 @@ export const createPlant = async (params: PlantParams) => {
 export const updatePlant = async (id: string, params: PlantParams) => {
   return await db.$transaction(async (ctx) => {
     const {
-      categoryId,
-      fertilizerType,
-      growthDuration,
-      name,
-      season,
-      imageUrl,
+      idealHumidity: idealHumidityParam,
+      idealTemperature: idealTemperatureParam,
+      waterRequirement: waterRequirementParam,
+      ...otherParams
     } = params;
     const plant = await ctx.plant.update({
       where: {
         id,
       },
       data: {
-        name,
-        imageUrl,
-        season,
-        categoryId,
-        fertilizerType,
-        growthDuration,
+        ...otherParams,
       },
     });
-    if (plant.idealTemperatureId) {
-      const idealTemperature = await ctx.floatUnit.update({
-        data: {
-          ...params.idealTemperature,
-        },
-        where: {
-          id: plant.idealTemperatureId,
-        },
-      });
+    if (idealTemperatureParam) {
+      if (plant.idealTemperatureId) {
+        await ctx.floatUnit.update({
+          where: {
+            id: plant.idealTemperatureId,
+          },
+          data: {
+            ...idealTemperatureParam,
+          },
+        });
+      } else {
+        await ctx.floatUnit.create({
+          data: { ...idealTemperatureParam },
+        });
+      }
     }
-    if (plant.idealHumidityId) {
-      const idealHumidity = await ctx.intUnit.update({
-        data: {
-          ...params.idealHumidity,
-        },
-        where: {
-          id: plant.idealHumidityId,
-        },
-      });
+    if (idealHumidityParam) {
+      if (plant.idealHumidityId) {
+        await ctx.intUnit.update({
+          where: {
+            id: plant.idealHumidityId,
+          },
+          data: {
+            ...idealHumidityParam,
+          },
+        });
+      } else {
+        await ctx.intUnit.create({
+          data: {
+            ...idealHumidityParam,
+          },
+        });
+      }
     }
-    if (plant.waterRequirementId) {
-      const waterRequirement = await ctx.floatUnit.update({
-        data: {
-          ...params.waterRequirement,
-        },
-        where: {
-          id: plant.waterRequirementId,
-        },
-      });
+    if (waterRequirementParam) {
+      if (plant.waterRequirementId) {
+        await ctx.floatUnit.update({
+          where: {
+            id: plant.waterRequirementId,
+          },
+          data: {
+            ...waterRequirementParam,
+          },
+        });
+      } else {
+        await ctx.floatUnit.create({
+          data: {
+            ...waterRequirementParam,
+          },
+        });
+      }
     }
     return plant;
   });
@@ -224,6 +239,7 @@ export const getPlantById = async (id: string) => {
         category: true,
       },
     });
+
     return plant;
   } catch (error) {
     return null;

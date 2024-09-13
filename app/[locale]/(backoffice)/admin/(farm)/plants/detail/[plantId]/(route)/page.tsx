@@ -9,6 +9,7 @@ interface PlantDetailPageProps {
 }
 const PlantDetailPage = async ({ params }: PlantDetailPageProps) => {
   const plant = await getPlantById(params.plantId);
+
   if (!plant) {
     notFound();
   }

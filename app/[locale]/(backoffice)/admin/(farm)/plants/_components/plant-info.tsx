@@ -7,9 +7,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { PlantTable } from "@/types";
+
 import { useTranslations } from "next-intl";
 import { PlantEditForm } from "./plant-edit-button";
+import { PlantTable } from "@/types";
 
 interface PlantInfoProps {
   data: PlantTable;

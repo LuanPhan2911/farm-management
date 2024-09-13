@@ -13,6 +13,7 @@ import {
   Grid2X2,
   House,
   LayoutGrid,
+  Leaf,
   MountainSnow,
   Section,
   Settings,
@@ -96,6 +97,12 @@ export const AdminSidebar = () => {
             active={pathname === "/admin/plants"}
             icon={Flower2}
             title="Plants"
+          />
+          <SidebarItem
+            href="/admin/fertilizers"
+            active={pathname === "/admin/fertilizers"}
+            icon={Leaf}
+            title="Fertilizers"
           />
         </SidebarAccordionItem>
         <SidebarAccordionItem title="Catalogue" icon={Flower}>

@@ -1,6 +1,7 @@
 import {
   CategoryType,
   FertilizerType,
+  Frequency,
   Gender,
   JobExperience,
   JobWorkingState,
@@ -361,6 +362,51 @@ export const PlantSchema = (t: (arg: string) => string) => {
           })
           .min(0, t("waterRequirement.value.min"))
           .max(100, t("waterRequirement.value.max")),
+      })
+    ),
+  });
+};
+
+export const FertilizerSchema = (t: (arg: string) => string) => {
+  return z.object({
+    name: z.string().min(1, t("name.min")).max(100, "name.max"),
+    type: z.nativeEnum(FertilizerType, {
+      message: t("type.enum"),
+    }),
+    nutrientOfNPK: z
+      .string()
+      .min(1, t("nutrientOfNPK.min"))
+      .max(100, t("nutrientOfNPK.max")),
+    composition: z.optional(
+      z.string().min(1, t("composition.min")).max(255, t("composition.max"))
+    ),
+    manufacturer: z.optional(
+      z.string().min(1, t("manufacturer.min")).max(255, t("manufacturer.max"))
+    ),
+    applicationMethod: z.optional(
+      z
+        .string()
+        .min(1, t("applicationMethod.min"))
+        .max(100, t("applicationMethod.max"))
+    ),
+    frequencyOfUse: z.optional(
+      z.nativeEnum(Frequency, {
+        message: t("frequencyOfUse.enum"),
+      })
+    ),
+    recommendedDosage: z.optional(
+      z.object({
+        unitId: z.string({
+          required_error: t("recommendedDosage.unitId.required_error"),
+        }),
+        value: z.coerce
+          .number({
+            required_error: t("recommendedDosage.value.required_error"),
+            invalid_type_error: t("recommendedDosage.value.invalid_type"),
+          })
+          .int(t("recommendedDosage.value.int"))
+          .min(0, t("recommendedDosage.value.min"))
+          .max(10000, t("recommendedDosage.value.max")),
       })
     ),
   });

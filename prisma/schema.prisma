@@ -47,11 +47,12 @@ model FloatUnit {
   tempuratures         Weather[] @relation(name: "temperature")
   atmosphericPressures Weather[] @relation(name: "atmosphericPressure")
 
-  outputs           Crop[]  @relation(name: "output")
-  expenses          Crop[]  @relation(name: "expense")
-  revenues          Crop[]  @relation(name: "revenue")
-  idealTemperatures Plant[] @relation(name: "idealTemperature")
-  waterRequirments  Plant[] @relation(name: "waterRequirement")
+  outputs           Crop[]       @relation(name: "output")
+  expenses          Crop[]       @relation(name: "expense")
+  revenues          Crop[]       @relation(name: "revenue")
+  idealTemperatures Plant[]      @relation(name: "idealTemperature")
+  waterRequirments  Plant[]      @relation(name: "waterRequirement")
+  recommededDosages Fertilizer[] @relation(name: "recommendedDosage")
 }
 
 model IntUnit {
@@ -337,6 +338,13 @@ enum FertilizerType {
   BIO
 }
 
+enum Frequency {
+  WEEKLY
+  MONTHLY
+  YEARLY
+  CROP
+}
+
 model Fertilizer {
   id String @id @default(uuid())
 
@@ -346,22 +354,28 @@ model Fertilizer {
   nutrientOfNPK String // NPK ratio
   manufacturer  String?
 
-  createdDate DateTime
-  expriryDate DateTime
-
-  recommendedDosage Float? // Liều lượng khuyến nghị
-  applicationMethod String? // Phương pháp sử dụng
-  composition       String? // Thành phần chi tiết
-  solubility        String? // Độ hòa tan
-  frequencyOfUse    String? // Tần suất sử dụng
+  recommendedDosageId String? // Liều lượng khuyến nghị
+  recommendedDosage   FloatUnit? @relation(name: "recommendedDosage", fields: [recommendedDosageId], references: [id])
+  applicationMethod   String? // Phương pháp sử dụng
+  composition         String? // Thành phần chi tiết
+  frequencyOfUse      Frequency? // Tần suất sử dụng
 
   activities Activity[] @relation(name: "fertilizer")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum PesticideType {
   PESTICIDE
   HERBICIDE
   FUNGICIDE
+}
+
+enum ToxicityLevel {
+  LOW
+  MID
+  HIGHT
 }
 
 model Pesticide {
@@ -373,17 +387,16 @@ model Pesticide {
 
   manufacturer String
 
-  createdDate DateTime
-  expriryDate DateTime
+  recommendedDosage Float? // Liều lượng khuyến nghị
+  applicationMethod String? // Phương pháp sử dụng
+  withdrawalPeriod  Int? // Thời gian cách ly trước thu hoạch days
+  toxicityLevel     ToxicityLevel? // Mức độ độc tính
+  activities        Activity[]        @relation(name: "pesticide")
+  PlantFertilizer   PlantFertilizer[]
+  PlantPesticide    PlantPesticide[]
 
-  recommendedDosage   Float? // Liều lượng khuyến nghị
-  applicationMethod   String? // Phương pháp sử dụng
-  withdrawalPeriod    Int? // Thời gian cách ly trước thu hoạch
-  toxicityLevel       String? // Mức độ độc tính
-  environmentalImpact String? // Tác động đến môi trường
-  activities          Activity[]        @relation(name: "pesticide")
-  PlantFertilizer     PlantFertilizer[]
-  PlantPesticide      PlantPesticide[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model PlantFertilizer {

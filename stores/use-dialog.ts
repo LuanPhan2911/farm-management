@@ -1,4 +1,4 @@
-import { SoilTable, WeatherTable } from "@/types";
+import { FertilizerTable, SoilTable, WeatherTable } from "@/types";
 import { User } from "@clerk/nextjs/server";
 import { Category, Unit, Applicant } from "@prisma/client";
 import { create } from "zustand";
@@ -10,7 +10,8 @@ export type DialogType =
   | "staff.editRole"
   | "staff.create"
   | "weather.edit"
-  | "soil.edit";
+  | "soil.edit"
+  | "fertilizer.edit";
 
 export interface DialogData {
   category?: Category;
@@ -19,6 +20,7 @@ export interface DialogData {
   user?: User;
   weather?: WeatherTable;
   soil?: SoilTable;
+  fertilizer?: FertilizerTable;
 }
 interface DialogStore {
   type: DialogType | null;

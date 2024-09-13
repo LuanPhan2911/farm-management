@@ -16,7 +16,7 @@ import { PlantSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useTranslations } from "next-intl";
-import { useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -48,12 +48,33 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
       season: data.season || undefined,
     },
   });
+
+  //   const {
+  //     categoryId,
+  //     fertilizerType,
+  //     growthDuration,
+  //     idealHumidity,
+  //     imageUrl,
+  //     name,
+  //     season,
+  //     waterRequirement,
+  //     idealTemperature,
+  //   } = data;
+  //   form.setValue("categoryId", categoryId);
+  //   form.setValue("idealHumidity", idealHumidity || undefined);
+  //   form.setValue("idealTemperature", idealTemperature || undefined);
+  //   form.setValue("season", season || undefined);
+  //   form.setValue("fertilizerType", fertilizerType);
+  //   form.setValue("growthDuration", growthDuration);
+  //   form.setValue("imageUrl", imageUrl || undefined);
+  //   form.setValue("waterRequirement", waterRequirement || undefined);
+  //   form.setValue("name", name);
+  // }, [form, data]);
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       edit(values, data.id)
         .then(({ message, ok }) => {
           if (ok) {
-            form.reset();
             toast.success(message);
           } else {
             toast.error(message);
