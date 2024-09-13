@@ -36,6 +36,7 @@ enum UnitType {
   LENGTH
   VOLUME
   NUTRIENT
+  DATE
 }
 
 model FloatUnit {
@@ -52,7 +53,8 @@ model FloatUnit {
   revenues          Crop[]       @relation(name: "revenue")
   idealTemperatures Plant[]      @relation(name: "idealTemperature")
   waterRequirments  Plant[]      @relation(name: "waterRequirement")
-  recommededDosages Fertilizer[] @relation(name: "recommendedDosage")
+  fertilizerDosages Fertilizer[] @relation(name: "fertilizerDosage")
+  pesticideDosages  Pesticide[]  @relation(name: "pesticideDosage")
 }
 
 model IntUnit {
@@ -65,9 +67,10 @@ model IntUnit {
   himidities Weather[] @relation(name: "humidity")
   moistures  Soil[]    @relation(name: "moisture")
 
-  rainfalls       Weather[]   @relation(name: "rainfall")
-  capacities      Equipment[] @relation(name: "capacity")
-  idealHumidities Plant[]     @relation(name: "idealHumidity")
+  rainfalls         Weather[]   @relation(name: "rainfall")
+  capacities        Equipment[] @relation(name: "capacity")
+  idealHumidities   Plant[]     @relation(name: "idealHumidity")
+  withdrawalPeriods Pesticide[] @relation(name: "withdrawalPeriod")
 }
 
 enum CategoryType {
@@ -355,7 +358,7 @@ model Fertilizer {
   manufacturer  String?
 
   recommendedDosageId String? // Liều lượng khuyến nghị
-  recommendedDosage   FloatUnit? @relation(name: "recommendedDosage", fields: [recommendedDosageId], references: [id])
+  recommendedDosage   FloatUnit? @relation(name: "fertilizerDosage", fields: [recommendedDosageId], references: [id])
   applicationMethod   String? // Phương pháp sử dụng
   composition         String? // Thành phần chi tiết
   frequencyOfUse      Frequency? // Tần suất sử dụng
@@ -375,25 +378,28 @@ enum PesticideType {
 enum ToxicityLevel {
   LOW
   MID
-  HIGHT
+  HIGH
 }
 
 model Pesticide {
   id String @id @default(uuid())
 
-  name      String
-  type      PesticideType
-  ingredent String
+  name         String
+  type         PesticideType
+  ingredient   String?
+  manufacturer String?
 
-  manufacturer String
+  withdrawalPeriodId String? // Thời gian cách ly trước thu hoạch days
+  withdrawalPeriod   IntUnit?       @relation(name: "withdrawalPeriod", fields: [withdrawalPeriodId], references: [id])
+  toxicityLevel      ToxicityLevel? // Mức độ độc tính
 
-  recommendedDosage Float? // Liều lượng khuyến nghị
-  applicationMethod String? // Phương pháp sử dụng
-  withdrawalPeriod  Int? // Thời gian cách ly trước thu hoạch days
-  toxicityLevel     ToxicityLevel? // Mức độ độc tính
-  activities        Activity[]        @relation(name: "pesticide")
-  PlantFertilizer   PlantFertilizer[]
-  PlantPesticide    PlantPesticide[]
+  recommendedDosageId String? // Liều lượng khuyến nghị
+  recommendedDosage   FloatUnit? @relation(name: "pesticideDosage", fields: [recommendedDosageId], references: [id])
+  applicationMethod   String? // Phương pháp sử dụng
+
+  activities      Activity[]        @relation(name: "pesticide")
+  plantFetilizers PlantFertilizer[]
+  plantPesticides PlantPesticide[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

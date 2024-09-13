@@ -3,6 +3,7 @@ type AlertDialogData = {
   title: string;
   description: string;
   onConfirm: () => void;
+  isPending: boolean;
 };
 
 interface AlertDialogStore {

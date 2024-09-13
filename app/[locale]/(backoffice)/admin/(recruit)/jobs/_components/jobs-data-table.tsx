@@ -16,7 +16,8 @@ import { JobTable } from "@/types";
 import { JobPublishedSwitch } from "./job-published-switch";
 import { JobExpired } from "./job-expired";
 import { JobCreateButton } from "./job-create-button";
-import { JobExperience } from "@prisma/client";
+import { Job, JobExperience } from "@prisma/client";
+import { useTransition } from "react";
 
 interface JobsTableProps {
   data: JobTable[];
@@ -24,9 +25,29 @@ interface JobsTableProps {
 export const JobsTable = ({ data }: JobsTableProps) => {
   const tSchema = useTranslations("jobs.schema");
   const t = useTranslations("jobs");
+  const [isPending, startTransition] = useTransition();
   const { dateTime } = useFormatter();
   const { onOpen, onClose } = useAlertDialog();
 
+  const handleConfirm = (rows: JobTable[]) => {
+    startTransition(() => {
+      const ids = rows.map((row) => row.id);
+      destroyMany(ids)
+        .then(({ message, ok }) => {
+          if (ok) {
+            toast.success(message);
+          } else {
+            toast.error(message);
+          }
+        })
+        .catch((error: Error) => {
+          toast.error(t("status.failure.destroy"));
+        })
+        .finally(() => {
+          onClose();
+        });
+    });
+  };
   const columns: ColumnDef<JobTable>[] = [
     {
       id: "select",
@@ -131,23 +152,8 @@ export const JobsTable = ({ data }: JobsTableProps) => {
         onOpen({
           title: t("form.destroySelected.title"),
           description: t("form.destroySelected.description"),
-          onConfirm: () => {
-            const ids = rows.map((row) => row.id);
-            destroyMany(ids)
-              .then(({ message, ok }) => {
-                if (ok) {
-                  toast.success(message);
-                } else {
-                  toast.error(message);
-                }
-              })
-              .catch((error: Error) => {
-                toast.error(t("status.failure.destroy"));
-              })
-              .finally(() => {
-                onClose();
-              });
-          },
+          onConfirm: () => handleConfirm(rows),
+          isPending,
         });
       },
     },

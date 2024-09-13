@@ -5,9 +5,11 @@ import {
   Gender,
   JobExperience,
   JobWorkingState,
+  PesticideType,
   Season,
   SoilType,
   StaffRole,
+  ToxicityLevel,
   UnitType,
   WeatherStatus,
 } from "@prisma/client";
@@ -404,10 +406,66 @@ export const FertilizerSchema = (t: (arg: string) => string) => {
             required_error: t("recommendedDosage.value.required_error"),
             invalid_type_error: t("recommendedDosage.value.invalid_type"),
           })
-          .int(t("recommendedDosage.value.int"))
+
           .min(0, t("recommendedDosage.value.min"))
-          .max(10000, t("recommendedDosage.value.max")),
+          .max(100, t("recommendedDosage.value.max")),
       })
+    ),
+  });
+};
+export const PesticideSchema = (t: (arg: string) => string) => {
+  return z.object({
+    name: z.string().min(1, t("name.min")).max(100, "name.max"),
+    type: z.nativeEnum(PesticideType, {
+      message: t("type.enum"),
+    }),
+    ingredient: z.optional(
+      z.string().min(1, t("ingredient.min")).max(255, t("ingredient.max"))
+    ),
+    manufacturer: z.optional(
+      z.string().min(1, t("manufacturer.min")).max(255, t("manufacturer.max"))
+    ),
+    withdrawalPeriod: z.optional(
+      z.object({
+        unitId: z.string({
+          required_error: t("withdrawalPeriod.unitId.required_error"),
+        }),
+        value: z.coerce
+          .number({
+            required_error: t("withdrawalPeriod.value.required_error"),
+            invalid_type_error: t("withdrawalPeriod.value.invalid_type"),
+          })
+          .int(t("withdrawalPeriod.value.int"))
+          .min(0, t("withdrawalPeriod.value.min"))
+          .max(100, t("withdrawalPeriod.value.max")),
+      })
+    ),
+    toxicityLevel: z.optional(
+      z.nativeEnum(ToxicityLevel, {
+        message: t("toxicityLevel.enum"),
+      })
+    ),
+    recommendedDosage: z.optional(
+      z.object({
+        unitId: z.string({
+          required_error: t("recommendedDosage.unitId.required_error"),
+        }),
+        value: z.coerce
+          .number({
+            required_error: t("recommendedDosage.value.required_error"),
+            invalid_type_error: t("recommendedDosage.value.invalid_type"),
+          })
+
+          .min(0, t("recommendedDosage.value.min"))
+          .max(100, t("recommendedDosage.value.max")),
+      })
+    ),
+
+    applicationMethod: z.optional(
+      z
+        .string()
+        .min(1, t("applicationMethod.min"))
+        .max(100, t("applicationMethod.max"))
     ),
   });
 };

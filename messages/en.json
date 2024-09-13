@@ -224,7 +224,8 @@
           "WEIGHT": "Weight",
           "LENGTH": "Length",
           "VOLUME": "Volume",
-          "NUTRIENT": "Nutrient"
+          "NUTRIENT": "Nutrient",
+          "DATE": "Date"
         }
       },
       "description": {
@@ -1698,8 +1699,7 @@
           "required_error": "Dosage value is required",
           "invalid_type": "Dosage value must be number",
           "min": "Min dosage value is 0",
-          "max": "Max dosage value is 10000",
-          "int": "Dosage value must be integer"
+          "max": "Max dosage value is 100"
         },
         "label": "Recommended dosage",
         "placeholder": "Recommended dosage"
@@ -1715,6 +1715,151 @@
         "create": "Something went wrong while creating fertilizer!",
         "edit": "Something went wrong while editing fertilizer!",
         "destroy": "Something went wrong while deleting fertilizer!"
+      }
+    }
+  },
+  "pesticides": {
+    "page": {
+      "title": "Manage pesticides"
+    },
+    "table": {
+      "thead": {
+        "name": "Name",
+        "type": "Type",
+        "toxicityLevel": "Toxicity level",
+        "applicationMethod": "Application method",
+        "manufacturer": "Manufacturer"
+      },
+      "trow": {
+        "toxicityLevel": "...",
+        "manufacturer": "...",
+        "applicationMethod": "..."
+      }
+    },
+    "search": {
+      "placeholder": "Search by name...",
+      "faceted": {
+        "type": {
+          "placeholder": "Pesticide type",
+          "error": "Something went wrong went load pesticide count"
+        },
+        "toxicityLevel": {
+          "placeholder": "Toxicity level",
+          "error": "Something went wrong went load toxicity level count"
+        }
+      }
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add pesticide",
+        "description": "Add pesticide use for plant"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit pesticide",
+        "description": "Update of pesticide"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete pesticide?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid pesticides!"
+      },
+      "name": {
+        "label": "Pesticide name",
+        "placeholder": "Pesticide name",
+        "min": "Name is required!",
+        "max": "Name's length must be less than 100 characters"
+      },
+      "type": {
+        "label": "Pesticide type",
+        "placeholder": "Select pesticide type...",
+        "enum": "Select pesticide in list",
+        "options": {
+          "PESTICIDE": "Pesticide",
+          "HERBICIDE": "Herbicide",
+          "FUNGICIDE": "Fungicide"
+        }
+      },
+      "ingredient": {
+        "label": "Ingredient",
+        "placeholder": "Ingredient of pesticide ",
+        "min": "Min ingredient length is 1 character",
+        "max": "Max ingredient length is 255 characters"
+      },
+      "manufacturer": {
+        "label": "Manufacturer",
+        "placeholder": "Name of manufacturer",
+        "min": "Min manufacturer length is 1 character",
+        "max": "Max manufacturer length is 255 characters"
+      },
+      "withdrawalPeriod": {
+        "unitId": {
+          "required_error": "Required unit",
+          "placeholder": "Unit",
+          "error": "Something went wrong went load units",
+          "notFound": "Units not found",
+          "label": "Unit"
+        },
+        "value": {
+          "required_error": "Withdrawal period value is required",
+          "invalid_type": "Withdrawal period value must be number",
+          "int": "Withdrawal period value must be integer",
+          "min": "Min Withdrawal period value is 0",
+          "max": "Max Withdrawal period value is 100"
+        },
+        "label": "Withdrawal period",
+        "placeholder": "Withdrawal period"
+      },
+      "toxicityLevel": {
+        "label": "Toxicity level",
+        "placeholder": "Select toxicity level...",
+        "enum": "Select toxicity level in list",
+        "options": {
+          "LOW": "Low",
+          "MID": "Medium",
+          "HIGH": "High"
+        }
+      },
+      "recommendedDosage": {
+        "unitId": {
+          "required_error": "Required unit",
+          "placeholder": "Unit",
+          "error": "Something went wrong went load units",
+          "notFound": "Units not found",
+          "label": "Unit"
+        },
+        "value": {
+          "required_error": "Dosage value is required",
+          "invalid_type": "Dosage value must be number",
+          "min": "Min dosage value is 0",
+          "max": "Max dosage value is 100"
+        },
+        "label": "Recommended dosage",
+        "placeholder": "Recommended dosage"
+      },
+      "applicationMethod": {
+        "label": "Method",
+        "placeholder": "Root watering, spray on leaves",
+        "min": "Min method length is 1 character",
+        "max": "Max method length is 100 characters"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Pesticide created!",
+        "edit": "Pesticide edited!",
+        "destroy": "Pesticide deleted!"
+      },
+      "failure": {
+        "create": "Something went wrong while creating pesticide!",
+        "edit": "Something went wrong while editing pesticide!",
+        "destroy": "Something went wrong while deleting pesticide!"
       }
     }
   },
@@ -1747,6 +1892,7 @@
     "/admin/plants/create": "Create",
     "/admin/plants/detail": "Detail",
     "/admin/plants/detail/danger": "Danger",
-    "/admin/fertilizers": "Fertilizer"
+    "/admin/fertilizers": "Fertilizer",
+    "/admin/pesticides": "Pesticide"
   }
 }

@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { usePathname } from "@/navigation";
 import { useDashboardSidebar } from "@/stores/use-dashboard-sidebar";
 import {
+  BugOff,
   Building,
   Clipboard,
   Columns2,
@@ -103,6 +104,12 @@ export const AdminSidebar = () => {
             active={pathname === "/admin/fertilizers"}
             icon={Leaf}
             title="Fertilizers"
+          />
+          <SidebarItem
+            href="/admin/pesticides"
+            active={pathname === "/admin/pesticides"}
+            icon={BugOff}
+            title="Pesticides"
           />
         </SidebarAccordionItem>
         <SidebarAccordionItem title="Catalogue" icon={Flower}>

@@ -10,6 +10,7 @@ import { StaffEditRoleDialog } from "@/app/[locale]/(backoffice)/admin/(account)
 import { WeatherEditDialog } from "@/app/[locale]/(backoffice)/admin/(farm)/fields/detail/[fieldId]/weathers/_components/weather-edit-button";
 import { SoilEditDialog } from "@/app/[locale]/(backoffice)/admin/(farm)/fields/detail/[fieldId]/soils/_components/soil-edit-button";
 import { FertilizerEditDialog } from "@/app/[locale]/(backoffice)/admin/(farm)/fertilizers/_components/fertilizer-edit-button";
+import { PesticideEditDialog } from "@/app/[locale]/(backoffice)/admin/(farm)/pesticides/_components/pesticide-edit-button";
 
 export const DialogProvider = () => {
   return (
@@ -24,6 +25,7 @@ export const DialogProvider = () => {
       <WeatherEditDialog />
       <SoilEditDialog />
       <FertilizerEditDialog />
+      <PesticideEditDialog />
     </>
   );
 };

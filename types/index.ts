@@ -9,10 +9,13 @@ import {
   IntUnit,
   JobExperience,
   JobWorkingState,
+  Pesticide,
+  PesticideType,
   Plant,
   Soil,
   SoilType,
   Staff,
+  ToxicityLevel,
   Unit,
   Weather,
   WeatherStatus,
@@ -150,5 +153,31 @@ export type FertilizerTypeCount = {
 };
 export type FertilizerFrequencyCount = {
   frequencyOfUse: Frequency;
+  _count: number;
+};
+
+export type PesticideTable = Pesticide & {
+  recommendedDosage:
+    | (FloatUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+  withdrawalPeriod:
+    | (IntUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+};
+
+export type PesticideTypeCount = {
+  type: PesticideType;
+  _count: number;
+};
+export type PesticideToxicityLevelCount = {
+  toxicityLevel: ToxicityLevel;
   _count: number;
 };
