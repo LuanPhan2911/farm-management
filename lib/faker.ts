@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { SoilType, WeatherStatus } from "@prisma/client";
+import { WeatherStatus } from "@prisma/client";
 
 export const generateWeather = ({
   atmosphericPressureUnitId,
@@ -64,7 +64,6 @@ export const generateSoil = ({
       unitId: moistureUnitId,
       value: faker.number.int({ min: 0, max: 60 }),
     },
-    type: faker.helpers.enumValue(SoilType),
     nutrientNitrogen: faker.number.float({
       min: 0,
       max: 10,

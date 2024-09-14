@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
+import { SoilType } from "@prisma/client";
 
-export const createField = async (params: {
+type FieldParams = {
   name: string;
   location: string;
   orgId: string;
@@ -9,7 +10,9 @@ export const createField = async (params: {
   area: number;
   unitId: string;
   shape?: string;
-}) => {
+  soilType?: SoilType;
+};
+export const createField = async (params: FieldParams) => {
   const field = await db.field.create({
     data: {
       ...params,
@@ -18,19 +21,7 @@ export const createField = async (params: {
   return field;
 };
 
-export const updateField = async (
-  id: string,
-  params: {
-    name: string;
-    location: string;
-    orgId: string;
-    height: number;
-    width: number;
-    area: number;
-    unitId: string;
-    shape?: string;
-  }
-) => {
+export const updateField = async (id: string, params: FieldParams) => {
   const field = await db.field.update({
     where: {
       id,
@@ -83,13 +74,5 @@ export const getFieldIds = async () => {
     return fields.map((field) => field.id);
   } catch (error) {
     return [];
-  }
-};
-export const getFieldByOrganizationId = async (orgId: string) => {
-  try {
-    const field = await db.field.findUnique({ where: { orgId } });
-    return field;
-  } catch (error) {
-    return null;
   }
 };

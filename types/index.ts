@@ -1,5 +1,7 @@
 import {
   Category,
+  Equipment,
+  EquipmentType,
   Fertilizer,
   FertilizerType,
   Field,
@@ -179,5 +181,18 @@ export type PesticideTypeCount = {
 };
 export type PesticideToxicityLevelCount = {
   toxicityLevel: ToxicityLevel;
+  _count: number;
+};
+
+export type EquipmentTable = Equipment & {
+  purchasePrice: FloatUnit & {
+    unit: {
+      name: string;
+    };
+  };
+};
+
+export type EquipmentTypeCount = {
+  type: EquipmentType;
   _count: number;
 };

@@ -37,6 +37,7 @@ enum UnitType {
   VOLUME
   NUTRIENT
   DATE
+  MONEY
 }
 
 model FloatUnit {
@@ -48,13 +49,15 @@ model FloatUnit {
   tempuratures         Weather[] @relation(name: "temperature")
   atmosphericPressures Weather[] @relation(name: "atmosphericPressure")
 
-  outputs           Crop[]       @relation(name: "output")
-  expenses          Crop[]       @relation(name: "expense")
-  revenues          Crop[]       @relation(name: "revenue")
   idealTemperatures Plant[]      @relation(name: "idealTemperature")
   waterRequirments  Plant[]      @relation(name: "waterRequirement")
   fertilizerDosages Fertilizer[] @relation(name: "fertilizerDosage")
   pesticideDosages  Pesticide[]  @relation(name: "pesticideDosage")
+
+  purchasePrices Equipment[] @relation(name: "purchasePrice")
+
+  estimatedYields Crop[] @relation("estimatedYield")
+  actualYields    Crop[] @relation("actualYield")
 }
 
 model IntUnit {
@@ -68,7 +71,6 @@ model IntUnit {
   moistures  Soil[]    @relation(name: "moisture")
 
   rainfalls         Weather[]   @relation(name: "rainfall")
-  capacities        Equipment[] @relation(name: "capacity")
   idealHumidities   Plant[]     @relation(name: "idealHumidity")
   withdrawalPeriods Pesticide[] @relation(name: "withdrawalPeriod")
 }
@@ -225,8 +227,7 @@ model Soil {
 
   ph         Float
   moistureId String
-  moisture   IntUnit  @relation("moisture", fields: [moistureId], references: [id])
-  type       SoilType
+  moisture   IntUnit @relation("moisture", fields: [moistureId], references: [id])
 
   nutrientNitrogen   Float
   nutrientPhosphorus Float
@@ -260,6 +261,8 @@ model Field {
   unit   Unit?   @relation(fields: [unitId], references: [id], onDelete: SetNull)
   shape  String?
 
+  soilType SoilType?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -279,11 +282,8 @@ model Crop {
   id   String @id @default(uuid())
   name String
 
-  season Season
-  year   Int
-
-  plantingDate        DateTime
-  expectedHarvestDate DateTime
+  startDate DateTime
+  endDate   DateTime
 
   fieldId String
   field   Field  @relation(fields: [fieldId], references: [id])
@@ -291,14 +291,13 @@ model Crop {
   plantId String
   plant   Plant  @relation(fields: [plantId], references: [id])
 
-  outputId String?
-  output   FloatUnit? @relation(name: "output", fields: [outputId], references: [id])
+  estimatedYieldId String?
+  estimatedYield   FloatUnit? @relation(name: "estimatedYield", fields: [estimatedYieldId], references: [id]) // Sản lượng dự kiến
 
-  expenseId String?
-  expense   FloatUnit? @relation(name: "expense", fields: [expenseId], references: [id])
+  actualYieldId String?
+  actualYield   FloatUnit? @relation(name: "actualYield", fields: [actualYieldId], references: [id]) // Sản lượng thực tế
 
-  revenueId String?
-  revenue   FloatUnit? @relation(name: "revenue", fields: [revenueId], references: [id])
+  status String // Tình trạng mùa vụ
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -471,32 +470,32 @@ model FarmingDairy {
   activities Activity[]
 }
 
+enum EquipmentType {
+  AgriculturalMachine // Máy nông nghiệp
+  ManualTool // Công cụ thủ công
+  IrrigationSystem // Hệ thống tưới tiêu
+  Vehicle // Xe cộ
+}
+
 model Equipment {
-  id String @id @default(uuid())
+  id                  String        @id @default(uuid())
+  name                String
+  type                EquipmentType
+  brand               String
+  purchaseDate        DateTime
+  purchasePriceId     String
+  purchasePrice       FloatUnit     @relation(name: "purchasePrice", fields: [purchasePriceId], references: [id])
+  status              String // Hoạt động, Bảo trì, Hỏng
+  lastMaintenanceDate DateTime?
+  maintenanceSchedule String?
+  operatingHours      Int? // Số giờ hoạt động
+  location            String?
+  fuelConsumption     Float? // Lượng nhiên liệu tiêu thụ
+  energyType          String? // Loại năng lượng sử dụng
+  description         String?
+  imageUrl            String?
 
-  name String
-  type String // xem xet them
-
-  capacityId String
-  capacity   IntUnit @relation(name: "capacity", fields: [capacityId], references: [id])
-
-  manufacturer String
-  createdYear  Int
-  activities   Activity[] @relation(name: "equipment")
-}
-
-model Product {
-  id String @id @default(uuid())
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Order {
-  id String @id @default(uuid())
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  activities Activity[] @relation(name: "equipment")
 }
 
 model Inventory {

@@ -225,7 +225,8 @@
           "LENGTH": "Length",
           "VOLUME": "Volume",
           "NUTRIENT": "Nutrient",
-          "DATE": "Date"
+          "DATE": "Date",
+          "MONEY": "Finance"
         }
       },
       "description": {
@@ -836,7 +837,7 @@
         "min": "Quantity applicant is at least 1",
         "max": "Quantity applicant is at most 100",
         "required_error": "Quantity is required",
-        "invalid_type": "Quantity is number",
+        "invalid_type_error": "Quantity is number",
         "int": "Quantity is integer number"
       },
       "expiredAt": {
@@ -937,10 +938,12 @@
       "thead": {
         "name": "Name",
         "location": "Location",
+        "soilType": "Soil type",
         "height": "Height",
         "width": "Width",
         "area": "Area"
-      }
+      },
+      "trow": { "soilType": "..." }
     },
     "tabs": {
       "info": {
@@ -970,7 +973,12 @@
       }
     },
     "search": {
-      "placeholder": "Filter by field name..."
+      "placeholder": "Filter by field name...",
+      "faceted": {
+        "soilType": {
+          "placeholder": "Select soil type..."
+        }
+      }
     },
     "form": {
       "viewDetail": {
@@ -1026,26 +1034,26 @@
         "label": "Width",
         "placeholder": "Width of field",
         "required_error": "Width is required",
-        "invalid_type": "Width value must be number",
+        "invalid_type_error": "Width value must be number",
         "min": "Width value must be positive number"
       },
       "height": {
         "label": "Height",
         "placeholder": "Height of field",
         "required_error": "Height is required",
-        "invalid_type": "Height value must be number",
+        "invalid_type_error": "Height value must be number",
         "min": "Height value must be positive number"
       },
       "area": {
         "label": "Area",
         "placeholder": "Area of field",
         "required_error": "Area is required",
-        "invalid_type": "Area value must be number",
+        "invalid_type_error": "Area value must be number",
         "min": "Area value must be positive number"
       },
       "unitId": {
-        "label": "Unit",
-        "placeholder": "Select unit...",
+        "label": "Unit for height, width, area",
+        "placeholder": "Select unit for height, width, area",
         "required_error": "Unit is required",
         "error": "Something went wrong went load units",
         "notFound": "Units not found"
@@ -1055,6 +1063,17 @@
         "placeholder": "Shape of field",
         "min": "Shape must be more than 1 character",
         "max": "Shape must be less than 100 characters"
+      },
+      "soilType": {
+        "label": "Soil type",
+        "placeholder": "Select soil type...",
+        "enum": "Please select type in list",
+        "options": {
+          "SAND": "Sand",
+          "CLAY": "Clay",
+          "ALLUVIUM": "Alluvium",
+          "LOAM": "Loam"
+        }
       }
     },
     "status": {
@@ -1145,7 +1164,7 @@
         },
         "value": {
           "required_error": "Temperature value is required",
-          "invalid_type": "Temperature value must be number",
+          "invalid_type_error": "Temperature value must be number",
           "min": "Min temperature value is -20",
           "max": "Max temperature value is 50"
         },
@@ -1162,7 +1181,7 @@
         },
         "value": {
           "required_error": "Humidity value is required",
-          "invalid_type": "Humidity value must be number",
+          "invalid_type_error": "Humidity value must be number",
           "min": "Min humidity value is 0",
           "max": "Max humidity value is 100",
           "int": "Humidity value must be integer number"
@@ -1180,7 +1199,7 @@
         },
         "value": {
           "required_error": "Atmospheric pressure value is required",
-          "invalid_type": "Atmospheric pressure value must be number",
+          "invalid_type_error": "Atmospheric pressure value must be number",
           "min": "Min Atmospheric pressure value is 870",
           "max": "Max Atmospheric pressure value is 1084"
         },
@@ -1197,7 +1216,7 @@
         },
         "value": {
           "required_error": "Rainfall value is required",
-          "invalid_type": "Rainfall value must be number",
+          "invalid_type_error": "Rainfall value must be number",
           "min": "Min Rainfall value is 0",
           "max": "Max Rainfall value is 100",
           "int": "Rainfall value must be integer number"
@@ -1244,7 +1263,7 @@
         "createdAt": "CreateAt",
         "ph": "PH",
         "moisture": "Moisture",
-        "type": "Type",
+
         "nutrientNitrogen": "Nutrient nitrogen",
         "nutrientPhosphorus": "Nutrient phosphorus",
         "nutrientPotassium": "Nutrient potassium",
@@ -1259,10 +1278,6 @@
     },
     "search": {
       "faceted": {
-        "type": {
-          "placeholder": "Select type",
-          "error": "Something went wrong went load soil count type"
-        },
         "nutrientNitrogen": {
           "placeholder": "Nitrogen"
         },
@@ -1305,7 +1320,7 @@
         "label": "PH",
         "placeholder": "PH",
         "required_error": "PH value is required",
-        "invalid_type": "PH value must be number",
+        "invalid_type_error": "PH value must be number",
         "min": "PH value minimum is 0",
         "max": "PH value maximum is 14"
       },
@@ -1319,7 +1334,7 @@
         },
         "value": {
           "required_error": "Moisture value is required",
-          "invalid_type": "Moisture value must be number",
+          "invalid_type_error": "Moisture value must be number",
           "min": "Min Moisture value is 0",
           "max": "Max Moisture value is 60",
           "int": "Moisture value must be integer number"
@@ -1327,22 +1342,12 @@
         "label": "Moisture",
         "placeholder": "Moisture"
       },
-      "type": {
-        "label": "Type",
-        "placeholder": "Soil type",
-        "enum": "Please select type in list",
-        "options": {
-          "SAND": "Sand",
-          "CLAY": "Clay",
-          "ALLUVIUM": "Alluvium",
-          "LOAM": "Loam"
-        }
-      },
+
       "nutrientPhosphorus": {
         "label": "Nutrient Phosphorus",
         "placeholder": "Nutrient Phosphorus",
         "required_error": "Nutrient Phosphorus value is required",
-        "invalid_type": "Nutrient Phosphorus value must be number",
+        "invalid_type_error": "Nutrient Phosphorus value must be number",
         "min": "Nutrient Phosphorus value minimum is 0",
         "max": "Nutrient Phosphorus value maximum is 5"
       },
@@ -1350,7 +1355,7 @@
         "label": "Nutrient Potassium",
         "placeholder": "Nutrient Potassium",
         "required_error": "Nutrient Potassium value is required",
-        "invalid_type": "Nutrient Potassium value must be number",
+        "invalid_type_error": "Nutrient Potassium value must be number",
         "min": "Nutrient Potassium value minimum is 0",
         "max": "Nutrient Potassium value maximum is 8"
       },
@@ -1358,7 +1363,7 @@
         "label": "Nutrient Nitrogen",
         "placeholder": "Nutrient Nitrogen",
         "required_error": "Nutrient Nitrogen value is required",
-        "invalid_type": "Nutrient Nitrogen value must be number",
+        "invalid_type_error": "Nutrient Nitrogen value must be number",
         "min": "Nutrient Nitrogen value minimum is 0",
         "max": "Nutrient Nitrogen value maximum is 10"
       },
@@ -1490,7 +1495,7 @@
         "label": "Grow duration",
         "placeholder": "Grow duration of plant(days)",
         "required_error": "Grow duration is required",
-        "invalid_type": "Grow duration must be number",
+        "invalid_type_error": "Grow duration must be number",
         "int": "Grow duration must be integer",
         "min": "Min grow duration must be 7 days",
         "max": "Max grow duration must be 365 days"
@@ -1526,7 +1531,7 @@
         },
         "value": {
           "required_error": "Temperature value is required",
-          "invalid_type": "Temperature value must be number",
+          "invalid_type_error": "Temperature value must be number",
           "min": "Min temperature value is -20",
           "max": "Max temperature value is 50"
         },
@@ -1543,7 +1548,7 @@
         },
         "value": {
           "required_error": "Humidity value is required",
-          "invalid_type": "Humidity value must be number",
+          "invalid_type_error": "Humidity value must be number",
           "min": "Min humidity value is 0",
           "max": "Max humidity value is 100",
           "int": "Humidity value must be integer number"
@@ -1561,7 +1566,7 @@
         },
         "value": {
           "required_error": "Water requirement value is required",
-          "invalid_type": "Water requirement  value must be number",
+          "invalid_type_error": "Water requirement  value must be number",
           "min": "Min Water requirement  value is 0",
           "max": "Max Water requirement  value is 100"
         },
@@ -1697,7 +1702,7 @@
         },
         "value": {
           "required_error": "Dosage value is required",
-          "invalid_type": "Dosage value must be number",
+          "invalid_type_error": "Dosage value must be number",
           "min": "Min dosage value is 0",
           "max": "Max dosage value is 100"
         },
@@ -1808,7 +1813,7 @@
         },
         "value": {
           "required_error": "Withdrawal period value is required",
-          "invalid_type": "Withdrawal period value must be number",
+          "invalid_type_error": "Withdrawal period value must be number",
           "int": "Withdrawal period value must be integer",
           "min": "Min Withdrawal period value is 0",
           "max": "Max Withdrawal period value is 100"
@@ -1836,7 +1841,7 @@
         },
         "value": {
           "required_error": "Dosage value is required",
-          "invalid_type": "Dosage value must be number",
+          "invalid_type_error": "Dosage value must be number",
           "min": "Min dosage value is 0",
           "max": "Max dosage value is 100"
         },
@@ -1860,6 +1865,164 @@
         "create": "Something went wrong while creating pesticide!",
         "edit": "Something went wrong while editing pesticide!",
         "destroy": "Something went wrong while deleting pesticide!"
+      }
+    }
+  },
+  "equipments": {
+    "page": {
+      "title": "Manage equipments"
+    },
+    "table": {
+      "thead": {
+        "imageUrl": "Image",
+        "name": "Name",
+        "type": "Type",
+        "status": "Status",
+        "location": "Location",
+        "brand": "Brand"
+      },
+      "trow": {
+        "location": "..."
+      }
+    },
+    "search": {
+      "placeholder": "Search by name...",
+      "faceted": {
+        "type": {
+          "placeholder": "Equipment type",
+          "error": "Something went wrong went load equipment count"
+        }
+      }
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add equipment",
+        "description": "Add equipment use for plant"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit equipment",
+        "description": "Update of equipment"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete equipment?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid equipments!"
+      },
+      "name": {
+        "label": "Equipment name",
+        "placeholder": "Equipment name",
+        "min": "Name is required!",
+        "max": "Name's length must be less than 100 characters"
+      },
+      "type": {
+        "label": "Equipment type",
+        "placeholder": "Select equipment type...",
+        "enum": "Select equipment in list",
+        "options": {
+          "AgriculturalMachine": "Agricultural machine",
+          "ManualTool": "Manual tool",
+          "IrrigationSystem": "Irrigation system",
+          "Vehicle": "Vehicle"
+        }
+      },
+      "brand": {
+        "label": "Equipment brand",
+        "placeholder": "Equipment brand",
+        "min": "Brand is required!",
+        "max": "Brand's length must be less than 100 characters"
+      },
+      "purchaseDate": {
+        "label": "Purchase date",
+        "placeholder": "Select purchase date",
+        "required_error": "Purchase date is required",
+        "invalid_type_error_error": "Invalid date type"
+      },
+      "purchasePrice": {
+        "unitId": {
+          "required_error": "Required unit",
+          "placeholder": "Unit",
+          "error": "Something went wrong went load units",
+          "notFound": "Units not found",
+          "label": "Unit"
+        },
+        "value": {
+          "required_error": "Purchase price value is required",
+          "invalid_type_error": "Purchase price value must be number",
+          "min": "Min Purchase price value is 0",
+          "max": "Max Purchase price value is 1_000_000_000"
+        },
+        "label": "Purchase price",
+        "placeholder": "Purchase price"
+      },
+      "status": {
+        "label": "Equipment status",
+        "placeholder": "Equipment status",
+        "min": "Status is required!",
+        "max": "Status's length must be less than 100 characters"
+      },
+      "maintenanceSchedule": {
+        "label": "Equipment maintenance Schedule",
+        "placeholder": "Equipment maintenance Schedule",
+        "min": "Maintenance Schedule is required!",
+        "max": "Maintenance Schedule's length must be less than 100 characters"
+      },
+      "operatingHours": {
+        "label": "Equipment operating hour",
+        "placeholder": "Equipment operating hour",
+        "required_error": "Operating hour value is required",
+        "invalid_type_error": "Operating hour value must be number",
+        "int": "Operating hour must be integer",
+        "min": "Operating hour  value is 0",
+        "max": "Operating hour  value is 10 000"
+      },
+      "location": {
+        "label": "Equipment location",
+        "placeholder": "Equipment location",
+        "min": "Location is required!",
+        "max": "Location's length must be less than 100 characters"
+      },
+      "fuelConsumption": {
+        "label": "Equipment fuel Consumption",
+        "placeholder": "Equipment fuel Consumption",
+        "required_error": "Fuel Consumption value is required",
+        "invalid_type_error": "Fuel Consumption value must be number",
+        "min": "Fuel Consumption  value is 0",
+        "max": "Fuel Consumption  value is 10 000"
+      },
+      "energyType": {
+        "label": "Equipment energy type",
+        "placeholder": "Equipment energy type",
+        "min": "Energy type is required!",
+        "max": "Energy type's length must be less than 100 characters"
+      },
+      "description": {
+        "label": "Equipment description",
+        "placeholder": "Equipment description",
+        "min": "Description is required!",
+        "max": "Description's length must be less than 255 characters"
+      },
+      "imageUrl": {
+        "label": "Image of equipment",
+        "placeholder": "Upload image of equipment"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Equipment created!",
+        "edit": "Equipment edited!",
+        "destroy": "Equipment deleted!"
+      },
+      "failure": {
+        "create": "Something went wrong while creating equipment!",
+        "edit": "Something went wrong while editing equipment!",
+        "destroy": "Something went wrong while deleting equipment!"
       }
     }
   },
@@ -1893,6 +2056,9 @@
     "/admin/plants/detail": "Detail",
     "/admin/plants/detail/danger": "Danger",
     "/admin/fertilizers": "Fertilizer",
-    "/admin/pesticides": "Pesticide"
+    "/admin/pesticides": "Pesticide",
+    "/admin/equipments": "Equipment",
+    "/admin/equipments/create": "Create",
+    "/admin/equipments/edit": "Edit"
   }
 }
