@@ -50,7 +50,6 @@ export const SoilDeleteButton = ({ data, label }: SoilDeleteButtonProps) => {
       }
       size={"sm"}
       variant={"destroy"}
-      disabled={data.confirmed}
     >
       <Trash className="h-6 w-6 mr-2" />
       {label}

@@ -12,6 +12,7 @@ import {
   Flower2,
   Globe,
   Grid2X2,
+  Hammer,
   House,
   LayoutGrid,
   Leaf,
@@ -110,6 +111,12 @@ export const AdminSidebar = () => {
             active={pathname === "/admin/pesticides"}
             icon={BugOff}
             title="Pesticides"
+          />
+          <SidebarItem
+            href="/admin/equipments"
+            active={pathname === "/admin/equipments"}
+            icon={Hammer}
+            title="Equipments"
           />
         </SidebarAccordionItem>
         <SidebarAccordionItem title="Catalogue" icon={Flower}>

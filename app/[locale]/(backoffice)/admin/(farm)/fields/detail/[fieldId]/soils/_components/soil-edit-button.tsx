@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { SoilSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UnitType, SoilType } from "@prisma/client";
+import { UnitType } from "@prisma/client";
 import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
@@ -21,7 +21,7 @@ import {
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
-import { SelectOptions } from "@/components/form/select-options";
+
 import { SoilTable } from "@/types";
 import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { edit } from "@/actions/soil";
@@ -72,7 +72,7 @@ export const SoilEditDialog = () => {
       form.setValue("nutrientPotassium", data.soil.nutrientPotassium);
       form.setValue("nutrientUnitId", data.soil.nutrientUnitId);
       form.setValue("ph", data.soil.ph);
-      form.setValue("type", data.soil.type);
+
       setId(data.soil.id);
     }
   }, [data, form]);
@@ -104,27 +104,28 @@ export const SoilEditDialog = () => {
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="ph"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("ph.label")}</FormLabel>
+                <div className="flex gap-x-2">
+                  <FormControl>
+                    <Input
+                      placeholder={tSchema("ph.placeholder")}
+                      {...field}
+                      disabled={isPending}
+                      type="number"
+                    />
+                  </FormControl>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <div className="grid lg:grid-cols-2 gap-2">
-            <FormField
-              control={form.control}
-              name="ph"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("ph.label")}</FormLabel>
-                  <div className="flex gap-x-2">
-                    <FormControl>
-                      <Input
-                        placeholder={tSchema("ph.placeholder")}
-                        {...field}
-                        disabled={isPending}
-                        type="number"
-                      />
-                    </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <div className="grid grid-cols-4 gap-2">
               <div className="col-span-3">
                 <FormField
@@ -170,34 +171,6 @@ export const SoilEditDialog = () => {
                 )}
               />
             </div>
-          </div>
-          <div className="grid lg:grid-cols-2 gap-2">
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("type.label")}</FormLabel>
-                  <div className="flex gap-x-2">
-                    <FormControl>
-                      <SelectOptions
-                        label={tSchema("type.placeholder")}
-                        onChange={field.onChange}
-                        options={Object.keys(SoilType).map((item) => {
-                          return {
-                            label: tSchema(`type.options.${item}`),
-                            value: item,
-                          };
-                        })}
-                        disabled={isPending}
-                        defaultValue={field.value}
-                      />
-                    </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <FormField
               control={form.control}
               name="nutrientUnitId"
@@ -223,6 +196,7 @@ export const SoilEditDialog = () => {
               )}
             />
           </div>
+
           <div className="grid lg:grid-cols-3 gap-2">
             <FormField
               control={form.control}

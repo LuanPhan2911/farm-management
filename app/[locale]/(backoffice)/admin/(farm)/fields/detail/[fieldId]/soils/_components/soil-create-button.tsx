@@ -25,7 +25,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { SoilSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SoilType, UnitType } from "@prisma/client";
+import { UnitType } from "@prisma/client";
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
@@ -84,27 +84,28 @@ export const SoilCreateButton = () => {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="ph"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("ph.label")}</FormLabel>
+                  <div className="flex gap-x-2">
+                    <FormControl>
+                      <Input
+                        placeholder={tSchema("ph.placeholder")}
+                        {...field}
+                        disabled={isPending}
+                        type="number"
+                      />
+                    </FormControl>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <div className="grid lg:grid-cols-2 gap-2">
-              <FormField
-                control={form.control}
-                name="ph"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{tSchema("ph.label")}</FormLabel>
-                    <div className="flex gap-x-2">
-                      <FormControl>
-                        <Input
-                          placeholder={tSchema("ph.placeholder")}
-                          {...field}
-                          disabled={isPending}
-                          type="number"
-                        />
-                      </FormControl>
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <div className="grid grid-cols-4 gap-2">
                 <div className="col-span-3">
                   <FormField
@@ -149,33 +150,6 @@ export const SoilCreateButton = () => {
                   )}
                 />
               </div>
-            </div>
-            <div className="grid lg:grid-cols-2 gap-2">
-              <FormField
-                control={form.control}
-                name="type"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{tSchema("type.label")}</FormLabel>
-                    <div className="flex gap-x-2">
-                      <FormControl>
-                        <SelectOptions
-                          label={tSchema("type.placeholder")}
-                          onChange={field.onChange}
-                          options={Object.keys(SoilType).map((item) => {
-                            return {
-                              label: tSchema(`type.options.${item}`),
-                              value: item,
-                            };
-                          })}
-                          disabled={isPending}
-                        />
-                      </FormControl>
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="nutrientUnitId"
@@ -200,6 +174,7 @@ export const SoilCreateButton = () => {
                 )}
               />
             </div>
+
             <div className="grid lg:grid-cols-3 gap-2">
               <FormField
                 control={form.control}

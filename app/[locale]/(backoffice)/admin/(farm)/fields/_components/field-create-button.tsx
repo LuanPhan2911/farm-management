@@ -22,7 +22,8 @@ import { UnitsSelectWithQueryClient } from "../../../_components/units-select";
 import { Link, useRouter } from "@/navigation";
 import { toast } from "sonner";
 import { create } from "@/actions/field";
-import { UnitType } from "@prisma/client";
+import { SoilType, UnitType } from "@prisma/client";
+import { SelectOptions } from "@/components/form/select-options";
 
 export const FieldCreateButton = () => {
   const t = useTranslations("fields.form");
@@ -221,6 +222,30 @@ export const FieldCreateForm = () => {
                 <Input
                   placeholder={tSchema("shape.placeholder")}
                   {...field}
+                  disabled={isPending}
+                />
+              </FormControl>
+
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="soilType"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{tSchema("soilType.label")}</FormLabel>
+              <FormControl>
+                <SelectOptions
+                  label={tSchema("soilType.placeholder")}
+                  onChange={field.onChange}
+                  options={Object.values(SoilType).map((item) => {
+                    return {
+                      label: tSchema(`soilType.options.${item}`),
+                      value: item,
+                    };
+                  })}
                   disabled={isPending}
                 />
               </FormControl>
