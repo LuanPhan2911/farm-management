@@ -117,6 +117,7 @@ export const editPublished = async (
   const tStatus = await getTranslations("jobs.status");
   try {
     const job = await updateJobPublished(id, published);
+    revalidatePath("/admin/jobs");
 
     return successResponse(tStatus("success.editPublished"));
   } catch (error) {

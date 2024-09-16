@@ -5,8 +5,7 @@ import {
   getObjectFilterString,
   getObjectSortOrder,
 } from "@/lib/utils";
-import { PaginatedResponse, SoilTable, SoilTypeCount } from "@/types";
-import { SoilType } from "@prisma/client";
+import { PaginatedResponse, SoilTable } from "@/types";
 
 type SoilParams = {
   ph: number;
@@ -14,7 +13,6 @@ type SoilParams = {
     value: number;
     unitId: string;
   };
-  type: SoilType;
   nutrientNitrogen: number;
   nutrientPhosphorus: number;
   nutrientPotassium: number;
@@ -165,37 +163,7 @@ export const getSoilById = async (id: string) => {
     return null;
   }
 };
-export const getCountSoilType = async ({
-  fieldId,
-  begin,
-  end,
-  filterString,
-}: SoilQuery): Promise<SoilTypeCount[]> => {
-  try {
-    const result = await db.soil.groupBy({
-      by: "type",
-      where: {
-        fieldId,
-        createdAt: {
-          ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
-          ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
-        },
-        ...(filterString && getObjectFilterString(filterString)),
-      },
-      _count: {
-        _all: true,
-      },
-    });
-    return result.map((item) => {
-      return {
-        type: item.type,
-        _count: item._count._all,
-      };
-    });
-  } catch (error) {
-    return [];
-  }
-};
+
 export const getSoilUnitForGenerateSoil = async () => {
   return await db.$transaction(async (ctx) => {
     const moistureUnit = await ctx.unit.findFirst({

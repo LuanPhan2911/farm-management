@@ -7,32 +7,36 @@ import { useAlertDialog } from "@/stores/use-alert-dialog";
 import { Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
+import { useTransition } from "react";
 import { toast } from "sonner";
 
 export const OrgDeleteButton = () => {
   const { onOpen, onClose } = useAlertDialog();
+  const [isPending, startTransition] = useTransition();
   const t = useTranslations("organizations");
   const router = useRouter();
   const params = useParams<{
     orgId: string;
   }>();
-  const onConfirm = async () => {
-    destroy(params.orgId)
-      .then(({ message, ok }) => {
-        if (ok) {
+  const onConfirm = () => {
+    startTransition(() => {
+      destroy(params.orgId)
+        .then(({ message, ok }) => {
+          if (ok) {
+            onClose();
+            toast.success(message);
+            router.replace("/admin/organizations");
+          } else {
+            toast.error(message);
+          }
+        })
+        .catch((error) => {
+          toast.error(t("status.failure.destroy"));
+        })
+        .finally(() => {
           onClose();
-          toast.success(message);
-          router.replace("/admin/organizations");
-        } else {
-          toast.error(message);
-        }
-      })
-      .catch((error) => {
-        toast.error(t("status.failure.destroy"));
-      })
-      .finally(() => {
-        onClose();
-      });
+        });
+    });
   };
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -41,6 +45,7 @@ export const OrgDeleteButton = () => {
       title: t("form.destroy.title"),
       description: t("form.destroy.description"),
       onConfirm,
+      isPending,
     });
   };
   return (

@@ -8,6 +8,7 @@ import { User } from "@clerk/nextjs/server";
 
 import { Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useTransition } from "react";
 import { toast } from "sonner";
 
 interface UserDeleteButtonProps {
@@ -17,27 +18,30 @@ interface UserDeleteButtonProps {
 export const UserDeleteButton = ({ data, label }: UserDeleteButtonProps) => {
   const { id } = data;
   const { onOpen, onClose } = useAlertDialog();
+  const [isPending, startTransition] = useTransition();
   const t = useTranslations("users");
 
   const router = useRouter();
 
   const onConfirm = async () => {
-    destroy(id)
-      .then(({ message, ok }) => {
-        if (ok) {
+    startTransition(() => {
+      destroy(id)
+        .then(({ message, ok }) => {
+          if (ok) {
+            onClose();
+            toast.success(message);
+            router.push("/admin/users");
+          } else {
+            toast.error(message);
+          }
+        })
+        .catch((error) => {
+          toast.error(t("status.failure.destroy"));
+        })
+        .finally(() => {
           onClose();
-          toast.success(message);
-          router.push("/admin/users");
-        } else {
-          toast.error(message);
-        }
-      })
-      .catch((error) => {
-        toast.error(t("status.failure.destroy"));
-      })
-      .finally(() => {
-        onClose();
-      });
+        });
+    });
   };
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -46,6 +50,7 @@ export const UserDeleteButton = ({ data, label }: UserDeleteButtonProps) => {
       title: t("form.destroy.title"),
       description: t("form.destroy.description"),
       onConfirm,
+      isPending,
     });
   };
 

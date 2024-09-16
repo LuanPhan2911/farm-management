@@ -95,8 +95,8 @@ export const JobCreateForm = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("page.create.title")}</CardTitle>
-        <CardDescription>{t("page.create.description")}</CardDescription>
+        <CardTitle>{t("form.create.title")}</CardTitle>
+        <CardDescription>{t("form.create.description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>

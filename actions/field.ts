@@ -40,7 +40,7 @@ export const edit = async (
     return errorResponse(tSchema("errors.parse"));
   }
   try {
-    const field = await updateField(fieldId, { ...validatedFields.data });
+    const field = await updateField(fieldId, validatedFields.data);
     revalidatePath(`/admin/fields/detail/${field.id}`);
     return successResponse(tStatus("success.edit"));
   } catch (error) {

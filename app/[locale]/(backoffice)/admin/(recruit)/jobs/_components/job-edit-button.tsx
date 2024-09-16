@@ -93,14 +93,14 @@ export const JobEditForm = ({ job }: JobEditFormProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("page.edit.title")}</CardTitle>
-        <CardDescription>{t("page.edit.description")}</CardDescription>
+        <CardTitle>{t("form.edit.title")}</CardTitle>
+        <CardDescription>{t("form.edit.description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8 max-w-4xl"
+            className="space-y-4 max-w-4xl"
           >
             <FormField
               control={form.control}

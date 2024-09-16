@@ -21,11 +21,13 @@ interface DatePickerProps {
   onChange: (date: Date | undefined) => void;
   disabled?: boolean;
   disabledDateRange?: Matcher | Matcher[];
+  placeholder?: string;
 }
 export const DatePicker = ({
   date,
   disabled,
   onChange,
+  placeholder,
   disabledDateRange,
 }: DatePickerProps) => {
   return (
@@ -40,7 +42,11 @@ export const DatePicker = ({
           disabled={disabled}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "PPP") : <span>Pick a date</span>}
+          {date ? (
+            format(date, "PPP")
+          ) : (
+            <span>{placeholder || "Pick a date"}</span>
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="flex w-full flex-col space-y-2 p-2">

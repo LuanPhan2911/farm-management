@@ -16,7 +16,7 @@ interface CategoriesTableActionProps {
   data: Category;
 }
 export const CategoriesTableAction = ({ data }: CategoriesTableActionProps) => {
-  const t = useTranslations("categories.table.action");
+  const t = useTranslations("categories.form");
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -24,14 +24,12 @@ export const CategoriesTableAction = ({ data }: CategoriesTableActionProps) => {
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-40">
-        <DropdownMenuLabel>{t("label")}</DropdownMenuLabel>
-        <DropdownMenuSeparator />
+      <DropdownMenuContent align="start">
         <DropdownMenuItem>
-          <CategoryEditButton data={data} label={t("edit")} />
+          <CategoryEditButton data={data} label={t("edit.label")} />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <CategoryDeleteButton data={data} label={t("destroy")} />
+          <CategoryDeleteButton data={data} label={t("destroy.label")} />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

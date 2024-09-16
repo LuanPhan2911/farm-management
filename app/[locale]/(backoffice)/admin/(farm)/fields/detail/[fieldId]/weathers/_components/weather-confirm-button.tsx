@@ -4,7 +4,7 @@ import { editConfirmed } from "@/actions/weather";
 import { Switch } from "@/components/ui/switch";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
 import { useTranslations } from "next-intl";
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { toast } from "sonner";
 
 interface WeatherConfirmButtonProps {
@@ -18,14 +18,13 @@ export const WeatherConfirmButton = ({
   const { onOpen } = useAlertDialog();
   const [isPending, startTransition] = useTransition();
   const t = useTranslations("weathers");
-  const [status, setStatus] = useState(confirmed);
+
   const onClick = () => {
     startTransition(() => {
       editConfirmed(weatherId)
         .then(({ message, ok }) => {
           if (ok) {
             toast.success(message);
-            setStatus(true);
           } else {
             toast.error(message);
           }
@@ -37,15 +36,16 @@ export const WeatherConfirmButton = ({
   };
   return (
     <Switch
-      checked={status}
+      checked={confirmed}
       onCheckedChange={() =>
         onOpen({
           title: t("form.editConfirmed.title"),
           description: t("form.editConfirmed.description"),
-          onConfirm: onClick,
+          onConfirm: () => onClick(),
+          isPending,
         })
       }
-      disabled={isPending || status}
+      disabled={isPending || confirmed}
     />
   );
 };

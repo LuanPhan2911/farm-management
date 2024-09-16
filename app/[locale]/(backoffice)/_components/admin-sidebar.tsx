@@ -3,14 +3,19 @@ import { cn } from "@/lib/utils";
 import { usePathname } from "@/navigation";
 import { useDashboardSidebar } from "@/stores/use-dashboard-sidebar";
 import {
+  BugOff,
   Building,
   Clipboard,
   Columns2,
   Compass,
   Flower,
+  Flower2,
   Globe,
   Grid2X2,
+  Hammer,
+  House,
   LayoutGrid,
+  Leaf,
   MountainSnow,
   Section,
   Settings,
@@ -82,12 +87,38 @@ export const AdminSidebar = () => {
           />
         </SidebarAccordionItem>
 
-        <SidebarItem
-          href="/admin/fields"
-          active={pathname === "/admin/fields"}
-          icon={Grid2X2}
-          title="Fields"
-        />
+        <SidebarAccordionItem title="Farm" icon={House}>
+          <SidebarItem
+            href="/admin/fields"
+            active={pathname === "/admin/fields"}
+            icon={Grid2X2}
+            title="Fields"
+          />
+          <SidebarItem
+            href="/admin/plants"
+            active={pathname === "/admin/plants"}
+            icon={Flower2}
+            title="Plants"
+          />
+          <SidebarItem
+            href="/admin/fertilizers"
+            active={pathname === "/admin/fertilizers"}
+            icon={Leaf}
+            title="Fertilizers"
+          />
+          <SidebarItem
+            href="/admin/pesticides"
+            active={pathname === "/admin/pesticides"}
+            icon={BugOff}
+            title="Pesticides"
+          />
+          <SidebarItem
+            href="/admin/equipments"
+            active={pathname === "/admin/equipments"}
+            icon={Hammer}
+            title="Equipments"
+          />
+        </SidebarAccordionItem>
         <SidebarAccordionItem title="Catalogue" icon={Flower}>
           <SidebarItem
             href="/admin/categories"

@@ -29,6 +29,7 @@ import { z } from "zod";
 import { UserInfo } from "./user-info";
 import { Separator } from "@/components/ui/separator";
 import { InputClipboard } from "@/components/form/input-clipboard";
+import { getEmailAddress } from "@/lib/utils";
 
 interface UserBasicInfoProps {
   data: User;
@@ -39,16 +40,9 @@ export const UserBasicInfo = ({ data }: UserBasicInfoProps) => {
   const formSchema = UserSchema(tSchema);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      address: "",
-      email: "",
-      phone: "",
-    },
   });
   useEffect(() => {
-    const email = data.emailAddresses[0].emailAddress;
+    const email = getEmailAddress(data);
     const address = (data.publicMetadata?.address as string) || "";
     const phoneNumber = (data.publicMetadata?.phone as string) || "";
     form.setValue("email", email);
@@ -76,8 +70,8 @@ export const UserBasicInfo = ({ data }: UserBasicInfoProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("page.detail.title")}</CardTitle>
-        <CardDescription>{t("page.detail.description")}</CardDescription>
+        <CardTitle>{t("form.detail.title")}</CardTitle>
+        <CardDescription>{t("form.detail.description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <UserInfo data={data} />
@@ -85,7 +79,7 @@ export const UserBasicInfo = ({ data }: UserBasicInfoProps) => {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8 max-w-4xl"
+            className="space-y-4 max-w-4xl"
           >
             <InputClipboard label={tSchema("id.label")} value={data.id} />
             <FormField

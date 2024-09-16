@@ -1,13 +1,24 @@
 import {
+  ApplicantStatus,
+  Category,
+  Equipment,
+  EquipmentType,
+  Fertilizer,
+  FertilizerType,
   Field,
   FloatUnit,
+  Frequency,
   Gender,
   IntUnit,
   JobExperience,
   JobWorkingState,
+  Pesticide,
+  PesticideType,
+  Plant,
   Soil,
   SoilType,
   Staff,
+  ToxicityLevel,
   Unit,
   Weather,
   WeatherStatus,
@@ -56,7 +67,20 @@ export type UnitSelect = {
   id: string;
   name: string;
 };
+export type CategorySelect = {
+  id: string;
+  name: string;
+};
 
+export type ApplicantTable = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  note?: string | null;
+  status: ApplicantStatus;
+};
 export type FieldWithUnit = Field & {
   unit: Unit | null;
 };
@@ -102,4 +126,84 @@ export type SoilTable = Soil & {
   nutrientUnit: {
     name: string;
   };
+};
+export type PlantTable = Plant & {
+  category: Category;
+  idealTemperature:
+    | (FloatUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+  idealHumidity:
+    | (IntUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+  waterRequirement:
+    | (FloatUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+};
+export type FertilizerTable = Fertilizer & {
+  recommendedDosage:
+    | (FloatUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+};
+export type FertilizerTypeCount = {
+  type: FertilizerType;
+  _count: number;
+};
+export type FertilizerFrequencyCount = {
+  frequencyOfUse: Frequency;
+  _count: number;
+};
+
+export type PesticideTable = Pesticide & {
+  recommendedDosage:
+    | (FloatUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+  withdrawalPeriod:
+    | (IntUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+};
+
+export type PesticideTypeCount = {
+  type: PesticideType;
+  _count: number;
+};
+export type PesticideToxicityLevelCount = {
+  toxicityLevel: ToxicityLevel;
+  _count: number;
+};
+
+export type EquipmentTable = Equipment & {
+  purchasePrice: FloatUnit & {
+    unit: {
+      name: string;
+    };
+  };
+};
+
+export type EquipmentTypeCount = {
+  type: EquipmentType;
+  _count: number;
 };

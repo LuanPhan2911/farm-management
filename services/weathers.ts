@@ -6,8 +6,7 @@ import {
   getObjectSortOrder,
 } from "@/lib/utils";
 import { PaginatedResponse, WeatherStatusCount, WeatherTable } from "@/types";
-import { UnitType, WeatherStatus } from "@prisma/client";
-import { getUnitsSelect } from "./units";
+import { WeatherStatus } from "@prisma/client";
 
 type WeatherParams = {
   temperature: {

@@ -15,7 +15,6 @@ import { generateEmail, generatePassword } from "@/lib/utils";
 import { StaffSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Applicant } from "@prisma/client";
 import { Edit, RefreshCcw } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useTransition } from "react";
@@ -24,9 +23,10 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { StaffSelectRole } from "../../../_components/staff-select-role";
 import { useForm } from "react-hook-form";
+import { ApplicantTable } from "@/types";
 
 interface ApplicantStaffCreateButtonProps {
-  data: Applicant;
+  data: ApplicantTable;
   label: string;
 }
 export const ApplicantStaffCreateButton = ({
@@ -67,7 +67,6 @@ export const ApplicantStaffCreateDialog = () => {
       role: "farmer",
       email: "",
       password: "",
-      receiverEmail: "",
     },
   });
   useEffect(() => {
@@ -173,6 +172,7 @@ export const ApplicantStaffCreateDialog = () => {
                     onClick={refreshPassword}
                     type="button"
                     disabled={isPending}
+                    variant={"outline"}
                   >
                     <RefreshCcw />
                   </Button>

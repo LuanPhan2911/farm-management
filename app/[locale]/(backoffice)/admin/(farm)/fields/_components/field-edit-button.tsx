@@ -12,19 +12,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { FieldSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { OrgsSelectWithQueryClient } from "../../../_components/orgs-select";
 import { UnitsSelectWithQueryClient } from "../../../_components/units-select";
-import { useRouter } from "@/navigation";
 import { toast } from "sonner";
 import { edit } from "@/actions/field";
 import { useParams } from "next/navigation";
 import { FieldWithUnit } from "@/types";
-import { UnitType } from "@prisma/client";
+import { SoilType, UnitType } from "@prisma/client";
+import { SelectOptions } from "@/components/form/select-options";
 
 interface FieldEditFormProps {
   data: FieldWithUnit;
@@ -44,8 +43,10 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
       ...data,
       shape: data.shape || undefined,
       unitId: data.unitId || undefined,
+      soilType: data.soilType || undefined,
     },
   });
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       edit(values, params.fieldId)
@@ -57,7 +58,7 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
           }
         })
         .catch((error) => {
-          toast.error(t("status.failure.create"));
+          toast.error(t("status.failure.edit"));
         });
     });
   };
@@ -162,6 +163,7 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
                     {...field}
                     type="number"
                     placeholder={tSchema("height.placeholder")}
+                    disabled={isPending}
                   />
                 </FormControl>
 
@@ -181,6 +183,7 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
                     {...field}
                     type="number"
                     placeholder={tSchema("width.placeholder")}
+                    disabled={isPending}
                   />
                 </FormControl>
 
@@ -200,6 +203,7 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
                     {...field}
                     type="number"
                     placeholder={tSchema("area.placeholder")}
+                    disabled={isPending}
                   />
                 </FormControl>
 
@@ -219,6 +223,31 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
                   placeholder={tSchema("shape.placeholder")}
                   {...field}
                   disabled={isPending}
+                />
+              </FormControl>
+
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="soilType"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{tSchema("soilType.label")}</FormLabel>
+              <FormControl>
+                <SelectOptions
+                  label={tSchema("soilType.placeholder")}
+                  onChange={field.onChange}
+                  options={Object.values(SoilType).map((item) => {
+                    return {
+                      label: tSchema(`soilType.options.${item}`),
+                      value: item,
+                    };
+                  })}
+                  disabled={isPending}
+                  defaultValue={field.value}
                 />
               </FormControl>
 

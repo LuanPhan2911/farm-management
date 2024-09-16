@@ -16,16 +16,15 @@ export const SoilConfirmButton = ({
   confirmed,
 }: SoilConfirmButtonProps) => {
   const { onOpen } = useAlertDialog();
+
   const [isPending, startTransition] = useTransition();
   const t = useTranslations("soils");
-  const [status, setStatus] = useState(confirmed);
   const onClick = () => {
     startTransition(() => {
       editConfirmed(soilId)
         .then(({ message, ok }) => {
           if (ok) {
             toast.success(message);
-            setStatus(true);
           } else {
             toast.error(message);
           }
@@ -37,15 +36,16 @@ export const SoilConfirmButton = ({
   };
   return (
     <Switch
-      checked={status}
+      checked={confirmed}
       onCheckedChange={() =>
         onOpen({
           title: t("form.editConfirmed.title"),
           description: t("form.editConfirmed.description"),
           onConfirm: onClick,
+          isPending,
         })
       }
-      disabled={isPending || status}
+      disabled={isPending || confirmed}
     />
   );
 };

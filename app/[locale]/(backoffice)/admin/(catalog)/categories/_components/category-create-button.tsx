@@ -27,10 +27,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useRef, useTransition } from "react";
+import { useEffect, useRef, useTransition } from "react";
 import { create } from "@/actions/category";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
+import slugify from "slugify";
+import { SelectOptions } from "@/components/form/select-options";
+import { CategoryType } from "@prisma/client";
 
 export const CategoryCreateButton = () => {
   const tSchema = useTranslations("categories.schema");
@@ -42,9 +45,17 @@ export const CategoryCreateButton = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      description: "",
     },
   });
+  const name = form.watch("name");
+  useEffect(() => {
+    form.setValue(
+      "slug",
+      slugify(name, {
+        lower: true,
+      })
+    );
+  }, [name, form]);
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       create(values)
@@ -64,7 +75,7 @@ export const CategoryCreateButton = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>
+        <Button variant={"success"}>
           <Plus className="h-6 w-6 mr-2" />{" "}
           <span className="text-sm font-semibold">
             {t("form.create.label")}
@@ -78,7 +89,7 @@ export const CategoryCreateButton = () => {
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="name"
@@ -97,6 +108,49 @@ export const CategoryCreateButton = () => {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="slug"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("slug.label")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={tSchema("slug.placeholder")}
+                      {...field}
+                      disabled={isPending}
+                    />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("type.label")}</FormLabel>
+                  <FormControl>
+                    <SelectOptions
+                      label={tSchema("type.placeholder")}
+                      onChange={field.onChange}
+                      disabled={isPending}
+                      options={Object.values(CategoryType).map((item) => {
+                        return {
+                          label: tSchema(`type.options.${item}`),
+                          value: item,
+                        };
+                      })}
+                    />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <FormField
               control={form.control}
               name="description"
