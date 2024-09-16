@@ -16,7 +16,7 @@ import { PlantSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useTranslations } from "next-intl";
-import { useEffect, useTransition } from "react";
+import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -24,7 +24,6 @@ import { CategoriesSelectWithQueryClient } from "../../../_components/categories
 import { CategoryType, FertilizerType, Season, UnitType } from "@prisma/client";
 import { SelectOptions } from "@/components/form/select-options";
 import { UnitsSelectWithQueryClient } from "../../../_components/units-select";
-import { useRouter } from "@/navigation";
 import { PlantTable } from "@/types";
 import { UploadImage } from "@/components/form/upload-image";
 
@@ -49,27 +48,6 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
     },
   });
 
-  //   const {
-  //     categoryId,
-  //     fertilizerType,
-  //     growthDuration,
-  //     idealHumidity,
-  //     imageUrl,
-  //     name,
-  //     season,
-  //     waterRequirement,
-  //     idealTemperature,
-  //   } = data;
-  //   form.setValue("categoryId", categoryId);
-  //   form.setValue("idealHumidity", idealHumidity || undefined);
-  //   form.setValue("idealTemperature", idealTemperature || undefined);
-  //   form.setValue("season", season || undefined);
-  //   form.setValue("fertilizerType", fertilizerType);
-  //   form.setValue("growthDuration", growthDuration);
-  //   form.setValue("imageUrl", imageUrl || undefined);
-  //   form.setValue("waterRequirement", waterRequirement || undefined);
-  //   form.setValue("name", name);
-  // }, [form, data]);
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       edit(values, data.id)

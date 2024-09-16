@@ -121,14 +121,20 @@ export const FertilizerCreateButton = () => {
             <div className="grid lg:grid-cols-2 gap-2">
               <FormField
                 control={form.control}
-                name="applicationMethod"
+                name="type"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{tSchema("applicationMethod.label")}</FormLabel>
+                    <FormLabel>{tSchema("type.label")}</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder={tSchema("applicationMethod.placeholder")}
-                        {...field}
+                      <SelectOptions
+                        label={tSchema("type.placeholder")}
+                        onChange={field.onChange}
+                        options={Object.keys(FertilizerType).map((item) => {
+                          return {
+                            label: tSchema(`type.options.${item}`),
+                            value: item,
+                          };
+                        })}
                         disabled={isPending}
                       />
                     </FormControl>
@@ -195,20 +201,14 @@ export const FertilizerCreateButton = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
               <FormField
                 control={form.control}
-                name="type"
+                name="applicationMethod"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{tSchema("type.label")}</FormLabel>
+                    <FormLabel>{tSchema("applicationMethod.label")}</FormLabel>
                     <FormControl>
-                      <SelectOptions
-                        label={tSchema("type.placeholder")}
-                        onChange={field.onChange}
-                        options={Object.keys(FertilizerType).map((item) => {
-                          return {
-                            label: tSchema(`type.options.${item}`),
-                            value: item,
-                          };
-                        })}
+                      <Input
+                        placeholder={tSchema("applicationMethod.placeholder")}
+                        {...field}
                         disabled={isPending}
                       />
                     </FormControl>
@@ -216,6 +216,7 @@ export const FertilizerCreateButton = () => {
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
                 name="frequencyOfUse"

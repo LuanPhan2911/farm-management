@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { Check, ChevronsUpDown, RefreshCcw } from "lucide-react";
 import { useState } from "react";
 import { Organization } from "@clerk/nextjs/server";
@@ -29,7 +29,7 @@ import { ErrorButton } from "@/components/buttons/error-button";
 
 export type pageParam = number | undefined;
 interface OrgsSelectProps {
-  defaultValue: string;
+  defaultValue?: string;
   onChange: (val: string) => void;
   disabled?: boolean;
   label: string;
@@ -50,10 +50,10 @@ const OrgsSelect = ({
   const [value, setValue] = useState(defaultValue || "");
 
   const {
-    data,
-    isPending,
-    isError,
-    refetch,
+    data: dataSelect,
+    isPending: isPendingSelect,
+    isError: isErrorSelect,
+    refetch: refetchSelect,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
@@ -87,14 +87,14 @@ const OrgsSelect = ({
     setOpen(false);
   };
 
-  if (isPending) {
+  if (isPendingSelect) {
     return <Skeleton className="w-full h-12"></Skeleton>;
   }
-  if (isError) {
-    return <ErrorButton title={errorLabel} refresh={refetch} />;
+  if (isErrorSelect) {
+    return <ErrorButton title={errorLabel} refresh={refetchSelect} />;
   }
   const organizations: Organization[] = [];
-  data.pages.forEach((page) => {
+  dataSelect.pages.forEach((page) => {
     page.data.forEach((item) => {
       organizations.push(item);
     });

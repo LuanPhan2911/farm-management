@@ -46,6 +46,7 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
       soilType: data.soilType || undefined,
     },
   });
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       edit(values, params.fieldId)

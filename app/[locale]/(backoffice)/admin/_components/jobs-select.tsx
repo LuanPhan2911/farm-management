@@ -34,7 +34,7 @@ const JobsSelect = ({}: JobsSelectProps) => {
     router.replace(`${pathname}?${params.toString()}`);
   };
   if (isPending) {
-    return <Skeleton className="h-12 w-60" />;
+    return <Skeleton className="h-10 w-60" />;
   }
   if (isError) {
     return <ErrorButton refresh={refetch} title={t("error")} />;
@@ -45,13 +45,15 @@ const JobsSelect = ({}: JobsSelectProps) => {
       value: item.id,
     };
   });
+  const selectedOption = searchParams.get("jobId") || undefined;
   return (
     <ComboBox
-      data={options}
+      options={options}
       notFound={t("notFound")}
       label={t("label")}
       onChange={handleChange}
       isSearch={false}
+      defaultValue={selectedOption}
     />
   );
 };

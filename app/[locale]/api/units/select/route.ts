@@ -1,4 +1,4 @@
-import { getUnitsSelect } from "@/services/units";
+import { getUnitsByType } from "@/services/units";
 import { UnitType } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -6,7 +6,7 @@ export const GET = async (req: NextRequest) => {
   try {
     const params = req.nextUrl.searchParams;
     const type = params.get("type") as UnitType;
-    const data = await getUnitsSelect(type);
+    const data = await getUnitsByType(type);
     return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json("Internal Error", { status: 500 });

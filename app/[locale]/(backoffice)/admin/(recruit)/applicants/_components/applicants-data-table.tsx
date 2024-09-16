@@ -12,19 +12,20 @@ import { ApplicantsTableAction } from "./applicants-table-action";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
 import { destroyMany } from "@/actions/applicant";
 import { toast } from "sonner";
-import { Applicant, ApplicantStatus } from "@prisma/client";
+import { ApplicantStatus } from "@prisma/client";
 import { Badge } from "@/components/ui/badge";
 import { JobSelectWithQueryClient } from "../../../_components/jobs-select";
 import { useTransition } from "react";
+import { ApplicantTable } from "@/types";
 
 interface ApplicantsTableProps {
-  applicants: Applicant[];
+  applicants: ApplicantTable[];
 }
 export const ApplicantsTable = ({ applicants }: ApplicantsTableProps) => {
   const t = useTranslations("applicants");
   const [isPending, startTransition] = useTransition();
   const { onOpen, onClose } = useAlertDialog();
-  const handleConfirm = (rows: Applicant[]) => {
+  const handleConfirm = (rows: ApplicantTable[]) => {
     startTransition(() => {
       const ids = rows.map((row) => row.id);
       destroyMany(ids)
@@ -43,7 +44,7 @@ export const ApplicantsTable = ({ applicants }: ApplicantsTableProps) => {
         });
     });
   };
-  const columns: ColumnDef<Applicant>[] = [
+  const columns: ColumnDef<ApplicantTable>[] = [
     {
       id: "select",
       header: ({ table }) => (
@@ -135,7 +136,7 @@ export const ApplicantsTable = ({ applicants }: ApplicantsTableProps) => {
   const bulkActions = [
     {
       label: t("form.destroySelected.label"),
-      action: (rows: Applicant[]) => {
+      action: (rows: ApplicantTable[]) => {
         onOpen({
           title: t("form.destroySelected.title"),
           description: t("form.destroySelected.description"),
@@ -145,6 +146,18 @@ export const ApplicantsTable = ({ applicants }: ApplicantsTableProps) => {
       },
     },
   ];
+  const facetedFilters = [
+    {
+      column: "status",
+      label: t("search.faceted.status.placeholder"),
+      options: Object.values(ApplicantStatus).map((item) => {
+        return {
+          label: t(`schema.status.options.${item}`),
+          value: item,
+        };
+      }),
+    },
+  ];
 
   return (
     <Card>
@@ -152,17 +165,16 @@ export const ApplicantsTable = ({ applicants }: ApplicantsTableProps) => {
         <CardTitle>{t("page.title")}</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex justify-end">
-          <JobSelectWithQueryClient />
-        </div>
+        <JobSelectWithQueryClient />
         <DataTable
           columns={columns}
           data={applicants}
           searchable={{
-            value: "name",
+            value: "email",
             placeholder: t("search.placeholder"),
           }}
           bulkActions={bulkActions}
+          facetedFilters={facetedFilters}
         />
       </CardContent>
     </Card>

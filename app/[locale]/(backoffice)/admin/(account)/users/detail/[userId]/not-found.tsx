@@ -1,19 +1,17 @@
 "use client";
-
 import { NotFoundPage } from "@/components/not-found-page";
-
 import { useTranslations } from "next-intl";
 
-const JobEditNotFoundPage = () => {
-  const t = useTranslations("jobs.notFound");
+const UserDetailNotFound = () => {
+  const t = useTranslations("users.notFound");
   return (
     <NotFoundPage
       title={t("title")}
       description={t("description")}
       backButtonLabel={t("backLabel")}
-      backButtonUrl="/admin/jobs"
+      backButtonUrl="/admin/users"
     />
   );
 };
 
-export default JobEditNotFoundPage;
+export default UserDetailNotFound;

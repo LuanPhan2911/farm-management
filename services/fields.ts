@@ -76,3 +76,12 @@ export const getFieldIds = async () => {
     return [];
   }
 };
+export const getFieldByOrgId = async (orgId: string) => {
+  try {
+    const field = await db.field.findUnique({
+      where: { orgId },
+    });
+  } catch (error) {
+    return null;
+  }
+};

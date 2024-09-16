@@ -1,4 +1,5 @@
 import {
+  ApplicantTable,
   FertilizerTable,
   PesticideTable,
   SoilTable,
@@ -22,7 +23,7 @@ export type DialogType =
 export interface DialogData {
   category?: Category;
   unit?: Unit;
-  applicant?: Applicant;
+  applicant?: ApplicantTable;
   user?: User;
   weather?: WeatherTable;
   soil?: SoilTable;

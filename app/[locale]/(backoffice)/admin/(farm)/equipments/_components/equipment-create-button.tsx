@@ -20,11 +20,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Link, useRouter } from "@/navigation";
 import { EquipmentSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EquipmentType, UnitType, ToxicityLevel } from "@prisma/client";
+import { EquipmentType, UnitType } from "@prisma/client";
 
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useRef, useTransition } from "react";
+import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -91,24 +91,7 @@ export const EquipmentCreateForm = () => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{tSchema("description.label")}</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder={tSchema("description.placeholder")}
-                  {...field}
-                  disabled={isPending}
-                />
-              </FormControl>
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <FormField
           control={form.control}
           name="brand"
@@ -216,6 +199,24 @@ export const EquipmentCreateForm = () => {
             )}
           />
         </div>
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{tSchema("description.label")}</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder={tSchema("description.placeholder")}
+                  {...field}
+                  disabled={isPending}
+                />
+              </FormControl>
+
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="status"

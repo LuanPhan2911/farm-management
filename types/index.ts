@@ -1,4 +1,5 @@
 import {
+  ApplicantStatus,
   Category,
   Equipment,
   EquipmentType,
@@ -69,6 +70,16 @@ export type UnitSelect = {
 export type CategorySelect = {
   id: string;
   name: string;
+};
+
+export type ApplicantTable = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  note?: string | null;
+  status: ApplicantStatus;
 };
 export type FieldWithUnit = Field & {
   unit: Unit | null;

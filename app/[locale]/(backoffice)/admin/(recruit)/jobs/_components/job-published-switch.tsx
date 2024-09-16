@@ -18,7 +18,7 @@ export const JobPublishedSwitch = ({
   const [isPending, startTransition] = useTransition();
   const { onOpen } = useAlertDialog();
 
-  const t = useTranslations("jobs.status.failure");
+  const t = useTranslations("jobs");
   const onToggle = (newStatus: boolean) => {
     startTransition(() => {
       editPublished(id, newStatus)
@@ -30,7 +30,7 @@ export const JobPublishedSwitch = ({
           }
         })
         .catch((error: Error) => {
-          toast.error(t("editPublished"));
+          toast.error(t("status.failure.editPublished"));
         });
     });
   };
@@ -40,8 +40,8 @@ export const JobPublishedSwitch = ({
       checked={published}
       onCheckedChange={() => {
         onOpen({
-          title: "Published job",
-          description: "Everyone can read",
+          title: t("form.editPublished.title"),
+          description: t("form.editPublished.description"),
           onConfirm: () => onToggle(!published),
           isPending,
         });

@@ -46,9 +46,6 @@ export const PlantCreateForm = () => {
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-    },
   });
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {

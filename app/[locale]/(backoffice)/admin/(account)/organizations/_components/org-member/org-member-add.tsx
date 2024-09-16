@@ -30,7 +30,7 @@ import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { OrgMemberRole } from "./org-member-role";
 
-import { StaffSelectWithQueryClient } from "../../../_components/staffs-select";
+import { StaffSelectWithQueryClient } from "../../../../_components/staffs-select";
 import { Plus } from "lucide-react";
 
 interface OrgMemberAddProps {}
@@ -40,7 +40,7 @@ export const OrgMemberAdd = ({}: OrgMemberAddProps) => {
     orgId: string;
   }>();
   const t = useTranslations("organizations");
-  const tSchema = useTranslations("organizations.schema");
+  const tSchema = useTranslations("organizations.schema.member");
   const formSchema = OrganizationMemberSchema(tSchema);
 
   const [isPending, startTransition] = useTransition();
@@ -48,7 +48,6 @@ export const OrgMemberAdd = ({}: OrgMemberAddProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      memberId: "",
       role: "org:member",
     },
   });

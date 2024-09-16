@@ -17,7 +17,7 @@ type EquipmentParams = {
     unitId: string;
     value: number;
   };
-  status: string;
+  status?: string;
   maintenanceSchedule?: string;
   operatingHours?: number;
   location?: string;

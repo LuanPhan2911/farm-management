@@ -16,7 +16,7 @@ import { JobTable } from "@/types";
 import { JobPublishedSwitch } from "./job-published-switch";
 import { JobExpired } from "./job-expired";
 import { JobCreateButton } from "./job-create-button";
-import { Job, JobExperience } from "@prisma/client";
+import { JobExperience } from "@prisma/client";
 import { useTransition } from "react";
 
 interface JobsTableProps {

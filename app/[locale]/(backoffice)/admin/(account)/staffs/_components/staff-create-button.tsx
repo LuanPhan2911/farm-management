@@ -16,7 +16,7 @@ import { StaffSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Edit, RefreshCcw } from "lucide-react";
+import { Plus, RefreshCcw } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -35,7 +35,7 @@ export const StaffCreateButton = () => {
       size={"sm"}
       variant={"success"}
     >
-      <Edit className="h-6 w-6 mr-2" />
+      <Plus className="h-6 w-6 mr-2" />
       {t("label")}
     </Button>
   );
@@ -51,11 +51,7 @@ export const StaffCreateDialog = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
       role: "farmer",
-      email: "",
-      password: generatePassword(8),
-      receiverEmail: "",
     },
   });
   const watchName = form.watch("name");
@@ -77,7 +73,7 @@ export const StaffCreateDialog = () => {
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.editRole"));
+          toast.error(t("status.failure.create"));
         })
         .finally(() => {
           onClose();

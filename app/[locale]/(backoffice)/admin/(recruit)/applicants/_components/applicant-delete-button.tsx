@@ -2,14 +2,14 @@
 import { destroy } from "@/actions/applicant";
 import { Button } from "@/components/ui/button";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
-import { Applicant } from "@prisma/client";
+import { ApplicantTable } from "@/types";
 import { Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { toast } from "sonner";
 
 interface ApplicantDeleteButtonProps {
-  data: Applicant;
+  data: ApplicantTable;
   label: string;
 }
 export const ApplicantDeleteButton = ({

@@ -4,7 +4,7 @@ import { editConfirmed } from "@/actions/weather";
 import { Switch } from "@/components/ui/switch";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
 import { useTranslations } from "next-intl";
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { toast } from "sonner";
 
 interface WeatherConfirmButtonProps {

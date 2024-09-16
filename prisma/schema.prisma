@@ -485,7 +485,7 @@ model Equipment {
   purchaseDate        DateTime
   purchasePriceId     String
   purchasePrice       FloatUnit     @relation(name: "purchasePrice", fields: [purchasePriceId], references: [id])
-  status              String // Hoạt động, Bảo trì, Hỏng
+  status              String? // Hoạt động, Bảo trì, Hỏng
   lastMaintenanceDate DateTime?
   maintenanceSchedule String?
   operatingHours      Int? // Số giờ hoạt động

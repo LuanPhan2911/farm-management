@@ -35,9 +35,7 @@ export const UnitSchema = (t: (arg: string) => string) =>
     type: z.optional(z.nativeEnum(UnitType), {
       message: t("type.enum"),
     }),
-    description: z.optional(
-      z.string().min(1, t("description.min")).max(100, t("description.max"))
-    ),
+    description: z.optional(z.string().max(100, t("description.max"))),
   });
 export const JobSchema = (t: (arg: string) => string) =>
   z.object({
@@ -98,16 +96,22 @@ export const ApplicantSchema = (t: (arg: string) => string) => {
 
 export const StaffSchema = (t: (arg: string) => string) => {
   return z.object({
-    name: z.string().min(1, t("name.min")).max(100, t("name.max")),
+    name: z
+      .string({ required_error: t("name.required_error") })
+      .min(1, t("name.min"))
+      .max(100, t("name.max")),
     email: z
-      .string()
+      .string({ required_error: t("email.required_error") })
       .min(1, t("email.min"))
       .email(t("email.isEmail"))
       .max(100, t("email.max")),
-    password: z.string().min(8, t("password.min")).max(50, t("password.max")),
+    password: z
+      .string({ required_error: t("password.required_error") })
+      .min(8, t("password.min"))
+      .max(50, t("password.max")),
 
     role: z.nativeEnum(StaffRole, {
-      message: t("role.native"),
+      message: t("role.enum"),
     }),
     receiverEmail: z.optional(z.string().max(200, t("receiverEmail.max"))),
   });
@@ -138,29 +142,46 @@ export const UserSchema = (t: (arg: string) => string) => {
 
 export const OrganizationSchema = (t: (arg: string) => string) => {
   return z.object({
-    name: z.string().min(1, t("name.min")).max(100, t("name.max")),
-    slug: z.string().min(1, t("slug.min")).max(100, t("slug.max")),
-    createdBy: z
-      .string()
-      .min(1, t("createdBy.min"))
-      .max(100, t("createdBy.max")),
+    name: z
+      .string({
+        required_error: t("name.required_error"),
+      })
+      .min(3, t("name.min"))
+      .max(100, t("name.max")),
+    slug: z
+      .string({
+        required_error: t("slug.required_error"),
+      })
+      .min(3, t("slug.min"))
+      .max(100, t("slug.max")),
+    createdBy: z.string({
+      required_error: t("createdBy.required_error"),
+    }),
   });
 };
 
 const orgRoles = ["org:admin", "org:member"] as const;
 export const OrganizationMemberSchema = (t: (arg: string) => string) => {
   return z.object({
-    memberId: z.string().min(1, t("memberId.min")),
+    memberId: z.string({
+      required_error: t("memberId.required_error"),
+    }),
     role: z.enum(orgRoles, {
-      message: "role.enum",
+      message: t("role.enum"),
     }),
   });
 };
 
 export const FieldSchema = (t: (arg: string) => string) => {
   return z.object({
-    name: z.string().min(1, t("name.min")).max(100, t("name.max")),
-    location: z.string().min(1, t("location.min")).max(100, t("location.max")),
+    name: z
+      .string({ required_error: t("name.required_error") })
+      .min(5, t("name.min"))
+      .max(100, t("name.max")),
+    location: z
+      .string({ required_error: t("location.required_error") })
+      .min(5, t("location.min"))
+      .max(100, t("location.max")),
     orgId: z.string({
       required_error: t("orgId.required_error"),
     }),
@@ -169,26 +190,27 @@ export const FieldSchema = (t: (arg: string) => string) => {
         required_error: t("height.required_error"),
         invalid_type_error: t("height.invalid_type_error"),
       })
-      .min(0, t("height.min")),
+      .min(0, t("height.min"))
+      .max(100_000, t("height.max")),
     width: z.coerce
       .number({
         required_error: t("width.required_error"),
         invalid_type_error: t("width.invalid_type_error"),
       })
-      .min(0, t("width.min")),
+      .min(0, t("width.min"))
+      .max(100_000, t("width.max")),
 
     area: z.coerce
       .number({
         required_error: t("area.required_error"),
         invalid_type_error: t("area.invalid_type_error"),
       })
-      .min(0, t("area.min")),
+      .min(0, t("area.min"))
+      .max(1_000_000, t("width.max")),
     unitId: z.string({
       required_error: t("unitId.required_error"),
     }),
-    shape: z.optional(
-      z.string().min(1, t("shape.min")).max(100, t("shape.max"))
-    ),
+    shape: z.optional(z.string().max(100, t("shape.max"))),
     soilType: z.optional(
       z.nativeEnum(SoilType, {
         message: t("soilType.enum"),
@@ -307,7 +329,12 @@ export const SoilSchema = (t: (arg: string) => string) => {
 
 export const PlantSchema = (t: (arg: string) => string) => {
   return z.object({
-    name: z.string().min(1, t("name.min")).max(100, t("name.max")),
+    name: z
+      .string({
+        required_error: t("name.required_error"),
+      })
+      .min(5, t("name.min"))
+      .max(100, t("name.max")),
     imageUrl: z.optional(z.string().max(255, t("imageUrl.max"))),
     categoryId: z.string({ required_error: t("categoryId.required_error") }),
     growthDuration: z.coerce
@@ -375,25 +402,25 @@ export const PlantSchema = (t: (arg: string) => string) => {
 
 export const FertilizerSchema = (t: (arg: string) => string) => {
   return z.object({
-    name: z.string().min(1, t("name.min")).max(100, "name.max"),
+    name: z
+      .string({
+        required_error: t("name.required_error"),
+      })
+      .min(5, t("name.min"))
+      .max(100, "name.max"),
     type: z.nativeEnum(FertilizerType, {
       message: t("type.enum"),
     }),
     nutrientOfNPK: z
-      .string()
-      .min(1, t("nutrientOfNPK.min"))
+      .string({
+        required_error: t("nutrientOfNPK.required_error"),
+      })
+      .min(3, t("nutrientOfNPK.min"))
       .max(100, t("nutrientOfNPK.max")),
-    composition: z.optional(
-      z.string().min(1, t("composition.min")).max(255, t("composition.max"))
-    ),
-    manufacturer: z.optional(
-      z.string().min(1, t("manufacturer.min")).max(255, t("manufacturer.max"))
-    ),
+    composition: z.optional(z.string().max(255, t("composition.max"))),
+    manufacturer: z.optional(z.string().max(255, t("manufacturer.max"))),
     applicationMethod: z.optional(
-      z
-        .string()
-        .min(1, t("applicationMethod.min"))
-        .max(100, t("applicationMethod.max"))
+      z.string().max(100, t("applicationMethod.max"))
     ),
     frequencyOfUse: z.optional(
       z.nativeEnum(Frequency, {
@@ -419,16 +446,17 @@ export const FertilizerSchema = (t: (arg: string) => string) => {
 };
 export const PesticideSchema = (t: (arg: string) => string) => {
   return z.object({
-    name: z.string().min(1, t("name.min")).max(100, "name.max"),
+    name: z
+      .string({
+        required_error: t("name.required_error"),
+      })
+      .min(3, t("name.min"))
+      .max(100, "name.max"),
     type: z.nativeEnum(PesticideType, {
       message: t("type.enum"),
     }),
-    ingredient: z.optional(
-      z.string().min(1, t("ingredient.min")).max(255, t("ingredient.max"))
-    ),
-    manufacturer: z.optional(
-      z.string().min(1, t("manufacturer.min")).max(255, t("manufacturer.max"))
-    ),
+    ingredient: z.optional(z.string().max(255, t("ingredient.max"))),
+    manufacturer: z.optional(z.string().max(255, t("manufacturer.max"))),
     withdrawalPeriod: z.optional(
       z.object({
         unitId: z.string({
@@ -466,20 +494,27 @@ export const PesticideSchema = (t: (arg: string) => string) => {
     ),
 
     applicationMethod: z.optional(
-      z
-        .string()
-        .min(1, t("applicationMethod.min"))
-        .max(100, t("applicationMethod.max"))
+      z.string().max(100, t("applicationMethod.max"))
     ),
   });
 };
 export const EquipmentSchema = (t: (arg: string) => string) => {
   return z.object({
-    name: z.string().min(1, t("name.min")).max(100, "name.max"),
+    name: z
+      .string({
+        required_error: t("name.required_error"),
+      })
+      .min(3, t("name.min"))
+      .max(100, "name.max"),
     type: z.nativeEnum(EquipmentType, {
       message: t("type.enum"),
     }),
-    brand: z.string().min(1, t("brand.min")).max(100, "brand.max"),
+    brand: z
+      .string({
+        required_error: t("brand.required_error"),
+      })
+      .min(3, t("brand.min"))
+      .max(100, "brand.max"),
     purchaseDate: z.date({
       required_error: t("purchaseDate.required_error"),
       invalid_type_error: t("purchaseDate.invalid_type_error"),
@@ -497,7 +532,7 @@ export const EquipmentSchema = (t: (arg: string) => string) => {
         .min(0, t("purchasePrice.value.min"))
         .max(1_000_000_000, t("purchasePrice.value.max")),
     }),
-    status: z.string().min(1, t("status.min")).max(100, "status.max"),
+    status: z.optional(z.string().max(100, "status.max")),
     maintenanceSchedule: z.optional(
       z
         .string()
@@ -514,9 +549,7 @@ export const EquipmentSchema = (t: (arg: string) => string) => {
         .min(0, t("operatingHours.value.min"))
         .max(10000, t("operatingHours.value.max"))
     ),
-    location: z.optional(
-      z.string().min(1, t("location.min")).max(100, "location.max")
-    ),
+    location: z.optional(z.string().max(100, "location.max")),
     fuelConsumption: z.optional(
       z.coerce
         .number({
@@ -527,14 +560,8 @@ export const EquipmentSchema = (t: (arg: string) => string) => {
         .min(0, t("fuelConsumption.value.min"))
         .max(10000, t("fuelConsumption.value.max"))
     ),
-    energyType: z.optional(
-      z.string().min(1, t("energyType.min")).max(100, "energyType.max")
-    ),
-    description: z.optional(
-      z.string().min(1, t("description.min")).max(255, "description.max")
-    ),
-    imageUrl: z.optional(
-      z.string().min(1, t("imageUrl.min")).max(255, "imageUrl.max")
-    ),
+    energyType: z.optional(z.string().max(100, "energyType.max")),
+    description: z.optional(z.string().max(255, "description.max")),
+    imageUrl: z.optional(z.string()),
   });
 };

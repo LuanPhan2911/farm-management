@@ -37,22 +37,21 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: data.name,
+      ...data,
       slug: data.slug || "",
-      createdBy: data.createdBy,
     },
   });
-  const watchName = form.watch("name");
+  const orgName = form.watch("name");
   useEffect(() => {
     form.setValue(
       "slug",
-      slugify(watchName, {
+      slugify(orgName, {
         lower: true,
         replacement: "-",
         trim: true,
       })
     );
-  }, [watchName, form]);
+  }, [orgName, form]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {

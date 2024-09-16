@@ -98,22 +98,22 @@
       "create": {
         "label": "Add",
         "title": "Add category",
-        "description": "Category use for classify the creature in the farm"
+        "description": "Category use for classify in the farm"
       },
       "edit": {
         "label": "Edit",
-        "title": "Edit category",
-        "description": "Category can edit"
+        "title": "Be careful w",
+        "description": "Be careful when editing category type. That may affect other data!"
       },
       "destroy": {
         "label": "Delete",
         "title": "Delete category?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "Are you absolutely sure? This action can not be undone! If category in use, you cannot to delete."
       },
       "destroySelected": {
         "label": "Delete all selected",
         "title": "Delete all selected categories?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "Are you absolutely sure? This action can not be undone! If category in use, you cannot to delete."
       }
     },
     "schema": {
@@ -128,13 +128,13 @@
       },
       "slug": {
         "label": "Slug",
-        "placeholder": "Slug",
+        "placeholder": "Slug will be automatically filled in according to name",
         "min": "Slug is required!",
         "max": "Slug's length must be less than 100 characters"
       },
       "type": {
         "label": "Category type",
-        "placeholder": "Select category type...",
+        "placeholder": "Select type...",
         "enum": "Please choose category type in list",
         "options": {
           "PLANT": "Plant"
@@ -197,7 +197,7 @@
       "destroySelected": {
         "label": "Delete all selected",
         "title": "Delete all selected units?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "Are you absolutely sure? This action can not be undone! If unit in use, you cannot to delete."
       }
     },
     "schema": {
@@ -230,7 +230,6 @@
         }
       },
       "description": {
-        "min": "Unit description is required!",
         "max": "Unit description's length must be less than 50 characters",
         "label": "Description",
         "placeholder": "Unit description"
@@ -249,13 +248,298 @@
       }
     }
   },
+  "applicants": {
+    "page": {
+      "title": "Manage Applicants"
+    },
+
+    "table": {
+      "thead": {
+        "name": "Name",
+        "email": "Email",
+        "address": "Address",
+        "phone": "Phone number",
+        "note": "Note",
+        "status": "Status"
+      },
+      "trow": {
+        "note": "..."
+      }
+    },
+    "search": {
+      "placeholder": "Filter by applicant email...",
+      "comboBox": {
+        "job": {
+          "notFound": "Job's not found",
+          "label": "Select job...",
+          "error": "Fail load jobs"
+        }
+      },
+      "faceted": {
+        "status": {
+          "placeholder": "Select status..."
+        }
+      }
+    },
+    "form": {
+      "apply": {
+        "label": "Apply",
+        "title": "Apply",
+        "description": "Apply this job"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete applicant?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      },
+      "createStaff": {
+        "label": "Create Staff",
+        "title": "Create staff",
+        "description": "A new account will created for applicant with selected role"
+      },
+      "destroySelected": {
+        "label": "Delete all selected",
+        "title": "Delete all selected applicants?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid fields!",
+        "jobIdInvalid": "Job is invalid",
+        "existingApplicant": "You applied this job",
+        "exist": "Applicant has already created staff or it's not existed",
+        "emailExist": "Applicant email which create staff is in use"
+      },
+      "name": {
+        "min": "Applicant first name is required!",
+        "max": "Applicant name's length must be less than 100 characters",
+        "label": "First name",
+        "placeholder": "Applicant first name"
+      },
+
+      "email": {
+        "min": "Applicant email is required!",
+        "max": "Applicant email's length must be less than 100 characters",
+        "isEmail": "Applicant email is invalid!",
+        "label": "Email",
+        "placeholder": "Applicant email"
+      },
+      "phone": {
+        "min": "Applicant phone is required!",
+        "max": "Applicant phone's length must be less than 15 number",
+        "label": "Phone",
+        "placeholder": "Applicant phone",
+        "isPhone": "Applicant phone number is invalid"
+      },
+      "address": {
+        "min": "Applicant address is required!",
+        "max": "Applicant address's length must be less than 100 characters",
+        "label": "Address",
+        "placeholder": "Applicant address"
+      },
+      "note": {
+        "label": "Note",
+        "placeholder": "Note",
+        "max": "Applicant note's length must be less than 200 characters"
+      },
+      "status": {
+        "options": {
+          "NEW": "New",
+          "CONFIRM": "Confirm"
+        }
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Apply this job success",
+        "destroy": "Applicant deleted!",
+        "createStaff": "Create staff success"
+      },
+      "failure": {
+        "create": "Something went wrong while applying the job!",
+        "destroy": "Something went wrong while deleting applicant!",
+        "createStaff": "Something went wrong while creating staff!"
+      }
+    }
+  },
+  "jobs": {
+    "page": {
+      "title": "Manage Jobs"
+    },
+
+    "table": {
+      "thead": {
+        "name": "Job name",
+        "quantity": "Quantity",
+        "gender": "Gender",
+        "experience": "Experience",
+        "published": "Published",
+        "expiredAt": "ExpiredAt",
+        "status": "Status"
+      }
+    },
+    "search": {
+      "placeholder": "Filter by job name...",
+      "faceted": {
+        "experience": {
+          "placeholder": "Select experience..."
+        }
+      }
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add job",
+        "description": "Post job vacancies for farms"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit job",
+        "description": "Update job information"
+      },
+      "editPublished": {
+        "label": "Edit published",
+        "title": "Edit published",
+        "description": "If job published is inactive, it will be hidden in jobs page"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete job?",
+        "description": "Are you absolutely sure? This action can not be undone! If job in use, you cannot to delete."
+      },
+      "destroySelected": {
+        "label": "Delete all selected",
+        "title": "Delete all selected jobs?",
+        "description": "Are you absolutely sure? This action can not be undone! If jobs in use, you cannot to delete."
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid fields!"
+      },
+      "name": {
+        "min": "Job name is required!",
+        "max": "Job name's length must be less than 100 characters",
+        "label": "Name",
+        "placeholder": "Job name"
+      },
+      "experience": {
+        "label": "Experience",
+        "placeholder": "Select Experience",
+        "enum": "Please select experience in list",
+        "options": {
+          "NONE": "None required experience",
+          "ONE": "1 year experience",
+          "TWO": "2 year experiences",
+          "FIVE": "5 year experiences",
+          "TEN": "10 year experiences",
+          "GREATER_THAN_TEN": "More than 10 year experiences"
+        }
+      },
+      "quantity": {
+        "label": "Quantity",
+        "placeholder": "Quantity applicant",
+        "min": "Quantity applicant is at least 1",
+        "max": "Quantity applicant is at most 100",
+        "required_error": "Quantity is required",
+        "invalid_type_error": "Quantity is number",
+        "int": "Quantity is integer number"
+      },
+      "expiredAt": {
+        "label": "Expired Date Apply",
+        "placeholder": "Expired date apply",
+        "min": "Expired date must be at least today"
+      },
+      "gender": {
+        "label": "Gender",
+        "placeholder": "Choose gender",
+        "enum": "Please choose gender in list",
+        "options": {
+          "MALE": "Male",
+          "FEMALE": "Female",
+          "NONE": "None required!"
+        }
+      },
+      "workingState": {
+        "label": "Working type",
+        "placeholder": "Working type",
+        "enum": "Please choose working time in list",
+        "options": {
+          "PART_TIME": "Part-time job",
+          "FULL_TIME": "Full-time job"
+        }
+      },
+      "workingTime": {
+        "min": "Working time is required!",
+        "max": "Job working time is maximum 100 characters",
+        "label": "Working Time",
+        "placeholder": "Working time eg: Monday to Friday 8:30am to 5pm"
+      },
+      "wage": {
+        "min": "Job wage is required!",
+        "max": "Job wage's length must be less than 100 characters",
+        "label": "Wage",
+        "placeholder": "Job's wage eg: 1000$ - 2000$"
+      },
+      "description": {
+        "min": "Job description is required!",
+        "max": "Job description is maximum 5000 characters",
+        "label": "Job description",
+        "placeholder": "Job's description"
+      },
+      "requirement": {
+        "min": "Job requirement is required!",
+        "max": "Job requirements is maximum 5000 characters",
+        "label": "Job requirement",
+        "placeholder": "Job's requirement"
+      },
+      "rights": {
+        "min": "Job rights is required!",
+        "max": "Job right is maximum 5000 characters",
+        "label": "Job rights",
+        "placeholder": "Job's right"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Job created!",
+        "edit": "Job edited!",
+        "destroy": "Job deleted!",
+        "editPublished": "Job's publish updated"
+      },
+      "failure": {
+        "create": "Something went wrong while creating job!",
+        "edit": "Something went wrong while editing job!",
+        "destroy": "Something went wrong while deleting job!",
+        "editPublished": "Something went wrong while updating published"
+      }
+    },
+    "notFound": {
+      "title": "Job not found",
+      "description": "Sorry, we couldn’t find the job you’re looking for.",
+      "backLabel": "Go to jobs page"
+    },
+    "card": {
+      "info": "Information about job",
+      "description": "Description",
+      "requirement": "Requirement",
+      "rights": "Rights",
+      "title": "Jobs",
+      "search": {
+        "placeholder": "Search by name...",
+        "notFound": "Not find the job with name is",
+        "typeOther": "Please type other name!"
+      },
+      "noJob": {
+        "label": "Current no job for you",
+        "backLabel": "Go to homepage"
+      }
+    }
+  },
   "users": {
     "page": {
-      "title": "Manage Users",
-      "detail": {
-        "title": "User basic information",
-        "description": "Manage user profile"
-      }
+      "title": "Manage Users"
     },
     "table": {
       "title": "All users",
@@ -285,25 +569,15 @@
       }
     },
     "form": {
-      "create": {
-        "label": "Add",
-        "title": "Add user",
-        "description": "User use for "
-      },
-      "edit": {
-        "label": "Edit",
-        "title": "Edit user",
-        "description": "User can edit"
+      "detail": {
+        "label": "Detail",
+        "title": "User basic information",
+        "description": "Manage user profile"
       },
       "destroy": {
         "label": "Delete",
         "title": "Delete user?",
         "description": "Are you absolutely sure? This action can not be undone!"
-      },
-      "editRole": {
-        "label": "Set role",
-        "title": "Update role for user",
-        "description": "Update role"
       }
     },
     "schema": {
@@ -355,8 +629,144 @@
         "edit": "Something went wrong while editing user!",
         "destroy": "Something went wrong while deleting user!"
       }
+    },
+    "notFound": {
+      "title": "User not found",
+      "description": "Sorry, we couldn’t find the user you’re looking for.",
+      "backLabel": "Go to users page"
     }
   },
+  "staffs": {
+    "page": {
+      "title": "Manage Staffs",
+      "detail": {
+        "title": "Staff basic information",
+        "description": "Manage staff profile"
+      }
+    },
+    "table": {
+      "title": "All staffs",
+      "thead": {
+        "name": "Staff",
+        "role": "Role",
+        "lastSignedInAt": "Last signed in",
+        "lastActiveAt": "Last active at",
+        "joinedAt": "Joined at"
+      },
+      "trow": {
+        "lastActiveAt": "Never active",
+        "lastSignedInAt": "Never signed"
+      }
+    },
+    "search": {
+      "placeholder": "Filter by staff name...",
+      "sortByDropdown": {
+        "label": "Sort by: ",
+        "placeholder": "Select sort by...",
+        "options": {
+          "email": "Email",
+          "createdAt": "Created at",
+          "lastSignInAt": "Last sign in at",
+          "lastActiveAt": "Last active at"
+        }
+      }
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add staff",
+        "description": "Create a new staff"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit staff",
+        "description": "Staff can edit"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete staff?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      },
+      "editRole": {
+        "label": "Edit role",
+        "title": "Update role",
+        "description": "Update role for staff"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid fields!",
+        "exist": "Staff email address is in use"
+      },
+      "id": {
+        "label": "Id"
+      },
+      "name": {
+        "label": "Staff name",
+        "placeholder": "Staff name",
+        "required_error": "Staff name is required",
+        "min": "Staff name is required!",
+        "max": "Staff name's length must be less than 100 characters"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "Email",
+        "min": "Email is required!",
+        "isEmail": "Email is invalid!",
+
+        "required_error": "Staff email is required",
+        "max": "Staff email's length must be less than 100 characters"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "Password",
+        "min": "Password must be more than 8 characters !",
+
+        "max": "Password's length must be less than 100 characters",
+        "required_error": "Staff password is required"
+      },
+      "role": {
+        "enum": "Select role in list",
+        "label": "Role",
+        "placeholder": "Select role"
+      },
+      "receiverEmail": {
+        "label": "Receiver email",
+        "placeholder": "Receiver email",
+        "max": "Receiver email's length must be less than 200 characters"
+      },
+      "firstName": {
+        "label": "First name",
+        "placeholder": "First name",
+        "min": "First name is required!"
+      },
+      "lastName": {
+        "label": "Last name",
+        "placeholder": "Last name",
+        "min": "Last name is required!"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Staff created!",
+        "edit": "Staff edited!",
+        "destroy": "Staff deleted!",
+        "editRole": "Staff role edited"
+      },
+      "failure": {
+        "create": "Something went wrong while creating staff!",
+        "edit": "Something went wrong while editing staff!",
+        "destroy": "Something went wrong while deleting staff!",
+        "editRole": "Something went wrong while editing staff role"
+      }
+    },
+    "notFound": {
+      "title": "Staff not found",
+      "description": "Sorry, we couldn’t find the staff you’re looking for.",
+      "backLabel": "Go to staffs page"
+    }
+  },
+
   "organizations": {
     "page": {
       "title": "Manage Organizations"
@@ -463,30 +873,32 @@
         "exist": "Organization slug existed",
         "existStaff": "Created by staff is not existed",
         "existMember": "Staff is not existed",
-        "existLogo": "Not found logo uploaded"
+        "existLogo": "Not found logo uploaded",
+        "existField": "Organization used in field"
       },
       "id": {
         "label": "Organization id"
       },
       "name": {
-        "min": "Organization name is required!",
-        "max": "Organization name's length must be less than 100 characters",
-        "label": "Name",
-        "placeholder": "Organization name"
+        "label": "Organization name",
+        "placeholder": "Organization name",
+        "required_error": "Organization name is required!",
+        "min": "Min organization name length is 3 characters",
+        "max": "Organization name's length must be less than 100 characters"
       },
       "slug": {
-        "min": "Slug is required!",
-        "max": "Slug's length must be less than 100 characters",
         "label": "Slug",
-        "placeholder": "Slug"
+        "placeholder": "Slug will be automatically filled in according to name",
+        "required_error": "Slug is required!",
+        "min": "Min slug length is 3 characters",
+        "max": "Slug's length must be less than 100 characters"
       },
       "createdBy": {
-        "min": "Create by is required!",
         "label": "Create by",
         "placeholder": "Select created by...",
         "error": "Something went wrong went load created by!",
         "notFound": "Staff not found",
-        "max": "Created by id's length must be less than 100 characters"
+        "required_error": "Create by is required!"
       },
       "createdAt": {
         "label": "Created at"
@@ -494,22 +906,22 @@
       "logo": {
         "label": "Upload logo"
       },
-
-      "memberId": {
-        "min": "Member email is required!",
-        "placeholder": "Select member...",
-        "notFound": "Member email not found",
-        "error": "Something went wrong went load member!",
-        "label": "Member"
-      },
-      "role": {
-        "label": "Role",
-        "placeholder": "Select role",
-        "min": "Role is required",
-        "enum": "Please select role in list",
-        "options": {
-          "admin": "Admin",
-          "member": "Member"
+      "member": {
+        "memberId": {
+          "required_error": "Member email is required!",
+          "placeholder": "Select member...",
+          "notFound": "Member email not found",
+          "error": "Fail load member!",
+          "label": "Member"
+        },
+        "role": {
+          "label": "Role",
+          "placeholder": "Select role",
+          "enum": "Please select role in list",
+          "options": {
+            "admin": "Admin",
+            "member": "Member"
+          }
         }
       }
     },
@@ -532,404 +944,14 @@
         "destroyMember": "Something went wrong while deleting member",
         "editMemberRole": "Something went wrong while editing member role"
       }
-    }
-  },
-  "staffs": {
-    "page": {
-      "title": "Manage Staffs",
-      "detail": {
-        "title": "Staff basic information",
-        "description": "Manage staff profile"
-      }
-    },
-    "table": {
-      "title": "All staffs",
-      "thead": {
-        "name": "Staff",
-        "role": "Role",
-        "lastSignedInAt": "Last signed in",
-        "lastActiveAt": "Last active at",
-        "joinedAt": "Joined at"
-      },
-      "trow": {
-        "lastActiveAt": "Never active",
-        "lastSignedInAt": "Never signed"
-      }
-    },
-    "search": {
-      "placeholder": "Filter by staff name...",
-      "sortByDropdown": {
-        "label": "Sort by: ",
-        "placeholder": "Select sort by...",
-        "options": {
-          "email": "Email",
-          "createdAt": "Created at",
-          "lastSignInAt": "Last sign in at",
-          "lastActiveAt": "Last active at"
-        }
-      }
-    },
-    "form": {
-      "create": {
-        "label": "Add",
-        "title": "Add staff",
-        "description": "Create a new staff"
-      },
-      "edit": {
-        "label": "Edit",
-        "title": "Edit staff",
-        "description": "Staff can edit"
-      },
-      "destroy": {
-        "label": "Delete",
-        "title": "Delete staff?",
-        "description": "Are you absolutely sure? This action can not be undone!"
-      },
-      "editRole": {
-        "label": "Edit role",
-        "title": "Update role",
-        "description": "Update role for staff"
-      }
-    },
-    "schema": {
-      "errors": {
-        "parse": "Invalid fields!",
-        "exist": "Staff email address is in use"
-      },
-      "id": {
-        "label": "Id"
-      },
-      "name": {
-        "label": "Staff name",
-        "placeholder": "Staff name",
-        "min": "Staff name is required!",
-        "max": "Staff name's length must be less than 100 characters"
-      },
-      "email": {
-        "min": "Email is required!",
-        "isEmail": "Email is invalid!",
-        "label": "Email",
-        "placeholder": "Email",
-        "max": "Staff email's length must be less than 100 characters"
-      },
-      "password": {
-        "min": "Password must be more than 8 characters !",
-        "label": "Password",
-        "placeholder": "Password",
-        "max": "Password's length must be less than 100 characters"
-      },
-      "role": {
-        "native": "Select role in list",
-        "label": "Role",
-        "placeholder": "Select role"
-      },
-      "receiverEmail": {
-        "label": "Receiver email",
-        "placeholder": "Receiver email",
-        "max": "Receiver email's length must be less than 200 characters"
-      },
-      "firstName": {
-        "label": "First name",
-        "placeholder": "First name",
-        "min": "First name is required!"
-      },
-      "lastName": {
-        "label": "Last name",
-        "placeholder": "Last name",
-        "min": "Last name is required!"
-      }
-    },
-    "status": {
-      "success": {
-        "create": "Staff created!",
-        "edit": "Staff edited!",
-        "destroy": "Staff deleted!",
-        "editRole": "Staff role edited"
-      },
-      "failure": {
-        "create": "Something went wrong while creating staff!",
-        "edit": "Something went wrong while editing staff!",
-        "destroy": "Something went wrong while deleting staff!",
-        "editRole": "Something went wrong while editing staff role"
-      }
-    }
-  },
-  "applicants": {
-    "page": {
-      "title": "Manage Applicants"
-    },
-
-    "table": {
-      "thead": {
-        "name": "Name",
-        "email": "Email",
-        "address": "Address",
-        "phone": "Phone number",
-        "note": "Note",
-        "status": "Status"
-      },
-      "trow": {
-        "note": "..."
-      }
-    },
-    "search": {
-      "placeholder": "Filter by applicant name...",
-      "comboBox": {
-        "job": {
-          "notFound": "Job's not found",
-          "label": "Select job...",
-          "error": "Something went wrong went load jobs"
-        }
-      }
-    },
-    "form": {
-      "apply": {
-        "label": "Apply",
-        "title": "Apply",
-        "description": "Apply this job"
-      },
-      "destroy": {
-        "label": "Delete",
-        "title": "Delete applicant?",
-        "description": "Are you absolutely sure? This action can not be undone!"
-      },
-      "createStaff": {
-        "label": "Create Staff",
-        "title": "Create staff",
-        "description": "A new account will created for applicant with selected role"
-      },
-      "destroySelected": {
-        "label": "Delete all selected",
-        "title": "Delete all selected applicants?",
-        "description": "Are you absolutely sure? This action can not be undone!"
-      }
-    },
-    "schema": {
-      "errors": {
-        "parse": "Invalid fields!",
-        "jobIdInvalid": "Job is invalid",
-        "existingApplicant": "You applied this job",
-        "exist": "Applicant has already created staff or it's not existed",
-        "emailExist": "Applicant email which create staff is in use"
-      },
-      "name": {
-        "min": "Applicant first name is required!",
-        "max": "Applicant name's length must be less than 100 characters",
-        "label": "First name",
-        "placeholder": "Applicant first name"
-      },
-
-      "email": {
-        "min": "Applicant email is required!",
-        "max": "Applicant email's length must be less than 100 characters",
-        "isEmail": "Applicant email is invalid!",
-        "label": "Email",
-        "placeholder": "Applicant email"
-      },
-      "phone": {
-        "min": "Applicant phone is required!",
-        "max": "Applicant phone's length must be less than 15 number",
-        "label": "Phone",
-        "placeholder": "Applicant phone",
-        "isPhone": "Applicant phone number is invalid"
-      },
-      "address": {
-        "min": "Applicant address is required!",
-        "max": "Applicant address's length must be less than 100 characters",
-        "label": "Address",
-        "placeholder": "Applicant address"
-      },
-      "note": {
-        "label": "Note",
-        "placeholder": "Note",
-        "max": "Applicant note's length must be less than 200 characters"
-      }
-    },
-    "status": {
-      "success": {
-        "create": "Apply this job success",
-        "destroy": "Applicant deleted!",
-        "createStaff": "Create staff success"
-      },
-      "failure": {
-        "create": "Something went wrong while applying the job!",
-        "destroy": "Something went wrong while deleting applicant!",
-        "createStaff": "Something went wrong while creating staff!"
-      }
-    }
-  },
-  "jobs": {
-    "page": {
-      "title": "Manage Jobs",
-      "create": {
-        "title": "Add job",
-        "description": "Post job vacancies for farms"
-      },
-      "edit": {
-        "title": "Edit job",
-        "description": "Update job information"
-      }
-    },
-
-    "table": {
-      "thead": {
-        "name": "Job name",
-        "quantity": "Quantity",
-        "gender": "Gender",
-        "experience": "Experience",
-        "published": "Published",
-        "expiredAt": "ExpiredAt",
-        "status": "Status"
-      }
-    },
-    "search": {
-      "placeholder": "Filter by job name...",
-      "faceted": {
-        "experience": {
-          "placeholder": "Select experience..."
-        }
-      }
-    },
-    "form": {
-      "create": {
-        "label": "Add"
-      },
-      "edit": {
-        "label": "Edit"
-      },
-      "destroy": {
-        "label": "Delete",
-        "title": "Delete job?",
-        "description": "Are you absolutely sure? This action can not be undone!"
-      },
-      "destroySelected": {
-        "label": "Delete all selected",
-        "title": "Delete all selected jobs?",
-        "description": "Are you absolutely sure? This action can not be undone!"
-      }
-    },
-    "schema": {
-      "errors": {
-        "parse": "Invalid fields!"
-      },
-      "name": {
-        "min": "Job name is required!",
-        "max": "Job name's length must be less than 100 characters",
-        "label": "Name",
-        "placeholder": "Job name"
-      },
-      "experience": {
-        "label": "Experience",
-        "placeholder": "Select Experience",
-        "enum": "Please select experience in list",
-        "options": {
-          "NONE": "None required experience",
-          "ONE": "1 year experience",
-          "TWO": "2 year experiences",
-          "FIVE": "5 year experiences",
-          "TEN": "10 year experiences",
-          "GREATER_THAN_TEN": "More than 10 year experiences"
-        }
-      },
-      "quantity": {
-        "label": "Quantity",
-        "placeholder": "Quantity applicant",
-        "min": "Quantity applicant is at least 1",
-        "max": "Quantity applicant is at most 100",
-        "required_error": "Quantity is required",
-        "invalid_type_error": "Quantity is number",
-        "int": "Quantity is integer number"
-      },
-      "expiredAt": {
-        "label": "Expired Date Apply",
-        "placeholder": "Expired date apply",
-        "min": "Expired date must be at least today"
-      },
-      "gender": {
-        "label": "Gender",
-        "placeholder": "Choose gender",
-        "enum": "Please choose gender in list",
-        "options": {
-          "MALE": "Male",
-          "FEMALE": "Female",
-          "NONE": "None required!"
-        }
-      },
-      "workingState": {
-        "label": "Working type",
-        "placeholder": "Working type",
-        "enum": "Please choose working time in list",
-        "options": {
-          "PART_TIME": "Part-time job",
-          "FULL_TIME": "Full-time job"
-        }
-      },
-      "workingTime": {
-        "min": "Working time is required!",
-        "max": "Job working time is maximum 100 characters",
-        "label": "Working Time",
-        "placeholder": "Working time"
-      },
-      "wage": {
-        "min": "Job wage is required!",
-        "max": "Job wage's length must be less than 100 characters",
-        "label": "Wage",
-        "placeholder": "Job's wage"
-      },
-      "description": {
-        "min": "Job description is required!",
-        "max": "Job description is maximum 5000 characters",
-        "label": "Description",
-        "placeholder": "Job's description"
-      },
-      "requirement": {
-        "min": "Job requirement is required!",
-        "max": "Job requirements is maximum 5000 characters",
-        "label": "Requirement",
-        "placeholder": "Job's requirement"
-      },
-      "rights": {
-        "min": "Job rights is required!",
-        "max": "Job right is maximum 5000 characters",
-        "label": "Rights",
-        "placeholder": "Job's right"
-      }
-    },
-    "status": {
-      "success": {
-        "create": "Job created!",
-        "edit": "Job edited!",
-        "destroy": "Job deleted!",
-        "editPublished": "Job's publish updated"
-      },
-      "failure": {
-        "create": "Something went wrong while creating job!",
-        "edit": "Something went wrong while editing job!",
-        "destroy": "Something went wrong while deleting job!",
-        "editPublished": "Something went wrong while updating published"
-      }
     },
     "notFound": {
-      "title": "Cannot find the job to edit",
-      "backButton": "Go back"
-    },
-    "card": {
-      "info": "Information about job",
-      "description": "Description",
-      "requirement": "Requirement",
-      "rights": "Rights",
-      "title": "Jobs",
-      "search": {
-        "placeholder": "Search by name...",
-        "notFound": "Not find the job with name is",
-        "typeOther": "Please type other name!"
-      },
-      "noJob": {
-        "label": "Current no job for you",
-        "backLabel": "Go to homepage"
-      }
+      "title": "Organization not found",
+      "description": "Sorry, we couldn’t find the organization you’re looking for.",
+      "backLabel": "Go to organizations page"
     }
   },
+
   "fields": {
     "page": {
       "title": "Manage fields"
@@ -1012,16 +1034,18 @@
         "parse": "Invalid fields!"
       },
       "name": {
-        "min": "Field name is required!",
-        "max": "Field name's length must be less than 100 characters",
         "label": "Name",
-        "placeholder": "Field name"
+        "placeholder": "Field name",
+        "required_error": "Field name is required!",
+        "min": "Min field name is 5 characters!",
+        "max": "Field name's length must be less than 100 characters"
       },
       "location": {
-        "min": "Field location is required!",
-        "max": "Field location's length must be less than 100 characters",
         "label": "Location",
-        "placeholder": "Field location"
+        "placeholder": "Field location",
+        "min": "Min field location is 5 characters!",
+        "required_error": "Field location is required!",
+        "max": "Field location's length must be less than 100 characters"
       },
       "orgId": {
         "label": "Organization",
@@ -1035,33 +1059,35 @@
         "placeholder": "Width of field",
         "required_error": "Width is required",
         "invalid_type_error": "Width value must be number",
-        "min": "Width value must be positive number"
+        "min": "Width value must be positive number",
+        "max": "Width value must be less than 100 000"
       },
       "height": {
         "label": "Height",
         "placeholder": "Height of field",
         "required_error": "Height is required",
         "invalid_type_error": "Height value must be number",
-        "min": "Height value must be positive number"
+        "min": "Height value must be positive number",
+        "max": "Height value must be less than 100 000"
       },
       "area": {
         "label": "Area",
         "placeholder": "Area of field",
         "required_error": "Area is required",
         "invalid_type_error": "Area value must be number",
-        "min": "Area value must be positive number"
+        "min": "Area value must be positive number",
+        "max": "Height value must be less than 1 000 000"
       },
       "unitId": {
         "label": "Unit for height, width, area",
         "placeholder": "Select unit for height, width, area",
         "required_error": "Unit is required",
-        "error": "Something went wrong went load units",
+        "error": "Fail load units",
         "notFound": "Units not found"
       },
       "shape": {
         "label": "Shape",
-        "placeholder": "Shape of field",
-        "min": "Shape must be more than 1 character",
+        "placeholder": "Shape of field eg:circle, square...",
         "max": "Shape must be less than 100 characters"
       },
       "soilType": {
@@ -1087,6 +1113,11 @@
         "edit": "Something went wrong while editing field!",
         "destroy": "Something went wrong while deleting field!"
       }
+    },
+    "notFound": {
+      "title": "Field not found",
+      "description": "Sorry, we couldn’t find the field you’re looking for.",
+      "backLabel": "Go to fields page"
     }
   },
   "weathers": {
@@ -1169,7 +1200,7 @@
           "max": "Max temperature value is 50"
         },
         "label": "Temperature",
-        "placeholder": "Temperature"
+        "placeholder": " From -20 degrees to 50 degrees"
       },
       "humidity": {
         "unitId": {
@@ -1187,7 +1218,7 @@
           "int": "Humidity value must be integer number"
         },
         "label": "Humidity",
-        "placeholder": "Humidity"
+        "placeholder": "From 0% to 100%"
       },
       "atmosphericPressure": {
         "unitId": {
@@ -1204,7 +1235,7 @@
           "max": "Max Atmospheric pressure value is 1084"
         },
         "label": "Atmospheric pressure",
-        "placeholder": "Atmospheric pressure"
+        "placeholder": "From 870 hPa to 1084 hPa"
       },
       "rainfall": {
         "unitId": {
@@ -1222,11 +1253,11 @@
           "int": "Rainfall value must be integer number"
         },
         "label": "Rainfall",
-        "placeholder": "Rainfall"
+        "placeholder": "From 0mm to 100mm"
       },
       "status": {
         "label": "Status",
-        "placeholder": "Weather status",
+        "placeholder": "Select status...",
         "enum": "Please select status in list",
         "options": {
           "SUNNY": "Sunny",
@@ -1318,7 +1349,7 @@
       },
       "ph": {
         "label": "PH",
-        "placeholder": "PH",
+        "placeholder": "PH from 0 to 14",
         "required_error": "PH value is required",
         "invalid_type_error": "PH value must be number",
         "min": "PH value minimum is 0",
@@ -1340,12 +1371,12 @@
           "int": "Moisture value must be integer number"
         },
         "label": "Moisture",
-        "placeholder": "Moisture"
+        "placeholder": "Moisture from 0% to 100%"
       },
 
       "nutrientPhosphorus": {
         "label": "Nutrient Phosphorus",
-        "placeholder": "Nutrient Phosphorus",
+        "placeholder": "From 0 to 5",
         "required_error": "Nutrient Phosphorus value is required",
         "invalid_type_error": "Nutrient Phosphorus value must be number",
         "min": "Nutrient Phosphorus value minimum is 0",
@@ -1353,7 +1384,7 @@
       },
       "nutrientPotassium": {
         "label": "Nutrient Potassium",
-        "placeholder": "Nutrient Potassium",
+        "placeholder": "From 0 to 8",
         "required_error": "Nutrient Potassium value is required",
         "invalid_type_error": "Nutrient Potassium value must be number",
         "min": "Nutrient Potassium value minimum is 0",
@@ -1361,7 +1392,7 @@
       },
       "nutrientNitrogen": {
         "label": "Nutrient Nitrogen",
-        "placeholder": "Nutrient Nitrogen",
+        "placeholder": "From 0 to 10",
         "required_error": "Nutrient Nitrogen value is required",
         "invalid_type_error": "Nutrient Nitrogen value must be number",
         "min": "Nutrient Nitrogen value minimum is 0",
@@ -1369,7 +1400,7 @@
       },
       "nutrientUnitId": {
         "label": "Nutrient unit",
-        "placeholder": "Select unit...",
+        "placeholder": "Select unit for nutrient NPK",
         "required_error": "Nutrient unit is required",
         "error": "Something went wrong went load units",
         "notFound": "Units not found"
@@ -1476,7 +1507,8 @@
       "name": {
         "label": "Plant name",
         "placeholder": "Plant name",
-        "min": "Name is required!",
+        "required_error": "Name plant is required!",
+        "min": "Min name length is 5 characters",
         "max": "Name's length must be less than 100 characters"
       },
       "imageUrl": {
@@ -1493,7 +1525,7 @@
       },
       "growthDuration": {
         "label": "Grow duration",
-        "placeholder": "Grow duration of plant(days)",
+        "placeholder": "From 7 days to 365 days",
         "required_error": "Grow duration is required",
         "invalid_type_error": "Grow duration must be number",
         "int": "Grow duration must be integer",
@@ -1536,7 +1568,7 @@
           "max": "Max temperature value is 50"
         },
         "label": "Temperature",
-        "placeholder": "Temperature"
+        "placeholder": "Eg: 25 degrees"
       },
       "idealHumidity": {
         "unitId": {
@@ -1554,7 +1586,7 @@
           "int": "Humidity value must be integer number"
         },
         "label": "Humidity",
-        "placeholder": "Humidity"
+        "placeholder": "Eg: 20%"
       },
       "waterRequirement": {
         "unitId": {
@@ -1571,7 +1603,7 @@
           "max": "Max Water requirement  value is 100"
         },
         "label": "Water requirement ",
-        "placeholder": "Water requirement "
+        "placeholder": "Eg: 2l"
       }
     },
     "status": {
@@ -1585,6 +1617,11 @@
         "edit": "Something went wrong while editing plant!",
         "destroy": "Something went wrong while deleting plant!"
       }
+    },
+    "notFound": {
+      "title": "Plant not found",
+      "description": "Sorry, we couldn’t find the plant you’re looking for.",
+      "backLabel": "Go to plants page"
     }
   },
   "fertilizers": {
@@ -1643,7 +1680,8 @@
       "name": {
         "label": "Fertilizer name",
         "placeholder": "Fertilizer name",
-        "min": "Name is required!",
+        "required_error": "Fertilizer name is required!",
+        "min": "Min name length is 5 characters",
         "max": "Name's length must be less than 100 characters"
       },
       "type": {
@@ -1659,25 +1697,24 @@
       "nutrientOfNPK": {
         "label": "NPK ratio",
         "placeholder": "1/2/1 mean 25% nitrogen, 50% potassium, 25% phosphorus",
-        "min": "NPK ratio is required!",
+        "required_error": "NPK ratio is required!",
+        "min": "Min NPK ratio length is 3 characters",
         "max": "Max NPK ratio's length is 100 characters"
       },
       "composition": {
         "label": "Composition",
         "placeholder": "Other composition is such as Mn, Bo...",
-        "min": "Min composition length is 1 character",
+
         "max": "Max composition length is 255 characters"
       },
       "manufacturer": {
         "label": "Manufacturer",
         "placeholder": "Name of manufacturer",
-        "min": "Min manufacturer length is 1 character",
         "max": "Max manufacturer length is 255 characters"
       },
       "applicationMethod": {
         "label": "Method",
-        "placeholder": "Root watering, spray on leaves",
-        "min": "Min method length is 1 character",
+        "placeholder": "Eg: Root watering, spray on leaves",
         "max": "Max method length is 100 characters"
       },
       "frequencyOfUse": {
@@ -1707,7 +1744,7 @@
           "max": "Max dosage value is 100"
         },
         "label": "Recommended dosage",
-        "placeholder": "Recommended dosage"
+        "placeholder": "From 0 to 100"
       }
     },
     "status": {
@@ -1778,7 +1815,8 @@
       "name": {
         "label": "Pesticide name",
         "placeholder": "Pesticide name",
-        "min": "Name is required!",
+        "required_error": "Pesticide name is required!",
+        "min": "Min name length is 3 characters",
         "max": "Name's length must be less than 100 characters"
       },
       "type": {
@@ -1794,13 +1832,12 @@
       "ingredient": {
         "label": "Ingredient",
         "placeholder": "Ingredient of pesticide ",
-        "min": "Min ingredient length is 1 character",
         "max": "Max ingredient length is 255 characters"
       },
       "manufacturer": {
         "label": "Manufacturer",
         "placeholder": "Name of manufacturer",
-        "min": "Min manufacturer length is 1 character",
+
         "max": "Max manufacturer length is 255 characters"
       },
       "withdrawalPeriod": {
@@ -1819,7 +1856,7 @@
           "max": "Max Withdrawal period value is 100"
         },
         "label": "Withdrawal period",
-        "placeholder": "Withdrawal period"
+        "placeholder": "Eg: 3 months"
       },
       "toxicityLevel": {
         "label": "Toxicity level",
@@ -1846,12 +1883,12 @@
           "max": "Max dosage value is 100"
         },
         "label": "Recommended dosage",
-        "placeholder": "Recommended dosage"
+        "placeholder": "From 0 to 100"
       },
       "applicationMethod": {
         "label": "Method",
-        "placeholder": "Root watering, spray on leaves",
-        "min": "Min method length is 1 character",
+        "placeholder": "Eg: Root watering, spray on leaves",
+
         "max": "Max method length is 100 characters"
       }
     },
@@ -1918,7 +1955,8 @@
       "name": {
         "label": "Equipment name",
         "placeholder": "Equipment name",
-        "min": "Name is required!",
+        "required_error": "Equipment name is required!",
+        "min": "Min name length is 5 characters",
         "max": "Name's length must be less than 100 characters"
       },
       "type": {
@@ -1935,7 +1973,8 @@
       "brand": {
         "label": "Equipment brand",
         "placeholder": "Equipment brand",
-        "min": "Brand is required!",
+        "required_error": "Brand is required!",
+        "min": "Min brand length is 3 characters",
         "max": "Brand's length must be less than 100 characters"
       },
       "purchaseDate": {
@@ -1963,19 +2002,18 @@
       },
       "status": {
         "label": "Equipment status",
-        "placeholder": "Equipment status",
-        "min": "Status is required!",
+        "placeholder": "Eg: operating, maintenance, damaged",
         "max": "Status's length must be less than 100 characters"
       },
       "maintenanceSchedule": {
         "label": "Equipment maintenance Schedule",
-        "placeholder": "Equipment maintenance Schedule",
+        "placeholder": "Eg: monthly, weekly... ",
         "min": "Maintenance Schedule is required!",
         "max": "Maintenance Schedule's length must be less than 100 characters"
       },
       "operatingHours": {
         "label": "Equipment operating hour",
-        "placeholder": "Equipment operating hour",
+        "placeholder": "Eg: 300 hours",
         "required_error": "Operating hour value is required",
         "invalid_type_error": "Operating hour value must be number",
         "int": "Operating hour must be integer",
@@ -1985,12 +2023,11 @@
       "location": {
         "label": "Equipment location",
         "placeholder": "Equipment location",
-        "min": "Location is required!",
         "max": "Location's length must be less than 100 characters"
       },
       "fuelConsumption": {
         "label": "Equipment fuel Consumption",
-        "placeholder": "Equipment fuel Consumption",
+        "placeholder": "From 0 to 10 000",
         "required_error": "Fuel Consumption value is required",
         "invalid_type_error": "Fuel Consumption value must be number",
         "min": "Fuel Consumption  value is 0",
@@ -1998,14 +2035,13 @@
       },
       "energyType": {
         "label": "Equipment energy type",
-        "placeholder": "Equipment energy type",
-        "min": "Energy type is required!",
+        "placeholder": "Eg: petrol",
         "max": "Energy type's length must be less than 100 characters"
       },
       "description": {
         "label": "Equipment description",
         "placeholder": "Equipment description",
-        "min": "Description is required!",
+
         "max": "Description's length must be less than 255 characters"
       },
       "imageUrl": {
@@ -2024,6 +2060,11 @@
         "edit": "Something went wrong while editing equipment!",
         "destroy": "Something went wrong while deleting equipment!"
       }
+    },
+    "notFound": {
+      "title": "Equipment not found",
+      "description": "Sorry, we couldn’t find the equipment you’re looking for.",
+      "backLabel": "Go to equipments page"
     }
   },
   "errors": {

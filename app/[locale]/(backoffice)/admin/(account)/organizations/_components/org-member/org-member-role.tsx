@@ -22,7 +22,7 @@ export const OrgMemberRole = ({
   disabled,
   onChange,
 }: OrgMemberRoleProps) => {
-  const t = useTranslations("organizations.schema.role.options");
+  const t = useTranslations("organizations.schema.member.role.options");
   const options: { label: string; value: OrgRole }[] = [
     {
       label: t("admin"),

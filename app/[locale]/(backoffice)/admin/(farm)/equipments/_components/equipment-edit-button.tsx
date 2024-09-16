@@ -64,6 +64,7 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       ...data,
+      status: data.status || undefined,
       maintenanceSchedule: data.maintenanceSchedule || undefined,
       operatingHours: data.operatingHours || undefined,
       imageUrl: data.imageUrl || undefined,
@@ -113,24 +114,7 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{tSchema("description.label")}</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder={tSchema("description.placeholder")}
-                  {...field}
-                  disabled={isPending}
-                />
-              </FormControl>
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <FormField
           control={form.control}
           name="brand"
@@ -240,6 +224,24 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
             )}
           />
         </div>
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{tSchema("description.label")}</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder={tSchema("description.placeholder")}
+                  {...field}
+                  disabled={isPending}
+                />
+              </FormControl>
+
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="status"
