@@ -16,7 +16,6 @@ import { SearchBar } from "@/components/search-bar";
 import { NavPagination } from "@/components/nav-pagination";
 import { useRouter } from "@/navigation";
 import { getEmailAddress, getFullName } from "@/lib/utils";
-import { OrderByButton } from "@/components/buttons/order-by-button";
 import { UsersTableSortBy } from "./users-table-sort-by";
 
 interface UsersTableProps {

@@ -135,6 +135,10 @@ export const getStaffsForCreatedByOrganization = async () => {
           in: [StaffRole.admin, StaffRole.superadmin],
         },
       },
+      cacheStrategy: {
+        ttl: 60,
+        swr: 60,
+      },
     });
     return staffs;
   } catch (error) {
@@ -143,7 +147,12 @@ export const getStaffsForCreatedByOrganization = async () => {
 };
 export const getStaffsForAddMemberOrganization = async () => {
   try {
-    const staffs = await db.staff.findMany();
+    const staffs = await db.staff.findMany({
+      cacheStrategy: {
+        ttl: 60,
+        swr: 60,
+      },
+    });
     return staffs;
   } catch (error) {
     return [];

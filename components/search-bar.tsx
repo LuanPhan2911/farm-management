@@ -31,7 +31,7 @@ export const SearchBar = ({ placeholder, isPagination }: SearchBarProps) => {
       <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
       <Input
         placeholder={placeholder}
-        className="pl-8"
+        className="pl-8 h-8"
         onChange={(e) => handleSearch(e.target.value)}
         defaultValue={searchParams.get("query")?.toString()}
       />

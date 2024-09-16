@@ -21,33 +21,37 @@ export interface ComboBoxData {
   value: string;
 }
 interface ComboBoxProps {
-  data: ComboBoxData[];
+  options: ComboBoxData[];
   notFound: string;
   label: string;
   onChange: (value: string) => void;
   isSearch?: boolean;
+  defaultValue?: string;
 }
 export const ComboBox = ({
-  data,
+  options,
   notFound,
   label,
   onChange,
   isSearch = true,
+  defaultValue,
 }: ComboBoxProps) => {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState(defaultValue || "");
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant="success"
+          variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[260px] justify-between"
+          className="lg:w-[250px] w-full justify-between"
         >
-          <p className="h-full w-[240px] truncate">
-            {value ? data.find((item) => item.value === value)?.label : label}
+          <p className="h-full w-[220px] truncate text-start">
+            {value
+              ? options.find((item) => item.value === value)?.label
+              : label}
           </p>
 
           <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
@@ -60,7 +64,7 @@ export const ComboBox = ({
             {isSearch && <CommandEmpty>{notFound}</CommandEmpty>}
 
             <CommandGroup>
-              {data.map((item) => (
+              {options.map((item) => (
                 <CommandItem
                   key={item.value}
                   value={item.value}

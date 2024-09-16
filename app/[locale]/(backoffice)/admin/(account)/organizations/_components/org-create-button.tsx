@@ -43,23 +43,21 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      slug: "",
-      createdBy: "",
-    },
   });
-  const watchName = form.watch("name");
+  const orgName = form.watch("name");
   useEffect(() => {
+    if (!orgName) {
+      return;
+    }
     form.setValue(
       "slug",
-      slugify(watchName, {
+      slugify(orgName, {
         lower: true,
         replacement: "-",
         trim: true,
       })
     );
-  }, [watchName, form]);
+  }, [orgName, form]);
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       create(values)

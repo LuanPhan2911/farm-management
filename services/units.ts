@@ -54,7 +54,7 @@ export const deleteManyUnit = async (ids: string[]) => {
   return count;
 };
 
-export const getUnitsSelect = async (type: UnitType) => {
+export const getUnitsByType = async (type: UnitType) => {
   try {
     const units = await db.unit.findMany({
       where: {
@@ -64,64 +64,13 @@ export const getUnitsSelect = async (type: UnitType) => {
         id: true,
         name: true,
       },
+      cacheStrategy: {
+        ttl: 60,
+        swr: 60,
+      },
     });
     return units;
   } catch (error) {
     return [];
   }
-};
-
-export const createFloatUnit = async (params: {
-  unitId: string;
-  value: number;
-}) => {
-  return await db.floatUnit.create({
-    data: {
-      ...params,
-    },
-  });
-};
-export const deleteFloatUnit = async (id: string) => {
-  return await db.floatUnit.delete({ where: { id } });
-};
-export const updateFloatUnit = async (
-  id: string,
-  params: {
-    value: number;
-    unitId: string;
-  }
-) => {
-  return await db.floatUnit.update({
-    where: { id },
-    data: {
-      ...params,
-    },
-  });
-};
-export const createIntegerUnit = async (params: {
-  value: number;
-  unitId: string;
-}) => {
-  return await db.intUnit.create({
-    data: {
-      ...params,
-    },
-  });
-};
-export const deleteIntegerUnit = async (id: string) => {
-  return await db.intUnit.delete({ where: { id } });
-};
-export const updateIntegerUnit = async (
-  id: string,
-  params: {
-    value: number;
-    unitId: string;
-  }
-) => {
-  return await db.intUnit.update({
-    where: { id },
-    data: {
-      ...params,
-    },
-  });
 };

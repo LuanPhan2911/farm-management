@@ -9,10 +9,10 @@ import { ApplicantDeleteButton } from "./applicant-delete-button";
 import { MoreHorizontal } from "lucide-react";
 
 import { useTranslations } from "next-intl";
-import { Applicant } from "@prisma/client";
 import { ApplicantStaffCreateButton } from "./applicant-staff-create-button";
+import { ApplicantTable } from "@/types";
 interface ApplicantsTableActionProps {
-  data: Applicant;
+  data: ApplicantTable;
 }
 export const ApplicantsTableAction = ({ data }: ApplicantsTableActionProps) => {
   const t = useTranslations("applicants.form");

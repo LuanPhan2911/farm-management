@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { ApplicantTable } from "@/types";
 import { ApplicantStatus } from "@prisma/client";
 
 type ApplicantParams = {
@@ -9,13 +10,24 @@ type ApplicantParams = {
   note?: string | undefined;
   jobId: string;
 };
-export const getApplicants = async (jobId: string | undefined) => {
+export const getApplicants = async (
+  jobId: string | undefined
+): Promise<ApplicantTable[]> => {
   try {
     return await db.applicant.findMany({
       where: {
         ...(jobId && {
           jobId,
         }),
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        address: true,
+        phone: true,
+        note: true,
+        status: true,
       },
     });
   } catch (error) {

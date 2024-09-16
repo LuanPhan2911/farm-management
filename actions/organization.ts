@@ -2,6 +2,7 @@
 
 import { errorResponse, successResponse } from "@/lib/utils";
 import { OrganizationMemberSchema, OrganizationSchema } from "@/schemas";
+import { getFieldByOrgId } from "@/services/fields";
 import {
   createMemberOrganization,
   createOrganization,
@@ -65,7 +66,7 @@ export const edit = async (
   }
   try {
     const existingOrg = await getOrganizationBySlug(validatedFields.data.slug);
-    if (existingOrg) {
+    if (existingOrg && existingOrg.id !== orgId) {
       return errorResponse(tSchema("errors.exist"));
     }
     const org = await updateOrganization(
@@ -106,7 +107,7 @@ export const createMember = async (
   values: z.infer<ReturnType<typeof OrganizationMemberSchema>>,
   orgId: string
 ): Promise<ActionResponse> => {
-  const tSchema = await getTranslations("organizations.schema");
+  const tSchema = await getTranslations("organizations.schema.member");
   const tStatus = await getTranslations("organizations.status");
   const paramsSchema = OrganizationMemberSchema(tSchema);
   const validatedFields = paramsSchema.safeParse(values);
@@ -150,8 +151,13 @@ export const destroyMember = async (
 };
 export const destroy = async (orgId: string): Promise<ActionResponse> => {
   const tStatus = await getTranslations("organizations.status");
+  const tSchema = await getTranslations("organizations.schema");
   try {
-    const org = await deleteOrganization(orgId);
+    const field = await getFieldByOrgId(orgId);
+    if (field) {
+      return errorResponse(tSchema("errors.existField"));
+    }
+    await deleteOrganization(orgId);
 
     revalidatePath("/admin/organizations");
     return successResponse(tStatus("success.destroy"));

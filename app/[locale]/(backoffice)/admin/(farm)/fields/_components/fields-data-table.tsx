@@ -9,12 +9,15 @@ import { FieldCreateButton } from "./field-create-button";
 import { FieldWithUnit } from "@/types";
 import { FieldsTableAction } from "./fields-table-action";
 import { UnitWithValue } from "../../../_components/unit-with-value";
+import { useRouter } from "@/navigation";
+import { SoilType } from "@prisma/client";
 
 interface FieldsDataTableProps {
   data: FieldWithUnit[];
 }
 export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
   const t = useTranslations("fields");
+  const router = useRouter();
   const columns: ColumnDef<FieldWithUnit>[] = [
     {
       id: "select",
@@ -59,6 +62,24 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
             title={t("table.thead.location")}
           />
         );
+      },
+    },
+    {
+      accessorKey: "soilType",
+      header: ({ column }) => {
+        return (
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.thead.soilType")}
+          />
+        );
+      },
+      cell: ({ row }) => {
+        const data = row.original;
+        if (!data.soilType) {
+          return t("table.trow.soilType");
+        }
+        return t(`schema.soilType.options.${data.soilType}`);
       },
     },
     {
@@ -115,6 +136,21 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
       },
     },
   ];
+  const facetedFilters = [
+    {
+      column: "soilType",
+      label: t("search.faceted.soilType.placeholder"),
+      options: Object.values(SoilType).map((item) => {
+        return {
+          label: t(`schema.soilType.options.${item}`),
+          value: item,
+        };
+      }),
+    },
+  ];
+  const onViewDetail = (item: FieldWithUnit) => {
+    router.push(`/admin/fields/detail/${item.id}`);
+  };
   return (
     <Card>
       <CardHeader>
@@ -131,6 +167,8 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
             value: "name",
             placeholder: t("search.placeholder"),
           }}
+          onViewDetail={onViewDetail}
+          facetedFilters={facetedFilters}
         />
       </CardContent>
     </Card>

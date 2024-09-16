@@ -16,21 +16,21 @@ import Image from "next/image";
 import { X } from "lucide-react";
 import { Button } from "../ui/button";
 
-type UploadImage = { key: string; url: string };
+export type ImageData = { key: string; url: string };
 interface UploadImagesProps {
-  getImages: (images: UploadImage[]) => void;
+  getImages: (images: ImageData[]) => void;
   disabled?: boolean;
-  setPending: (state: boolean) => void;
+  defaultImage?: ImageData[];
 }
 export const UploadImages = ({
   getImages,
   disabled,
-  setPending,
+  defaultImage = [],
 }: UploadImagesProps) => {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
-  const [images, setImages] = useState<UploadImage[]>([]);
+  const [images, setImages] = useState<ImageData[]>(defaultImage);
 
   useEffect(() => {
     if (!api) {
@@ -40,21 +40,18 @@ export const UploadImages = ({
     setCount(images.length);
     getImages(images);
   }, [api, images, getImages]);
-  const onStart = () => {
-    setPending(true);
-  };
+
   const onComplete = (
     res: ClientUploadedFileData<{
       uploadedBy: string;
     }>[]
   ) => {
-    const data: UploadImage[] = res.map(({ key, url }) => {
+    const data: ImageData[] = res.map(({ key, url }) => {
       return { key, url };
     });
     setImages((prev) => {
       return [...data, ...prev];
     });
-    setPending(false);
   };
   const handleRemoveImage = (key: string) => {
     setImages((prev) => {
@@ -105,7 +102,6 @@ export const UploadImages = ({
         endpoint="imageUploader"
         onClientUploadComplete={onComplete}
         disabled={disabled}
-        onUploadBegin={onStart}
       />
     </div>
   );

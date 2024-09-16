@@ -52,9 +52,7 @@ export const SoilsTable = ({ data, totalPage }: SoilsTableProps) => {
                   defaultValue="desc"
                 />
               </TableHead>
-              <TableHead>
-                <OrderByButton column="type" label={t("table.thead.type")} />
-              </TableHead>
+
               <TableHead>
                 <OrderByButton
                   column="nutrientNitrogen"
@@ -98,7 +96,7 @@ export const SoilsTable = ({ data, totalPage }: SoilsTableProps) => {
                       year: "numeric",
                     })}
                   </TableCell>
-                  <TableCell>{t(`schema.type.options.${item.type}`)}</TableCell>
+
                   <TableCell>
                     <UnitWithValue
                       value={item.nutrientNitrogen}

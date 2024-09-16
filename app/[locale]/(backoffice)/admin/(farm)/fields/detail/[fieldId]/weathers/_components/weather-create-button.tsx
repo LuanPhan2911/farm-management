@@ -76,7 +76,7 @@ export const WeatherCreateButton = () => {
           </span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-3xl overflow-y-auto max-h-screen">
+      <DialogContent className="max-w-4xl overflow-y-auto max-h-screen">
         <DialogHeader>
           <DialogTitle>{t("form.create.title")}</DialogTitle>
           <DialogDescription>{t("form.create.description")}</DialogDescription>

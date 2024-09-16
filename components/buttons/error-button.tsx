@@ -7,12 +7,12 @@ interface ErrorButtonProps {
 export const ErrorButton = ({ refresh, title }: ErrorButtonProps) => {
   return (
     <div
-      className="w-full h-12 text-sm text-destructive border 
-  rounded-md px-2 flex items-center justify-center gap-x-2"
+      className="w-full h-10 text-sm text-destructive border 
+  rounded-md px-2 flex items-center justify-center gap-x-2 lg:w-[200px]"
     >
       {title}
       <Button
-        variant={"success"}
+        variant={"link"}
         size={"sm"}
         type="button"
         onClick={() => refresh()}

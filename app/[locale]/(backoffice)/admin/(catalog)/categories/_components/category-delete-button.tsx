@@ -5,6 +5,7 @@ import { useAlertDialog } from "@/stores/use-alert-dialog";
 import { Category } from "@prisma/client";
 import { Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useTransition } from "react";
 import { toast } from "sonner";
 
 interface CategoryDeleteButtonProps {
@@ -17,24 +18,27 @@ export const CategoryDeleteButton = ({
 }: CategoryDeleteButtonProps) => {
   const { id } = data;
   const { onOpen, onClose } = useAlertDialog();
+  const [isPending, startTransition] = useTransition();
   const t = useTranslations("categories");
 
   const onConfirm = async () => {
-    destroy(id)
-      .then(({ message, ok }) => {
-        if (ok) {
+    startTransition(() => {
+      destroy(id)
+        .then(({ message, ok }) => {
+          if (ok) {
+            onClose();
+            toast.success(message);
+          } else {
+            toast.error(message);
+          }
+        })
+        .catch((error) => {
+          toast.error(t("status.failure.destroy"));
+        })
+        .finally(() => {
           onClose();
-          toast.success(message);
-        } else {
-          toast.error(message);
-        }
-      })
-      .catch((error) => {
-        toast.error(t("status.failure.destroy"));
-      })
-      .finally(() => {
-        onClose();
-      });
+        });
+    });
   };
   return (
     <Button
@@ -44,8 +48,10 @@ export const CategoryDeleteButton = ({
           title: t("form.destroy.title"),
           description: t("form.destroy.description"),
           onConfirm,
+          isPending,
         })
       }
+      variant={"destroy"}
     >
       <Trash className="h-6 w-6 mr-2" />
       {label}

@@ -17,13 +17,13 @@ interface FieldInfoProps {
 export const FieldInfo = ({ data }: FieldInfoProps) => {
   const t = useTranslations("fields");
   return (
-    <Card className="grid grid-cols-1 lg:grid-cols-3 p-6">
-      <CardHeader>
+    <Card className="grid grid-cols-1 lg:grid-cols-5 p-6">
+      <CardHeader className="lg:col-span-1">
         <CardTitle>{t("tabs.info.title")}</CardTitle>
         <CardDescription>{t("tabs.info.description")}</CardDescription>
         <h3 className="text-lg font-semibold">{data.name}</h3>
       </CardHeader>
-      <CardContent className="lg:col-span-2">
+      <CardContent className="lg:col-span-4">
         <FieldEditForm data={data} />
       </CardContent>
     </Card>

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { CategorySchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Category } from "@prisma/client";
+import { Category, CategoryType } from "@prisma/client";
 import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
@@ -23,6 +23,8 @@ import { edit } from "@/actions/category";
 import { Input } from "@/components/ui/input";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import slugify from "slugify";
+import { SelectOptions } from "@/components/form/select-options";
 
 interface CategoryEditButtonProps {
   data: Category;
@@ -42,6 +44,7 @@ export const CategoryEditButton = ({
           category: data,
         })
       }
+      variant={"edit"}
     >
       <Edit className="w-6 h-6 mr-2" />
       {label}
@@ -59,14 +62,24 @@ export const CategoryEditDialog = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      description: "",
     },
   });
   const [id, setId] = useState("");
+  const name = form.watch("name");
+  useEffect(() => {
+    form.setValue(
+      "slug",
+      slugify(name, {
+        lower: true,
+      })
+    );
+  }, [name, form]);
   useEffect(() => {
     if (data?.category) {
       form.setValue("name", data.category.name);
-      form.setValue("description", data.category.description);
+      form.setValue("description", data.category.description || undefined);
+      form.setValue("slug", data.category.slug);
+      form.setValue("type", data.category.type || undefined);
       setId(data.category.id);
     }
   }, [data, form]);
@@ -96,7 +109,7 @@ export const CategoryEditDialog = () => {
       description={t("form.edit.description")}
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
             name="name"
@@ -108,6 +121,49 @@ export const CategoryEditDialog = () => {
                     placeholder={tSchema("name.placeholder")}
                     {...field}
                     disabled={isPending}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="slug"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("slug.label")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={tSchema("slug.placeholder")}
+                    {...field}
+                    disabled={isPending}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("type.label")}</FormLabel>
+                <FormControl>
+                  <SelectOptions
+                    label={tSchema("type.placeholder")}
+                    onChange={field.onChange}
+                    disabled={isPending}
+                    options={Object.values(CategoryType).map((item) => {
+                      return {
+                        label: tSchema(`type.options.${item}`),
+                        value: item,
+                      };
+                    })}
+                    defaultValue={field.value}
                   />
                 </FormControl>
 

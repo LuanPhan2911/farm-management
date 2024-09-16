@@ -287,3 +287,17 @@ export const getArrayFilterNumber = (input: string) => {
     .filter((value) => value !== "")
     .filter((value, index, self) => self.indexOf(value) === index); // Ensure uniqueness;
 };
+export function removeVietnameseTones(str: string): string {
+  return str
+    .normalize("NFD") // Tách các dấu ra khỏi chữ
+    .replace(/[\u0300-\u036f]/g, "") // Loại bỏ các dấu
+    .replace(/đ/g, "d") // Thay thế 'đ' thường bằng 'd'
+    .replace(/Đ/g, "D"); // Thay thế 'Đ' hoa bằng 'D'
+}
+
+export function includeString(str1: string, str2: string): boolean {
+  const normalizedStr1 = removeVietnameseTones(str1.toLowerCase());
+  const normalizedStr2 = removeVietnameseTones(str2.toLowerCase());
+
+  return normalizedStr1.includes(normalizedStr2);
+}
