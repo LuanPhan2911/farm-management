@@ -355,47 +355,57 @@ export const PlantSchema = (t: (arg: string) => string) => {
       message: t("fertilizerType.enum"),
     }),
     idealTemperature: z.optional(
-      z.object({
-        unitId: z.string({
-          required_error: t("idealTemperature.unitId.required_error"),
-        }),
-        value: z.coerce
-          .number({
-            required_error: t("idealTemperature.value.required_error"),
-            invalid_type_error: t("idealTemperature.value.invalid_type_error"),
-          })
-          .min(-20, t("idealTemperature.value.min"))
-          .max(50, t("idealTemperature.value.max")),
-      })
+      z
+        .object({
+          unitId: z.string({
+            required_error: t("idealTemperature.unitId.required_error"),
+          }),
+          value: z.coerce
+            .number({
+              required_error: t("idealTemperature.value.required_error"),
+              invalid_type_error: t(
+                "idealTemperature.value.invalid_type_error"
+              ),
+            })
+            .min(-20, t("idealTemperature.value.min"))
+            .max(50, t("idealTemperature.value.max")),
+        })
+        .partial()
     ),
     idealHumidity: z.optional(
-      z.object({
-        unitId: z.string({
-          required_error: t("idealHumidity.unitId.required_error"),
-        }),
-        value: z.coerce
-          .number({
-            required_error: t("idealHumidity.value.required_error"),
-            invalid_type_error: t("idealHumidity.value.invalid_type_error"),
-          })
-          .int(t("idealHumidity.value.int"))
-          .min(0, t("idealHumidity.value.min"))
-          .max(100, t("idealHumidity.value.max")),
-      })
+      z
+        .object({
+          unitId: z.string({
+            required_error: t("idealHumidity.unitId.required_error"),
+          }),
+          value: z.coerce
+            .number({
+              required_error: t("idealHumidity.value.required_error"),
+              invalid_type_error: t("idealHumidity.value.invalid_type_error"),
+            })
+            .int(t("idealHumidity.value.int"))
+            .min(0, t("idealHumidity.value.min"))
+            .max(100, t("idealHumidity.value.max")),
+        })
+        .partial()
     ),
     waterRequirement: z.optional(
-      z.object({
-        unitId: z.string({
-          required_error: t("waterRequirement.unitId.required_error"),
-        }),
-        value: z.coerce
-          .number({
-            required_error: t("waterRequirement.value.required_error"),
-            invalid_type_error: t("waterRequirement.value.invalid_type_error"),
-          })
-          .min(0, t("waterRequirement.value.min"))
-          .max(100, t("waterRequirement.value.max")),
-      })
+      z
+        .object({
+          unitId: z.string({
+            required_error: t("waterRequirement.unitId.required_error"),
+          }),
+          value: z.coerce
+            .number({
+              required_error: t("waterRequirement.value.required_error"),
+              invalid_type_error: t(
+                "waterRequirement.value.invalid_type_error"
+              ),
+            })
+            .min(0, t("waterRequirement.value.min"))
+            .max(100, t("waterRequirement.value.max")),
+        })
+        .partial()
     ),
   });
 };
@@ -428,19 +438,23 @@ export const FertilizerSchema = (t: (arg: string) => string) => {
       })
     ),
     recommendedDosage: z.optional(
-      z.object({
-        unitId: z.string({
-          required_error: t("recommendedDosage.unitId.required_error"),
-        }),
-        value: z.coerce
-          .number({
-            required_error: t("recommendedDosage.value.required_error"),
-            invalid_type_error: t("recommendedDosage.value.invalid_type_error"),
-          })
+      z
+        .object({
+          unitId: z.string({
+            required_error: t("recommendedDosage.unitId.required_error"),
+          }),
+          value: z.coerce
+            .number({
+              required_error: t("recommendedDosage.value.required_error"),
+              invalid_type_error: t(
+                "recommendedDosage.value.invalid_type_error"
+              ),
+            })
 
-          .min(0, t("recommendedDosage.value.min"))
-          .max(100, t("recommendedDosage.value.max")),
-      })
+            .min(0, t("recommendedDosage.value.min"))
+            .max(100, t("recommendedDosage.value.max")),
+        })
+        .partial()
     ),
   });
 };
@@ -458,19 +472,23 @@ export const PesticideSchema = (t: (arg: string) => string) => {
     ingredient: z.optional(z.string().max(255, t("ingredient.max"))),
     manufacturer: z.optional(z.string().max(255, t("manufacturer.max"))),
     withdrawalPeriod: z.optional(
-      z.object({
-        unitId: z.string({
-          required_error: t("withdrawalPeriod.unitId.required_error"),
-        }),
-        value: z.coerce
-          .number({
-            required_error: t("withdrawalPeriod.value.required_error"),
-            invalid_type_error: t("withdrawalPeriod.value.invalid_type_error"),
-          })
-          .int(t("withdrawalPeriod.value.int"))
-          .min(0, t("withdrawalPeriod.value.min"))
-          .max(100, t("withdrawalPeriod.value.max")),
-      })
+      z
+        .object({
+          unitId: z.string({
+            required_error: t("withdrawalPeriod.unitId.required_error"),
+          }),
+          value: z.coerce
+            .number({
+              required_error: t("withdrawalPeriod.value.required_error"),
+              invalid_type_error: t(
+                "withdrawalPeriod.value.invalid_type_error"
+              ),
+            })
+            .int(t("withdrawalPeriod.value.int"))
+            .min(0, t("withdrawalPeriod.value.min"))
+            .max(100, t("withdrawalPeriod.value.max")),
+        })
+        .partial()
     ),
     toxicityLevel: z.optional(
       z.nativeEnum(ToxicityLevel, {
@@ -478,19 +496,23 @@ export const PesticideSchema = (t: (arg: string) => string) => {
       })
     ),
     recommendedDosage: z.optional(
-      z.object({
-        unitId: z.string({
-          required_error: t("recommendedDosage.unitId.required_error"),
-        }),
-        value: z.coerce
-          .number({
-            required_error: t("recommendedDosage.value.required_error"),
-            invalid_type_error: t("recommendedDosage.value.invalid_type_error"),
-          })
+      z
+        .object({
+          unitId: z.string({
+            required_error: t("recommendedDosage.unitId.required_error"),
+          }),
+          value: z.coerce
+            .number({
+              required_error: t("recommendedDosage.value.required_error"),
+              invalid_type_error: t(
+                "recommendedDosage.value.invalid_type_error"
+              ),
+            })
 
-          .min(0, t("recommendedDosage.value.min"))
-          .max(100, t("recommendedDosage.value.max")),
-      })
+            .min(0, t("recommendedDosage.value.min"))
+            .max(100, t("recommendedDosage.value.max")),
+        })
+        .partial()
     ),
 
     applicationMethod: z.optional(
@@ -563,5 +585,58 @@ export const EquipmentSchema = (t: (arg: string) => string) => {
     energyType: z.optional(z.string().max(100, "energyType.max")),
     description: z.optional(z.string().max(255, "description.max")),
     imageUrl: z.optional(z.string()),
+  });
+};
+
+export const CropSchema = (t: (arg: string) => string) => {
+  return z.object({
+    name: z
+      .string({
+        required_error: t("name.required_error"),
+      })
+      .min(5, t("name.min"))
+      .max(100, "name.max"),
+    dateRange: z.object({
+      startDate: z.date({
+        invalid_type_error: t("dateRange.startDate.invalid_type_error"),
+        required_error: t("dateRange.startDate.required_error"),
+      }),
+      endDate: z.optional(z.date()),
+    }),
+    fieldId: z.string(),
+    plantId: z.string({
+      required_error: t("plantId.required_error"),
+    }),
+    estimatedYield: z
+      .object({
+        unitId: z.string({
+          required_error: t("estimatedYield.unitId.required_error"),
+        }),
+        value: z.coerce
+          .number({
+            required_error: t("estimatedYield.value.required_error"),
+            invalid_type_error: t("estimatedYield.value.invalid_type_error"),
+          })
+
+          .min(0, t("estimatedYield.value.min"))
+          .max(1_000_000_000, t("estimatedYield.value.max")),
+      })
+      .partial(),
+    actualYield: z
+      .object({
+        unitId: z.string({
+          required_error: t("actualYield.unitId.required_error"),
+        }),
+        value: z.coerce
+          .number({
+            required_error: t("actualYield.value.required_error"),
+            invalid_type_error: t("actualYield.value.invalid_type_error"),
+          })
+
+          .min(0, t("actualYield.value.min"))
+          .max(1_000_000_000, t("actualYield.value.max")),
+      })
+      .partial(),
+    status: z.optional(z.string().max(100, t("status.max"))),
   });
 };

@@ -12,20 +12,21 @@ import {
   PesticideTypeCount,
 } from "@/types";
 import { PesticideType, ToxicityLevel } from "@prisma/client";
+import {
+  deleteFloatUnit,
+  deleteIntUnit,
+  UnitValue,
+  upsertFloatUnit,
+  upsertIntUnit,
+} from "./units";
 
 type PesticideParams = {
   name: string;
   type: PesticideType;
   ingredient?: string;
   manufacturer?: string;
-  withdrawalPeriod?: {
-    unitId: string;
-    value: number;
-  };
-  recommendedDosage?: {
-    unitId: string;
-    value: number;
-  };
+  withdrawalPeriod?: Partial<UnitValue>;
+  recommendedDosage?: Partial<UnitValue>;
   applicationMethod?: string;
   toxicityLevel?: ToxicityLevel;
 };
@@ -36,20 +37,14 @@ export const createPesticide = async (params: PesticideParams) => {
     ...otherParams
   } = params;
   return await db.$transaction(async (ctx) => {
-    const recommendedDosage = recommendedDosageParam
-      ? await ctx.floatUnit.create({
-          data: {
-            ...recommendedDosageParam,
-          },
-        })
-      : null;
-    const withdrawalPeriod = withdrawalPeriodParam
-      ? await ctx.intUnit.create({
-          data: {
-            ...withdrawalPeriodParam,
-          },
-        })
-      : null;
+    const recommendedDosage = await upsertFloatUnit({
+      ctx,
+      data: recommendedDosageParam,
+    });
+    const withdrawalPeriod = await upsertIntUnit({
+      ctx,
+      data: withdrawalPeriodParam,
+    });
     const pesticide = await ctx.pesticide.create({
       data: {
         ...otherParams,
@@ -73,42 +68,16 @@ export const updatePesticide = async (id: string, params: PesticideParams) => {
         ...otherParams,
       },
     });
-    if (recommendedDosageParam) {
-      if (pesticide.recommendedDosageId) {
-        await ctx.floatUnit.update({
-          data: {
-            ...recommendedDosageParam,
-          },
-          where: {
-            id: pesticide.recommendedDosageId,
-          },
-        });
-      } else {
-        ctx.floatUnit.create({
-          data: {
-            ...recommendedDosageParam,
-          },
-        });
-      }
-    }
-    if (withdrawalPeriodParam) {
-      if (pesticide.withdrawalPeriodId) {
-        await ctx.intUnit.update({
-          data: {
-            ...withdrawalPeriodParam,
-          },
-          where: {
-            id: pesticide.withdrawalPeriodId,
-          },
-        });
-      } else {
-        ctx.intUnit.create({
-          data: {
-            ...withdrawalPeriodParam,
-          },
-        });
-      }
-    }
+    await upsertFloatUnit({
+      ctx,
+      data: recommendedDosageParam,
+      id: pesticide.recommendedDosageId,
+    });
+    await upsertIntUnit({
+      ctx,
+      data: withdrawalPeriodParam,
+      id: pesticide.withdrawalPeriodId,
+    });
     return pesticide;
   });
 };
@@ -117,16 +86,8 @@ export const deletePesticide = async (id: string) => {
     const pesticide = await ctx.pesticide.delete({
       where: { id },
     });
-    if (pesticide.recommendedDosageId) {
-      await ctx.floatUnit.delete({
-        where: { id: pesticide.recommendedDosageId },
-      });
-    }
-    if (pesticide.withdrawalPeriodId) {
-      await ctx.intUnit.delete({
-        where: { id: pesticide.withdrawalPeriodId },
-      });
-    }
+    await deleteFloatUnit(ctx, pesticide.recommendedDosageId);
+    await deleteIntUnit(ctx, pesticide.withdrawalPeriodId);
   });
 };
 type PesticideQuery = {

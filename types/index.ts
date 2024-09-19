@@ -1,6 +1,7 @@
 import {
   ApplicantStatus,
   Category,
+  Crop,
   Equipment,
   EquipmentType,
   Fertilizer,
@@ -81,7 +82,7 @@ export type ApplicantTable = {
   note?: string | null;
   status: ApplicantStatus;
 };
-export type FieldWithUnit = Field & {
+export type FieldTable = Field & {
   unit: Unit | null;
 };
 
@@ -151,6 +152,11 @@ export type PlantTable = Plant & {
       })
     | null;
 };
+export type PlantSelect = {
+  id: string;
+  name: string;
+  imageUrl: string | null;
+};
 export type FertilizerTable = Fertilizer & {
   recommendedDosage:
     | (FloatUnit & {
@@ -206,4 +212,25 @@ export type EquipmentTable = Equipment & {
 export type EquipmentTypeCount = {
   type: EquipmentType;
   _count: number;
+};
+
+export type CropTable = Crop & {
+  actualYield:
+    | (FloatUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+  estimatedYield:
+    | (FloatUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+  plant: {
+    id: string;
+    name: string;
+  };
 };

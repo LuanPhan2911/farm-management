@@ -283,7 +283,7 @@ model Crop {
   name String
 
   startDate DateTime
-  endDate   DateTime
+  endDate   DateTime?
 
   fieldId String
   field   Field  @relation(fields: [fieldId], references: [id])
@@ -297,7 +297,7 @@ model Crop {
   actualYieldId String?
   actualYield   FloatUnit? @relation(name: "actualYield", fields: [actualYieldId], references: [id]) // Sản lượng thực tế
 
-  status String // Tình trạng mùa vụ
+  status String? // Tình trạng mùa vụ
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

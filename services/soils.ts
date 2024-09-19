@@ -6,13 +6,16 @@ import {
   getObjectSortOrder,
 } from "@/lib/utils";
 import { PaginatedResponse, SoilTable } from "@/types";
+import {
+  createIntUnit,
+  deleteIntUnit,
+  UnitValue,
+  updateIntUnit,
+} from "./units";
 
 type SoilParams = {
   ph: number;
-  moisture: {
-    value: number;
-    unitId: string;
-  };
+  moisture: UnitValue;
   nutrientNitrogen: number;
   nutrientPhosphorus: number;
   nutrientPotassium: number;
@@ -23,11 +26,7 @@ type SoilParams = {
 export const createSoil = async (params: SoilParams) => {
   return await db.$transaction(async (ctx) => {
     const { moisture: moistureParam, ...others } = params;
-    const moisture = await ctx.intUnit.create({
-      data: {
-        ...moistureParam,
-      },
-    });
+    const moisture = await createIntUnit(ctx, moistureParam);
 
     const soil = await ctx.soil.create({
       data: {
@@ -51,14 +50,7 @@ export const updateSoil = async (id: string, params: SoilParams) => {
         ...others,
       },
     });
-    const moisture = await ctx.intUnit.update({
-      where: {
-        id: soil.moistureId,
-      },
-      data: {
-        ...moistureParam,
-      },
-    });
+    const moisture = await updateIntUnit(ctx, soil.moistureId, moistureParam);
     return soil;
   });
 };
@@ -67,11 +59,7 @@ export const deleteSoil = async (id: string) => {
     const soil = await ctx.soil.delete({
       where: { id },
     });
-    const moisture = await ctx.intUnit.delete({
-      where: {
-        id: soil.moistureId,
-      },
-    });
+    const moisture = await deleteIntUnit(ctx, soil.moistureId);
     return soil;
   });
 };

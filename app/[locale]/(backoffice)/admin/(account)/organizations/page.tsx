@@ -1,5 +1,6 @@
 import { getOrganizations, OrganizationSortBy } from "@/services/organizations";
 import { OrgsTable } from "./_components/orgs-table";
+import { parseToNumber } from "@/lib/utils";
 
 interface OrganizationPageProps {
   searchParams: {
@@ -9,14 +10,13 @@ interface OrganizationPageProps {
   };
 }
 const OrganizationsPage = async ({ searchParams }: OrganizationPageProps) => {
-  const query = searchParams.query || "";
-  const page = searchParams.page ? Number(searchParams.page) : 1;
-  const orderBy = searchParams.orderBy;
-  const { data: organizations, totalPage } = await getOrganizations(
+  const page = parseToNumber(searchParams.page, 1);
+  const { orderBy, query } = searchParams;
+  const { data: organizations, totalPage } = await getOrganizations({
+    currentPage: page,
+    orderBy,
     query,
-    page,
-    orderBy
-  );
+  });
 
   return (
     <div className="flex flex-col gap-y-4 h-full py-4 ">

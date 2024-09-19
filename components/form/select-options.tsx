@@ -25,7 +25,7 @@ export const SelectOptions = ({
   disabled,
 }: SelectOptionsProps) => {
   const handleChange = (currentValue: string) => {
-    onChange(currentValue === defaultValue ? "" : currentValue);
+    onChange(currentValue);
   };
   return (
     <Select

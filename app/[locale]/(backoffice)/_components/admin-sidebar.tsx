@@ -1,5 +1,5 @@
 "use client";
-import { cn } from "@/lib/utils";
+import { cn, isActive } from "@/lib/utils";
 import { usePathname } from "@/navigation";
 import { useDashboardSidebar } from "@/stores/use-dashboard-sidebar";
 import {
@@ -61,27 +61,27 @@ export const AdminSidebar = () => {
       <div className="flex flex-col gap-y-2">
         <SidebarItem
           href="/admin/dashboard"
-          active={pathname === "/admin/dashboard"}
+          active={isActive(pathname, "/admin/dashboard")}
           icon={LayoutGrid}
           title="Dashboard"
         />
         <SidebarAccordionItem title="Account" icon={Users}>
           <SidebarItem
             href="/admin/users"
-            active={pathname === "/admin/users"}
+            active={isActive(pathname, "/admin/users")}
             icon={User}
             title="Users"
           />
           <SidebarItem
             href="/admin/staffs"
-            active={pathname === "/admin/staffs"}
+            active={isActive(pathname, "/admin/staffs")}
             icon={SquareUserRound}
             title="Staffs"
           />
 
           <SidebarItem
             href="/admin/organizations"
-            active={pathname === "/admin/organizations"}
+            active={isActive(pathname, "/admin/organizations")}
             icon={Building}
             title="Organizations"
           />
@@ -90,31 +90,31 @@ export const AdminSidebar = () => {
         <SidebarAccordionItem title="Farm" icon={House}>
           <SidebarItem
             href="/admin/fields"
-            active={pathname === "/admin/fields"}
+            active={isActive(pathname, "/admin/fields")}
             icon={Grid2X2}
             title="Fields"
           />
           <SidebarItem
             href="/admin/plants"
-            active={pathname === "/admin/plants"}
+            active={isActive(pathname, "/admin/plants")}
             icon={Flower2}
             title="Plants"
           />
           <SidebarItem
             href="/admin/fertilizers"
-            active={pathname === "/admin/fertilizers"}
+            active={isActive(pathname, "/admin/fertilizers")}
             icon={Leaf}
             title="Fertilizers"
           />
           <SidebarItem
             href="/admin/pesticides"
-            active={pathname === "/admin/pesticides"}
+            active={isActive(pathname, "/admin/pesticides")}
             icon={BugOff}
             title="Pesticides"
           />
           <SidebarItem
             href="/admin/equipments"
-            active={pathname === "/admin/equipments"}
+            active={isActive(pathname, "/admin/equipments")}
             icon={Hammer}
             title="Equipments"
           />
@@ -122,13 +122,13 @@ export const AdminSidebar = () => {
         <SidebarAccordionItem title="Catalogue" icon={Flower}>
           <SidebarItem
             href="/admin/categories"
-            active={pathname === "/admin/categories"}
+            active={isActive(pathname, "/admin/categories")}
             icon={Section}
             title="Categories"
           />
           <SidebarItem
             href="/admin/units"
-            active={pathname === "/admin/units"}
+            active={isActive(pathname, "/admin/units")}
             icon={MountainSnow}
             title="Units"
           />
@@ -137,13 +137,13 @@ export const AdminSidebar = () => {
         <SidebarAccordionItem title="Recruit" icon={Clipboard}>
           <SidebarItem
             href="/admin/jobs"
-            active={pathname === "/admin/jobs"}
+            active={isActive(pathname, "/admin/jobs")}
             icon={Compass}
             title="Jobs"
           />
           <SidebarItem
             href="/admin/applicants"
-            active={pathname === "/admin/applicants"}
+            active={isActive(pathname, "/admin/applicants")}
             icon={User}
             title="Applicants"
           />

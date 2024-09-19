@@ -46,6 +46,9 @@ export const PlantCreateForm = () => {
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+    },
   });
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
@@ -90,6 +93,7 @@ export const PlantCreateForm = () => {
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="categoryId"
@@ -111,31 +115,25 @@ export const PlantCreateForm = () => {
             )}
           />
         </div>
+        <FormField
+          control={form.control}
+          name="growthDuration"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{tSchema("growthDuration.label")}</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder={tSchema("growthDuration.placeholder")}
+                  {...field}
+                  disabled={isPending}
+                  type="number"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <div className="grid lg:grid-cols-2 gap-2">
-          <FormField
-            control={form.control}
-            name="season"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("season.label")}</FormLabel>
-                <FormControl>
-                  <SelectOptions
-                    label={tSchema("season.placeholder")}
-                    onChange={field.onChange}
-                    disabled={isPending}
-                    options={Object.values(Season).map((item) => {
-                      return {
-                        label: tSchema(`season.options.${item}`),
-                        value: item,
-                      };
-                    })}
-                  />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <FormField
             control={form.control}
             name="fertilizerType"
@@ -150,6 +148,30 @@ export const PlantCreateForm = () => {
                     options={Object.values(FertilizerType).map((item) => {
                       return {
                         label: tSchema(`fertilizerType.options.${item}`),
+                        value: item,
+                      };
+                    })}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="season"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("season.label")}</FormLabel>
+                <FormControl>
+                  <SelectOptions
+                    label={tSchema("season.placeholder")}
+                    onChange={field.onChange}
+                    disabled={isPending}
+                    options={Object.values(Season).map((item) => {
+                      return {
+                        label: tSchema(`season.options.${item}`),
                         value: item,
                       };
                     })}
@@ -313,25 +335,6 @@ export const PlantCreateForm = () => {
             </div>
           </div>
         </div>
-
-        <FormField
-          control={form.control}
-          name="growthDuration"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{tSchema("growthDuration.label")}</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder={tSchema("growthDuration.placeholder")}
-                  {...field}
-                  disabled={isPending}
-                  type="number"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
         <FormField
           control={form.control}

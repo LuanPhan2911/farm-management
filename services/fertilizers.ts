@@ -12,6 +12,7 @@ import {
   PaginatedResponse,
 } from "@/types";
 import { FertilizerType, Frequency } from "@prisma/client";
+import { deleteFloatUnit, UnitValue, upsertFloatUnit } from "./units";
 
 type FertilizerParams = {
   name: string;
@@ -19,23 +20,17 @@ type FertilizerParams = {
   nutrientOfNPK: string;
   composition?: string;
   manufacturer?: string;
-  recommendedDosage?: {
-    unitId: string;
-    value: number;
-  };
+  recommendedDosage?: Partial<UnitValue>;
   applicationMethod?: string;
   frequencyOfUse?: Frequency;
 };
 export const createFertilizer = async (params: FertilizerParams) => {
   const { recommendedDosage: recommendedDosageParam, ...otherParams } = params;
   return await db.$transaction(async (ctx) => {
-    const recommendedDosage = recommendedDosageParam
-      ? await ctx.floatUnit.create({
-          data: {
-            ...recommendedDosageParam,
-          },
-        })
-      : null;
+    const recommendedDosage = await upsertFloatUnit({
+      ctx,
+      data: recommendedDosageParam,
+    });
     const fertilizer = await ctx.fertilizer.create({
       data: {
         ...otherParams,
@@ -57,24 +52,11 @@ export const updateFertilizer = async (
         ...otherParams,
       },
     });
-    if (recommendedDosageParam) {
-      if (fertilizer.recommendedDosageId) {
-        await ctx.floatUnit.update({
-          data: {
-            ...recommendedDosageParam,
-          },
-          where: {
-            id: fertilizer.recommendedDosageId,
-          },
-        });
-      } else {
-        ctx.floatUnit.create({
-          data: {
-            ...recommendedDosageParam,
-          },
-        });
-      }
-    }
+    await upsertFloatUnit({
+      ctx,
+      data: recommendedDosageParam,
+      id: fertilizer.recommendedDosageId,
+    });
     return fertilizer;
   });
 };
@@ -83,11 +65,7 @@ export const deleteFertilizer = async (id: string) => {
     const fertilizer = await ctx.fertilizer.delete({
       where: { id },
     });
-    if (fertilizer.recommendedDosageId) {
-      await ctx.floatUnit.delete({
-        where: { id: fertilizer.recommendedDosageId },
-      });
-    }
+    await deleteFloatUnit(ctx, fertilizer.recommendedDosageId);
   });
 };
 type FertilizerQuery = {

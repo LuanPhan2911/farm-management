@@ -16,11 +16,11 @@ import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/uni
 import { SoilTable } from "@/types";
 import { SoilsTableAction } from "./soils-table-action";
 import { SoilConfirmButton } from "./soil-confirm-button";
-import { StaffWithName } from "@/app/[locale]/(backoffice)/admin/_components/staff-with-name";
 
 import { OrderByButton } from "@/components/buttons/order-by-button";
 import { DatePickerWithRangeButton } from "@/components/buttons/date-picker-range-button";
 import { SoilsTableFaceted } from "./soils-table-faceted";
+import { SelectItemContent } from "@/components/form/select-item";
 
 interface SoilsTableProps {
   data: SoilTable[];
@@ -135,7 +135,10 @@ export const SoilsTable = ({ data, totalPage }: SoilsTableProps) => {
                   </TableCell>
                   <TableCell>
                     {item.confirmedBy ? (
-                      <StaffWithName {...item.confirmedBy} />
+                      <SelectItemContent
+                        imageUrl={item.confirmedBy.imageUrl}
+                        title={item.confirmedBy.name}
+                      />
                     ) : (
                       t("table.trow.confirmedBy")
                     )}

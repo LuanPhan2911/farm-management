@@ -6,6 +6,7 @@ import {
 import { notFound } from "next/navigation";
 
 import { OrgTabs } from "../../_components/org-tabs";
+import { parseToNumber } from "@/lib/utils";
 
 interface OrganizationDetailPageProps {
   params: {
@@ -21,18 +22,17 @@ const OrganizationDetailPage = async ({
   params,
   searchParams,
 }: OrganizationDetailPageProps) => {
+  const page = parseToNumber(searchParams.page, 1);
+  const { orderBy } = searchParams;
   const org = await getOrganizationById(params.orgId);
-  const page = searchParams.page ? Number(searchParams.page) : 1;
-  const orderBy = searchParams.orderBy;
-
-  if (!org) {
-    notFound();
-  }
   const { data: orgMember, totalPage } = await getOrganizationMembership({
     currentPage: page,
-    orgId: org?.id,
+    orgId: params.orgId,
     orderBy,
   });
+  if (!org || !orgMember.length) {
+    notFound();
+  }
 
   return (
     <div className="flex flex-col gap-y-4 h-full py-4">

@@ -1,5 +1,6 @@
 import { getPesticides } from "@/services/pesticides";
 import { PesticidesTable } from "./_components/pesticides-table";
+import { parseToNumber } from "@/lib/utils";
 
 interface PesticidePageProps {
   params: {};
@@ -11,10 +12,8 @@ interface PesticidePageProps {
   };
 }
 const PesticidesPage = async ({ searchParams }: PesticidePageProps) => {
-  const page = searchParams.page ? Number(searchParams.page) : 1;
-  const orderBy = searchParams.orderBy;
-  const filterString = searchParams.filterString || "";
-  const filterNumber = searchParams.filterNumber || "";
+  const page = parseToNumber(searchParams.page, 1);
+  const { orderBy, filterNumber, filterString } = searchParams;
   const { data, totalPage } = await getPesticides({
     filterNumber,
     filterString,

@@ -16,16 +16,17 @@ import {
 } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { Check, ChevronsUpDown, RefreshCcw } from "lucide-react";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { useState } from "react";
 import { Organization } from "@clerk/nextjs/server";
 import { PaginatedResponse } from "@/types";
-import { OrgSelectItem } from "./org-select-item";
+
 import { QueryProvider } from "@/components/providers/query-provider";
 import queryString from "query-string";
 import { useDebounceValue } from "usehooks-ts";
 import { ErrorButton } from "@/components/buttons/error-button";
+import { SelectItemContent } from "@/components/form/select-item";
 
 export type pageParam = number | undefined;
 interface OrgsSelectProps {
@@ -112,9 +113,9 @@ const OrgsSelect = ({
           disabled={disabled}
         >
           {currentOrg ? (
-            <OrgSelectItem
+            <SelectItemContent
               imageUrl={currentOrg.imageUrl}
-              name={currentOrg.name}
+              title={currentOrg.name}
             />
           ) : (
             label
@@ -148,7 +149,10 @@ const OrgsSelect = ({
                         value === item.id ? "opacity-100" : "opacity-0"
                       )}
                     />
-                    <OrgSelectItem imageUrl={item.imageUrl} name={item.name} />
+                    <SelectItemContent
+                      imageUrl={item.imageUrl}
+                      title={item.name}
+                    />
                   </CommandItem>
                 );
               })}

@@ -16,12 +16,12 @@ import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/uni
 import { WeatherTable } from "@/types";
 import { WeathersTableAction } from "./weathers-table-action";
 import { WeatherConfirmButton } from "./weather-confirm-button";
-import { StaffWithName } from "@/app/[locale]/(backoffice)/admin/_components/staff-with-name";
 import { WeatherStatusValue } from "./weather-status-value";
 
 import { OrderByButton } from "@/components/buttons/order-by-button";
 import { DatePickerWithRangeButton } from "@/components/buttons/date-picker-range-button";
 import { WeatherTableFaceted } from "./weathers-table-faceted";
+import { SelectItemContent } from "@/components/form/select-item";
 interface WeathersTableProps {
   data: WeatherTable[];
   totalPage: number;
@@ -136,7 +136,10 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
                   </TableCell>
                   <TableCell>
                     {item.confirmedBy ? (
-                      <StaffWithName {...item.confirmedBy} />
+                      <SelectItemContent
+                        imageUrl={item.confirmedBy.imageUrl}
+                        title={item.confirmedBy.name}
+                      />
                     ) : (
                       t("table.trow.confirmedBy")
                     )}

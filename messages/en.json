@@ -896,7 +896,7 @@
       "createdBy": {
         "label": "Create by",
         "placeholder": "Select created by...",
-        "error": "Something went wrong went load created by!",
+        "error": "Fail load created by!",
         "notFound": "Staff not found",
         "required_error": "Create by is required!"
       },
@@ -1051,7 +1051,7 @@
         "label": "Organization",
         "placeholder": "Select organization...",
         "required_error": "Organization is required",
-        "error": "Something went wrong went load organizations",
+        "error": "Fail load organizations",
         "notFound": "Organization not found"
       },
       "width": {
@@ -1145,7 +1145,7 @@
       "faceted": {
         "status": {
           "placeholder": "Status",
-          "error": "Something went wrong went load weather status"
+          "error": "Fail load weather status"
         },
         "temperature": {
           "placeholder": "Temperature"
@@ -1189,7 +1189,7 @@
         "unitId": {
           "required_error": "Required unit",
           "placeholder": "Unit",
-          "error": "Something went wrong went load units",
+          "error": "Fail load units",
           "notFound": "Units not found",
           "label": "Unit"
         },
@@ -1207,7 +1207,7 @@
           "required_error": "Required unit",
           "placeholder": "Unit",
           "label": "Unit",
-          "error": "Something went wrong went load units",
+          "error": "Fail load units",
           "notFound": "Units not found"
         },
         "value": {
@@ -1225,7 +1225,7 @@
           "required_error": "Required unit",
           "placeholder": "Unit",
           "label": "Unit",
-          "error": "Something went wrong went load units",
+          "error": "Fail load units",
           "notFound": "Units not found"
         },
         "value": {
@@ -1242,7 +1242,7 @@
           "required_error": "Required unit",
           "placeholder": "Unit",
           "label": "Unit",
-          "error": "Something went wrong went load units",
+          "error": "Fail load units",
           "notFound": "Units not found"
         },
         "value": {
@@ -1360,7 +1360,7 @@
           "required_error": "Required unit",
           "placeholder": "Unit",
           "label": "Unit",
-          "error": "Something went wrong went load units",
+          "error": "Fail load units",
           "notFound": "Units not found"
         },
         "value": {
@@ -1402,7 +1402,7 @@
         "label": "Nutrient unit",
         "placeholder": "Select unit for nutrient NPK",
         "required_error": "Nutrient unit is required",
-        "error": "Something went wrong went load units",
+        "error": "Fail load units",
         "notFound": "Units not found"
       }
     },
@@ -1472,11 +1472,11 @@
       "faceted": {
         "category": {
           "placeholder": "Category",
-          "error": "Something went wrong went load plant category"
+          "error": "Fail load plant category"
         },
         "season": {
           "placeholder": "Season",
-          "error": "Something went wrong went load plant season"
+          "error": "Fail load plant season"
         },
         "fertilizerType": {
           "placeholder": "Fertilizer type"
@@ -1521,7 +1521,7 @@
         "placeholder": "Select category...",
         "required_error": "Category is required",
         "notFound": "Category not found",
-        "error": "Something went wrong went load category!"
+        "error": "Fail load category!"
       },
       "growthDuration": {
         "label": "Grow duration",
@@ -1533,7 +1533,7 @@
         "max": "Max grow duration must be 365 days"
       },
       "season": {
-        "label": "Season",
+        "label": "Best growing season",
         "placeholder": "Select season...",
         "enum": "Select season in list",
         "options": {
@@ -1544,8 +1544,8 @@
         }
       },
       "fertilizerType": {
-        "label": "Fertilizer type",
-        "placeholder": "Select fertilizer type...",
+        "label": "Fertilizer should be used",
+        "placeholder": "Select fertilizer...",
         "enum": "Select fertilizer in list",
         "options": {
           "ORGANIC": "Organic",
@@ -1557,7 +1557,7 @@
         "unitId": {
           "required_error": "Required unit",
           "placeholder": "Unit",
-          "error": "Something went wrong went load units",
+          "error": "Fail load units",
           "notFound": "Units not found",
           "label": "Unit"
         },
@@ -1567,7 +1567,7 @@
           "min": "Min temperature value is -20",
           "max": "Max temperature value is 50"
         },
-        "label": "Temperature",
+        "label": "Ideal Temperature",
         "placeholder": "Eg: 25 degrees"
       },
       "idealHumidity": {
@@ -1575,7 +1575,7 @@
           "required_error": "Required unit",
           "placeholder": "Unit",
           "label": "Unit",
-          "error": "Something went wrong went load units",
+          "error": "Fail load units",
           "notFound": "Units not found"
         },
         "value": {
@@ -1585,7 +1585,7 @@
           "max": "Max humidity value is 100",
           "int": "Humidity value must be integer number"
         },
-        "label": "Humidity",
+        "label": "Ideal Humidity",
         "placeholder": "Eg: 20%"
       },
       "waterRequirement": {
@@ -1593,7 +1593,7 @@
           "required_error": "Required unit",
           "placeholder": "Unit",
           "label": "Unit",
-          "error": "Something went wrong went load units",
+          "error": "Fail load units",
           "notFound": "Units not found"
         },
         "value": {
@@ -1602,7 +1602,7 @@
           "min": "Min Water requirement  value is 0",
           "max": "Max Water requirement  value is 100"
         },
-        "label": "Water requirement ",
+        "label": "Ideal Water requirement ",
         "placeholder": "Eg: 2l"
       }
     },
@@ -1648,11 +1648,11 @@
       "faceted": {
         "type": {
           "placeholder": "Fertilizer type",
-          "error": "Something went wrong went load fertilizer count"
+          "error": "Fail load fertilizer count"
         },
         "frequencyOfUse": {
           "placeholder": "Frequency of use",
-          "error": "Something went wrong went load frequency count"
+          "error": "Fail load frequency count"
         }
       }
     },
@@ -1733,7 +1733,7 @@
         "unitId": {
           "required_error": "Required unit",
           "placeholder": "Unit",
-          "error": "Something went wrong went load units",
+          "error": "Fail load units",
           "notFound": "Units not found",
           "label": "Unit"
         },
@@ -1783,11 +1783,11 @@
       "faceted": {
         "type": {
           "placeholder": "Pesticide type",
-          "error": "Something went wrong went load pesticide count"
+          "error": "Fail load pesticide count"
         },
         "toxicityLevel": {
           "placeholder": "Toxicity level",
-          "error": "Something went wrong went load toxicity level count"
+          "error": "Fail load toxicity level count"
         }
       }
     },
@@ -1844,7 +1844,7 @@
         "unitId": {
           "required_error": "Required unit",
           "placeholder": "Unit",
-          "error": "Something went wrong went load units",
+          "error": "Fail load units",
           "notFound": "Units not found",
           "label": "Unit"
         },
@@ -1872,7 +1872,7 @@
         "unitId": {
           "required_error": "Required unit",
           "placeholder": "Unit",
-          "error": "Something went wrong went load units",
+          "error": "Fail load units",
           "notFound": "Units not found",
           "label": "Unit"
         },
@@ -1927,7 +1927,7 @@
       "faceted": {
         "type": {
           "placeholder": "Equipment type",
-          "error": "Something went wrong went load equipment count"
+          "error": "Fail load equipment count"
         }
       }
     },
@@ -1987,7 +1987,7 @@
         "unitId": {
           "required_error": "Required unit",
           "placeholder": "Unit",
-          "error": "Something went wrong went load units",
+          "error": "Fail load units",
           "notFound": "Units not found",
           "label": "Unit"
         },
@@ -2067,6 +2067,132 @@
       "backLabel": "Go to equipments page"
     }
   },
+  "crops": {
+    "page": {
+      "title": "Manage crops"
+    },
+    "table": {
+      "thead": {
+        "startDate": "Start date",
+        "endDate": "End date",
+        "name": "Name",
+        "plant": "Plant",
+        "estimatedYield": "Estimated Yield",
+        "actualYield": "Actual Yield",
+        "status": "Status"
+      },
+      "trow": {
+        "endDate": "...",
+        "estimatedYield": "...",
+        "actualYield": "...",
+        "status": "..."
+      }
+    },
+    "search": {
+      "placeholder": "Search by name..."
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add crop",
+        "description": "Add crop use for plant"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit crop",
+        "description": "Update of crop"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete crop?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid crops!"
+      },
+      "name": {
+        "label": "Crop name",
+        "placeholder": "Crop name",
+        "required_error": "Crop name is required!",
+        "min": "Min name length is 5 characters",
+        "max": "Name's length must be less than 100 characters"
+      },
+      "dateRange": {
+        "startDate": {
+          "invalid_type_error": "Value select must be date",
+          "required_error": "Start-end date range required"
+        },
+        "label": "Start date -  end date",
+        "placeholder": "Select date range"
+      },
+      "plantId": {
+        "label": "Plant",
+        "placeholder": "Select plant...",
+        "required_error": "Plant is required",
+        "notFound": "Plant not found",
+        "error": "Fail load plant"
+      },
+
+      "estimatedYield": {
+        "unitId": {
+          "required_error": "Required unit",
+          "placeholder": "Unit",
+          "error": "Fail load units",
+          "notFound": "Units not found",
+          "label": "Unit"
+        },
+        "value": {
+          "required_error": "Estimated yield value is required",
+          "invalid_type_error": "Estimated yield value must be number",
+          "min": "Min Estimated yield value is 0",
+          "max": "Max Estimated yield value is 1_000_000_000"
+        },
+        "label": "Estimated yield",
+        "placeholder": "From 0 to 1 000 000 000"
+      },
+      "actualYield": {
+        "unitId": {
+          "required_error": "Required unit",
+          "placeholder": "Unit",
+          "error": "Fail load units",
+          "notFound": "Units not found",
+          "label": "Unit"
+        },
+        "value": {
+          "required_error": "Actual yield value is required",
+          "invalid_type_error": "Actual yield value must be number",
+          "min": "Min Actual yield value is 0",
+          "max": "Max Actual yield value is 1_000_000_000"
+        },
+        "label": "Actual yield",
+        "placeholder": "From 0 to 1 000 000 000"
+      },
+      "status": {
+        "label": "Status",
+        "placeholder": "Eg: Newly planted",
+        "max": "Max status length is 100"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Crop created!",
+        "edit": "Crop edited!",
+        "destroy": "Crop deleted!"
+      },
+      "failure": {
+        "create": "Something went wrong while creating crop!",
+        "edit": "Something went wrong while editing crop!",
+        "destroy": "Something went wrong while deleting crop!"
+      }
+    },
+    "notFound": {
+      "title": "Crop not found",
+      "description": "Sorry, we couldn’t find the crop you’re looking for.",
+      "backLabel": "Go to crops page"
+    }
+  },
   "errors": {
     "error": "Something went wrong!"
   },
@@ -2090,6 +2216,7 @@
     "/admin/fields/create": "Create",
     "/admin/fields/detail": "Detail",
     "/admin/fields/detail/danger": "Danger",
+    "/admin/fields/detail/crops": "Crops",
     "/admin/fields/detail/weathers": "Weathers",
     "/admin/fields/detail/soils": "Soils",
     "/admin/plants": "Plants",

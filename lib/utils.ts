@@ -301,3 +301,37 @@ export function includeString(str1: string, str2: string): boolean {
 
   return normalizedStr1.includes(normalizedStr2);
 }
+
+export function parseToDate(
+  input?: string | number | undefined | null
+): Date | undefined {
+  if (!input) {
+    return undefined;
+  }
+  const date = new Date(input);
+
+  // Check if the date is valid
+  if (isNaN(date.getTime())) {
+    return undefined;
+  }
+
+  return date;
+}
+
+export function parseToNumber(
+  input: string | undefined,
+  defaultValue: number
+): number {
+  const parsedNumber = Number(input);
+
+  // Check if the parsed result is a valid number, otherwise return the default value
+  if (isNaN(parsedNumber)) {
+    return defaultValue;
+  }
+
+  return parsedNumber;
+}
+
+export function isActive(pathname: string, currentPath: string) {
+  return pathname.startsWith(currentPath);
+}

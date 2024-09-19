@@ -21,12 +21,12 @@ import { UnitsSelectWithQueryClient } from "../../../_components/units-select";
 import { toast } from "sonner";
 import { edit } from "@/actions/field";
 import { useParams } from "next/navigation";
-import { FieldWithUnit } from "@/types";
+import { FieldTable } from "@/types";
 import { SoilType, UnitType } from "@prisma/client";
 import { SelectOptions } from "@/components/form/select-options";
 
 interface FieldEditFormProps {
-  data: FieldWithUnit;
+  data: FieldTable;
 }
 export const FieldEditForm = ({ data }: FieldEditFormProps) => {
   const tSchema = useTranslations("fields.schema");

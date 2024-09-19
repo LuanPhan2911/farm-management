@@ -1,7 +1,14 @@
 import { db } from "@/lib/db";
-import { PlantTable } from "@/types";
 
 import { FertilizerType, Season } from "@prisma/client";
+import {
+  deleteFloatUnit,
+  deleteIntUnit,
+  UnitValue,
+  upsertFloatUnit,
+  upsertIntUnit,
+} from "./units";
+import { PlantSelect } from "@/types";
 
 type PlantParams = {
   name: string;
@@ -9,60 +16,35 @@ type PlantParams = {
   categoryId: string;
   growthDuration: number;
   season?: Season;
-  idealTemperature?: {
-    unitId: string;
-    value: number;
-  };
-  idealHumidity?: {
-    unitId: string;
-    value: number;
-  };
-  waterRequirement?: {
-    unitId: string;
-    value: number;
-  };
+  idealTemperature?: Partial<UnitValue>;
+  idealHumidity?: Partial<UnitValue>;
+  waterRequirement?: Partial<UnitValue>;
   fertilizerType: FertilizerType;
 };
 export const createPlant = async (params: PlantParams) => {
   return await db.$transaction(async (ctx) => {
     const {
-      categoryId,
-      fertilizerType,
-      growthDuration,
-      name,
-      season,
-      imageUrl,
+      idealHumidity: idealHumidityParam,
+      idealTemperature: idealTemperatureParam,
+      waterRequirement: waterRequirementParam,
+      ...otherParams
     } = params;
-    const idealTemperature = params.idealTemperature
-      ? await ctx.floatUnit.create({
-          data: {
-            ...params.idealTemperature,
-          },
-        })
-      : null;
-    const idealHumidity = params.idealHumidity
-      ? await ctx.intUnit.create({
-          data: {
-            ...params.idealHumidity,
-          },
-        })
-      : null;
-    const waterRequirement = params.waterRequirement
-      ? await ctx.floatUnit.create({
-          data: {
-            ...params.waterRequirement,
-          },
-        })
-      : null;
+    const idealTemperature = await upsertFloatUnit({
+      ctx,
+      data: idealTemperatureParam,
+    });
+    const idealHumidity = await upsertIntUnit({
+      ctx,
+      data: idealHumidityParam,
+    });
+    const waterRequirement = await upsertFloatUnit({
+      ctx,
+      data: waterRequirementParam,
+    });
 
     const plant = await ctx.plant.create({
       data: {
-        name,
-        imageUrl,
-        season,
-        categoryId,
-        fertilizerType,
-        growthDuration,
+        ...otherParams,
         idealTemperatureId: idealTemperature?.id,
         idealHumidityId: idealHumidity?.id,
         waterRequirementId: waterRequirement?.id,
@@ -87,79 +69,31 @@ export const updatePlant = async (id: string, params: PlantParams) => {
         ...otherParams,
       },
     });
-    if (idealTemperatureParam) {
-      if (plant.idealTemperatureId) {
-        await ctx.floatUnit.update({
-          where: {
-            id: plant.idealTemperatureId,
-          },
-          data: {
-            ...idealTemperatureParam,
-          },
-        });
-      } else {
-        await ctx.floatUnit.create({
-          data: { ...idealTemperatureParam },
-        });
-      }
-    }
-    if (idealHumidityParam) {
-      if (plant.idealHumidityId) {
-        await ctx.intUnit.update({
-          where: {
-            id: plant.idealHumidityId,
-          },
-          data: {
-            ...idealHumidityParam,
-          },
-        });
-      } else {
-        await ctx.intUnit.create({
-          data: {
-            ...idealHumidityParam,
-          },
-        });
-      }
-    }
-    if (waterRequirementParam) {
-      if (plant.waterRequirementId) {
-        await ctx.floatUnit.update({
-          where: {
-            id: plant.waterRequirementId,
-          },
-          data: {
-            ...waterRequirementParam,
-          },
-        });
-      } else {
-        await ctx.floatUnit.create({
-          data: {
-            ...waterRequirementParam,
-          },
-        });
-      }
-    }
+    await upsertFloatUnit({
+      ctx,
+      data: idealTemperatureParam,
+      id: plant.idealTemperatureId,
+    });
+    await upsertIntUnit({
+      ctx,
+      data: idealHumidityParam,
+      id: plant.idealHumidityId,
+    });
+    await upsertFloatUnit({
+      ctx,
+      data: waterRequirementParam,
+      id: plant.waterRequirementId,
+    });
     return plant;
   });
 };
 export const deletePlant = async (id: string) => {
   return await db.$transaction(async (ctx) => {
     const plant = await ctx.plant.delete({ where: { id } });
-    if (plant.idealTemperatureId) {
-      await ctx.floatUnit.delete({
-        where: { id: plant.idealTemperatureId },
-      });
-    }
-    if (plant.idealHumidityId) {
-      await ctx.intUnit.delete({
-        where: { id: plant.idealHumidityId },
-      });
-    }
-    if (plant.waterRequirementId) {
-      await ctx.floatUnit.delete({
-        where: { id: plant.waterRequirementId },
-      });
-    }
+    await deleteFloatUnit(ctx, plant.idealTemperatureId);
+    await deleteIntUnit(ctx, plant.idealHumidityId);
+    await deleteFloatUnit(ctx, plant.waterRequirementId);
+
     return plant;
   });
 };
@@ -243,5 +177,19 @@ export const getPlantById = async (id: string) => {
     return plant;
   } catch (error) {
     return null;
+  }
+};
+
+export const getPlantsSelect = async (): Promise<PlantSelect[]> => {
+  try {
+    return await db.plant.findMany({
+      select: {
+        id: true,
+        name: true,
+        imageUrl: true,
+      },
+    });
+  } catch (error) {
+    return [];
   }
 };

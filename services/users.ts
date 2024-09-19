@@ -23,9 +23,9 @@ export const getUsersTable = async ({
   currentPage,
   orderBy,
 }: {
-  query: string;
   currentPage: number;
   orderBy?: UserOrderBy;
+  query?: string;
 }) => {
   try {
     const staffIds = await getStaffExternalIds();
@@ -33,8 +33,8 @@ export const getUsersTable = async ({
     const { data, totalCount } = await clerkClient().users.getUserList({
       limit: LIMIT,
       offset: (currentPage - 1) * LIMIT,
-      query,
       userId: staffIds.map((id) => `-${id}`),
+      query,
       orderBy,
     });
 

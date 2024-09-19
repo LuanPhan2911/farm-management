@@ -7,60 +7,50 @@ import {
 } from "@/lib/utils";
 import { PaginatedResponse, WeatherStatusCount, WeatherTable } from "@/types";
 import { WeatherStatus } from "@prisma/client";
+import {
+  createFloatUnit,
+  createIntUnit,
+  deleteManyFloatUnit,
+  deleteManyIntUnit,
+  UnitValue,
+  updateFloatUnit,
+  updateIntUnit,
+} from "./units";
 
 type WeatherParams = {
-  temperature: {
-    value: number;
-    unitId: string;
-  };
-  humidity: {
-    value: number;
-    unitId: string;
-  };
-  atmosphericPressure: {
-    value: number;
-    unitId: string;
-  };
-  rainfall: {
-    value: number;
-    unitId: string;
-  };
+  temperature: UnitValue;
+  humidity: UnitValue;
+  atmosphericPressure: UnitValue;
+  rainfall: UnitValue;
   fieldId: string;
   status: WeatherStatus;
 };
 export const createWeather = async (params: WeatherParams) => {
   return db.$transaction(async (ctx) => {
+    const {
+      atmosphericPressure: atmosphericPressureParam,
+      humidity: humidityParam,
+      temperature: temperatureParam,
+      rainfall: rainfallParam,
+      ...others
+    } = params;
     //Create temperature
-    const temperature = await ctx.floatUnit.create({
-      data: {
-        ...params.temperature,
-      },
-    });
+    const temperature = await createFloatUnit(ctx, temperatureParam);
     // Create humidity
-    const humidity = await ctx.intUnit.create({
-      data: {
-        ...params.humidity,
-      },
-    });
+    const humidity = await createIntUnit(ctx, humidityParam);
     //create atmosphericPressure
-    const atmosphericPressure = await ctx.floatUnit.create({
-      data: {
-        ...params.atmosphericPressure,
-      },
-    });
+    const atmosphericPressure = await createFloatUnit(
+      ctx,
+      atmosphericPressureParam
+    );
     //create rainfall
-    const rainfall = await ctx.intUnit.create({
-      data: {
-        ...params.rainfall,
-      },
-    });
+    const rainfall = await createIntUnit(ctx, rainfallParam);
 
     //create weather;
-    const { status, fieldId } = params;
+
     const weather = await ctx.weather.create({
       data: {
-        status,
-        fieldId,
+        ...others,
         atmosphericPressureId: atmosphericPressure.id,
         humidityId: humidity.id,
         rainfallId: rainfall.id,
@@ -107,72 +97,55 @@ export const deleteWeather = async (id: string) => {
         confirmed: false,
       },
     });
-    await ctx.floatUnit.deleteMany({
-      where: {
-        id: {
-          in: [weather.temperatureId, weather.atmosphericPressureId],
-        },
-      },
-    });
-    await ctx.intUnit.deleteMany({
-      where: {
-        id: {
-          in: [weather.humidityId, weather.rainfallId],
-        },
-      },
-    });
+    const { atmosphericPressureId, temperatureId, humidityId, rainfallId } =
+      weather;
+    await deleteManyFloatUnit(ctx, [atmosphericPressureId, temperatureId]);
+    await deleteManyIntUnit(ctx, [humidityId, rainfallId]);
     return weather;
   });
 };
 export const updateWeather = async (id: string, params: WeatherParams) => {
   return db.$transaction(async (ctx) => {
     //update weather;
-    const { status, fieldId } = params;
+    const {
+      atmosphericPressure: atmosphericPressureParam,
+      humidity: humidityParam,
+      temperature: temperatureParam,
+      rainfall: rainfallParam,
+      ...others
+    } = params;
     const weather = await ctx.weather.update({
       where: {
         id,
       },
       data: {
-        status,
-        fieldId,
+        ...others,
       },
     });
     //Create temperature
-    const temperature = await ctx.floatUnit.update({
-      where: {
-        id: weather.temperatureId,
-      },
-      data: {
-        ...params.temperature,
-      },
-    });
+    const temperature = await updateFloatUnit(
+      ctx,
+      weather.temperatureId,
+      temperatureParam
+    );
     // Create humidity
-    const humidity = await ctx.intUnit.update({
-      where: {
-        id: weather.humidityId,
-      },
-      data: {
-        ...params.humidity,
-      },
-    });
+    const humidity = await updateIntUnit(
+      ctx,
+      weather.humidityId,
+      humidityParam
+    );
     //create atmosphericPressure
-    const atmosphericPressure = await ctx.floatUnit.update({
-      where: {
-        id: weather.atmosphericPressureId,
-      },
-      data: {
-        ...params.atmosphericPressure,
-      },
-    });
+    const atmosphericPressure = await updateFloatUnit(
+      ctx,
+      weather.atmosphericPressureId,
+      atmosphericPressureParam
+    );
     //create rainfall
-    const rainfall = await ctx.intUnit.update({
-      where: {
-        id: weather.rainfallId,
-      },
-      data: {
-        ...params.rainfall,
-      },
-    });
+    const rainfall = await updateIntUnit(
+      ctx,
+      weather.rainfallId,
+      rainfallParam
+    );
 
     return weather;
   });

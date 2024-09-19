@@ -18,6 +18,7 @@ interface DatePickerWithRangeProps
   handleChange: (date: DateRange | undefined) => void;
   disabled?: boolean;
   disabledDateRange?: Matcher | Matcher[];
+  placeholder?: string;
 }
 export function DatePickerWithRange({
   className,
@@ -25,6 +26,7 @@ export function DatePickerWithRange({
   disabled,
   disabledDateRange,
   handleChange,
+  placeholder,
 }: DatePickerWithRangeProps) {
   const { dateTime } = useFormatter();
   return (
@@ -38,6 +40,7 @@ export function DatePickerWithRange({
               !date && "text-muted-foreground"
             )}
             disabled={disabled}
+            size={"sm"}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
             {date?.from ? (
@@ -49,7 +52,7 @@ export function DatePickerWithRange({
                 dateTime(date.from)
               )
             ) : (
-              <span>Pick a date</span>
+              <span>{placeholder || "Pick a date"}</span>
             )}
           </Button>
         </PopoverTrigger>
