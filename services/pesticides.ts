@@ -19,6 +19,7 @@ import {
   upsertFloatUnit,
   upsertIntUnit,
 } from "./units";
+import { count } from "console";
 
 type PesticideParams = {
   name: string;
@@ -103,38 +104,46 @@ export const getPesticides = async ({
   page = 1,
 }: PesticideQuery): Promise<PaginatedResponse<PesticideTable>> => {
   try {
-    const pesticides = await db.pesticide.findMany({
-      where: {
-        ...(filterString && getObjectFilterString(filterString)),
-        ...(filterNumber && getObjectFilterNumber(filterNumber)),
-      },
-      orderBy: {
-        ...(orderBy && getObjectSortOrder(orderBy)),
-      },
-      take: LIMIT,
-      skip: (page - 1) * LIMIT,
-      include: {
-        recommendedDosage: {
-          include: {
-            unit: {
-              select: {
-                name: true,
+    const [pesticides, count] = await db.$transaction([
+      db.pesticide.findMany({
+        where: {
+          ...(filterString && getObjectFilterString(filterString)),
+          ...(filterNumber && getObjectFilterNumber(filterNumber)),
+        },
+        orderBy: {
+          ...(orderBy && getObjectSortOrder(orderBy)),
+        },
+        take: LIMIT,
+        skip: (page - 1) * LIMIT,
+        include: {
+          recommendedDosage: {
+            include: {
+              unit: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+          withdrawalPeriod: {
+            include: {
+              unit: {
+                select: {
+                  name: true,
+                },
               },
             },
           },
         },
-        withdrawalPeriod: {
-          include: {
-            unit: {
-              select: {
-                name: true,
-              },
-            },
-          },
+      }),
+      db.pesticide.count({
+        where: {
+          ...(filterString && getObjectFilterString(filterString)),
+          ...(filterNumber && getObjectFilterNumber(filterNumber)),
         },
-      },
-    });
-    const totalPage = Math.ceil(pesticides.length / LIMIT);
+      }),
+    ]);
+    const totalPage = Math.ceil(count / LIMIT);
     return {
       data: pesticides,
       totalPage,
@@ -147,15 +156,13 @@ export const getPesticides = async ({
   }
 };
 
-export const getCountPesticideType = async ({
-  filterString,
-}: PesticideQuery): Promise<PesticideTypeCount[]> => {
+export const getCountPesticideType = async ({}: PesticideQuery): Promise<
+  PesticideTypeCount[]
+> => {
   try {
     const result = await db.pesticide.groupBy({
       by: "type",
-      where: {
-        ...(filterString && getObjectFilterString(filterString)),
-      },
+
       _count: {
         _all: true,
       },
@@ -170,29 +177,23 @@ export const getCountPesticideType = async ({
     return [];
   }
 };
-export const getCountPesticideToxicityLevel = async ({
-  filterString,
-}: PesticideQuery): Promise<PesticideToxicityLevelCount[]> => {
-  try {
-    const result = await db.pesticide.groupBy({
-      by: "toxicityLevel",
-      where: {
-        toxicityLevel: {
-          not: null,
+export const getCountPesticideToxicityLevel =
+  async ({}: PesticideQuery): Promise<PesticideToxicityLevelCount[]> => {
+    try {
+      const result = await db.pesticide.groupBy({
+        by: "toxicityLevel",
+
+        _count: {
+          _all: true,
         },
-        ...(filterString && getObjectFilterString(filterString)),
-      },
-      _count: {
-        _all: true,
-      },
-    });
-    return result.map((item) => {
-      return {
-        toxicityLevel: item.toxicityLevel!,
-        _count: item._count._all,
-      };
-    });
-  } catch (error) {
-    return [];
-  }
-};
+      });
+      return result.map((item) => {
+        return {
+          toxicityLevel: item.toxicityLevel!,
+          _count: item._count._all,
+        };
+      });
+    } catch (error) {
+      return [];
+    }
+  };

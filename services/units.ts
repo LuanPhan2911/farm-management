@@ -79,22 +79,6 @@ export type UnitValue = {
   unitId: string;
   value: number;
 };
-export const createFloatUnit = async (
-  ctx: PrismaTransactionalClient,
-  data: UnitValue
-) => {
-  return await ctx.floatUnit.create({ data });
-};
-export const updateFloatUnit = async (
-  ctx: PrismaTransactionalClient,
-  id: string,
-  data: UnitValue
-) => {
-  return await ctx.floatUnit.update({
-    data,
-    where: { id },
-  });
-};
 
 export const deleteFloatUnit = async (
   ctx: PrismaTransactionalClient,
@@ -107,7 +91,7 @@ export const deleteFloatUnit = async (
 };
 export const deleteManyFloatUnit = async (
   ctx: PrismaTransactionalClient,
-  ids: string[] | null | undefined
+  ids: (string | null)[] | null | undefined
 ) => {
   if (!ids?.length) {
     return null;
@@ -115,7 +99,7 @@ export const deleteManyFloatUnit = async (
   return await ctx.floatUnit.deleteMany({
     where: {
       id: {
-        in: ids,
+        in: ids.filter((id) => id !== null),
       },
     },
   });
@@ -129,7 +113,7 @@ export const upsertFloatUnit = async ({
   id?: string | null | undefined;
   data?: Partial<UnitValue>;
 }): Promise<FloatUnit | null> => {
-  if (!data || !data.unitId || !data.value) {
+  if (!data || data.unitId === undefined || data.value === undefined) {
     return null;
   }
   if (!id) {
@@ -146,22 +130,6 @@ export const upsertFloatUnit = async ({
     });
   }
 };
-export const createIntUnit = async (
-  ctx: PrismaTransactionalClient,
-  data: UnitValue
-) => {
-  return await ctx.intUnit.create({ data });
-};
-export const updateIntUnit = async (
-  ctx: PrismaTransactionalClient,
-  id: string,
-  data: UnitValue
-) => {
-  return await ctx.intUnit.update({
-    data,
-    where: { id },
-  });
-};
 
 export const deleteIntUnit = async (
   ctx: PrismaTransactionalClient,
@@ -174,7 +142,7 @@ export const deleteIntUnit = async (
 };
 export const deleteManyIntUnit = async (
   ctx: PrismaTransactionalClient,
-  ids: string[] | null | undefined
+  ids: (string | null)[] | null | undefined
 ) => {
   if (!ids?.length) {
     return null;
@@ -182,7 +150,7 @@ export const deleteManyIntUnit = async (
   return await ctx.intUnit.deleteMany({
     where: {
       id: {
-        in: ids,
+        in: ids.filter((id) => id !== null),
       },
     },
   });
@@ -196,7 +164,7 @@ export const upsertIntUnit = async ({
   id?: string | null | undefined;
   data?: Partial<UnitValue>;
 }): Promise<IntUnit | null> => {
-  if (!data || !data.unitId || !data.value) {
+  if (!data || data.unitId === undefined || data.value === undefined) {
     return null;
   }
   if (!id) {

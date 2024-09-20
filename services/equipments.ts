@@ -7,6 +7,7 @@ import {
 } from "@/lib/utils";
 import { PaginatedResponse, EquipmentTable, EquipmentTypeCount } from "@/types";
 import { EquipmentType } from "@prisma/client";
+import { deleteFloatUnit, upsertFloatUnit } from "./units";
 
 type EquipmentParams = {
   name: string;
@@ -54,13 +55,10 @@ export const updateEquipment = async (id: string, params: EquipmentParams) => {
       },
     });
 
-    await ctx.floatUnit.update({
-      data: {
-        ...purchasePriceParam,
-      },
-      where: {
-        id: equipment.purchasePriceId,
-      },
+    await upsertFloatUnit({
+      ctx,
+      data: purchasePriceParam,
+      id: equipment.purchasePriceId,
     });
 
     return equipment;
@@ -72,9 +70,7 @@ export const deleteEquipment = async (id: string) => {
       where: { id },
     });
 
-    await ctx.floatUnit.delete({
-      where: { id: equipment.purchasePriceId },
-    });
+    await deleteFloatUnit(ctx, equipment.purchasePriceId);
   });
 };
 type EquipmentQuery = {
@@ -90,29 +86,38 @@ export const getEquipments = async ({
   page = 1,
 }: EquipmentQuery): Promise<PaginatedResponse<EquipmentTable>> => {
   try {
-    const equipments = await db.equipment.findMany({
-      where: {
-        ...(filterString && getObjectFilterString(filterString)),
-        ...(filterNumber && getObjectFilterNumber(filterNumber)),
-      },
-      orderBy: {
-        ...(orderBy && getObjectSortOrder(orderBy)),
-      },
-      take: LIMIT,
-      skip: (page - 1) * LIMIT,
-      include: {
-        purchasePrice: {
-          include: {
-            unit: {
-              select: {
-                name: true,
+    const [equipments, count] = await db.$transaction([
+      db.equipment.findMany({
+        where: {
+          ...(filterString && getObjectFilterString(filterString)),
+          ...(filterNumber && getObjectFilterNumber(filterNumber)),
+        },
+        orderBy: {
+          ...(orderBy && getObjectSortOrder(orderBy)),
+        },
+        take: LIMIT,
+        skip: (page - 1) * LIMIT,
+        include: {
+          purchasePrice: {
+            include: {
+              unit: {
+                select: {
+                  name: true,
+                },
               },
             },
           },
         },
-      },
-    });
-    const totalPage = Math.ceil(equipments.length / LIMIT);
+      }),
+      db.equipment.count({
+        where: {
+          ...(filterString && getObjectFilterString(filterString)),
+          ...(filterNumber && getObjectFilterNumber(filterNumber)),
+        },
+      }),
+    ]);
+
+    const totalPage = Math.ceil(count / LIMIT);
     return {
       data: equipments,
       totalPage,
@@ -147,15 +152,13 @@ export const getEquipmentById = async (id: string) => {
     return null;
   }
 };
-export const getCountEquipmentType = async ({
-  filterString,
-}: EquipmentQuery): Promise<EquipmentTypeCount[]> => {
+export const getCountEquipmentType = async ({}: EquipmentQuery): Promise<
+  EquipmentTypeCount[]
+> => {
   try {
     const result = await db.equipment.groupBy({
       by: "type",
-      where: {
-        ...(filterString && getObjectFilterString(filterString)),
-      },
+
       _count: {
         _all: true,
       },

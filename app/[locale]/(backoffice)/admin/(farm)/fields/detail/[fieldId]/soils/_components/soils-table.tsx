@@ -52,6 +52,9 @@ export const SoilsTable = ({ data, totalPage }: SoilsTableProps) => {
                   defaultValue="desc"
                 />
               </TableHead>
+              <TableHead>
+                <OrderByButton column="ph" label={t("table.thead.ph")} />
+              </TableHead>
 
               <TableHead>
                 <OrderByButton
@@ -96,29 +99,30 @@ export const SoilsTable = ({ data, totalPage }: SoilsTableProps) => {
                       year: "numeric",
                     })}
                   </TableCell>
+                  <TableCell>{item.ph}</TableCell>
 
                   <TableCell>
                     <UnitWithValue
                       value={item.nutrientNitrogen}
-                      unit={item.nutrientUnit.name}
+                      unit={item.nutrientUnit?.name}
                     />
                   </TableCell>
                   <TableCell>
                     <UnitWithValue
                       value={item.nutrientPhosphorus}
-                      unit={item.nutrientUnit.name}
+                      unit={item.nutrientUnit?.name}
                     />
                   </TableCell>
                   <TableCell>
                     <UnitWithValue
                       value={item.nutrientPotassium}
-                      unit={item.nutrientUnit.name}
+                      unit={item.nutrientUnit?.name}
                     />
                   </TableCell>
                   <TableCell>
                     <UnitWithValue
-                      value={item.moisture.value}
-                      unit={item.moisture.unit.name}
+                      value={item.moisture?.value}
+                      unit={item.moisture?.unit.name}
                     />
                   </TableCell>
 

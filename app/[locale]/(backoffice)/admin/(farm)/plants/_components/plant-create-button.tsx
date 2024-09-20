@@ -48,6 +48,7 @@ export const PlantCreateForm = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
+      growthDuration: "",
     },
   });
   const onSubmit = (values: z.infer<typeof formSchema>) => {
@@ -126,7 +127,6 @@ export const PlantCreateForm = () => {
                   placeholder={tSchema("growthDuration.placeholder")}
                   {...field}
                   disabled={isPending}
-                  type="number"
                 />
               </FormControl>
               <FormMessage />

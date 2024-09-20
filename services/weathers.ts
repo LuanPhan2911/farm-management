@@ -1,6 +1,7 @@
 import { LIMIT } from "@/configs/paginationConfig";
 import { db } from "@/lib/db";
 import {
+  chunkArray,
   getObjectFilterNumber,
   getObjectFilterString,
   getObjectSortOrder,
@@ -8,22 +9,20 @@ import {
 import { PaginatedResponse, WeatherStatusCount, WeatherTable } from "@/types";
 import { WeatherStatus } from "@prisma/client";
 import {
-  createFloatUnit,
-  createIntUnit,
   deleteManyFloatUnit,
   deleteManyIntUnit,
   UnitValue,
-  updateFloatUnit,
-  updateIntUnit,
+  upsertFloatUnit,
+  upsertIntUnit,
 } from "./units";
 
 type WeatherParams = {
-  temperature: UnitValue;
-  humidity: UnitValue;
-  atmosphericPressure: UnitValue;
-  rainfall: UnitValue;
   fieldId: string;
   status: WeatherStatus;
+  temperature?: Partial<UnitValue>;
+  humidity?: Partial<UnitValue>;
+  atmosphericPressure?: Partial<UnitValue>;
+  rainfall?: Partial<UnitValue>;
 };
 export const createWeather = async (params: WeatherParams) => {
   return db.$transaction(async (ctx) => {
@@ -32,37 +31,151 @@ export const createWeather = async (params: WeatherParams) => {
       humidity: humidityParam,
       temperature: temperatureParam,
       rainfall: rainfallParam,
+
       ...others
     } = params;
     //Create temperature
-    const temperature = await createFloatUnit(ctx, temperatureParam);
-    // Create humidity
-    const humidity = await createIntUnit(ctx, humidityParam);
-    //create atmosphericPressure
-    const atmosphericPressure = await createFloatUnit(
+    const temperature = await upsertFloatUnit({
       ctx,
-      atmosphericPressureParam
-    );
+      data: temperatureParam,
+    });
+    // Create humidity
+    const humidity = await upsertIntUnit({
+      ctx,
+      data: humidityParam,
+    });
+    //create atmosphericPressure
+    const atmosphericPressure = await upsertFloatUnit({
+      ctx,
+      data: atmosphericPressureParam,
+    });
     //create rainfall
-    const rainfall = await createIntUnit(ctx, rainfallParam);
+    const rainfall = await upsertIntUnit({
+      ctx,
+      data: rainfallParam,
+    });
 
     //create weather;
 
     const weather = await ctx.weather.create({
       data: {
         ...others,
-        atmosphericPressureId: atmosphericPressure.id,
-        humidityId: humidity.id,
-        rainfallId: rainfall.id,
-        temperatureId: temperature.id,
+        atmosphericPressureId: atmosphericPressure?.id,
+        humidityId: humidity?.id,
+        rainfallId: rainfall?.id,
+        temperatureId: temperature?.id,
       },
     });
     return weather;
   });
 };
-export const createManyWeather = async (params: WeatherParams[]) => {
-  const weathers = params.map((param) => createWeather(param));
-  return await Promise.all(weathers);
+export const updateWeather = async (id: string, params: WeatherParams) => {
+  return db.$transaction(async (ctx) => {
+    //update weather;
+    const {
+      atmosphericPressure: atmosphericPressureParam,
+      humidity: humidityParam,
+      temperature: temperatureParam,
+      rainfall: rainfallParam,
+      ...others
+    } = params;
+    const weather = await ctx.weather.update({
+      where: {
+        id,
+      },
+      data: {
+        ...others,
+      },
+    });
+    const temperature = await upsertFloatUnit({
+      ctx,
+      data: temperatureParam,
+      id: weather.temperatureId,
+    });
+    const atmosphericPressure = await upsertFloatUnit({
+      ctx,
+      data: atmosphericPressureParam,
+      id: weather.atmosphericPressureId,
+    });
+    const humidity = await upsertIntUnit({
+      ctx,
+      data: humidityParam,
+      id: weather.humidityId,
+    });
+    const rainfall = await upsertIntUnit({
+      ctx,
+      data: rainfallParam,
+      id: weather.rainfallId,
+    });
+
+    return weather;
+  });
+};
+export const createManyWeather = async (weatherDataArray: WeatherParams[]) => {
+  return Promise.all(
+    weatherDataArray.map(async (weatherData) => {
+      const {
+        atmosphericPressure: atmosphericPressureParam,
+        humidity: humidityParam,
+        temperature: temperatureParam,
+        rainfall: rainfallParam,
+        ...others
+      } = weatherData;
+
+      // Each weather record will be handled within a transaction
+
+      try {
+        // Each weather record will be handled within a transaction
+        return db.$transaction(async (ctx) => {
+          const temperature = await upsertFloatUnit({
+            ctx,
+            data: temperatureParam,
+          });
+
+          const humidity = await upsertIntUnit({
+            ctx,
+            data: humidityParam,
+          });
+
+          const atmosphericPressure = await upsertFloatUnit({
+            ctx,
+            data: atmosphericPressureParam,
+          });
+
+          const rainfall = await upsertIntUnit({
+            ctx,
+            data: rainfallParam,
+          });
+
+          const weather = await ctx.weather.create({
+            data: {
+              ...others,
+              atmosphericPressureId: atmosphericPressure?.id,
+              humidityId: humidity?.id,
+              rainfallId: rainfall?.id,
+              temperatureId: temperature?.id,
+            },
+          });
+
+          return weather;
+        });
+      } catch (error) {
+        console.error(`Error inserting weather data: ${error}`, weatherData);
+        // Optionally handle the error, log it, or return null to continue
+        return null; // Continue to the next record
+      }
+    })
+  );
+};
+export const createManyWeatherInChunks = async (
+  weatherDataArray: WeatherParams[],
+  chunkSize = 10
+) => {
+  const chunks = chunkArray(weatherDataArray, chunkSize);
+
+  for (const chunk of chunks) {
+    await createManyWeather(chunk); // Use createManyWeather for each chunk
+  }
 };
 export const confirmWeather = async (
   id: string,
@@ -104,52 +217,6 @@ export const deleteWeather = async (id: string) => {
     return weather;
   });
 };
-export const updateWeather = async (id: string, params: WeatherParams) => {
-  return db.$transaction(async (ctx) => {
-    //update weather;
-    const {
-      atmosphericPressure: atmosphericPressureParam,
-      humidity: humidityParam,
-      temperature: temperatureParam,
-      rainfall: rainfallParam,
-      ...others
-    } = params;
-    const weather = await ctx.weather.update({
-      where: {
-        id,
-      },
-      data: {
-        ...others,
-      },
-    });
-    //Create temperature
-    const temperature = await updateFloatUnit(
-      ctx,
-      weather.temperatureId,
-      temperatureParam
-    );
-    // Create humidity
-    const humidity = await updateIntUnit(
-      ctx,
-      weather.humidityId,
-      humidityParam
-    );
-    //create atmosphericPressure
-    const atmosphericPressure = await updateFloatUnit(
-      ctx,
-      weather.atmosphericPressureId,
-      atmosphericPressureParam
-    );
-    //create rainfall
-    const rainfall = await updateIntUnit(
-      ctx,
-      weather.rainfallId,
-      rainfallParam
-    );
-
-    return weather;
-  });
-};
 
 type WeatherQuery = {
   fieldId: string;
@@ -170,63 +237,76 @@ export const getWeathersOnField = async ({
   end,
 }: WeatherQuery): Promise<PaginatedResponse<WeatherTable>> => {
   try {
-    const weathers = await db.weather.findMany({
-      where: {
-        fieldId,
-        createdAt: {
-          ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
-          ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
+    const [weathers, count] = await db.$transaction([
+      db.weather.findMany({
+        where: {
+          fieldId,
+          createdAt: {
+            ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
+            ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
+          },
+          ...(filterString && getObjectFilterString(filterString)),
+          ...(filterNumber && getObjectFilterNumber(filterNumber)),
         },
-        ...(filterString && getObjectFilterString(filterString)),
-        ...(filterNumber && getObjectFilterNumber(filterNumber)),
-      },
-      orderBy: {
-        ...(orderBy && getObjectSortOrder(orderBy)),
-      },
-      include: {
-        confirmedBy: true,
-        atmosphericPressure: {
-          include: {
-            unit: {
-              select: {
-                name: true,
+        orderBy: {
+          ...(orderBy && getObjectSortOrder(orderBy)),
+        },
+        include: {
+          confirmedBy: true,
+          atmosphericPressure: {
+            include: {
+              unit: {
+                select: {
+                  name: true,
+                },
               },
             },
           },
-        },
 
-        humidity: {
-          include: {
-            unit: {
-              select: {
-                name: true,
+          humidity: {
+            include: {
+              unit: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+          rainfall: {
+            include: {
+              unit: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+          temperature: {
+            include: {
+              unit: {
+                select: {
+                  name: true,
+                },
               },
             },
           },
         },
-        rainfall: {
-          include: {
-            unit: {
-              select: {
-                name: true,
-              },
-            },
+        take: LIMIT,
+        skip: (page - 1) * LIMIT,
+      }),
+      db.weather.count({
+        where: {
+          fieldId,
+          createdAt: {
+            ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
+            ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
           },
+          ...(filterString && getObjectFilterString(filterString)),
+          ...(filterNumber && getObjectFilterNumber(filterNumber)),
         },
-        temperature: {
-          include: {
-            unit: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        },
-      },
-      take: LIMIT,
-      skip: (page - 1) * LIMIT,
-    });
-    const totalPage = Math.ceil(weathers.length / LIMIT);
+      }),
+    ]);
+    const totalPage = Math.ceil(count / LIMIT);
     return {
       data: weathers,
       totalPage,
@@ -241,25 +321,18 @@ export const getWeathersOnField = async ({
 
 export const getCountWeatherStatus = async ({
   fieldId,
-  begin,
-  end,
-  filterString,
 }: WeatherQuery): Promise<WeatherStatusCount[]> => {
   try {
     const result = await db.weather.groupBy({
       by: "status",
       where: {
         fieldId,
-        createdAt: {
-          ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
-          ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
-        },
-        ...(filterString && getObjectFilterString(filterString)),
       },
       _count: {
         _all: true,
       },
     });
+
     return result.map((item) => {
       return {
         status: item.status,

@@ -49,6 +49,7 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
                 <OrderByButton
                   column="createdAt"
                   label={t("table.thead.createdAt")}
+                  defaultValue="desc"
                 />
               </TableHead>
               <TableHead>{t("table.thead.status")} </TableHead>
@@ -100,27 +101,27 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
                   </TableCell>
                   <TableCell>
                     <span>
-                      {item.temperature.value}
+                      {item.temperature?.value}
                       <sup>o</sup>
-                      {item.temperature.unit.name}
+                      {item.temperature?.unit.name}
                     </span>
                   </TableCell>
                   <TableCell>
                     <UnitWithValue
-                      value={item.humidity.value}
-                      unit={item.humidity.unit.name}
+                      value={item.humidity?.value}
+                      unit={item.humidity?.unit.name}
                     />
                   </TableCell>
                   <TableCell>
                     <UnitWithValue
-                      value={item.atmosphericPressure.value}
-                      unit={item.atmosphericPressure.unit.name}
+                      value={item.atmosphericPressure?.value}
+                      unit={item.atmosphericPressure?.unit.name}
                     />
                   </TableCell>
                   <TableCell>
                     <UnitWithValue
-                      value={item.rainfall.value}
-                      unit={item.rainfall.unit.name}
+                      value={item.rainfall?.value}
+                      unit={item.rainfall?.unit.name}
                     />
                   </TableCell>
                   <TableCell>

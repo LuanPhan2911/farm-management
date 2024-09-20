@@ -335,3 +335,38 @@ export function parseToNumber(
 export function isActive(pathname: string, currentPath: string) {
   return pathname.startsWith(currentPath);
 }
+
+export function convertNullToUndefined<T extends Record<string, any>>(
+  obj: T
+): {
+  [K in keyof T]: Exclude<T[K], null> | undefined;
+} {
+  const result = { ...obj };
+
+  Object.keys(result).forEach((key) => {
+    const typedKey = key as keyof T;
+    if (result[typedKey] === null) {
+      result[typedKey] = undefined as any; // Replace null with undefined
+    }
+  });
+
+  return result as { [K in keyof T]: Exclude<T[K], null> | undefined };
+}
+/**
+ * Splits an array into chunks of a given size
+ * @param array - The array to chunk
+ * @param chunkSize - The size of each chunk
+ * @returns - A new array containing arrays of chunked elements
+ */
+export function chunkArray<T>(array: T[], chunkSize: number): T[][] {
+  if (chunkSize <= 0) throw new Error("Chunk size must be greater than 0");
+
+  const result: T[][] = [];
+
+  for (let i = 0; i < array.length; i += chunkSize) {
+    const chunk = array.slice(i, i + chunkSize);
+    result.push(chunk);
+  }
+
+  return result;
+}

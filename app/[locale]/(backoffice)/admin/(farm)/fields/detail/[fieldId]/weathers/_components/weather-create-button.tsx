@@ -84,6 +84,31 @@ export const WeatherCreateButton = () => {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("status.label")}</FormLabel>
+                  <div className="flex gap-x-2">
+                    <FormControl>
+                      <SelectOptions
+                        label={tSchema("status.placeholder")}
+                        onChange={field.onChange}
+                        options={Object.keys(WeatherStatus).map((item) => {
+                          return {
+                            label: tSchema(`status.options.${item}`),
+                            value: item,
+                          };
+                        })}
+                        disabled={isPending}
+                      />
+                    </FormControl>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <div className="grid grid-cols-4 gap-2">
                 <div className="col-span-3">
@@ -280,32 +305,6 @@ export const WeatherCreateButton = () => {
                 />
               </div>
             </div>
-
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("status.label")}</FormLabel>
-                  <div className="flex gap-x-2">
-                    <FormControl>
-                      <SelectOptions
-                        label={tSchema("status.placeholder")}
-                        onChange={field.onChange}
-                        options={Object.keys(WeatherStatus).map((item) => {
-                          return {
-                            label: tSchema(`status.options.${item}`),
-                            value: item,
-                          };
-                        })}
-                        disabled={isPending}
-                      />
-                    </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
             <DialogFooter>
               <DialogClose asChild>

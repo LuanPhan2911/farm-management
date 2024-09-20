@@ -2,6 +2,7 @@
 
 import { WeatherStatus } from "@prisma/client";
 import {
+  CircleHelp,
   CloudFog,
   CloudRain,
   CloudSnow,
@@ -45,6 +46,7 @@ export const WeatherStatusValue = ({ status }: WeatherStatusValueProps) => {
       value: WeatherStatus.STORMY,
     },
   };
+
   const { icon, value } = options[status];
   return (
     <div className="flex items-center">

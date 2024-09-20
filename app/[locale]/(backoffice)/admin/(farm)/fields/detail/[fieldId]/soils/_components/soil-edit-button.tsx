@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { UnitType } from "@prisma/client";
 import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -25,6 +25,7 @@ import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { SoilTable } from "@/types";
 import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { edit } from "@/actions/soil";
+import { convertNullToUndefined } from "@/lib/utils";
 
 interface SoilEditButtonProps {
   data: SoilTable;
@@ -61,17 +62,14 @@ export const SoilEditDialog = () => {
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: useMemo(() => {
+      return !!data.soil ? convertNullToUndefined(data.soil) : undefined;
+    }, [data.soil]),
   });
   const [id, setId] = useState("");
   useEffect(() => {
     if (data?.soil) {
-      form.setValue("moisture", data.soil.moisture);
-      form.setValue("fieldId", data.soil.fieldId);
-      form.setValue("nutrientNitrogen", data.soil.nutrientNitrogen);
-      form.setValue("nutrientPhosphorus", data.soil.nutrientPhosphorus);
-      form.setValue("nutrientPotassium", data.soil.nutrientPotassium);
-      form.setValue("nutrientUnitId", data.soil.nutrientUnitId);
-      form.setValue("ph", data.soil.ph);
+      form.reset(convertNullToUndefined(data.soil));
 
       setId(data.soil.id);
     }

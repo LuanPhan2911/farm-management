@@ -14,7 +14,7 @@ type PlantParams = {
   name: string;
   imageUrl?: string;
   categoryId: string;
-  growthDuration: number;
+  growthDuration: string;
   season?: Season;
   idealTemperature?: Partial<UnitValue>;
   idealHumidity?: Partial<UnitValue>;

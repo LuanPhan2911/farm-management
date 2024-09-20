@@ -189,17 +189,17 @@ enum WeatherStatus {
 model Weather {
   id String @id @default(uuid())
 
-  temperatureId String
-  temperature   FloatUnit @relation(name: "temperature", fields: [temperatureId], references: [id])
+  temperatureId String?
+  temperature   FloatUnit? @relation(name: "temperature", fields: [temperatureId], references: [id], onDelete: SetNull)
 
-  humidityId String
-  humidity   IntUnit @relation(name: "humidity", fields: [humidityId], references: [id])
+  humidityId String?
+  humidity   IntUnit? @relation(name: "humidity", fields: [humidityId], references: [id], onDelete: SetNull)
 
-  atmosphericPressureId String
-  atmosphericPressure   FloatUnit @relation(name: "atmosphericPressure", fields: [atmosphericPressureId], references: [id])
+  atmosphericPressureId String?
+  atmosphericPressure   FloatUnit? @relation(name: "atmosphericPressure", fields: [atmosphericPressureId], references: [id], onDelete: SetNull)
 
-  rainfallId String
-  rainfall   IntUnit @relation(name: "rainfall", fields: [rainfallId], references: [id])
+  rainfallId String?
+  rainfall   IntUnit? @relation(name: "rainfall", fields: [rainfallId], references: [id], onDelete: SetNull)
 
   status WeatherStatus
 
@@ -225,15 +225,15 @@ enum SoilType {
 model Soil {
   id String @id @default(uuid())
 
-  ph         Float
-  moistureId String
-  moisture   IntUnit @relation("moisture", fields: [moistureId], references: [id])
+  ph         Float?
+  moistureId String?
+  moisture   IntUnit? @relation("moisture", fields: [moistureId], references: [id], onDelete: SetNull)
 
-  nutrientNitrogen   Float
-  nutrientPhosphorus Float
-  nutrientPotassium  Float
-  nutrientUnitId     String
-  nutrientUnit       Unit   @relation(fields: [nutrientUnitId], references: [id])
+  nutrientNitrogen   Float?
+  nutrientPhosphorus Float?
+  nutrientPotassium  Float?
+  nutrientUnitId     String?
+  nutrientUnit       Unit?   @relation(fields: [nutrientUnitId], references: [id], onDelete: SetNull)
   fieldId            String
 
   field Field @relation(fields: [fieldId], references: [id])
@@ -292,10 +292,10 @@ model Crop {
   plant   Plant  @relation(fields: [plantId], references: [id])
 
   estimatedYieldId String?
-  estimatedYield   FloatUnit? @relation(name: "estimatedYield", fields: [estimatedYieldId], references: [id]) // Sản lượng dự kiến
+  estimatedYield   FloatUnit? @relation(name: "estimatedYield", fields: [estimatedYieldId], references: [id], onDelete: SetNull) // Sản lượng dự kiến
 
   actualYieldId String?
-  actualYield   FloatUnit? @relation(name: "actualYield", fields: [actualYieldId], references: [id]) // Sản lượng thực tế
+  actualYield   FloatUnit? @relation(name: "actualYield", fields: [actualYieldId], references: [id], onDelete: SetNull) // Sản lượng thực tế
 
   status String? // Tình trạng mùa vụ
 
@@ -313,7 +313,7 @@ model Plant {
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id])
 
-  growthDuration     Int // Số ngày từ khi gieo trồng đến thu hoạch
+  growthDuration     String // Số ngày từ khi gieo trồng đến thu hoạch
   season             Season? // Mùa vụ phù hợp
   idealTemperatureId String? // Nhiệt độ lý tưởng
   idealHumidityId    String? // Độ ẩm lý tưởng
@@ -321,9 +321,9 @@ model Plant {
   fertilizerType     FertilizerType // Loại phân bón nên sử dụng
 
   // Liên kết với các bảng khác
-  idealTemperature FloatUnit? @relation(name: "idealTemperature", fields: [idealTemperatureId], references: [id])
-  idealHumidity    IntUnit?   @relation(name: "idealHumidity", fields: [idealHumidityId], references: [id])
-  waterRequirement FloatUnit? @relation(name: "waterRequirement", fields: [waterRequirementId], references: [id])
+  idealTemperature FloatUnit? @relation(name: "idealTemperature", fields: [idealTemperatureId], references: [id], onDelete: SetNull)
+  idealHumidity    IntUnit?   @relation(name: "idealHumidity", fields: [idealHumidityId], references: [id], onDelete: SetNull)
+  waterRequirement FloatUnit? @relation(name: "waterRequirement", fields: [waterRequirementId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -357,7 +357,7 @@ model Fertilizer {
   manufacturer  String?
 
   recommendedDosageId String? // Liều lượng khuyến nghị
-  recommendedDosage   FloatUnit? @relation(name: "fertilizerDosage", fields: [recommendedDosageId], references: [id])
+  recommendedDosage   FloatUnit? @relation(name: "fertilizerDosage", fields: [recommendedDosageId], references: [id], onDelete: SetNull)
   applicationMethod   String? // Phương pháp sử dụng
   composition         String? // Thành phần chi tiết
   frequencyOfUse      Frequency? // Tần suất sử dụng
@@ -389,11 +389,11 @@ model Pesticide {
   manufacturer String?
 
   withdrawalPeriodId String? // Thời gian cách ly trước thu hoạch days
-  withdrawalPeriod   IntUnit?       @relation(name: "withdrawalPeriod", fields: [withdrawalPeriodId], references: [id])
+  withdrawalPeriod   IntUnit?       @relation(name: "withdrawalPeriod", fields: [withdrawalPeriodId], references: [id], onDelete: SetNull)
   toxicityLevel      ToxicityLevel? // Mức độ độc tính
 
   recommendedDosageId String? // Liều lượng khuyến nghị
-  recommendedDosage   FloatUnit? @relation(name: "pesticideDosage", fields: [recommendedDosageId], references: [id])
+  recommendedDosage   FloatUnit? @relation(name: "pesticideDosage", fields: [recommendedDosageId], references: [id], onDelete: SetNull)
   applicationMethod   String? // Phương pháp sử dụng
 
   activities      Activity[]        @relation(name: "pesticide")
@@ -483,8 +483,8 @@ model Equipment {
   type                EquipmentType
   brand               String
   purchaseDate        DateTime
-  purchasePriceId     String
-  purchasePrice       FloatUnit     @relation(name: "purchasePrice", fields: [purchasePriceId], references: [id])
+  purchasePriceId     String?
+  purchasePrice       FloatUnit?    @relation(name: "purchasePrice", fields: [purchasePriceId], references: [id], onDelete: SetNull)
   status              String? // Hoạt động, Bảo trì, Hỏng
   lastMaintenanceDate DateTime?
   maintenanceSchedule String?

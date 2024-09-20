@@ -28,7 +28,7 @@ import { edit } from "@/actions/crop";
 import { PlantsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/plants-select";
 import { DatePickerWithRange } from "@/components/form/date-picker-with-range";
 import { DateRange } from "react-day-picker";
-import { es } from "@faker-js/faker";
+import { convertNullToUndefined } from "@/lib/utils";
 
 interface CropEditButtonProps {
   data: CropTable;
@@ -68,32 +68,14 @@ export const CropEditDialog = () => {
   const [id, setId] = useState("");
   useEffect(() => {
     if (data?.crop) {
-      const {
-        actualYield,
-        startDate,
-        endDate,
-        fieldId,
-        estimatedYield,
-        plantId,
-        status,
-        name,
-      } = data.crop;
-      form.setValue("name", name);
-      form.setValue("status", status || undefined);
-      form.setValue("actualYield", {
-        unitId: actualYield?.unitId,
-        value: actualYield?.value,
+      const { startDate, endDate } = data.crop;
+      form.reset({
+        ...convertNullToUndefined(data.crop),
+        dateRange: {
+          startDate: startDate,
+          endDate: endDate || undefined,
+        },
       });
-      form.setValue("estimatedYield", {
-        unitId: estimatedYield?.unitId,
-        value: estimatedYield?.value,
-      });
-      form.setValue("dateRange", {
-        startDate,
-        endDate: endDate || undefined,
-      });
-      form.setValue("fieldId", fieldId);
-      form.setValue("plantId", plantId);
       setId(data.crop.id);
     }
   }, [data, form]);

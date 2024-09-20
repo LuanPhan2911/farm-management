@@ -32,6 +32,8 @@ export const create = async (
     revalidatePath(`/admin/fields/detail/${weather.fieldId}/weathers`);
     return successResponse(tStatus("success.create"));
   } catch (error) {
+    console.log(error);
+
     return errorResponse(tStatus("failure.create"));
   }
 };

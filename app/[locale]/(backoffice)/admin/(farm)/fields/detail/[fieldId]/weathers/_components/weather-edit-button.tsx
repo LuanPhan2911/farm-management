@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { UnitType, WeatherStatus } from "@prisma/client";
 import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -25,6 +25,7 @@ import { SelectOptions } from "@/components/form/select-options";
 import { WeatherTable } from "@/types";
 import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { edit } from "@/actions/weather";
+import { convertNullToUndefined } from "@/lib/utils";
 
 interface WeatherEditButtonProps {
   data: WeatherTable;
@@ -61,16 +62,14 @@ export const WeatherEditDialog = () => {
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: useMemo(() => {
+      return !!data.weather ? convertNullToUndefined(data.weather) : undefined;
+    }, [data.weather]),
   });
   const [id, setId] = useState("");
   useEffect(() => {
     if (data?.weather) {
-      form.setValue("atmosphericPressure", data.weather.atmosphericPressure);
-      form.setValue("fieldId", data.weather.fieldId);
-      form.setValue("humidity", data.weather.humidity);
-      form.setValue("rainfall", data.weather.rainfall);
-      form.setValue("status", data.weather.status);
-      form.setValue("temperature", data.weather.temperature);
+      form.reset(convertNullToUndefined(data.weather));
       setId(data.weather.id);
     }
   }, [data, form]);
@@ -102,6 +101,32 @@ export const WeatherEditDialog = () => {
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("status.label")}</FormLabel>
+                <div className="flex gap-x-2">
+                  <FormControl>
+                    <SelectOptions
+                      label="Select status"
+                      onChange={field.onChange}
+                      options={Object.keys(WeatherStatus).map((item) => {
+                        return {
+                          label: tSchema(`status.options.${item}`),
+                          value: item,
+                        };
+                      })}
+                      disabled={isPending}
+                      defaultValue={field.value}
+                    />
+                  </FormControl>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div className="grid grid-cols-4 gap-2">
               <div className="col-span-3">
@@ -296,32 +321,6 @@ export const WeatherEditDialog = () => {
               />
             </div>
           </div>
-          <FormField
-            control={form.control}
-            name="status"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("status.label")}</FormLabel>
-                <div className="flex gap-x-2">
-                  <FormControl>
-                    <SelectOptions
-                      label="Select status"
-                      onChange={field.onChange}
-                      options={Object.keys(WeatherStatus).map((item) => {
-                        return {
-                          label: tSchema(`status.options.${item}`),
-                          value: item,
-                        };
-                      })}
-                      disabled={isPending}
-                      defaultValue={field.value}
-                    />
-                  </FormControl>
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
 
           <DialogFooter>
             <DialogClose asChild>

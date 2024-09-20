@@ -29,6 +29,7 @@ import { UnitsSelectWithQueryClient } from "../../../_components/units-select";
 import { UploadImage } from "@/components/form/upload-image";
 import { Link } from "@/navigation";
 import { Edit } from "lucide-react";
+import { convertNullToUndefined } from "@/lib/utils";
 
 interface EquipmentEditButtonProps {
   data: EquipmentTable;
@@ -63,15 +64,7 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      ...data,
-      status: data.status || undefined,
-      maintenanceSchedule: data.maintenanceSchedule || undefined,
-      operatingHours: data.operatingHours || undefined,
-      imageUrl: data.imageUrl || undefined,
-      fuelConsumption: data.fuelConsumption || undefined,
-      description: data.description || undefined,
-      location: data.location || undefined,
-      energyType: data.energyType || undefined,
+      ...convertNullToUndefined(data),
     },
   });
   const onSubmit = (values: z.infer<typeof formSchema>) => {

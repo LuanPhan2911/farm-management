@@ -26,6 +26,7 @@ import { SelectOptions } from "@/components/form/select-options";
 import { UnitsSelectWithQueryClient } from "../../../_components/units-select";
 import { PlantTable } from "@/types";
 import { UploadImage } from "@/components/form/upload-image";
+import { convertNullToUndefined } from "@/lib/utils";
 
 interface PlantCreateFormProps {
   data: PlantTable;
@@ -39,12 +40,7 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      ...data,
-      idealHumidity: data.idealHumidity || undefined,
-      idealTemperature: data.idealTemperature || undefined,
-      waterRequirement: data.waterRequirement || undefined,
-      imageUrl: data.imageUrl || undefined,
-      season: data.season || undefined,
+      ...convertNullToUndefined(data),
     },
   });
 
@@ -122,7 +118,6 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
                   placeholder={tSchema("growthDuration.placeholder")}
                   {...field}
                   disabled={isPending}
-                  type="number"
                 />
               </FormControl>
               <FormMessage />

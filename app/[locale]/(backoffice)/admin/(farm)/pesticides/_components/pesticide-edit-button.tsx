@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { PesticideType, UnitType, ToxicityLevel } from "@prisma/client";
 import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -26,6 +26,7 @@ import { PesticideTable } from "@/types";
 import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { edit } from "@/actions/pesticide";
 import { Textarea } from "@/components/ui/textarea";
+import { convertNullToUndefined } from "@/lib/utils";
 
 interface PesticideEditButtonProps {
   data: PesticideTable;
@@ -64,28 +65,16 @@ export const PesticideEditDialog = () => {
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: useMemo(() => {
+      return data.pesticide
+        ? convertNullToUndefined(data.pesticide)
+        : undefined;
+    }, [data.pesticide]),
   });
   const [id, setId] = useState("");
   useEffect(() => {
     if (data?.pesticide) {
-      const {
-        applicationMethod,
-        manufacturer,
-        name,
-        recommendedDosage,
-        ingredient,
-        withdrawalPeriod,
-        toxicityLevel,
-        type,
-      } = data.pesticide;
-      form.setValue("name", name);
-      form.setValue("applicationMethod", applicationMethod || undefined);
-      form.setValue("ingredient", ingredient || undefined);
-      form.setValue("toxicityLevel", toxicityLevel || undefined);
-      form.setValue("manufacturer", manufacturer || undefined);
-      form.setValue("type", type);
-      form.setValue("recommendedDosage", recommendedDosage || undefined);
-      form.setValue("withdrawalPeriod", withdrawalPeriod || undefined);
+      form.reset(convertNullToUndefined(data.pesticide));
       setId(data.pesticide.id);
     }
   }, [data, form]);

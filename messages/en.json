@@ -1294,7 +1294,6 @@
         "createdAt": "CreateAt",
         "ph": "PH",
         "moisture": "Moisture",
-
         "nutrientNitrogen": "Nutrient nitrogen",
         "nutrientPhosphorus": "Nutrient phosphorus",
         "nutrientPotassium": "Nutrient potassium",
@@ -1525,12 +1524,9 @@
       },
       "growthDuration": {
         "label": "Grow duration",
-        "placeholder": "From 7 days to 365 days",
-        "required_error": "Grow duration is required",
-        "invalid_type_error": "Grow duration must be number",
-        "int": "Grow duration must be integer",
-        "min": "Min grow duration must be 7 days",
-        "max": "Max grow duration must be 365 days"
+        "placeholder": "Eg: 3 months",
+        "min": "Min grow duration must be 3 characters",
+        "max": "Max grow duration must be 100 characters"
       },
       "season": {
         "label": "Best growing season",

@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FertilizerType, Frequency, UnitType } from "@prisma/client";
 import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -26,6 +26,7 @@ import { FertilizerTable } from "@/types";
 import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { edit } from "@/actions/fertilizer";
 import { Textarea } from "@/components/ui/textarea";
+import { convertNullToUndefined } from "@/lib/utils";
 
 interface FertilizerEditButtonProps {
   data: FertilizerTable;
@@ -64,28 +65,16 @@ export const FertilizerEditDialog = () => {
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: useMemo(() => {
+      return !!data.fertilizer
+        ? convertNullToUndefined(data.fertilizer)
+        : undefined;
+    }, [data.fertilizer]),
   });
   const [id, setId] = useState("");
   useEffect(() => {
     if (data?.fertilizer) {
-      const {
-        applicationMethod,
-        composition,
-        frequencyOfUse,
-        manufacturer,
-        name,
-        nutrientOfNPK,
-        recommendedDosage,
-        type,
-      } = data.fertilizer;
-      form.setValue("name", name);
-      form.setValue("applicationMethod", applicationMethod || undefined);
-      form.setValue("composition", composition || undefined);
-      form.setValue("frequencyOfUse", frequencyOfUse || undefined);
-      form.setValue("manufacturer", manufacturer || undefined);
-      form.setValue("type", type);
-      form.setValue("recommendedDosage", recommendedDosage || undefined);
-      form.setValue("nutrientOfNPK", nutrientOfNPK);
+      form.reset(convertNullToUndefined(data.fertilizer));
       setId(data.fertilizer.id);
     }
   }, [data, form]);

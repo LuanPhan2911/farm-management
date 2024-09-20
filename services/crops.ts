@@ -105,66 +105,96 @@ export const getCropsOnField = async ({
   startDate,
 }: CropQuery): Promise<PaginatedResponse<CropTable>> => {
   try {
-    const crops = await db.crop.findMany({
-      where: {
-        fieldId,
-        AND: [
-          {
-            startDate: {
-              ...(startDate && {
-                gte: startDate,
-              }),
+    const [crops, count] = await db.$transaction([
+      db.crop.findMany({
+        where: {
+          fieldId,
+          AND: [
+            {
+              startDate: {
+                ...(startDate && {
+                  gte: startDate,
+                }),
+              },
+              endDate: {
+                ...(endDate && {
+                  lte: endDate,
+                }),
+              },
             },
-            endDate: {
-              ...(endDate && {
-                lte: endDate,
-              }),
+          ],
+          ...(plantId && { plantId }),
+          ...(name && {
+            name: {
+              contains: name,
+              mode: "insensitive",
             },
-          },
-        ],
-        ...(plantId && { plantId }),
-        ...(name && {
-          name: {
-            contains: name,
-            mode: "insensitive",
-          },
 
-          ...(filterNumber && getObjectFilterNumber(filterNumber)),
-        }),
-      },
-      orderBy: {
-        ...(orderBy && getObjectSortOrder(orderBy)),
-      },
-      take: LIMIT,
-      skip: (page - 1) * LIMIT,
-      include: {
-        actualYield: {
-          include: {
-            unit: {
-              select: {
-                name: true,
+            ...(filterNumber && getObjectFilterNumber(filterNumber)),
+          }),
+        },
+        orderBy: {
+          ...(orderBy && getObjectSortOrder(orderBy)),
+        },
+        take: LIMIT,
+        skip: (page - 1) * LIMIT,
+        include: {
+          actualYield: {
+            include: {
+              unit: {
+                select: {
+                  name: true,
+                },
               },
             },
           },
-        },
-        estimatedYield: {
-          include: {
-            unit: {
-              select: {
-                name: true,
+          estimatedYield: {
+            include: {
+              unit: {
+                select: {
+                  name: true,
+                },
               },
             },
           },
-        },
-        plant: {
-          select: {
-            name: true,
-            id: true,
+          plant: {
+            select: {
+              name: true,
+              id: true,
+            },
           },
         },
-      },
-    });
-    const totalPage = Math.ceil(crops.length / LIMIT);
+      }),
+      db.crop.count({
+        where: {
+          fieldId,
+          AND: [
+            {
+              startDate: {
+                ...(startDate && {
+                  gte: startDate,
+                }),
+              },
+              endDate: {
+                ...(endDate && {
+                  lte: endDate,
+                }),
+              },
+            },
+          ],
+          ...(plantId && { plantId }),
+          ...(name && {
+            name: {
+              contains: name,
+              mode: "insensitive",
+            },
+
+            ...(filterNumber && getObjectFilterNumber(filterNumber)),
+          }),
+        },
+      }),
+    ]);
+    const totalPage = Math.ceil(count / LIMIT);
     return {
       data: crops,
       totalPage,

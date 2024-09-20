@@ -81,29 +81,38 @@ export const getFertilizers = async ({
   page = 1,
 }: FertilizerQuery): Promise<PaginatedResponse<FertilizerTable>> => {
   try {
-    const fertilizers = await db.fertilizer.findMany({
-      where: {
-        ...(filterString && getObjectFilterString(filterString)),
-        ...(filterNumber && getObjectFilterNumber(filterNumber)),
-      },
-      orderBy: {
-        ...(orderBy && getObjectSortOrder(orderBy)),
-      },
-      take: LIMIT,
-      skip: (page - 1) * LIMIT,
-      include: {
-        recommendedDosage: {
-          include: {
-            unit: {
-              select: {
-                name: true,
+    const [fertilizers, count] = await db.$transaction([
+      db.fertilizer.findMany({
+        where: {
+          ...(filterString && getObjectFilterString(filterString)),
+          ...(filterNumber && getObjectFilterNumber(filterNumber)),
+        },
+        orderBy: {
+          ...(orderBy && getObjectSortOrder(orderBy)),
+        },
+        take: LIMIT,
+        skip: (page - 1) * LIMIT,
+        include: {
+          recommendedDosage: {
+            include: {
+              unit: {
+                select: {
+                  name: true,
+                },
               },
             },
           },
         },
-      },
-    });
-    const totalPage = Math.ceil(fertilizers.length / LIMIT);
+      }),
+      db.fertilizer.count({
+        where: {
+          ...(filterString && getObjectFilterString(filterString)),
+          ...(filterNumber && getObjectFilterNumber(filterNumber)),
+        },
+      }),
+    ]);
+
+    const totalPage = Math.ceil(count / LIMIT);
     return {
       data: fertilizers,
       totalPage,
@@ -116,15 +125,13 @@ export const getFertilizers = async ({
   }
 };
 
-export const getCountFertilizerType = async ({
-  filterString,
-}: FertilizerQuery): Promise<FertilizerTypeCount[]> => {
+export const getCountFertilizerType = async ({}: FertilizerQuery): Promise<
+  FertilizerTypeCount[]
+> => {
   try {
     const result = await db.fertilizer.groupBy({
       by: "type",
-      where: {
-        ...(filterString && getObjectFilterString(filterString)),
-      },
+
       _count: {
         _all: true,
       },
@@ -139,29 +146,23 @@ export const getCountFertilizerType = async ({
     return [];
   }
 };
-export const getCountFertilizerFrequencyOfUse = async ({
-  filterString,
-}: FertilizerQuery): Promise<FertilizerFrequencyCount[]> => {
-  try {
-    const result = await db.fertilizer.groupBy({
-      by: "frequencyOfUse",
-      where: {
-        frequencyOfUse: {
-          not: null,
+export const getCountFertilizerFrequencyOfUse =
+  async ({}: FertilizerQuery): Promise<FertilizerFrequencyCount[]> => {
+    try {
+      const result = await db.fertilizer.groupBy({
+        by: "frequencyOfUse",
+
+        _count: {
+          _all: true,
         },
-        ...(filterString && getObjectFilterString(filterString)),
-      },
-      _count: {
-        _all: true,
-      },
-    });
-    return result.map((item) => {
-      return {
-        frequencyOfUse: item.frequencyOfUse!,
-        _count: item._count._all,
-      };
-    });
-  } catch (error) {
-    return [];
-  }
-};
+      });
+      return result.map((item) => {
+        return {
+          frequencyOfUse: item.frequencyOfUse!,
+          _count: item._count._all,
+        };
+      });
+    } catch (error) {
+      return [];
+    }
+  };

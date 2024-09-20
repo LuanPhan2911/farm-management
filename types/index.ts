@@ -88,26 +88,34 @@ export type FieldTable = Field & {
 
 export type WeatherTable = Weather & {
   confirmedBy: Staff | null;
-  temperature: FloatUnit & {
-    unit: {
-      name: string;
-    };
-  };
-  humidity: IntUnit & {
-    unit: {
-      name: string;
-    };
-  };
-  atmosphericPressure: FloatUnit & {
-    unit: {
-      name: string;
-    };
-  };
-  rainfall: IntUnit & {
-    unit: {
-      name: string;
-    };
-  };
+  temperature:
+    | (FloatUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+  humidity:
+    | (IntUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+  atmosphericPressure:
+    | (FloatUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+  rainfall:
+    | (IntUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
 };
 export type WeatherStatusCount = {
   status: WeatherStatus;
@@ -119,14 +127,16 @@ export type SoilTypeCount = {
 };
 export type SoilTable = Soil & {
   confirmedBy: Staff | null;
-  moisture: IntUnit & {
-    unit: {
-      name: string;
-    };
-  };
+  moisture:
+    | (IntUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
   nutrientUnit: {
     name: string;
-  };
+  } | null;
 };
 export type PlantTable = Plant & {
   category: Category;
@@ -202,11 +212,13 @@ export type PesticideToxicityLevelCount = {
 };
 
 export type EquipmentTable = Equipment & {
-  purchasePrice: FloatUnit & {
-    unit: {
-      name: string;
-    };
-  };
+  purchasePrice:
+    | (FloatUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
 };
 
 export type EquipmentTypeCount = {

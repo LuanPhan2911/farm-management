@@ -6,32 +6,30 @@ import {
   getObjectSortOrder,
 } from "@/lib/utils";
 import { PaginatedResponse, SoilTable } from "@/types";
-import {
-  createIntUnit,
-  deleteIntUnit,
-  UnitValue,
-  updateIntUnit,
-} from "./units";
+import { deleteIntUnit, UnitValue, upsertIntUnit } from "./units";
 
 type SoilParams = {
-  ph: number;
-  moisture: UnitValue;
-  nutrientNitrogen: number;
-  nutrientPhosphorus: number;
-  nutrientPotassium: number;
-  nutrientUnitId: string;
+  ph?: number;
+  moisture?: UnitValue;
+  nutrientNitrogen?: number;
+  nutrientPhosphorus?: number;
+  nutrientPotassium?: number;
+  nutrientUnitId?: string;
   fieldId: string;
 };
 
 export const createSoil = async (params: SoilParams) => {
   return await db.$transaction(async (ctx) => {
     const { moisture: moistureParam, ...others } = params;
-    const moisture = await createIntUnit(ctx, moistureParam);
+    const moisture = await upsertIntUnit({
+      ctx,
+      data: moistureParam,
+    });
 
     const soil = await ctx.soil.create({
       data: {
         ...others,
-        moistureId: moisture.id,
+        moistureId: moisture?.id,
       },
     });
     return soil;
@@ -50,7 +48,11 @@ export const updateSoil = async (id: string, params: SoilParams) => {
         ...others,
       },
     });
-    const moisture = await updateIntUnit(ctx, soil.moistureId, moistureParam);
+    const moisture = await upsertIntUnit({
+      ctx,
+      data: moistureParam,
+      id: soil.moistureId,
+    });
     return soil;
   });
 };
@@ -99,40 +101,53 @@ export const getSoilsOnField = async ({
   page = 1,
 }: SoilQuery): Promise<PaginatedResponse<SoilTable>> => {
   try {
-    const soils = await db.soil.findMany({
-      where: {
-        fieldId,
-        createdAt: {
-          ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
-          ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
+    const [soils, count] = await db.$transaction([
+      db.soil.findMany({
+        where: {
+          fieldId,
+          createdAt: {
+            ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
+            ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
+          },
+          ...(filterString && getObjectFilterString(filterString)),
+          ...(filterNumber && getObjectFilterNumber(filterNumber)),
         },
-        ...(filterString && getObjectFilterString(filterString)),
-        ...(filterNumber && getObjectFilterNumber(filterNumber)),
-      },
-      orderBy: {
-        ...(orderBy && getObjectSortOrder(orderBy)),
-      },
-      include: {
-        confirmedBy: true,
-        moisture: {
-          include: {
-            unit: {
-              select: {
-                name: true,
+        orderBy: {
+          ...(orderBy && getObjectSortOrder(orderBy)),
+        },
+        include: {
+          confirmedBy: true,
+          moisture: {
+            include: {
+              unit: {
+                select: {
+                  name: true,
+                },
               },
             },
           },
-        },
-        nutrientUnit: {
-          select: {
-            name: true,
+          nutrientUnit: {
+            select: {
+              name: true,
+            },
           },
         },
-      },
-      take: LIMIT,
-      skip: (page - 1) * LIMIT,
-    });
-    const totalPage = Math.ceil(soils.length / LIMIT);
+        take: LIMIT,
+        skip: (page - 1) * LIMIT,
+      }),
+      db.soil.count({
+        where: {
+          fieldId,
+          createdAt: {
+            ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
+            ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
+          },
+          ...(filterString && getObjectFilterString(filterString)),
+          ...(filterNumber && getObjectFilterNumber(filterNumber)),
+        },
+      }),
+    ]);
+    const totalPage = Math.ceil(count / LIMIT);
     return {
       data: soils,
       totalPage,
