@@ -6,7 +6,12 @@ import {
   getObjectFilterString,
   getObjectSortOrder,
 } from "@/lib/utils";
-import { PaginatedResponse, WeatherStatusCount, WeatherTable } from "@/types";
+import {
+  PaginatedResponse,
+  WeatherChart,
+  WeatherStatusCount,
+  WeatherTable,
+} from "@/types";
 import { WeatherStatus } from "@prisma/client";
 import {
   deleteManyFloatUnit,
@@ -194,13 +199,6 @@ export const confirmWeather = async (
     },
   });
 };
-export const getWeatherById = async (id: string) => {
-  try {
-    return await db.weather.findUnique({ where: { id } });
-  } catch (error) {
-    return null;
-  }
-};
 
 export const deleteWeather = async (id: string) => {
   return await db.$transaction(async (ctx) => {
@@ -226,6 +224,81 @@ type WeatherQuery = {
   filterNumber?: string;
   begin?: Date;
   end?: Date;
+};
+
+export const getWeathersForChart = async ({
+  fieldId,
+  begin,
+  end,
+}: WeatherQuery): Promise<WeatherChart[]> => {
+  try {
+    if (!begin || !end) {
+      return [];
+    }
+    return await db.weather.findMany({
+      where: {
+        fieldId,
+        confirmed: true,
+        createdAt: {
+          ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
+          ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
+        },
+      },
+      select: {
+        createdAt: true,
+        status: true,
+        temperature: {
+          include: {
+            unit: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+        humidity: {
+          include: {
+            unit: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+        atmosphericPressure: {
+          include: {
+            unit: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+
+        rainfall: {
+          include: {
+            unit: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "asc",
+      },
+    });
+  } catch (error) {
+    return [];
+  }
+};
+export const getWeatherById = async (id: string) => {
+  try {
+    return await db.weather.findUnique({ where: { id } });
+  } catch (error) {
+    return null;
+  }
 };
 export const getWeathersOnField = async ({
   fieldId,

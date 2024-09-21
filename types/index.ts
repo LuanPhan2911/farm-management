@@ -121,6 +121,38 @@ export type WeatherStatusCount = {
   status: WeatherStatus;
   _count: number;
 };
+export type WeatherChart = {
+  createdAt: Date;
+  status: WeatherStatus;
+  temperature:
+    | (FloatUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+  humidity:
+    | (IntUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+  atmosphericPressure:
+    | (FloatUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+  rainfall:
+    | (IntUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+};
 export type SoilTypeCount = {
   type: SoilType;
   _count: number;

@@ -1137,8 +1137,28 @@
         "confirmedBy": "ConfirmedBy"
       },
       "trow": {
+        "temperature": "...",
+        "humidity": "...",
+        "atmosphericPressure": "...",
+        "rainfall": "...",
         "confirmedAt": "No confirmed",
         "confirmedBy": "No confirmed"
+      }
+    },
+    "chart": {
+      "title": "Temperature, humidity, rainfall chart",
+      "fields": {
+        "temperature": "Temperature",
+        "humidity": "Humidity",
+        "rainfall": "Rainfall"
+      },
+      "error": {
+        "title": "Refresh",
+        "description": "  Something went wrong when load weathers"
+      },
+      "notFound": {
+        "title": "No weathers data for generate chart",
+        "description": "Only confirmed weathers data was displayed and data is filtered by date range you selected"
       }
     },
     "search": {

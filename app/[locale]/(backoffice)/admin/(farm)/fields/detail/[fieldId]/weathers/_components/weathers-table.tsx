@@ -1,7 +1,6 @@
 "use client";
 
 import { NavPagination } from "@/components/nav-pagination";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -27,136 +26,147 @@ interface WeathersTableProps {
   totalPage: number;
 }
 export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
-  const t = useTranslations("weathers");
+  const t = useTranslations("weathers.table");
   const { dateTime, relativeTime } = useFormatter();
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("page.title")}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="flex justify-end">
-          <WeatherCreateButton />
-        </div>
-        <DatePickerWithRangeButton from={undefined} />
-        <WeatherTableFaceted />
+    <div className="flex flex-col gap-y-4 p-4 border rounded-lg max-w-6xl my-4">
+      <div className="flex justify-end">
+        <WeatherCreateButton />
+      </div>
+      <DatePickerWithRangeButton from={undefined} />
+      <WeatherTableFaceted />
 
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>
-                <OrderByButton
-                  column="createdAt"
-                  label={t("table.thead.createdAt")}
-                  defaultValue="desc"
-                />
-              </TableHead>
-              <TableHead>{t("table.thead.status")} </TableHead>
-              <TableHead>
-                <OrderByButton
-                  column="temperature.value"
-                  label={t("table.thead.temperature")}
-                />
-              </TableHead>
-              <TableHead>
-                <OrderByButton
-                  column="humidity.value"
-                  label={t("table.thead.humidity")}
-                />
-              </TableHead>
-              <TableHead>
-                <OrderByButton
-                  column="atmosphericPressure.value"
-                  label={t("table.thead.atmosphericPressure")}
-                />
-              </TableHead>
-              <TableHead>
-                <OrderByButton
-                  column="rainfall.value"
-                  label={t("table.thead.rainfall")}
-                />
-              </TableHead>
-              <TableHead>{t("table.thead.confirmed")} </TableHead>
-              <TableHead>{t("table.thead.confirmedAt")} </TableHead>
-              <TableHead>{t("table.thead.confirmedBy")} </TableHead>
-              <TableHead></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data.map((item) => {
-              return (
-                <TableRow key={item.id} className="cursor-pointer">
-                  <TableCell>
-                    {dateTime(item.createdAt, {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                    })}
-                  </TableCell>
-                  <TableCell>
-                    <WeatherStatusValue status={item.status} />
-                  </TableCell>
-                  <TableCell>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>
+              <OrderByButton
+                column="createdAt"
+                label={t("thead.createdAt")}
+                defaultValue="desc"
+              />
+            </TableHead>
+            <TableHead>{t("thead.status")} </TableHead>
+            <TableHead>
+              <OrderByButton
+                column="temperature.value"
+                label={t("thead.temperature")}
+              />
+            </TableHead>
+            <TableHead>
+              <OrderByButton
+                column="humidity.value"
+                label={t("thead.humidity")}
+              />
+            </TableHead>
+            <TableHead>
+              <OrderByButton
+                column="atmosphericPressure.value"
+                label={t("thead.atmosphericPressure")}
+              />
+            </TableHead>
+            <TableHead>
+              <OrderByButton
+                column="rainfall.value"
+                label={t("thead.rainfall")}
+              />
+            </TableHead>
+            <TableHead>{t("thead.confirmed")} </TableHead>
+            <TableHead>{t("thead.confirmedAt")} </TableHead>
+            <TableHead>{t("thead.confirmedBy")} </TableHead>
+            <TableHead></TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {data.map((item) => {
+            return (
+              <TableRow key={item.id} className="cursor-pointer">
+                <TableCell>
+                  {dateTime(item.createdAt, {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  })}
+                </TableCell>
+                <TableCell>
+                  <WeatherStatusValue status={item.status} />
+                </TableCell>
+                <TableCell>
+                  {item.temperature ? (
                     <span>
                       {item.temperature?.value}
                       <sup>o</sup>
                       {item.temperature?.unit.name}
                     </span>
-                  </TableCell>
-                  <TableCell>
+                  ) : (
+                    t("trow.temperature")
+                  )}
+                </TableCell>
+                <TableCell>
+                  {item.humidity ? (
                     <UnitWithValue
                       value={item.humidity?.value}
                       unit={item.humidity?.unit.name}
                     />
-                  </TableCell>
-                  <TableCell>
+                  ) : (
+                    t("trow.humidity")
+                  )}
+                </TableCell>
+                <TableCell>
+                  {item.atmosphericPressure ? (
                     <UnitWithValue
                       value={item.atmosphericPressure?.value}
                       unit={item.atmosphericPressure?.unit.name}
                     />
-                  </TableCell>
-                  <TableCell>
+                  ) : (
+                    t("trow.atmosphericPressure")
+                  )}
+                </TableCell>
+                <TableCell>
+                  {item.rainfall ? (
                     <UnitWithValue
                       value={item.rainfall?.value}
                       unit={item.rainfall?.unit.name}
                     />
-                  </TableCell>
-                  <TableCell>
-                    <WeatherConfirmButton
-                      confirmed={item.confirmed}
-                      weatherId={item.id}
+                  ) : (
+                    t("trow.rainfall")
+                  )}
+                </TableCell>
+                <TableCell>
+                  <WeatherConfirmButton
+                    confirmed={item.confirmed}
+                    weatherId={item.id}
+                  />
+                </TableCell>
+                <TableCell>
+                  {item.confirmedAt
+                    ? relativeTime(item.confirmedAt)
+                    : t("trow.confirmedAt")}
+                </TableCell>
+                <TableCell>
+                  {item.confirmedBy ? (
+                    <SelectItemContent
+                      imageUrl={item.confirmedBy.imageUrl}
+                      title={item.confirmedBy.name}
                     />
-                  </TableCell>
-                  <TableCell>
-                    {item.confirmedAt
-                      ? relativeTime(item.confirmedAt)
-                      : t("table.trow.confirmedAt")}
-                  </TableCell>
-                  <TableCell>
-                    {item.confirmedBy ? (
-                      <SelectItemContent
-                        imageUrl={item.confirmedBy.imageUrl}
-                        title={item.confirmedBy.name}
-                      />
-                    ) : (
-                      t("table.trow.confirmedBy")
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <WeathersTableAction data={item} />
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-        <div className="py-4">
-          <NavPagination totalPage={totalPage} />
-        </div>
-      </CardContent>
-    </Card>
+                  ) : (
+                    t("trow.confirmedBy")
+                  )}
+                </TableCell>
+                <TableCell>
+                  <WeathersTableAction data={item} />
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+      <div className="py-4">
+        <NavPagination totalPage={totalPage} />
+      </div>
+    </div>
   );
 };

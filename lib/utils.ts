@@ -370,3 +370,15 @@ export function chunkArray<T>(array: T[], chunkSize: number): T[][] {
 
   return result;
 }
+
+export function compareDate(date1: Date, date2: Date): boolean {
+  return date1.getTime() === date2.getTime();
+}
+
+export function concat(
+  value1: string | number | undefined | null,
+  value2: string | null | undefined | null,
+  sep: string = " "
+) {
+  return `${value1 || ""}${sep}${value2 || ""}`;
+}

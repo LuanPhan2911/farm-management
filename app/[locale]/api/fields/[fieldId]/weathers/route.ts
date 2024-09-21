@@ -6,8 +6,12 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (
   req: NextRequest,
-  params: {
-    fieldId: string;
+  {
+    params,
+  }: {
+    params: {
+      fieldId: string;
+    };
   }
 ) => {
   try {
