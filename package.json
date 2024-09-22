@@ -67,6 +67,7 @@
     "next-intl": "^3.17.2",
     "next-themes": "^0.3.0",
     "nodemailer": "^6.9.14",
+    "openai": "^4.63.0",
     "prisma": "^5.17.0",
     "query-string": "^9.1.0",
     "react": "^18",

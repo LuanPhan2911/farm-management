@@ -50,21 +50,23 @@ export const SoilCreateButton = () => {
     },
   });
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    startTransition(() => {
-      create(values)
-        .then(({ message, ok }) => {
-          if (ok) {
-            form.reset();
-            closeRef.current?.click();
-            toast.success(message);
-          } else {
-            toast.error(message);
-          }
-        })
-        .catch((error: Error) => {
-          toast.error(t("status.failure.create"));
-        });
-    });
+    console.log(values);
+
+    // startTransition(() => {
+    //   create(values)
+    //     .then(({ message, ok }) => {
+    //       if (ok) {
+    //         form.reset();
+    //         closeRef.current?.click();
+    //         toast.success(message);
+    //       } else {
+    //         toast.error(message);
+    //       }
+    //     })
+    //     .catch((error: Error) => {
+    //       toast.error(t("status.failure.create"));
+    //     });
+    // });
   };
   return (
     <Dialog>

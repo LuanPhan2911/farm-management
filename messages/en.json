@@ -1326,6 +1326,23 @@
         "confirmedBy": "No confirmed"
       }
     },
+    "chart": {
+      "title": "Ph, nutrient NPK chart",
+      "fields": {
+        "ph": "ph",
+        "nutrientNitrogen": "Nitrogen",
+        "nutrientPhosphorus": "Phosphorus",
+        "nutrientPotassium": "Potassium"
+      },
+      "error": {
+        "title": "Refresh",
+        "description": "  Something went wrong when load soils"
+      },
+      "notFound": {
+        "title": "No soils data for generate chart",
+        "description": "Only confirmed soils data was displayed and data is filtered by date range you selected"
+      }
+    },
     "search": {
       "faceted": {
         "nutrientNitrogen": {

@@ -383,6 +383,7 @@ export const SoilSchema = (t: (arg: string) => string) => {
       })
     ),
     fieldId: z.string(),
+    createdAt: z.optional(dateSchema),
   });
 };
 

@@ -1,6 +1,6 @@
-import { WeatherSchema } from "@/schemas";
+import { SoilSchema } from "@/schemas";
+import { createManySoilInChunk } from "@/services/soils";
 
-import { createManyWeatherInChunks } from "@/services/weathers";
 import { getTranslations } from "next-intl/server";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -19,11 +19,11 @@ export const POST = async (
     if (!authorization || authorization !== process.env.APP_API_KEY) {
       return NextResponse.json("Invalid App API key", { status: 401 });
     }
-    const tSchema = await getTranslations("weathers.schema");
-    const paramsSchema = WeatherSchema(tSchema);
+    const tSchema = await getTranslations("soils.schema");
+    const paramsSchema = SoilSchema(tSchema);
 
     const data = (await req.json()) as any[];
-    const weathers = data.map((item) => {
+    const soils = data.map((item) => {
       const validatedField = paramsSchema.safeParse(item);
 
       if (validatedField.success) {
@@ -33,18 +33,17 @@ export const POST = async (
       }
     });
 
-    const validatedWeathers = weathers.filter((item) => item !== undefined);
-    if (
-      !validatedWeathers.length ||
-      validatedWeathers.length !== weathers.length
-    ) {
-      return NextResponse.json("Something went wrong to create weathers", {
+    const validatedSoils = soils.filter((item) => item !== undefined);
+    if (!validatedSoils.length || validatedSoils.length !== soils.length) {
+      return NextResponse.json("Something went wrong to create soils", {
         status: 401,
       });
     }
-    createManyWeatherInChunks(validatedWeathers);
-    return NextResponse.json(validatedWeathers);
+    createManySoilInChunk(validatedSoils);
+    return NextResponse.json(validatedSoils);
   } catch (error) {
+    console.log(error);
+
     return NextResponse.json("Internal error", { status: 500 });
   }
 };

@@ -122,6 +122,8 @@ export type WeatherStatusCount = {
   _count: number;
 };
 export type WeatherChart = {
+  id: string;
+  confirmedAt: Date | null;
   createdAt: Date;
   status: WeatherStatus;
   temperature:
@@ -169,6 +171,23 @@ export type SoilTable = Soil & {
   nutrientUnit: {
     name: string;
   } | null;
+};
+
+export type SoilChart = {
+  createdAt: Date;
+  confirmedAt: Date | null;
+  id: string;
+  ph: number | null;
+  nutrientNitrogen: number | null;
+  nutrientPhosphorus: number | null;
+  nutrientPotassium: number | null;
+  moisture:
+    | (IntUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
 };
 export type PlantTable = Plant & {
   category: Category;

@@ -12,7 +12,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Skeleton } from "@/components/ui/skeleton";
-import { WeatherChart } from "@/types";
+import { SoilChart } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { addDays } from "date-fns";
 import { useFormatter, useTranslations } from "next-intl";
@@ -22,9 +22,9 @@ import { useState } from "react";
 import { DateRange } from "react-day-picker";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
-interface WeathersBarChartProps {}
+interface SoilsBarChartProps {}
 
-export const WeathersBarChart = ({}: WeathersBarChartProps) => {
+export const SoilsBarChart = ({}: SoilsBarChartProps) => {
   const defaultDateRange: DateRange = {
     from: addDays(new Date(), -7),
     to: new Date(),
@@ -40,30 +40,28 @@ export const WeathersBarChart = ({}: WeathersBarChartProps) => {
         dateRange={dateRange}
         defaultDateRange={defaultDateRange}
         setDateRange={setDateRange}
-        inDays={7}
+        inDays={14}
       />
-      <WeathersBarChartContentWithQueryClient dateRange={dateRange} />
+      <SoilsBarChartContentWithQueryClient dateRange={dateRange} />
     </div>
   );
 };
 
-interface WeathersBarChartContentProps {
+interface SoilsBarChartContentProps {
   dateRange: DateRange;
 }
-const WeathersBarChartContent = ({
-  dateRange,
-}: WeathersBarChartContentProps) => {
+const SoilsBarChartContent = ({ dateRange }: SoilsBarChartContentProps) => {
   const params = useParams<{
     fieldId: string;
   }>();
-  const t = useTranslations("weathers.chart");
+  const t = useTranslations("soils.chart");
   const { data, isPending, isError, refetch } = useQuery({
-    queryKey: ["weathers_chart", dateRange],
+    queryKey: ["soils_chart", dateRange],
     queryFn: async () => {
       const { from: begin, to: end } = dateRange;
       const url = queryString.stringifyUrl(
         {
-          url: `/api/fields/${params.fieldId}/weathers/chart`,
+          url: `/api/fields/${params.fieldId}/soils/chart`,
           query: {
             begin: begin?.toISOString(),
             end: end?.toISOString(),
@@ -75,22 +73,26 @@ const WeathersBarChartContent = ({
         }
       );
       const res = await fetch(url);
-      return (await res.json()) as WeatherChart[];
+      return (await res.json()) as SoilChart[];
     },
   });
   const { dateTime } = useFormatter();
   const chartConfig = {
-    temperature: {
-      label: t("fields.temperature"),
+    ph: {
+      label: t("fields.ph"),
       color: "hsl(var(--chart-1))",
     },
-    humidity: {
-      label: t("fields.humidity"),
+    nutrientNitrogen: {
+      label: t("fields.nutrientNitrogen"),
       color: "hsl(var(--chart-2))",
     },
-    rainfall: {
-      label: t("fields.rainfall"),
+    nutrientPhosphorus: {
+      label: t("fields.nutrientPhosphorus"),
       color: "hsl(var(--chart-3))",
+    },
+    nutrientPotassium: {
+      label: t("fields.nutrientPotassium"),
+      color: "hsl(var(--chart-4))",
     },
   } satisfies ChartConfig;
 
@@ -120,12 +122,19 @@ const WeathersBarChartContent = ({
     );
   }
   const chartData = data.map((item) => {
-    const { temperature, humidity, rainfall } = item;
+    const {
+      ph,
+      nutrientNitrogen,
+      nutrientPhosphorus,
+      nutrientPotassium,
+      createdAt,
+    } = item;
     return {
-      createdAt: item.createdAt,
-      temperature: temperature?.value || 0,
-      humidity: humidity?.value || 0,
-      rainfall: rainfall?.value || 0,
+      createdAt,
+      ph,
+      nutrientNitrogen,
+      nutrientPhosphorus,
+      nutrientPotassium,
     };
   });
   return (
@@ -157,19 +166,32 @@ const WeathersBarChartContent = ({
           }}
         />
         <ChartLegend content={<ChartLegendContent />} />
-        <Bar dataKey="temperature" fill="var(--color-temperature)" radius={4} />
-        <Bar dataKey="humidity" fill="var(--color-humidity)" radius={4} />
-        <Bar dataKey="rainfall" fill="var(--color-rainfall)" radius={4} />
+        <Bar dataKey="ph" fill="var(--color-ph)" radius={4} />
+        <Bar
+          dataKey="nutrientNitrogen"
+          fill="var(--color-nutrientNitrogen)"
+          radius={4}
+        />
+        <Bar
+          dataKey="nutrientPhosphorus"
+          fill="var(--color-nutrientPhosphorus)"
+          radius={4}
+        />
+        <Bar
+          dataKey="nutrientPotassium"
+          fill="var(--color-nutrientPotassium)"
+          radius={4}
+        />
       </BarChart>
     </ChartContainer>
   );
 };
-export const WeathersBarChartContentWithQueryClient = (
-  props: WeathersBarChartContentProps
+export const SoilsBarChartContentWithQueryClient = (
+  props: SoilsBarChartContentProps
 ) => {
   return (
     <QueryProvider>
-      <WeathersBarChartContent {...props} />
+      <SoilsBarChartContent {...props} />
     </QueryProvider>
   );
 };

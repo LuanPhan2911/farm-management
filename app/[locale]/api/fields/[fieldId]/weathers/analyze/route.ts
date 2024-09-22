@@ -1,5 +1,5 @@
 import { parseToDate } from "@/lib/utils";
-import { getWeathersForChart } from "@/services/weathers";
+import { getAnalyzeWeathers, getWeathersForChart } from "@/services/weathers";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (
@@ -22,8 +22,8 @@ export const GET = async (
       begin,
       end,
     });
-
-    return NextResponse.json(weathers);
+    const result = await getAnalyzeWeathers([]);
+    return NextResponse.json(result);
   } catch (error) {
     return NextResponse.json("Internal Error", { status: 500 });
   }

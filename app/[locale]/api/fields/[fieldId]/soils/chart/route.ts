@@ -1,5 +1,6 @@
 import { parseToDate } from "@/lib/utils";
-import { getWeathersForChart } from "@/services/weathers";
+import { getSoilsForChart } from "@/services/soils";
+
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (
@@ -17,13 +18,13 @@ export const GET = async (
     const searchParams = req.nextUrl.searchParams;
     const begin = parseToDate(searchParams.get("begin"));
     const end = parseToDate(searchParams.get("end"));
-    const weathers = await getWeathersForChart({
+    const soils = await getSoilsForChart({
       fieldId,
       begin,
       end,
     });
 
-    return NextResponse.json(weathers);
+    return NextResponse.json(soils);
   } catch (error) {
     return NextResponse.json("Internal Error", { status: 500 });
   }
