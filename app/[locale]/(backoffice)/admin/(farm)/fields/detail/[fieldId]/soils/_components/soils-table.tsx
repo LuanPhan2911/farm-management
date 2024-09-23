@@ -1,7 +1,7 @@
 "use client";
 
 import { NavPagination } from "@/components/nav-pagination";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import {
   Table,
   TableBody,
@@ -11,16 +11,24 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useFormatter, useTranslations } from "next-intl";
-import { SoilCreateButton } from "./soil-create-button";
+import { SoilCreateButton, SoilCreateManyButton } from "./soil-create-button";
 import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-with-value";
 import { SoilTable } from "@/types";
 import { SoilsTableAction } from "./soils-table-action";
-import { SoilConfirmButton } from "./soil-confirm-button";
+import {
+  SoilConfirmButton,
+  SoilsConfirmedAllButton,
+} from "./soil-confirm-button";
 
 import { OrderByButton } from "@/components/buttons/order-by-button";
 import { DatePickerWithRangeButton } from "@/components/buttons/date-picker-range-button";
 import { SoilsTableFaceted } from "./soils-table-faceted";
 import { SelectItemContent } from "@/components/form/select-item";
+import { SoilPinnedButton } from "./soil-pinned-button";
+import { cn } from "@/lib/utils";
+import { useDialog } from "@/stores/use-dialog";
+import { SoilsExportButton } from "./soils-export-button";
+import { SoilDeleteManyUnConfirmedButton } from "./soil-delete-button";
 
 interface SoilsTableProps {
   data: SoilTable[];
@@ -29,11 +37,18 @@ interface SoilsTableProps {
 export const SoilsTable = ({ data, totalPage }: SoilsTableProps) => {
   const t = useTranslations("soils.table");
   const { dateTime, relativeTime } = useFormatter();
-
+  const { onOpen } = useDialog();
+  const handleEdit = (data: SoilTable) => {
+    onOpen("soil.edit", { soil: data });
+  };
   return (
     <div className="flex flex-col gap-y-4 p-4 border rounded-lg max-w-6xl my-4">
-      <div className="flex justify-end">
+      <div className="flex lg:justify-end gap-1.5 flex-wrap">
+        <SoilCreateManyButton />
+        <SoilsExportButton />
         <SoilCreateButton />
+        <SoilsConfirmedAllButton />
+        <SoilDeleteManyUnConfirmedButton />
       </div>
       <DatePickerWithRangeButton from={undefined} />
       <SoilsTableFaceted />
@@ -41,6 +56,7 @@ export const SoilsTable = ({ data, totalPage }: SoilsTableProps) => {
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead></TableHead>
             <TableHead>
               <OrderByButton
                 column="createdAt"
@@ -78,14 +94,28 @@ export const SoilsTable = ({ data, totalPage }: SoilsTableProps) => {
             </TableHead>
             <TableHead>{t("thead.confirmed")} </TableHead>
             <TableHead>{t("thead.confirmedAt")} </TableHead>
-            <TableHead>{t("thead.confirmedBy")} </TableHead>
+            <TableHead className="min-w-[200px]">
+              {t("thead.confirmedBy")}{" "}
+            </TableHead>
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {data.map((item) => {
             return (
-              <TableRow key={item.id} className="cursor-pointer">
+              <TableRow
+                key={item.id}
+                className="cursor-pointer group"
+                onClick={() => handleEdit(item)}
+              >
+                <TableCell>
+                  <SoilPinnedButton
+                    data={item}
+                    className={cn(
+                      !item.pinned && "opacity-0 group-hover:opacity-100"
+                    )}
+                  />
+                </TableCell>
                 <TableCell>
                   {dateTime(item.createdAt, {
                     hour: "2-digit",
@@ -95,27 +125,27 @@ export const SoilsTable = ({ data, totalPage }: SoilsTableProps) => {
                     year: "numeric",
                   })}
                 </TableCell>
-                <TableCell>{item.ph}</TableCell>
+                <TableCell className="text-center">{item.ph}</TableCell>
 
-                <TableCell>
+                <TableCell className="text-center">
                   <UnitWithValue
                     value={item.nutrientNitrogen}
                     unit={item.nutrientUnit?.name}
                   />
                 </TableCell>
-                <TableCell>
+                <TableCell className="text-center">
                   <UnitWithValue
                     value={item.nutrientPhosphorus}
                     unit={item.nutrientUnit?.name}
                   />
                 </TableCell>
-                <TableCell>
+                <TableCell className="text-center">
                   <UnitWithValue
                     value={item.nutrientPotassium}
                     unit={item.nutrientUnit?.name}
                   />
                 </TableCell>
-                <TableCell>
+                <TableCell className="text-center">
                   <UnitWithValue
                     value={item.moisture?.value}
                     unit={item.moisture?.unit.name}
@@ -123,10 +153,7 @@ export const SoilsTable = ({ data, totalPage }: SoilsTableProps) => {
                 </TableCell>
 
                 <TableCell>
-                  <SoilConfirmButton
-                    confirmed={item.confirmed}
-                    soilId={item.id}
-                  />
+                  <SoilConfirmButton data={item} />
                 </TableCell>
                 <TableCell>
                   {item.confirmedAt

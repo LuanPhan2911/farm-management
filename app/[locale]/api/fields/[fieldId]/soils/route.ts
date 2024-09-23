@@ -1,5 +1,5 @@
 import { SoilSchema } from "@/schemas";
-import { createManySoilInChunk } from "@/services/soils";
+import { createManySoilInChunk, getSoilsForExport } from "@/services/soils";
 
 import { getTranslations } from "next-intl/server";
 import { NextRequest, NextResponse } from "next/server";
@@ -44,6 +44,24 @@ export const POST = async (
   } catch (error) {
     console.log(error);
 
+    return NextResponse.json("Internal error", { status: 500 });
+  }
+};
+
+export const GET = async (
+  req: NextRequest,
+  {
+    params,
+  }: {
+    params: {
+      fieldId: string;
+    };
+  }
+) => {
+  try {
+    const soils = await getSoilsForExport(params.fieldId);
+    return NextResponse.json(soils);
+  } catch (error) {
     return NextResponse.json("Internal error", { status: 500 });
   }
 };

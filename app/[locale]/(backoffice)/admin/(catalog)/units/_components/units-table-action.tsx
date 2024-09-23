@@ -22,7 +22,7 @@ export const UnitsTableAction = ({ data }: UnitsTableActionProps) => {
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-40">
+      <DropdownMenuContent align="start" className="w-fit">
         <DropdownMenuItem>
           <UnitEditButton data={data} label={t("edit.label")} />
         </DropdownMenuItem>

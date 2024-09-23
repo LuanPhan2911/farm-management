@@ -21,7 +21,7 @@ export const StaffsTableAction = ({ data: staff }: StaffsTableActionProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Ellipsis className="h-6 w-6" />
+        <Ellipsis className="h-4 w-4" />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>

@@ -382,3 +382,50 @@ export function concat(
 ) {
   return `${value1 || ""}${sep}${value2 || ""}`;
 }
+export function parseUploadedJSONFile(file: File): Promise<{
+  ok: boolean;
+  message?: string;
+  data?: object | any[];
+}> {
+  return new Promise((resolve, reject) => {
+    // Check if the uploaded file is a JSON file
+
+    if (!file.name.endsWith(".json")) {
+      return resolve({
+        ok: false,
+        message: "Uploaded file is not a JSON file.",
+      });
+    }
+
+    const reader = new FileReader();
+
+    // Handle file read errors
+    reader.onerror = () => {
+      reject("Error reading the file.");
+    };
+
+    // Stream large files by reading in chunks
+    reader.onload = (event: ProgressEvent<FileReader>) => {
+      const fileContent = event.target?.result;
+      if (typeof fileContent !== "string") {
+        return reject("File content is not readable as text.");
+      }
+
+      try {
+        const parsedData = JSON.parse(fileContent);
+        resolve({
+          ok: true,
+          data: parsedData,
+        });
+      } catch (err) {
+        resolve({
+          ok: false,
+          message: "Error reading the file.",
+        });
+      }
+    };
+
+    // Read the file content as text
+    reader.readAsText(file);
+  });
+}

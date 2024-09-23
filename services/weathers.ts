@@ -30,6 +30,7 @@ type WeatherParams = {
   atmosphericPressure?: Partial<UnitValue>;
   rainfall?: Partial<UnitValue>;
   createdAt?: Date;
+  note?: string;
 };
 export const createWeather = async (params: WeatherParams) => {
   return db.$transaction(async (ctx) => {
@@ -76,48 +77,7 @@ export const createWeather = async (params: WeatherParams) => {
     return weather;
   });
 };
-export const updateWeather = async (id: string, params: WeatherParams) => {
-  return db.$transaction(async (ctx) => {
-    //update weather;
-    const {
-      atmosphericPressure: atmosphericPressureParam,
-      humidity: humidityParam,
-      temperature: temperatureParam,
-      rainfall: rainfallParam,
-      ...others
-    } = params;
-    const weather = await ctx.weather.update({
-      where: {
-        id,
-      },
-      data: {
-        ...others,
-      },
-    });
-    const temperature = await upsertFloatUnit({
-      ctx,
-      data: temperatureParam,
-      id: weather.temperatureId,
-    });
-    const atmosphericPressure = await upsertFloatUnit({
-      ctx,
-      data: atmosphericPressureParam,
-      id: weather.atmosphericPressureId,
-    });
-    const humidity = await upsertIntUnit({
-      ctx,
-      data: humidityParam,
-      id: weather.humidityId,
-    });
-    const rainfall = await upsertIntUnit({
-      ctx,
-      data: rainfallParam,
-      id: weather.rainfallId,
-    });
 
-    return weather;
-  });
-};
 export const createManyWeather = async (weatherDataArray: WeatherParams[]) => {
   return Promise.all(
     weatherDataArray.map(async (weatherData) => {
@@ -184,13 +144,14 @@ export const createManyWeatherInChunks = async (
     await createManyWeather(chunk); // Use createManyWeather for each chunk
   }
 };
-export const confirmWeather = async (
+type WeatherConfirm = {
+  confirmed: boolean;
+  confirmedAt: Date;
+  confirmedById: string;
+};
+export const updateWeatherConfirmed = async (
   id: string,
-  params: {
-    confirmed: boolean;
-    confirmedAt: Date;
-    confirmedById: string;
-  }
+  params: WeatherConfirm
 ) => {
   return await db.weather.update({
     where: {
@@ -200,6 +161,69 @@ export const confirmWeather = async (
       ...params,
     },
   });
+};
+export const updateWeatherPinned = async (id: string, pinned: boolean) => {
+  return await db.weather.update({
+    where: {
+      id,
+    },
+    data: {
+      pinned,
+    },
+  });
+};
+export const updateWeather = async (id: string, params: WeatherParams) => {
+  return db.$transaction(async (ctx) => {
+    //update weather;
+    const {
+      atmosphericPressure: atmosphericPressureParam,
+      humidity: humidityParam,
+      temperature: temperatureParam,
+      rainfall: rainfallParam,
+      ...others
+    } = params;
+    const weather = await ctx.weather.update({
+      where: {
+        id,
+      },
+      data: {
+        ...others,
+      },
+    });
+    const temperature = await upsertFloatUnit({
+      ctx,
+      data: temperatureParam,
+      id: weather.temperatureId,
+    });
+    const atmosphericPressure = await upsertFloatUnit({
+      ctx,
+      data: atmosphericPressureParam,
+      id: weather.atmosphericPressureId,
+    });
+    const humidity = await upsertIntUnit({
+      ctx,
+      data: humidityParam,
+      id: weather.humidityId,
+    });
+    const rainfall = await upsertIntUnit({
+      ctx,
+      data: rainfallParam,
+      id: weather.rainfallId,
+    });
+
+    return weather;
+  });
+};
+export const updateManyWeatherConfirmed = async (params: WeatherConfirm) => {
+  const weathers = await db.weather.updateMany({
+    where: {
+      confirmed: false,
+    },
+    data: {
+      ...params,
+    },
+  });
+  return weathers;
 };
 
 export const deleteWeather = async (id: string) => {
@@ -216,6 +240,15 @@ export const deleteWeather = async (id: string) => {
     await deleteManyIntUnit(ctx, [humidityId, rainfallId]);
     return weather;
   });
+};
+export const deleteManyWeatherUnConfirmed = async () => {
+  const { count } = await db.weather.deleteMany({
+    where: {
+      confirmed: false,
+    },
+  });
+  // TODO: after clear unit value no usage
+  return count;
 };
 
 type WeatherQuery = {
@@ -325,9 +358,17 @@ export const getWeathersOnField = async ({
           ...(filterString && getObjectFilterString(filterString)),
           ...(filterNumber && getObjectFilterNumber(filterNumber)),
         },
-        orderBy: {
-          ...(orderBy && getObjectSortOrder(orderBy)),
-        },
+        orderBy: [
+          {
+            pinned: "desc",
+          },
+          {
+            confirmed: "asc",
+          },
+          {
+            ...(orderBy && getObjectSortOrder(orderBy)),
+          },
+        ],
         include: {
           confirmedBy: true,
           atmosphericPressure: {
@@ -526,5 +567,58 @@ export const getAnalyzeWeathers = async (weatherData: WeatherChart[]) => {
   } catch (error) {
     console.error("Error generating weather analysis:", error);
     throw error;
+  }
+};
+
+export const getWeathersForExport = async (fieldId: string) => {
+  try {
+    return await db.weather.findMany({
+      where: {
+        fieldId,
+        confirmed: true,
+      },
+      include: {
+        confirmedBy: true,
+        atmosphericPressure: {
+          include: {
+            unit: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+
+        humidity: {
+          include: {
+            unit: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+        rainfall: {
+          include: {
+            unit: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+        temperature: {
+          include: {
+            unit: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  } catch (error) {
+    return [];
   }
 };

@@ -18,31 +18,31 @@ interface WeatherStatusValueProps {
 export const WeatherStatusValue = ({ status }: WeatherStatusValueProps) => {
   const options = {
     [WeatherStatus.SUNNY]: {
-      icon: <SunDim className="h-6 w-6 text-yellow-300" />,
+      icon: <SunDim className="h-4 w-4 text-yellow-300" />,
       value: WeatherStatus.SUNNY,
     },
     [WeatherStatus.CLOUDY]: {
-      icon: <Cloudy className="h-6 w-6 text-sky-400" />,
+      icon: <Cloudy className="h-4 w-4 text-sky-400" />,
       value: WeatherStatus.CLOUDY,
     },
     [WeatherStatus.RAINY]: {
-      icon: <CloudRain className="h-6 w-6 text-slate-500" />,
+      icon: <CloudRain className="h-4 w-4 text-slate-500" />,
       value: WeatherStatus.RAINY,
     },
     [WeatherStatus.WINDY]: {
-      icon: <Wind className="h-6 w-6 text-green-400" />,
+      icon: <Wind className="h-4 w-4 text-green-400" />,
       value: WeatherStatus.WINDY,
     },
     [WeatherStatus.FOGGY]: {
-      icon: <CloudFog className="h-6 w-6 text-blue-600" />,
+      icon: <CloudFog className="h-4 w-4 text-blue-600" />,
       value: WeatherStatus.FOGGY,
     },
     [WeatherStatus.SNOWY]: {
-      icon: <CloudSnow className="h-6 w-6 text-slate-300" />,
+      icon: <CloudSnow className="h-4 w-4 text-slate-300" />,
       value: WeatherStatus.SNOWY,
     },
     [WeatherStatus.STORMY]: {
-      icon: <Tornado className="h-6 w-6 text-rose-500" />,
+      icon: <Tornado className="h-4 w-4 text-rose-500" />,
       value: WeatherStatus.STORMY,
     },
   };

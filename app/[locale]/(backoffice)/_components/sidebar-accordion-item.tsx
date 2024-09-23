@@ -21,7 +21,7 @@ export const SidebarAccordionItem = ({
       <AccordionItem value="item-1">
         <AccordionTrigger className="p-2 font-semibold text-md">
           <div className="flex gap-x-2">
-            <Icon className="h-6 w-6" />
+            <Icon className="h-4 w-4" />
             <span>{title}</span>
           </div>
         </AccordionTrigger>

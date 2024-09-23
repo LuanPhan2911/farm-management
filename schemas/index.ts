@@ -318,6 +318,7 @@ export const WeatherSchema = (t: (arg: string) => string) => {
         .partial()
     ),
     fieldId: z.string(),
+    note: z.optional(z.string().max(200, t("note.max"))),
     createdAt: z.optional(dateSchema),
   });
 };
@@ -383,6 +384,7 @@ export const SoilSchema = (t: (arg: string) => string) => {
       })
     ),
     fieldId: z.string(),
+    note: z.optional(z.string().max(200, t("note.max"))),
     createdAt: z.optional(dateSchema),
   });
 };

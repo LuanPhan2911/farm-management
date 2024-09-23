@@ -1,6 +1,9 @@
 import { WeatherSchema } from "@/schemas";
 
-import { createManyWeatherInChunks } from "@/services/weathers";
+import {
+  createManyWeatherInChunks,
+  getWeathersForExport,
+} from "@/services/weathers";
 import { getTranslations } from "next-intl/server";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -44,6 +47,24 @@ export const POST = async (
     }
     createManyWeatherInChunks(validatedWeathers);
     return NextResponse.json(validatedWeathers);
+  } catch (error) {
+    return NextResponse.json("Internal error", { status: 500 });
+  }
+};
+
+export const GET = async (
+  req: NextRequest,
+  {
+    params,
+  }: {
+    params: {
+      fieldId: string;
+    };
+  }
+) => {
+  try {
+    const weathers = await getWeathersForExport(params.fieldId);
+    return NextResponse.json(weathers);
   } catch (error) {
     return NextResponse.json("Internal error", { status: 500 });
   }

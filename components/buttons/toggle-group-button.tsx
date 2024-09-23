@@ -31,7 +31,7 @@ export const ToggleGroupButton = ({
               disabled={disabled}
               size={"sm"}
             >
-              <Icon className="h-6 w-6" />
+              <Icon className="h-4 w-4" />
             </ToggleGroupItem>
           </Hint>
         );

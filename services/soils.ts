@@ -17,6 +17,7 @@ type SoilParams = {
   nutrientPotassium?: number;
   nutrientUnitId?: string;
   createdAt?: Date;
+  note?: string;
   fieldId: string;
 };
 
@@ -90,6 +91,40 @@ export const updateSoil = async (id: string, params: SoilParams) => {
     return soil;
   });
 };
+type SoilConfirm = {
+  confirmed: boolean;
+  confirmedAt: Date;
+  confirmedById: string;
+};
+export const updateSoilConfirmed = async (id: string, params: SoilConfirm) => {
+  const soil = await db.soil.update({
+    where: { id },
+    data: {
+      ...params,
+    },
+  });
+  return soil;
+};
+export const updateManySoilConfirmed = async (params: SoilConfirm) => {
+  const soils = await db.soil.updateMany({
+    where: {
+      confirmed: false,
+    },
+    data: {
+      ...params,
+    },
+  });
+  return soils;
+};
+
+export const updateSoilPinned = async (id: string, pinned: boolean) => {
+  return await db.soil.update({
+    where: { id },
+    data: {
+      pinned,
+    },
+  });
+};
 export const deleteSoil = async (id: string) => {
   return await db.$transaction(async (ctx) => {
     const soil = await ctx.soil.delete({
@@ -99,21 +134,14 @@ export const deleteSoil = async (id: string) => {
     return soil;
   });
 };
-export const confirmSoil = async (
-  id: string,
-  params: {
-    confirmed: boolean;
-    confirmedAt: Date;
-    confirmedById: string;
-  }
-) => {
-  const soil = await db.soil.update({
-    where: { id },
-    data: {
-      ...params,
+export const deleteManySoilUnconfirmed = async () => {
+  const { count } = await db.soil.deleteMany({
+    where: {
+      confirmed: false,
     },
   });
-  return soil;
+  // TODO: after clear unit value no usage
+  return count;
 };
 
 type SoilQuery = {
@@ -146,9 +174,17 @@ export const getSoilsOnField = async ({
           ...(filterString && getObjectFilterString(filterString)),
           ...(filterNumber && getObjectFilterNumber(filterNumber)),
         },
-        orderBy: {
-          ...(orderBy && getObjectSortOrder(orderBy)),
-        },
+        orderBy: [
+          {
+            pinned: "desc",
+          },
+          {
+            confirmed: "asc",
+          },
+          {
+            ...(orderBy && getObjectSortOrder(orderBy)),
+          },
+        ],
         include: {
           confirmedBy: true,
           moisture: {
@@ -253,6 +289,35 @@ export const getSoilsForChart = async ({
         nutrientPhosphorus: true,
         nutrientPotassium: true,
         ph: true,
+        moisture: {
+          include: {
+            unit: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+        nutrientUnit: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+  } catch (error) {
+    return [];
+  }
+};
+
+export const getSoilsForExport = async (fieldId: string) => {
+  try {
+    return await db.soil.findMany({
+      where: {
+        fieldId,
+      },
+      include: {
+        confirmedBy: true,
         moisture: {
           include: {
             unit: {

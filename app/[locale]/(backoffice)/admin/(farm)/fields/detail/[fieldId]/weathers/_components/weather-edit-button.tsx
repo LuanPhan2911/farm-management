@@ -26,6 +26,8 @@ import { WeatherTable } from "@/types";
 import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { edit } from "@/actions/weather";
 import { convertNullToUndefined } from "@/lib/utils";
+import { Textarea } from "@/components/ui/textarea";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface WeatherEditButtonProps {
   data: WeatherTable;
@@ -34,19 +36,22 @@ interface WeatherEditButtonProps {
 
 export const WeatherEditButton = ({ data, label }: WeatherEditButtonProps) => {
   const { onOpen } = useDialog();
+  const { isFarmer } = useCurrentStaffRole();
+  const disabled = data.confirmed && isFarmer;
   return (
     <Button
       className="w-full"
-      onClick={() =>
+      onClick={(e) => {
+        e.stopPropagation();
         onOpen("weather.edit", {
           weather: data,
-        })
-      }
+        });
+      }}
       size={"sm"}
       variant={"edit"}
-      disabled={data.confirmed}
+      disabled={disabled}
     >
-      <Edit className="w-6 h-6 mr-2" />
+      <Edit className="w-4 h-4 mr-2" />
       {label}
     </Button>
   );
@@ -321,6 +326,25 @@ export const WeatherEditDialog = () => {
               />
             </div>
           </div>
+          <FormField
+            control={form.control}
+            name="note"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("note.label")}</FormLabel>
+                <div className="flex gap-x-2">
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      disabled={isPending}
+                      placeholder={tSchema("note.placeholder")}
+                    />
+                  </FormControl>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <DialogFooter>
             <DialogClose asChild>

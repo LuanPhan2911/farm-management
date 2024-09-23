@@ -26,6 +26,8 @@ import { SoilTable } from "@/types";
 import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { edit } from "@/actions/soil";
 import { convertNullToUndefined } from "@/lib/utils";
+import { Textarea } from "@/components/ui/textarea";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface SoilEditButtonProps {
   data: SoilTable;
@@ -34,19 +36,22 @@ interface SoilEditButtonProps {
 
 export const SoilEditButton = ({ data, label }: SoilEditButtonProps) => {
   const { onOpen } = useDialog();
+  const { isFarmer } = useCurrentStaffRole();
+  const disabled = data.confirmed && isFarmer;
   return (
     <Button
       className="w-full"
-      onClick={() =>
+      onClick={(e) => {
+        e.stopPropagation();
         onOpen("soil.edit", {
           soil: data,
-        })
-      }
+        });
+      }}
       size={"sm"}
       variant={"edit"}
-      disabled={data.confirmed}
+      disabled={disabled}
     >
-      <Edit className="w-6 h-6 mr-2" />
+      <Edit className="w-4 h-4 mr-2" />
       {label}
     </Button>
   );
@@ -257,6 +262,25 @@ export const SoilEditDialog = () => {
               )}
             />
           </div>
+          <FormField
+            control={form.control}
+            name="note"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("note.label")}</FormLabel>
+                <div className="flex gap-x-2">
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      disabled={isPending}
+                      placeholder={tSchema("note.placeholder")}
+                    />
+                  </FormControl>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <DialogFooter>
             <DialogClose asChild>

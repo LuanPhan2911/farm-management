@@ -48,7 +48,7 @@ export const MobileNav = () => {
                 className="flex items-center"
                 onOpenChange={setOpen}
               >
-                <Icons.logo className="mr-2 h-6 w-6" />
+                <Icons.logo className="mr-2 h-4 w-4" />
                 <span className="font-bold">{siteConfig.name}</span>
               </MobileLink>
             </SheetTitle>

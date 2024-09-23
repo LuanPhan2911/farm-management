@@ -1,6 +1,6 @@
 "use client";
 
-import { create } from "@/actions/soil";
+import { create, createMany } from "@/actions/soil";
 import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { SelectOptions } from "@/components/form/select-options";
 import { Button } from "@/components/ui/button";
@@ -23,15 +23,19 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { JSONEditorReact } from "@/components/vanila-json-editor";
+import { parseUploadedJSONFile } from "@/lib/utils";
 import { SoilSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UnitType } from "@prisma/client";
-import { Plus } from "lucide-react";
+import { Plus, Upload } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { useRef, useTransition } from "react";
+import { useCallback, useRef, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { Content, JSONContent, Mode, OnChangeStatus } from "vanilla-jsoneditor";
 import { z } from "zod";
 
 export const SoilCreateButton = () => {
@@ -50,29 +54,27 @@ export const SoilCreateButton = () => {
     },
   });
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-
-    // startTransition(() => {
-    //   create(values)
-    //     .then(({ message, ok }) => {
-    //       if (ok) {
-    //         form.reset();
-    //         closeRef.current?.click();
-    //         toast.success(message);
-    //       } else {
-    //         toast.error(message);
-    //       }
-    //     })
-    //     .catch((error: Error) => {
-    //       toast.error(t("status.failure.create"));
-    //     });
-    // });
+    startTransition(() => {
+      create(values)
+        .then(({ message, ok }) => {
+          if (ok) {
+            form.reset();
+            closeRef.current?.click();
+            toast.success(message);
+          } else {
+            toast.error(message);
+          }
+        })
+        .catch((error: Error) => {
+          toast.error(t("status.failure.create"));
+        });
+    });
   };
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button size={"sm"} variant={"success"}>
-          <Plus className="h-6 w-6 mr-2" />{" "}
+          <Plus className="h-4 w-4 mr-2" />{" "}
           <span className="text-sm font-semibold">
             {t("form.create.label")}
           </span>
@@ -241,6 +243,25 @@ export const SoilCreateButton = () => {
                 )}
               />
             </div>
+            <FormField
+              control={form.control}
+              name="note"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("note.label")}</FormLabel>
+                  <div className="flex gap-x-2">
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        disabled={isPending}
+                        placeholder={tSchema("note.placeholder")}
+                      />
+                    </FormControl>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <DialogFooter>
               <DialogClose asChild>
@@ -254,6 +275,117 @@ export const SoilCreateButton = () => {
             </DialogFooter>
           </form>
         </Form>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export const SoilCreateManyButton = () => {
+  const params = useParams<{
+    fieldId: string;
+  }>();
+  const initialContent = [
+    {
+      ph: 6.3,
+      moisture: {
+        unitId: "12f75b71-4cba-4dd1-a4c6-c45b88bdda72",
+        value: 28,
+      },
+      nutrientNitrogen: 3.4,
+      nutrientPhosphorus: 0.9,
+      nutrientPotassium: 1.8,
+      nutrientUnitId: "0c22be4a-8909-4e22-ae5e-13b69e5f0422",
+      fieldId: params.fieldId || "f20cfcc8-eb88-4d23-9451-79e2c94c842e",
+      createdAt: "2024-08-01T07:00:00",
+    },
+  ];
+  const [jsonContent, setJsonContent] = useState<Content>({
+    json: initialContent,
+  });
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const handler = useCallback(
+    (content: Content, previousContent: Content, status: OnChangeStatus) => {
+      setJsonContent(content);
+    },
+    []
+  );
+  const uploadHandler = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (event.target.files && event.target.files.length > 0) {
+        const file = event.target.files[0];
+        parseUploadedJSONFile(file)
+          .then(({ ok, data, message }) => {
+            if (ok && !!data) {
+              setJsonContent({
+                json: data,
+              });
+            } else {
+              toast.error(message);
+            }
+          })
+          .catch((errorMessage: string) => {
+            toast.error(errorMessage);
+          });
+      }
+    },
+    []
+  );
+  const [isPending, startTransition] = useTransition();
+  const onSubmit = () => {
+    startTransition(() => {
+      const data = (jsonContent as JSONContent).json;
+      createMany(params.fieldId, data)
+        .then(({ message, ok }) => {
+          if (ok) {
+            closeRef.current?.click();
+
+            toast.success(message);
+            setJsonContent({
+              json: initialContent,
+            });
+          } else {
+            toast.error(message);
+          }
+        })
+        .catch((error: Error) => {
+          toast.error(t("status.failure.createMany"));
+        });
+    });
+  };
+  const t = useTranslations("soils");
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button size={"sm"} variant={"purple"}>
+          <Upload className="h-4 w-4 mr-2" /> {t("form.createMany.label")}
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-4xl overflow-y-auto max-h-screen">
+        <DialogHeader>
+          <DialogTitle>{t("form.createMany.title")}</DialogTitle>
+          <DialogDescription>
+            {t("form.createMany.description")}
+          </DialogDescription>
+        </DialogHeader>
+
+        <JSONEditorReact
+          content={jsonContent}
+          onChange={handler}
+          mode={Mode.text}
+          uploadHandler={uploadHandler}
+          clearHandler={() => setJsonContent({ json: [] })}
+          generateSample={() => setJsonContent({ json: initialContent })}
+        />
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="secondary" ref={closeRef}>
+              Close
+            </Button>
+          </DialogClose>
+          <Button disabled={isPending} onClick={onSubmit}>
+            Submit
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

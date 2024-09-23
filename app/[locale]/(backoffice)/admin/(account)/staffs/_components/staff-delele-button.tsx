@@ -66,7 +66,7 @@ export const StaffDeleteButton = ({ data, label }: StaffDeleteButtonProps) => {
       size={"sm"}
       disabled={isSuperAdmin}
     >
-      <Trash className="h-6 w-6 mr-2" />
+      <Trash className="h-4 w-4 mr-2" />
       {label}
     </Button>
   );

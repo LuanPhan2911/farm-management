@@ -10,17 +10,28 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useFormatter, useTranslations } from "next-intl";
-import { WeatherCreateButton } from "./weather-create-button";
+import {
+  WeatherCreateButton,
+  WeatherCreateManyButton,
+} from "./weather-create-button";
 import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-with-value";
 import { WeatherTable } from "@/types";
 import { WeathersTableAction } from "./weathers-table-action";
-import { WeatherConfirmButton } from "./weather-confirm-button";
+import {
+  WeatherConfirmButton,
+  WeathersConfirmedAllButton,
+} from "./weather-confirm-button";
 import { WeatherStatusValue } from "./weather-status-value";
 
 import { OrderByButton } from "@/components/buttons/order-by-button";
 import { DatePickerWithRangeButton } from "@/components/buttons/date-picker-range-button";
 import { WeatherTableFaceted } from "./weathers-table-faceted";
 import { SelectItemContent } from "@/components/form/select-item";
+import { WeatherDeleteManyUnConfirmedButton } from "./weather-delete-button";
+import { WeathersExportButton } from "./weathers-export-button";
+import { useDialog } from "@/stores/use-dialog";
+import { WeatherPinnedButton } from "./weather-pinned-button";
+import { cn } from "@/lib/utils";
 interface WeathersTableProps {
   data: WeatherTable[];
   totalPage: number;
@@ -28,11 +39,19 @@ interface WeathersTableProps {
 export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
   const t = useTranslations("weathers.table");
   const { dateTime, relativeTime } = useFormatter();
+  const { onOpen } = useDialog();
+  const handleEdit = (data: WeatherTable) => {
+    onOpen("weather.edit", { weather: data });
+  };
 
   return (
-    <div className="flex flex-col gap-y-4 p-4 border rounded-lg max-w-6xl my-4">
-      <div className="flex justify-end">
+    <div className="flex flex-col gap-y-4 p-4 border rounded-lg my-4">
+      <div className="flex lg:justify-end gap-1.5 flex-wrap">
+        <WeatherCreateManyButton />
+        <WeathersExportButton />
         <WeatherCreateButton />
+        <WeathersConfirmedAllButton />
+        <WeatherDeleteManyUnConfirmedButton />
       </div>
       <DatePickerWithRangeButton from={undefined} />
       <WeatherTableFaceted />
@@ -40,6 +59,7 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead></TableHead>
             <TableHead>
               <OrderByButton
                 column="createdAt"
@@ -74,14 +94,28 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
             </TableHead>
             <TableHead>{t("thead.confirmed")} </TableHead>
             <TableHead>{t("thead.confirmedAt")} </TableHead>
-            <TableHead>{t("thead.confirmedBy")} </TableHead>
+            <TableHead className="min-w-[200px]">
+              {t("thead.confirmedBy")}{" "}
+            </TableHead>
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {data.map((item) => {
             return (
-              <TableRow key={item.id} className="cursor-pointer">
+              <TableRow
+                key={item.id}
+                className="cursor-pointer group"
+                onClick={() => handleEdit(item)}
+              >
+                <TableCell>
+                  <WeatherPinnedButton
+                    data={item}
+                    className={cn(
+                      !item.pinned && "opacity-0 group-hover:opacity-100"
+                    )}
+                  />
+                </TableCell>
                 <TableCell>
                   {dateTime(item.createdAt, {
                     hour: "2-digit",
@@ -94,7 +128,7 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
                 <TableCell>
                   <WeatherStatusValue status={item.status} />
                 </TableCell>
-                <TableCell>
+                <TableCell className="text-center">
                   {item.temperature ? (
                     <span>
                       {item.temperature?.value}
@@ -105,7 +139,7 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
                     t("trow.temperature")
                   )}
                 </TableCell>
-                <TableCell>
+                <TableCell className="text-center">
                   {item.humidity ? (
                     <UnitWithValue
                       value={item.humidity?.value}
@@ -115,7 +149,7 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
                     t("trow.humidity")
                   )}
                 </TableCell>
-                <TableCell>
+                <TableCell className="text-center">
                   {item.atmosphericPressure ? (
                     <UnitWithValue
                       value={item.atmosphericPressure?.value}
@@ -125,7 +159,7 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
                     t("trow.atmosphericPressure")
                   )}
                 </TableCell>
-                <TableCell>
+                <TableCell className="text-center">
                   {item.rainfall ? (
                     <UnitWithValue
                       value={item.rainfall?.value}
@@ -136,10 +170,7 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
                   )}
                 </TableCell>
                 <TableCell>
-                  <WeatherConfirmButton
-                    confirmed={item.confirmed}
-                    weatherId={item.id}
-                  />
+                  <WeatherConfirmButton data={item} />
                 </TableCell>
                 <TableCell>
                   {item.confirmedAt

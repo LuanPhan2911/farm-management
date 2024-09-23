@@ -42,7 +42,7 @@ export const EquipmentEditButton = ({
   return (
     <Link href={`/admin/equipments/edit/${data.id}`} className="w-full">
       <Button variant={"edit"} size={"sm"} className="w-full">
-        <Edit className="w-6 h-6 mr-2" />
+        <Edit className="w-4 h-4 mr-2" />
         {label}
       </Button>
     </Link>

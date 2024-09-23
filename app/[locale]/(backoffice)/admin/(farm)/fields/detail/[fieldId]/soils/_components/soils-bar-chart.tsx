@@ -1,8 +1,11 @@
 "use client";
 
 import { ErrorButton } from "@/components/buttons/error-button";
+import { LargeCard } from "@/components/cards/large-card";
 import { DatePickerInRange } from "@/components/form/date-picker-in-range";
+import { Hint } from "@/components/hint";
 import { QueryProvider } from "@/components/providers/query-provider";
+import { Button } from "@/components/ui/button";
 import {
   ChartConfig,
   ChartContainer,
@@ -15,6 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { SoilChart } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { addDays } from "date-fns";
+import { Eye, EyeOff, LucideIcon } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import queryString from "query-string";
@@ -33,16 +37,37 @@ export const SoilsBarChart = ({}: SoilsBarChartProps) => {
   const [dateRange, setDateRange] = useState<DateRange>({
     ...defaultDateRange,
   });
+  const [isShown, setShown] = useState<boolean>(true);
+  const Icon: LucideIcon = isShown ? EyeOff : Eye;
+  const t = useTranslations("soils.chart");
 
   return (
     <div className="flex flex-col gap-y-4 p-4 max-w-6xl border rounded-lg">
-      <DatePickerInRange
-        dateRange={dateRange}
-        defaultDateRange={defaultDateRange}
-        setDateRange={setDateRange}
-        inDays={14}
-      />
-      <SoilsBarChartContentWithQueryClient dateRange={dateRange} />
+      <div className="flex justify-between">
+        <DatePickerInRange
+          dateRange={dateRange}
+          defaultDateRange={defaultDateRange}
+          setDateRange={setDateRange}
+          inDays={14}
+        />
+        <Hint label="Show/Hide chart" asChild>
+          <Button
+            size={"icon"}
+            variant={"cyan"}
+            onClick={() => setShown(!isShown)}
+          >
+            <Icon className="h-4 w-4" />
+          </Button>
+        </Hint>
+      </div>
+      {isShown ? (
+        <SoilsBarChartContentWithQueryClient dateRange={dateRange} />
+      ) : (
+        <LargeCard
+          title={t("hidden.title")}
+          description={t("hidden.description")}
+        />
+      )}
     </div>
   );
 };
@@ -101,24 +126,18 @@ const SoilsBarChartContent = ({ dateRange }: SoilsBarChartContentProps) => {
   }
   if (isError) {
     return (
-      <div className="flex flex-col gap-y-2 items-center justify-center py-4">
-        <div className="text-lg font-semibold">
-          <ErrorButton title={t("error.title")} refresh={refetch} />
-        </div>
-        <div className="text-sm text-muted-foreground">
-          {t("error.description")}
-        </div>
-      </div>
+      <LargeCard
+        title={<ErrorButton title={t("error.title")} refresh={refetch} />}
+        description={t("error.description")}
+      />
     );
   }
   if (!data.length) {
     return (
-      <div className="flex flex-col gap-y-2 items-center justify-center py-4 min-h-[200px]">
-        <div className="text-lg font-semibold">{t("notFound.title")}</div>
-        <div className="text-sm text-muted-foreground text-center">
-          {t("notFound.description")}
-        </div>
-      </div>
+      <LargeCard
+        title={t("notFound.title")}
+        description={t("notFound.description")}
+      />
     );
   }
   const chartData = data.map((item) => {

@@ -24,7 +24,7 @@ export const CropsTableAction = ({ data }: CropsTableActionProps) => {
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-40">
+      <DropdownMenuContent align="start" className="w-fit">
         <DropdownMenuItem>
           <CropEditButton data={data} label={t("edit.label")} />
         </DropdownMenuItem>

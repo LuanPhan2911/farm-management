@@ -1159,6 +1159,10 @@
       "notFound": {
         "title": "No weathers data for generate chart",
         "description": "Only confirmed weathers data was displayed and data is filtered by date range you selected"
+      },
+      "hidden": {
+        "title": "Chart will be hidden",
+        "description": "Click icon eye in the right corner to show chart"
       }
     },
     "search": {
@@ -1187,7 +1191,7 @@
       "edit": {
         "label": "Edit",
         "title": "Edit weather",
-        "description": "Update weather"
+        "description": "Update weather attribute weather"
       },
       "destroy": {
         "label": "Delete",
@@ -1198,7 +1202,28 @@
       "editConfirmed": {
         "label": "Edit confirmed",
         "title": "Confirm weather?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "Are you absolutely sure? Just admin have grant to restore"
+      },
+      "createMany": {
+        "label": "Upload",
+        "title": "Create many weathers",
+        "description": "Upload json file to according sample to create many weathers"
+      },
+      "export": {
+        "label": "Export"
+      },
+      "destroyManyConfirmed": {
+        "label": "Delete all",
+        "title": "Delete all unconfirmed weathers",
+        "description": "If weather unconfirmed, weather will be deleted"
+      },
+      "editManyConfirmed": {
+        "label": "Edit all",
+        "title": "Update all unconfirmed weather",
+        "description": "Update all unconfirmed weathers to confirmed weathers"
+      },
+      "editPinned": {
+        "label": "Pinned"
       }
     },
     "schema": {
@@ -1288,6 +1313,11 @@
           "WINDY": "Windy",
           "STORMY": "Stormy"
         }
+      },
+      "note": {
+        "label": "Note",
+        "placeholder": "Take note if necessary",
+        "max": "Max note length is 200 character"
       }
     },
     "status": {
@@ -1295,13 +1325,21 @@
         "create": "Weather created!",
         "edit": "Weather edited!",
         "destroy": "Weather deleted!",
-        "editConfirmed": "Weather confirmed"
+        "editConfirmed": "Weather confirmed",
+        "createMany": "Weathers inserted!",
+        "editManyConfirmed": "Updated all unconfirmed weathers to confirmed",
+        "destroyManyConfirmed": "Deleted all unconfirmed weathers",
+        "editPinned": "Weather pinned"
       },
       "failure": {
         "create": "Something went wrong while creating weather!",
         "edit": "Something went wrong while editing weather!",
         "destroy": "Something went wrong while deleting weather!",
-        "editConfirmed": "Something went wrong whiling confirming weather"
+        "editConfirmed": "Something went wrong whiling confirming weather",
+        "createMany": "Something went wrong while inserting weathers!",
+        "editManyConfirmed": "Something went wrong while updating unconfirmed weathers",
+        "destroyManyConfirmed": "Something went wrong while deleting unconfirmed weathers",
+        "editPinned": "Weather unpinned"
       }
     }
   },
@@ -1341,6 +1379,10 @@
       "notFound": {
         "title": "No soils data for generate chart",
         "description": "Only confirmed soils data was displayed and data is filtered by date range you selected"
+      },
+      "hidden": {
+        "title": "Chart will be hidden",
+        "description": "Click icon eye in the right corner to show chart"
       }
     },
     "search": {
@@ -1376,7 +1418,28 @@
       "editConfirmed": {
         "label": "Edit confirmed",
         "title": "Confirm soil?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "Are you absolutely sure? Just admin have grant to restore"
+      },
+      "createMany": {
+        "label": "Upload",
+        "title": "Create many soils",
+        "description": "Upload json file to according sample to create many soils"
+      },
+      "export": {
+        "label": "Export"
+      },
+      "destroyManyConfirmed": {
+        "label": "Delete all",
+        "title": "Delete all unconfirmed soils",
+        "description": "If soil unconfirmed, soil will be deleted"
+      },
+      "editManyConfirmed": {
+        "label": "Edit all",
+        "title": "Update all unconfirmed soil",
+        "description": "Update all unconfirmed soils to confirmed soils"
+      },
+      "editPinned": {
+        "label": "Pinned"
       }
     },
     "schema": {
@@ -1440,6 +1503,11 @@
         "required_error": "Nutrient unit is required",
         "error": "Fail load units",
         "notFound": "Units not found"
+      },
+      "note": {
+        "label": "Note",
+        "placeholder": "Take note if necessary",
+        "max": "Max note length is 200 character"
       }
     },
     "status": {
@@ -1447,13 +1515,21 @@
         "create": "Soil created!",
         "edit": "Soil edited!",
         "destroy": "Soil deleted!",
-        "editConfirmed": "Soil confirmed"
+        "editConfirmed": "Soil confirmed",
+        "createMany": "Soils inserted!",
+        "editManyConfirmed": "Updated all unconfirmed soils to confirmed",
+        "destroyManyConfirmed": "Deleted all unconfirmed soils",
+        "editPinned": "Soil pinned"
       },
       "failure": {
         "create": "Something went wrong while creating soil!",
         "edit": "Something went wrong while editing soil!",
         "destroy": "Something went wrong while deleting soil!",
-        "editConfirmed": "Something went wrong whiling confirming soil"
+        "editConfirmed": "Something went wrong whiling confirming soil",
+        "createMany": "Something went wrong while inserting soils!",
+        "editManyConfirmed": "Something went wrong while updating unconfirmed soils",
+        "destroyManyConfirmed": "Something went wrong while deleting unconfirmed soils",
+        "editPinned": "Soil unpinned"
       }
     }
   },

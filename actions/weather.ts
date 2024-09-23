@@ -5,10 +5,14 @@ import { WeatherSchema } from "@/schemas";
 import { currentStaff } from "@/services/staffs";
 
 import {
-  confirmWeather,
+  updateWeatherConfirmed,
   createWeather,
+  deleteManyWeatherUnConfirmed,
   deleteWeather,
+  updateManyWeatherConfirmed,
   updateWeather,
+  createManyWeatherInChunks,
+  updateWeatherPinned,
 } from "@/services/weathers";
 import { ActionResponse } from "@/types";
 import { getTranslations } from "next-intl/server";
@@ -58,7 +62,7 @@ export const edit = async (
     return errorResponse(tStatus("failure.edit"));
   }
 };
-export const editConfirmed = async (id: string) => {
+export const editConfirmed = async (id: string, confirmed: boolean) => {
   const tStatus = await getTranslations("weathers.status");
   const tSchema = await getTranslations("weathers.schema");
 
@@ -67,8 +71,8 @@ export const editConfirmed = async (id: string) => {
     if (!staff) {
       return errorResponse(tSchema("errors.existStaff"));
     }
-    const weather = await confirmWeather(id, {
-      confirmed: true,
+    const weather = await updateWeatherConfirmed(id, {
+      confirmed,
       confirmedAt: new Date(),
       confirmedById: staff.id,
     });
@@ -86,5 +90,81 @@ export const destroy = async (id: string) => {
     return successResponse(tStatus("success.destroy"));
   } catch (error) {
     return errorResponse(tStatus("failure.destroy"));
+  }
+};
+
+export const createMany = async (fieldId: string, json: unknown) => {
+  const tStatus = await getTranslations("weathers.status");
+  const tSchema = await getTranslations("weathers.schema");
+
+  try {
+    const paramsSchema = WeatherSchema(tSchema);
+
+    const data = json as any[];
+    const weathers = data.map((item) => {
+      const validatedField = paramsSchema.safeParse(item);
+
+      if (validatedField.success) {
+        return validatedField.data;
+      } else {
+        return undefined;
+      }
+    });
+
+    const validatedWeathers = weathers.filter((item) => item !== undefined);
+    if (
+      !validatedWeathers.length ||
+      validatedWeathers.length !== weathers.length
+    ) {
+      return errorResponse(tSchema("errors.parse"));
+    }
+    await createManyWeatherInChunks(validatedWeathers);
+    revalidatePath(`/admin/fields/detail/${fieldId}/weathers`);
+    return successResponse(tStatus("success.createMany"));
+  } catch (error) {
+    return errorResponse(tStatus("failure.createMany"));
+  }
+};
+
+export const editManyConfirmed = async (fieldId: string) => {
+  const tStatus = await getTranslations("weathers.status");
+  const tSchema = await getTranslations("weathers.schema");
+
+  try {
+    const staff = await currentStaff();
+    if (!staff) {
+      return errorResponse(tSchema("errors.existStaff"));
+    }
+    const weather = await updateManyWeatherConfirmed({
+      confirmed: true,
+      confirmedAt: new Date(),
+      confirmedById: staff.id,
+    });
+    revalidatePath(`/admin/fields/detail/${fieldId}/weathers`);
+    return successResponse(tStatus("success.editManyConfirmed"));
+  } catch (error) {
+    return errorResponse(tStatus("failure.editManyConfirmed"));
+  }
+};
+
+export const destroyManyUnConfirmed = async (fieldId: string) => {
+  const tStatus = await getTranslations("weathers.status");
+  try {
+    await deleteManyWeatherUnConfirmed();
+    revalidatePath(`/admin/fields/detail/${fieldId}/weathers`);
+    return successResponse(tStatus("success.destroyManyConfirmed"));
+  } catch (error) {
+    return errorResponse(tStatus("failure.destroyManyConfirmed"));
+  }
+};
+
+export const editPinned = async (id: string, pinned: boolean) => {
+  const tStatus = await getTranslations("weathers.status");
+  try {
+    const weather = await updateWeatherPinned(id, pinned);
+    revalidatePath(`/admin/fields/detail/${weather.fieldId}/weathers`);
+    return successResponse(tStatus("success.editPinned"));
+  } catch (error) {
+    return errorResponse(tStatus("failure.editPinned"));
   }
 };

@@ -86,7 +86,7 @@ export const CropCreateButton = () => {
     <Dialog>
       <DialogTrigger asChild>
         <Button size={"sm"} variant={"success"}>
-          <Plus className="h-6 w-6 mr-2" />{" "}
+          <Plus className="h-4 w-4 mr-2" />{" "}
           <span className="text-sm font-semibold">
             {t("form.create.label")}
           </span>

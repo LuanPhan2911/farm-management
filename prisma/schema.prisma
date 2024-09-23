@@ -211,6 +211,9 @@ model Weather {
   confirmedById String?
   confirmedBy   Staff?    @relation(fields: [confirmedById], references: [id])
 
+  pinned Boolean @default(false)
+  note   String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -238,6 +241,8 @@ model Soil {
 
   field Field @relation(fields: [fieldId], references: [id])
 
+  pinned        Boolean   @default(false)
+  note          String?
   confirmed     Boolean   @default(false)
   confirmedAt   DateTime?
   confirmedById String?
