@@ -1,5 +1,13 @@
 import { getSoilsOnField } from "@/services/soils";
 import { SoilsTable } from "./_components/soils-table";
+import { parseToDate, parseToNumber } from "@/lib/utils";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+import { getTranslations } from "next-intl/server";
+import {
+  SoilsBarChart,
+  SoilsBarChartContentWithQueryClient,
+} from "./_components/soils-bar-chart";
 interface SoilsPageProps {
   params: {
     fieldId: string;
@@ -14,13 +22,11 @@ interface SoilsPageProps {
   };
 }
 const SoilsPage = async ({ params, searchParams }: SoilsPageProps) => {
-  const page = searchParams.page ? Number(searchParams.page) : 1;
-  const orderBy = searchParams.orderBy;
-  const filterString = searchParams.filterString || "";
-  const filterNumber = searchParams.filterNumber || "";
-  const begin = searchParams.begin ? new Date(searchParams.begin) : undefined;
-  const end = searchParams.end ? new Date(searchParams.end) : undefined;
-
+  const page = parseToNumber(searchParams.page, 1);
+  const { orderBy, filterNumber, filterString } = searchParams;
+  const begin = parseToDate(searchParams.begin);
+  const end = parseToDate(searchParams.end);
+  const t = await getTranslations("soils.page");
   const { data, totalPage } = await getSoilsOnField({
     fieldId: params.fieldId,
     page,
@@ -33,7 +39,15 @@ const SoilsPage = async ({ params, searchParams }: SoilsPageProps) => {
 
   return (
     <div className="flex flex-col gap-y-4 py-4 h-full">
-      <SoilsTable data={data} totalPage={totalPage} />
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("title")}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <SoilsBarChart />
+          <SoilsTable data={data} totalPage={totalPage} />
+        </CardContent>
+      </Card>
     </div>
   );
 };

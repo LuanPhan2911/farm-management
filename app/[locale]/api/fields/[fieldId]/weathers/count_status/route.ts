@@ -12,20 +12,9 @@ export const GET = async (
   }
 ) => {
   try {
-    const searchParams = req.nextUrl.searchParams;
-    const filterString = searchParams.get("filterString") || "";
-    const begin = searchParams.get("begin")
-      ? new Date(searchParams.get("begin") as string)
-      : undefined;
-    const end = searchParams.get("end")
-      ? new Date(searchParams.get("end") as string)
-      : undefined;
     const fieldId = params.fieldId;
     const result = await getCountWeatherStatus({
       fieldId,
-      begin,
-      end,
-      filterString,
     });
     return NextResponse.json(result);
   } catch (error) {

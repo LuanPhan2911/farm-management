@@ -35,7 +35,7 @@ export const StaffEditRole = ({ data, label }: UserSetRoleProps) => {
       variant={"success"}
       disabled={isSuperAdmin}
     >
-      <Edit className="h-6 w-6 mr-2" />
+      <Edit className="h-4 w-4 mr-2" />
       {label}
     </Button>
   );

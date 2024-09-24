@@ -20,9 +20,9 @@ export const ClipboardButton = ({ value }: ClipboardButtonProps) => {
     <Hint asChild label="Copy clipboard">
       <Button size={"sm"} onClick={onClick} type="button" variant={"blue"}>
         {active ? (
-          <ClipboardCheck className="h-6 w-6" />
+          <ClipboardCheck className="h-4 w-4" />
         ) : (
-          <Clipboard className="h-6 w-6" />
+          <Clipboard className="h-4 w-4" />
         )}
       </Button>
     </Hint>

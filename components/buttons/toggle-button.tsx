@@ -23,7 +23,7 @@ export const ToggleButton = ({
   return (
     <Toggle variant={"outline"} pressed={pressed} onPressedChange={onPressed}>
       <Hint label={label} asChild>
-        <Icon className="h-6 w-6" />
+        <Icon className="h-4 w-4" />
       </Hint>
     </Toggle>
   );

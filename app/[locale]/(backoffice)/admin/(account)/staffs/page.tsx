@@ -1,6 +1,7 @@
 import { getStaffsTable } from "@/services/staffs";
 import { StaffsTable } from "./_components/staffs-table";
 import { UserOrderBy } from "@/services/users";
+import { parseToNumber } from "@/lib/utils";
 
 interface StaffsPageProps {
   searchParams: {
@@ -10,9 +11,8 @@ interface StaffsPageProps {
   };
 }
 const StaffsPage = async ({ searchParams }: StaffsPageProps) => {
-  const query = searchParams?.query || "";
-  const page = searchParams?.page ? Number(searchParams?.page) : 1;
-  const orderBy = searchParams?.orderBy;
+  const page = parseToNumber(searchParams.page, 1);
+  const { orderBy, query } = searchParams;
   const { data: staffs, totalPage } = await getStaffsTable({
     query,
     currentPage: page,

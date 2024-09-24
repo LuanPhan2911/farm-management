@@ -1,5 +1,6 @@
 import { getEquipments } from "@/services/equipments";
 import { EquipmentsTable } from "./_components/equipments-table";
+import { parseToNumber } from "@/lib/utils";
 interface EquipmentsPageProps {
   params: {};
   searchParams: {
@@ -13,10 +14,8 @@ const EquipmentsPage = async ({
   params,
   searchParams,
 }: EquipmentsPageProps) => {
-  const page = searchParams.page ? Number(searchParams.page) : 1;
-  const orderBy = searchParams.orderBy;
-  const filterString = searchParams.filterString || "";
-  const filterNumber = searchParams.filterNumber || "";
+  const page = parseToNumber(searchParams.page, 1);
+  const { orderBy, filterNumber, filterString } = searchParams;
   const { data, totalPage } = await getEquipments({
     filterNumber,
     filterString,

@@ -10,9 +10,11 @@ type ApplicantParams = {
   note?: string | undefined;
   jobId: string;
 };
-export const getApplicants = async (
-  jobId: string | undefined
-): Promise<ApplicantTable[]> => {
+export const getApplicants = async ({
+  jobId,
+}: {
+  jobId?: string | undefined;
+}): Promise<ApplicantTable[]> => {
   try {
     return await db.applicant.findMany({
       where: {

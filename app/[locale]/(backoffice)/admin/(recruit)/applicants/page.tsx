@@ -9,7 +9,9 @@ interface ApplicantsPageProps {
 }
 const ApplicantsPage = async ({ searchParams }: ApplicantsPageProps) => {
   const jobId = searchParams.jobId;
-  const applicants = await getApplicants(jobId);
+  const applicants = await getApplicants({
+    jobId,
+  });
 
   return (
     <div className="flex flex-col gap-y-4 h-full py-4">

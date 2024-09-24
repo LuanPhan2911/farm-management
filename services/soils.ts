@@ -1,46 +1,78 @@
 import { LIMIT } from "@/configs/paginationConfig";
 import { db } from "@/lib/db";
 import {
+  chunkArray,
   getObjectFilterNumber,
   getObjectFilterString,
   getObjectSortOrder,
 } from "@/lib/utils";
-import { PaginatedResponse, SoilTable } from "@/types";
+import { PaginatedResponse, SoilChart, SoilTable } from "@/types";
+import { deleteIntUnit, UnitValue, upsertIntUnit } from "./units";
 
 type SoilParams = {
-  ph: number;
-  moisture: {
-    value: number;
-    unitId: string;
-  };
-  nutrientNitrogen: number;
-  nutrientPhosphorus: number;
-  nutrientPotassium: number;
-  nutrientUnitId: string;
+  ph?: number;
+  moisture?: Partial<UnitValue>;
+  nutrientNitrogen?: number;
+  nutrientPhosphorus?: number;
+  nutrientPotassium?: number;
+  nutrientUnitId?: string;
+  createdAt?: Date;
+  note?: string;
   fieldId: string;
 };
 
 export const createSoil = async (params: SoilParams) => {
   return await db.$transaction(async (ctx) => {
     const { moisture: moistureParam, ...others } = params;
-    const moisture = await ctx.intUnit.create({
-      data: {
-        ...moistureParam,
-      },
+    const moisture = await upsertIntUnit({
+      ctx,
+      data: moistureParam,
     });
 
     const soil = await ctx.soil.create({
       data: {
         ...others,
-        moistureId: moisture.id,
+        moistureId: moisture?.id,
       },
     });
     return soil;
   });
 };
-export const createManySoil = async (params: SoilParams[]) => {
-  const soils = params.map((param) => createSoil(param));
-  return await Promise.all(soils);
+export const createManySoil = async (soilDataArray: SoilParams[]) => {
+  return Promise.all(
+    soilDataArray.map(async (soilData) => {
+      const { moisture: moistureParam, ...others } = soilData;
+      try {
+        return db.$transaction(async (ctx) => {
+          const moisture = await upsertIntUnit({
+            ctx,
+            data: moistureParam,
+          });
+
+          const soil = await ctx.soil.create({
+            data: {
+              ...others,
+              moistureId: moisture?.id,
+            },
+          });
+          return soil;
+        });
+      } catch (error) {
+        return null;
+      }
+    })
+  );
+};
+
+export const createManySoilInChunk = async (
+  soilDataArray: SoilParams[],
+  chunkSize = 10
+) => {
+  const chunks = chunkArray(soilDataArray, chunkSize);
+
+  for (const chunk of chunks) {
+    await createManySoil(chunk);
+  }
 };
 export const updateSoil = async (id: string, params: SoilParams) => {
   return await db.$transaction(async (ctx) => {
@@ -51,38 +83,20 @@ export const updateSoil = async (id: string, params: SoilParams) => {
         ...others,
       },
     });
-    const moisture = await ctx.intUnit.update({
-      where: {
-        id: soil.moistureId,
-      },
-      data: {
-        ...moistureParam,
-      },
+    const moisture = await upsertIntUnit({
+      ctx,
+      data: moistureParam,
+      id: soil.moistureId,
     });
     return soil;
   });
 };
-export const deleteSoil = async (id: string) => {
-  return await db.$transaction(async (ctx) => {
-    const soil = await ctx.soil.delete({
-      where: { id },
-    });
-    const moisture = await ctx.intUnit.delete({
-      where: {
-        id: soil.moistureId,
-      },
-    });
-    return soil;
-  });
+type SoilConfirm = {
+  confirmed: boolean;
+  confirmedAt: Date;
+  confirmedById: string;
 };
-export const confirmSoil = async (
-  id: string,
-  params: {
-    confirmed: boolean;
-    confirmedAt: Date;
-    confirmedById: string;
-  }
-) => {
+export const updateSoilConfirmed = async (id: string, params: SoilConfirm) => {
   const soil = await db.soil.update({
     where: { id },
     data: {
@@ -90,6 +104,44 @@ export const confirmSoil = async (
     },
   });
   return soil;
+};
+export const updateManySoilConfirmed = async (params: SoilConfirm) => {
+  const soils = await db.soil.updateMany({
+    where: {
+      confirmed: false,
+    },
+    data: {
+      ...params,
+    },
+  });
+  return soils;
+};
+
+export const updateSoilPinned = async (id: string, pinned: boolean) => {
+  return await db.soil.update({
+    where: { id },
+    data: {
+      pinned,
+    },
+  });
+};
+export const deleteSoil = async (id: string) => {
+  return await db.$transaction(async (ctx) => {
+    const soil = await ctx.soil.delete({
+      where: { id },
+    });
+    const moisture = await deleteIntUnit(ctx, soil.moistureId);
+    return soil;
+  });
+};
+export const deleteManySoilUnconfirmed = async () => {
+  const { count } = await db.soil.deleteMany({
+    where: {
+      confirmed: false,
+    },
+  });
+  // TODO: after clear unit value no usage
+  return count;
 };
 
 type SoilQuery = {
@@ -111,40 +163,61 @@ export const getSoilsOnField = async ({
   page = 1,
 }: SoilQuery): Promise<PaginatedResponse<SoilTable>> => {
   try {
-    const soils = await db.soil.findMany({
-      where: {
-        fieldId,
-        createdAt: {
-          ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
-          ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
+    const [soils, count] = await db.$transaction([
+      db.soil.findMany({
+        where: {
+          fieldId,
+          createdAt: {
+            ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
+            ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
+          },
+          ...(filterString && getObjectFilterString(filterString)),
+          ...(filterNumber && getObjectFilterNumber(filterNumber)),
         },
-        ...(filterString && getObjectFilterString(filterString)),
-        ...(filterNumber && getObjectFilterNumber(filterNumber)),
-      },
-      orderBy: {
-        ...(orderBy && getObjectSortOrder(orderBy)),
-      },
-      include: {
-        confirmedBy: true,
-        moisture: {
-          include: {
-            unit: {
-              select: {
-                name: true,
+        orderBy: [
+          {
+            pinned: "desc",
+          },
+          {
+            confirmed: "asc",
+          },
+          {
+            ...(orderBy && getObjectSortOrder(orderBy)),
+          },
+        ],
+        include: {
+          confirmedBy: true,
+          moisture: {
+            include: {
+              unit: {
+                select: {
+                  name: true,
+                },
               },
             },
           },
-        },
-        nutrientUnit: {
-          select: {
-            name: true,
+          nutrientUnit: {
+            select: {
+              name: true,
+            },
           },
         },
-      },
-      take: LIMIT,
-      skip: (page - 1) * LIMIT,
-    });
-    const totalPage = Math.ceil(soils.length / LIMIT);
+        take: LIMIT,
+        skip: (page - 1) * LIMIT,
+      }),
+      db.soil.count({
+        where: {
+          fieldId,
+          createdAt: {
+            ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
+            ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
+          },
+          ...(filterString && getObjectFilterString(filterString)),
+          ...(filterNumber && getObjectFilterNumber(filterNumber)),
+        },
+      }),
+    ]);
+    const totalPage = Math.ceil(count / LIMIT);
     return {
       data: soils,
       totalPage,
@@ -188,4 +261,80 @@ export const getSoilUnitForGenerateSoil = async () => {
     };
     return soilUnits;
   });
+};
+
+export const getSoilsForChart = async ({
+  fieldId,
+  begin,
+  end,
+}: SoilQuery): Promise<SoilChart[]> => {
+  try {
+    return await db.soil.findMany({
+      where: {
+        fieldId,
+        confirmed: true,
+        createdAt: {
+          ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
+          ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
+        },
+      },
+      orderBy: {
+        createdAt: "asc",
+      },
+      select: {
+        id: true,
+        createdAt: true,
+        confirmedAt: true,
+        nutrientNitrogen: true,
+        nutrientPhosphorus: true,
+        nutrientPotassium: true,
+        ph: true,
+        moisture: {
+          include: {
+            unit: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+        nutrientUnit: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+  } catch (error) {
+    return [];
+  }
+};
+
+export const getSoilsForExport = async (fieldId: string) => {
+  try {
+    return await db.soil.findMany({
+      where: {
+        fieldId,
+      },
+      include: {
+        confirmedBy: true,
+        moisture: {
+          include: {
+            unit: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+        nutrientUnit: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+  } catch (error) {
+    return [];
+  }
 };

@@ -22,8 +22,47 @@ import { Staff } from "@prisma/client";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { ErrorButton } from "@/components/buttons/error-button";
-import { StaffSelectItem } from "./staff-select-item";
+
 import { QueryProvider } from "@/components/providers/query-provider";
+
+import { UserAvatar } from "@/components/user-avatar";
+import { StaffMetadataRole } from "./staff-metadata-role";
+import { StaffRole } from "@prisma/client";
+interface StaffSelectItemProps {
+  imageUrl: string | undefined | null;
+  name: string;
+  email: string;
+  role: StaffRole;
+}
+const StaffSelectItem = ({
+  email,
+  imageUrl,
+  name,
+  role,
+}: StaffSelectItemProps) => {
+  return (
+    <div className="flex items-center p-1">
+      <UserAvatar
+        src={imageUrl || undefined}
+        size={"default"}
+        className="rounded-full"
+      />
+      <div className="ml-4">
+        <div className="text-sm font-medium leading-none text-start">
+          {name}
+          <span className="ml-2">
+            <StaffMetadataRole
+              metadata={{
+                role,
+              }}
+            />
+          </span>
+        </div>
+        <p className="text-sm text-muted-foreground">{email}</p>
+      </div>
+    </div>
+  );
+};
 
 interface StaffsSelectProps {
   queryKey: string[];

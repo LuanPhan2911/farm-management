@@ -9,4 +9,8 @@ const createPrismaClient = () => {
 };
 export const db = globalThis.prisma || createPrismaClient();
 
+export type PrismaTransactionalClient = Parameters<
+  Parameters<ReturnType<typeof createPrismaClient>["$transaction"]>[0]
+>[0];
+
 if (process.env.NODE_ENV !== "production") globalThis.prisma = db;

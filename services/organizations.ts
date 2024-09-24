@@ -73,19 +73,23 @@ export type OrganizationSortBy =
   | "-created_at"
   | "-name"
   | "-members_count";
-export const getOrganizations = async (
-  query: string,
-  currentPage: number,
-  orderBy?: OrganizationSortBy
-) => {
+export const getOrganizations = async ({
+  currentPage,
+  orderBy,
+  query,
+}: {
+  query?: string;
+  currentPage: number;
+  orderBy?: OrganizationSortBy;
+}) => {
   try {
     const { data, totalCount } =
       await clerkClient().organizations.getOrganizationList({
         includeMembersCount: true,
         limit: LIMIT,
         offset: (currentPage - 1) * LIMIT,
-        query: query,
-        orderBy: orderBy,
+        query,
+        orderBy,
       });
     const totalPage = Math.ceil(totalCount / LIMIT);
     return {

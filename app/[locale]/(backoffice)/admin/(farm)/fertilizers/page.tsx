@@ -1,5 +1,6 @@
 import { getFertilizers } from "@/services/fertilizers";
 import { FertilizersTable } from "./_components/fertilizers-table";
+import { parseToNumber } from "@/lib/utils";
 
 interface FertilizerPageProps {
   params: {};
@@ -11,10 +12,8 @@ interface FertilizerPageProps {
   };
 }
 const FertilizersPage = async ({ searchParams }: FertilizerPageProps) => {
-  const page = searchParams.page ? Number(searchParams.page) : 1;
-  const orderBy = searchParams.orderBy;
-  const filterString = searchParams.filterString || "";
-  const filterNumber = searchParams.filterNumber || "";
+  const page = parseToNumber(searchParams.page, 1);
+  const { orderBy, filterNumber, filterString } = searchParams;
   const { data, totalPage } = await getFertilizers({
     filterNumber,
     filterString,

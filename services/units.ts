@@ -1,5 +1,5 @@
-import { db } from "@/lib/db";
-import { UnitType } from "@prisma/client";
+import { db, PrismaTransactionalClient } from "@/lib/db";
+import { FloatUnit, IntUnit, Prisma, UnitType } from "@prisma/client";
 
 type UnitParams = {
   name: string;
@@ -72,5 +72,112 @@ export const getUnitsByType = async (type: UnitType) => {
     return units;
   } catch (error) {
     return [];
+  }
+};
+
+export type UnitValue = {
+  unitId: string;
+  value: number;
+};
+
+export const deleteFloatUnit = async (
+  ctx: PrismaTransactionalClient,
+  id: string | null | undefined
+) => {
+  if (!id) {
+    return null;
+  }
+  return await ctx.floatUnit.delete({ where: { id } });
+};
+export const deleteManyFloatUnit = async (
+  ctx: PrismaTransactionalClient,
+  ids: (string | null)[] | null | undefined
+) => {
+  if (!ids?.length) {
+    return null;
+  }
+  return await ctx.floatUnit.deleteMany({
+    where: {
+      id: {
+        in: ids.filter((id) => id !== null),
+      },
+    },
+  });
+};
+export const upsertFloatUnit = async ({
+  ctx,
+  data,
+  id,
+}: {
+  ctx: PrismaTransactionalClient;
+  id?: string | null | undefined;
+  data?: Partial<UnitValue>;
+}): Promise<FloatUnit | null> => {
+  if (!data || data.unitId === undefined || data.value === undefined) {
+    return null;
+  }
+  if (!id) {
+    return await ctx.floatUnit.create({
+      data: {
+        value: data.value,
+        unitId: data.unitId,
+      },
+    });
+  } else {
+    return await ctx.floatUnit.update({
+      where: { id },
+      data,
+    });
+  }
+};
+
+export const deleteIntUnit = async (
+  ctx: PrismaTransactionalClient,
+  id: string | null | undefined
+) => {
+  if (!id) {
+    return null;
+  }
+  return await ctx.intUnit.delete({ where: { id } });
+};
+export const deleteManyIntUnit = async (
+  ctx: PrismaTransactionalClient,
+  ids: (string | null)[] | null | undefined
+) => {
+  if (!ids?.length) {
+    return null;
+  }
+  return await ctx.intUnit.deleteMany({
+    where: {
+      id: {
+        in: ids.filter((id) => id !== null),
+      },
+    },
+  });
+};
+export const upsertIntUnit = async ({
+  ctx,
+  data,
+  id,
+}: {
+  ctx: PrismaTransactionalClient;
+  id?: string | null | undefined;
+  data?: Partial<UnitValue>;
+}): Promise<IntUnit | null> => {
+  if (!data || data.unitId === undefined || data.value === undefined) {
+    return null;
+  }
+  if (!id) {
+    return await ctx.intUnit.create({
+      data: {
+        value: data.value,
+        unitId: data.unitId,
+      },
+    });
+  } else {
+    return await ctx.intUnit.update({
+      where: { id },
+      data,
+    });
   }
 };
