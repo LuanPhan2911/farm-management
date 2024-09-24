@@ -1,5 +1,6 @@
 import {
   ApplicantTable,
+  CropTable,
   FertilizerTable,
   PesticideTable,
   SoilTable,
@@ -18,7 +19,8 @@ export type DialogType =
   | "weather.edit"
   | "soil.edit"
   | "fertilizer.edit"
-  | "pesticide.edit";
+  | "pesticide.edit"
+  | "crop.edit";
 
 export interface DialogData {
   category?: Category;
@@ -29,6 +31,7 @@ export interface DialogData {
   soil?: SoilTable;
   fertilizer?: FertilizerTable;
   pesticide?: PesticideTable;
+  crop?: CropTable;
 }
 interface DialogStore {
   type: DialogType | null;

@@ -7,6 +7,7 @@ const avatarSizes = cva("", {
     size: {
       default: "h-8 w-8",
       lg: "h-14 w-14",
+      sm: "h-5 w-5",
     },
   },
   defaultVariants: {
@@ -31,7 +32,12 @@ export const UserAvatar = ({
         className={cn(avatarSizes({ size, className }))}
         {...props}
       />
-      <AvatarFallback className="bg-blue-300 p-2 rounded-full">
+      <AvatarFallback
+        className={cn(
+          avatarSizes({ size, className }),
+          "bg-blue-300 p-1 rounded-full"
+        )}
+      >
         CN
       </AvatarFallback>
     </Avatar>

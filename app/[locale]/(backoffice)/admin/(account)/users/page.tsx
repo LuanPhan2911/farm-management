@@ -1,5 +1,6 @@
 import { getUsersTable, UserOrderBy } from "@/services/users";
 import { UsersTable } from "./_components/users-table";
+import { parseToNumber } from "@/lib/utils";
 
 interface UsersPageProps {
   searchParams: {
@@ -9,9 +10,8 @@ interface UsersPageProps {
   };
 }
 const UsersPage = async ({ searchParams }: UsersPageProps) => {
-  const query = searchParams?.query || "";
-  const page = searchParams?.page ? Number(searchParams?.page) : 1;
-  const orderBy = searchParams?.orderBy;
+  const page = parseToNumber(searchParams.page, 1);
+  const { orderBy, query } = searchParams;
 
   const { data: users, totalPage } = await getUsersTable({
     currentPage: page,

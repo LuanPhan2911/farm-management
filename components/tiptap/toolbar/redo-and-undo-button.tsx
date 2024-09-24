@@ -24,7 +24,7 @@ export const RedoAndUndoButton = ({
           disabled={disabled}
           className="bg-transparent"
         >
-          <Undo className="h-6 w-6" />
+          <Undo className="h-4 w-4" />
         </Button>
       </Hint>
       <Hint asChild label={tHistory("redo")}>
@@ -36,7 +36,7 @@ export const RedoAndUndoButton = ({
           disabled={disabled}
           className="bg-transparent"
         >
-          <Redo className="w-6 h-6" />
+          <Redo className="w-4 h-4" />
         </Button>
       </Hint>
     </div>

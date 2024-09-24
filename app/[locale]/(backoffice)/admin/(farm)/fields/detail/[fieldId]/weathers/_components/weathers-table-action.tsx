@@ -12,6 +12,8 @@ import { MoreHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { WeatherEditButton } from "./weather-edit-button";
 import { WeatherDeleteButton } from "./weather-delete-button";
+import { WeatherConfirmButton } from "./weather-confirm-button";
+import { WeatherPinnedButton } from "./weather-pinned-button";
 interface WeathersTableActionProps {
   data: WeatherTable;
 }
@@ -24,9 +26,15 @@ export const WeathersTableAction = ({ data }: WeathersTableActionProps) => {
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-40">
+      <DropdownMenuContent align="start" className="w-fit">
+        <DropdownMenuItem>
+          <WeatherPinnedButton data={data} isButton />
+        </DropdownMenuItem>
         <DropdownMenuItem>
           <WeatherEditButton data={data} label={t("edit.label")} />
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <WeatherConfirmButton data={data} isButton />
         </DropdownMenuItem>
         <DropdownMenuItem>
           <WeatherDeleteButton data={data} label={t("destroy.label")} />

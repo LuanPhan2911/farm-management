@@ -11,6 +11,7 @@ import { WeatherEditDialog } from "@/app/[locale]/(backoffice)/admin/(farm)/fiel
 import { SoilEditDialog } from "@/app/[locale]/(backoffice)/admin/(farm)/fields/detail/[fieldId]/soils/_components/soil-edit-button";
 import { FertilizerEditDialog } from "@/app/[locale]/(backoffice)/admin/(farm)/fertilizers/_components/fertilizer-edit-button";
 import { PesticideEditDialog } from "@/app/[locale]/(backoffice)/admin/(farm)/pesticides/_components/pesticide-edit-button";
+import { CropEditDialog } from "@/app/[locale]/(backoffice)/admin/(farm)/fields/detail/[fieldId]/crops/_components/crop-edit-button";
 
 export const DialogProvider = () => {
   return (
@@ -26,6 +27,7 @@ export const DialogProvider = () => {
       <SoilEditDialog />
       <FertilizerEditDialog />
       <PesticideEditDialog />
+      <CropEditDialog />
     </>
   );
 };

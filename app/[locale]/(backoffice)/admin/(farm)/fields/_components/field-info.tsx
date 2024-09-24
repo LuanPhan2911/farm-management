@@ -7,12 +7,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { FieldWithUnit } from "@/types";
+import { FieldTable } from "@/types";
 import { useTranslations } from "next-intl";
 import { FieldEditForm } from "./field-edit-button";
 
 interface FieldInfoProps {
-  data: FieldWithUnit;
+  data: FieldTable;
 }
 export const FieldInfo = ({ data }: FieldInfoProps) => {
   const t = useTranslations("fields");

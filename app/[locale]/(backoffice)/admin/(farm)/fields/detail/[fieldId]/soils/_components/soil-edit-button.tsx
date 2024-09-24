@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { UnitType } from "@prisma/client";
 import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -25,6 +25,9 @@ import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { SoilTable } from "@/types";
 import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { edit } from "@/actions/soil";
+import { convertNullToUndefined } from "@/lib/utils";
+import { Textarea } from "@/components/ui/textarea";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface SoilEditButtonProps {
   data: SoilTable;
@@ -33,19 +36,22 @@ interface SoilEditButtonProps {
 
 export const SoilEditButton = ({ data, label }: SoilEditButtonProps) => {
   const { onOpen } = useDialog();
+  const { isFarmer } = useCurrentStaffRole();
+  const disabled = data.confirmed && isFarmer;
   return (
     <Button
       className="w-full"
-      onClick={() =>
+      onClick={(e) => {
+        e.stopPropagation();
         onOpen("soil.edit", {
           soil: data,
-        })
-      }
+        });
+      }}
       size={"sm"}
       variant={"edit"}
-      disabled={data.confirmed}
+      disabled={disabled}
     >
-      <Edit className="w-6 h-6 mr-2" />
+      <Edit className="w-4 h-4 mr-2" />
       {label}
     </Button>
   );
@@ -61,17 +67,14 @@ export const SoilEditDialog = () => {
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: useMemo(() => {
+      return !!data.soil ? convertNullToUndefined(data.soil) : undefined;
+    }, [data.soil]),
   });
   const [id, setId] = useState("");
   useEffect(() => {
     if (data?.soil) {
-      form.setValue("moisture", data.soil.moisture);
-      form.setValue("fieldId", data.soil.fieldId);
-      form.setValue("nutrientNitrogen", data.soil.nutrientNitrogen);
-      form.setValue("nutrientPhosphorus", data.soil.nutrientPhosphorus);
-      form.setValue("nutrientPotassium", data.soil.nutrientPotassium);
-      form.setValue("nutrientUnitId", data.soil.nutrientUnitId);
-      form.setValue("ph", data.soil.ph);
+      form.reset(convertNullToUndefined(data.soil));
 
       setId(data.soil.id);
     }
@@ -259,6 +262,25 @@ export const SoilEditDialog = () => {
               )}
             />
           </div>
+          <FormField
+            control={form.control}
+            name="note"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("note.label")}</FormLabel>
+                <div className="flex gap-x-2">
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      disabled={isPending}
+                      placeholder={tSchema("note.placeholder")}
+                    />
+                  </FormControl>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <DialogFooter>
             <DialogClose asChild>

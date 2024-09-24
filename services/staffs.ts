@@ -99,7 +99,7 @@ export const getStaffsTable = async ({
   currentPage,
   orderBy,
 }: {
-  query: string;
+  query?: string;
   currentPage: number;
   orderBy?: UserOrderBy;
 }) => {

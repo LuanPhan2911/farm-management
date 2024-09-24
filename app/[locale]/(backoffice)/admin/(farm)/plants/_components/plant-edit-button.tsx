@@ -26,6 +26,7 @@ import { SelectOptions } from "@/components/form/select-options";
 import { UnitsSelectWithQueryClient } from "../../../_components/units-select";
 import { PlantTable } from "@/types";
 import { UploadImage } from "@/components/form/upload-image";
+import { convertNullToUndefined } from "@/lib/utils";
 
 interface PlantCreateFormProps {
   data: PlantTable;
@@ -39,12 +40,7 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      ...data,
-      idealHumidity: data.idealHumidity || undefined,
-      idealTemperature: data.idealTemperature || undefined,
-      waterRequirement: data.waterRequirement || undefined,
-      imageUrl: data.imageUrl || undefined,
-      season: data.season || undefined,
+      ...convertNullToUndefined(data),
     },
   });
 
@@ -111,32 +107,24 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
             )}
           />
         </div>
+        <FormField
+          control={form.control}
+          name="growthDuration"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{tSchema("growthDuration.label")}</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder={tSchema("growthDuration.placeholder")}
+                  {...field}
+                  disabled={isPending}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <div className="grid lg:grid-cols-2 gap-2">
-          <FormField
-            control={form.control}
-            name="season"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("season.label")}</FormLabel>
-                <FormControl>
-                  <SelectOptions
-                    label={tSchema("season.placeholder")}
-                    onChange={field.onChange}
-                    disabled={isPending}
-                    options={Object.values(Season).map((item) => {
-                      return {
-                        label: tSchema(`season.options.${item}`),
-                        value: item,
-                      };
-                    })}
-                    defaultValue={field.value}
-                  />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <FormField
             control={form.control}
             name="fertilizerType"
@@ -151,6 +139,31 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
                     options={Object.values(FertilizerType).map((item) => {
                       return {
                         label: tSchema(`fertilizerType.options.${item}`),
+                        value: item,
+                      };
+                    })}
+                    defaultValue={field.value}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="season"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("season.label")}</FormLabel>
+                <FormControl>
+                  <SelectOptions
+                    label={tSchema("season.placeholder")}
+                    onChange={field.onChange}
+                    disabled={isPending}
+                    options={Object.values(Season).map((item) => {
+                      return {
+                        label: tSchema(`season.options.${item}`),
                         value: item,
                       };
                     })}
@@ -318,25 +331,6 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
             </div>
           </div>
         </div>
-
-        <FormField
-          control={form.control}
-          name="growthDuration"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{tSchema("growthDuration.label")}</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder={tSchema("growthDuration.placeholder")}
-                  {...field}
-                  disabled={isPending}
-                  type="number"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
         <FormField
           control={form.control}

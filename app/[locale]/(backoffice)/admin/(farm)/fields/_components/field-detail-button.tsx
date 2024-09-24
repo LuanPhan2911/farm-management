@@ -1,9 +1,9 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/navigation";
-import { FieldWithUnit } from "@/types";
+import { FieldTable } from "@/types";
 interface FieldDetailButtonProps {
-  data: FieldWithUnit;
+  data: FieldTable;
   label: string;
 }
 export const FieldDetailButton = ({ data, label }: FieldDetailButtonProps) => {

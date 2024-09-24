@@ -45,7 +45,7 @@ export const ApplicantStaffCreateButton = ({
       }
       variant={"success"}
     >
-      <Edit className="h-6 w-6 mr-2" />
+      <Edit className="h-4 w-4 mr-2" />
       {label}
     </Button>
   );

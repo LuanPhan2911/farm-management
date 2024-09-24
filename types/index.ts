@@ -1,6 +1,7 @@
 import {
   ApplicantStatus,
   Category,
+  Crop,
   Equipment,
   EquipmentType,
   Fertilizer,
@@ -81,36 +82,78 @@ export type ApplicantTable = {
   note?: string | null;
   status: ApplicantStatus;
 };
-export type FieldWithUnit = Field & {
+export type FieldTable = Field & {
   unit: Unit | null;
 };
 
 export type WeatherTable = Weather & {
   confirmedBy: Staff | null;
-  temperature: FloatUnit & {
-    unit: {
-      name: string;
-    };
-  };
-  humidity: IntUnit & {
-    unit: {
-      name: string;
-    };
-  };
-  atmosphericPressure: FloatUnit & {
-    unit: {
-      name: string;
-    };
-  };
-  rainfall: IntUnit & {
-    unit: {
-      name: string;
-    };
-  };
+  temperature:
+    | (FloatUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+  humidity:
+    | (IntUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+  atmosphericPressure:
+    | (FloatUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+  rainfall:
+    | (IntUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
 };
 export type WeatherStatusCount = {
   status: WeatherStatus;
   _count: number;
+};
+export type WeatherChart = {
+  id: string;
+  confirmedAt: Date | null;
+  createdAt: Date;
+  status: WeatherStatus;
+  temperature:
+    | (FloatUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+  humidity:
+    | (IntUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+  atmosphericPressure:
+    | (FloatUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+  rainfall:
+    | (IntUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
 };
 export type SoilTypeCount = {
   type: SoilType;
@@ -118,14 +161,33 @@ export type SoilTypeCount = {
 };
 export type SoilTable = Soil & {
   confirmedBy: Staff | null;
-  moisture: IntUnit & {
-    unit: {
-      name: string;
-    };
-  };
+  moisture:
+    | (IntUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
   nutrientUnit: {
     name: string;
-  };
+  } | null;
+};
+
+export type SoilChart = {
+  createdAt: Date;
+  confirmedAt: Date | null;
+  id: string;
+  ph: number | null;
+  nutrientNitrogen: number | null;
+  nutrientPhosphorus: number | null;
+  nutrientPotassium: number | null;
+  moisture:
+    | (IntUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
 };
 export type PlantTable = Plant & {
   category: Category;
@@ -150,6 +212,11 @@ export type PlantTable = Plant & {
         };
       })
     | null;
+};
+export type PlantSelect = {
+  id: string;
+  name: string;
+  imageUrl: string | null;
 };
 export type FertilizerTable = Fertilizer & {
   recommendedDosage:
@@ -196,14 +263,37 @@ export type PesticideToxicityLevelCount = {
 };
 
 export type EquipmentTable = Equipment & {
-  purchasePrice: FloatUnit & {
-    unit: {
-      name: string;
-    };
-  };
+  purchasePrice:
+    | (FloatUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
 };
 
 export type EquipmentTypeCount = {
   type: EquipmentType;
   _count: number;
+};
+
+export type CropTable = Crop & {
+  actualYield:
+    | (FloatUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+  estimatedYield:
+    | (FloatUnit & {
+        unit: {
+          name: string;
+        };
+      })
+    | null;
+  plant: {
+    id: string;
+    name: string;
+  };
 };

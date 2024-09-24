@@ -46,7 +46,7 @@ export const CategoryEditButton = ({
       }
       variant={"edit"}
     >
-      <Edit className="w-6 h-6 mr-2" />
+      <Edit className="w-4 h-4 mr-2" />
       {label}
     </Button>
   );

@@ -12,6 +12,8 @@ import { MoreHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { SoilEditButton } from "./soil-edit-button";
 import { SoilDeleteButton } from "./soil-delete-button";
+import { SoilPinnedButton } from "./soil-pinned-button";
+import { SoilConfirmButton } from "./soil-confirm-button";
 interface SoilsTableActionProps {
   data: SoilTable;
 }
@@ -24,7 +26,13 @@ export const SoilsTableAction = ({ data }: SoilsTableActionProps) => {
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-40">
+      <DropdownMenuContent align="start" className="w-fit">
+        <DropdownMenuItem>
+          <SoilPinnedButton data={data} isButton />
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <SoilConfirmButton data={data} isButton />
+        </DropdownMenuItem>
         <DropdownMenuItem>
           <SoilEditButton data={data} label={t("edit.label")} />
         </DropdownMenuItem>

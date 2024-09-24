@@ -6,19 +6,19 @@ import { Checkbox } from "@radix-ui/react-checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
 import { FieldCreateButton } from "./field-create-button";
-import { FieldWithUnit } from "@/types";
+import { FieldTable } from "@/types";
 import { FieldsTableAction } from "./fields-table-action";
 import { UnitWithValue } from "../../../_components/unit-with-value";
 import { useRouter } from "@/navigation";
 import { SoilType } from "@prisma/client";
 
 interface FieldsDataTableProps {
-  data: FieldWithUnit[];
+  data: FieldTable[];
 }
 export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
   const t = useTranslations("fields");
   const router = useRouter();
-  const columns: ColumnDef<FieldWithUnit>[] = [
+  const columns: ColumnDef<FieldTable>[] = [
     {
       id: "select",
       header: ({ table }) => (
@@ -148,7 +148,7 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
       }),
     },
   ];
-  const onViewDetail = (item: FieldWithUnit) => {
+  const onViewDetail = (item: FieldTable) => {
     router.push(`/admin/fields/detail/${item.id}`);
   };
   return (

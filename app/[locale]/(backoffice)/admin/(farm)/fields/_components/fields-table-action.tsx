@@ -7,13 +7,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { FieldWithUnit } from "@/types";
+import { FieldTable } from "@/types";
 import { MoreHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { FieldDetailButton } from "./field-detail-button";
 
 interface FieldsTableActionProps {
-  data: FieldWithUnit;
+  data: FieldTable;
 }
 export const FieldsTableAction = ({ data }: FieldsTableActionProps) => {
   const t = useTranslations("fields.form");

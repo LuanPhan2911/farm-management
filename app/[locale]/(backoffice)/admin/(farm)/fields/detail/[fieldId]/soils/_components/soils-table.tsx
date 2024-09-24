@@ -1,7 +1,7 @@
 "use client";
 
 import { NavPagination } from "@/components/nav-pagination";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import {
   Table,
   TableBody,
@@ -11,147 +11,176 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useFormatter, useTranslations } from "next-intl";
-import { SoilCreateButton } from "./soil-create-button";
+import { SoilCreateButton, SoilCreateManyButton } from "./soil-create-button";
 import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-with-value";
 import { SoilTable } from "@/types";
 import { SoilsTableAction } from "./soils-table-action";
-import { SoilConfirmButton } from "./soil-confirm-button";
-import { StaffWithName } from "@/app/[locale]/(backoffice)/admin/_components/staff-with-name";
+import {
+  SoilConfirmButton,
+  SoilsConfirmedAllButton,
+} from "./soil-confirm-button";
 
 import { OrderByButton } from "@/components/buttons/order-by-button";
 import { DatePickerWithRangeButton } from "@/components/buttons/date-picker-range-button";
 import { SoilsTableFaceted } from "./soils-table-faceted";
+import { SelectItemContent } from "@/components/form/select-item";
+import { SoilPinnedButton } from "./soil-pinned-button";
+import { cn } from "@/lib/utils";
+import { useDialog } from "@/stores/use-dialog";
+import { SoilsExportButton } from "./soils-export-button";
+import { SoilDeleteManyUnConfirmedButton } from "./soil-delete-button";
 
 interface SoilsTableProps {
   data: SoilTable[];
   totalPage: number;
 }
 export const SoilsTable = ({ data, totalPage }: SoilsTableProps) => {
-  const t = useTranslations("soils");
+  const t = useTranslations("soils.table");
   const { dateTime, relativeTime } = useFormatter();
-
+  const { onOpen } = useDialog();
+  const handleEdit = (data: SoilTable) => {
+    onOpen("soil.edit", { soil: data });
+  };
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("page.title")}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="flex justify-end">
-          <SoilCreateButton />
-        </div>
-        <DatePickerWithRangeButton from={undefined} />
-        <SoilsTableFaceted />
+    <div className="flex flex-col gap-y-4 p-4 border rounded-lg max-w-6xl my-4">
+      <div className="flex lg:justify-end gap-1.5 flex-wrap">
+        <SoilCreateManyButton />
+        <SoilsExportButton />
+        <SoilCreateButton />
+        <SoilsConfirmedAllButton />
+        <SoilDeleteManyUnConfirmedButton />
+      </div>
+      <DatePickerWithRangeButton from={undefined} />
+      <SoilsTableFaceted />
 
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>
-                <OrderByButton
-                  column="createdAt"
-                  label={t("table.thead.createdAt")}
-                  defaultValue="desc"
-                />
-              </TableHead>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead></TableHead>
+            <TableHead>
+              <OrderByButton
+                column="createdAt"
+                label={t("thead.createdAt")}
+                defaultValue="desc"
+              />
+            </TableHead>
+            <TableHead>
+              <OrderByButton column="ph" label={t("thead.ph")} />
+            </TableHead>
 
-              <TableHead>
-                <OrderByButton
-                  column="nutrientNitrogen"
-                  label={t("table.thead.nutrientNitrogen")}
-                />
-              </TableHead>
-              <TableHead>
-                <OrderByButton
-                  column="nutrientPhosphorus"
-                  label={t("table.thead.nutrientPhosphorus")}
-                />
-              </TableHead>
-              <TableHead>
-                <OrderByButton
-                  column="nutrientPotassium"
-                  label={t("table.thead.nutrientPotassium")}
-                />
-              </TableHead>
-              <TableHead>
-                <OrderByButton
-                  column="moisture.value"
-                  label={t("table.thead.moisture")}
-                />
-              </TableHead>
-              <TableHead>{t("table.thead.confirmed")} </TableHead>
-              <TableHead>{t("table.thead.confirmedAt")} </TableHead>
-              <TableHead>{t("table.thead.confirmedBy")} </TableHead>
-              <TableHead></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data.map((item) => {
-              return (
-                <TableRow key={item.id} className="cursor-pointer">
-                  <TableCell>
-                    {dateTime(item.createdAt, {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                    })}
-                  </TableCell>
-
-                  <TableCell>
-                    <UnitWithValue
-                      value={item.nutrientNitrogen}
-                      unit={item.nutrientUnit.name}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <UnitWithValue
-                      value={item.nutrientPhosphorus}
-                      unit={item.nutrientUnit.name}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <UnitWithValue
-                      value={item.nutrientPotassium}
-                      unit={item.nutrientUnit.name}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <UnitWithValue
-                      value={item.moisture.value}
-                      unit={item.moisture.unit.name}
-                    />
-                  </TableCell>
-
-                  <TableCell>
-                    <SoilConfirmButton
-                      confirmed={item.confirmed}
-                      soilId={item.id}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    {item.confirmedAt
-                      ? relativeTime(item.confirmedAt)
-                      : t("table.trow.confirmedAt")}
-                  </TableCell>
-                  <TableCell>
-                    {item.confirmedBy ? (
-                      <StaffWithName {...item.confirmedBy} />
-                    ) : (
-                      t("table.trow.confirmedBy")
+            <TableHead>
+              <OrderByButton
+                column="nutrientNitrogen"
+                label={t("thead.nutrientNitrogen")}
+              />
+            </TableHead>
+            <TableHead>
+              <OrderByButton
+                column="nutrientPhosphorus"
+                label={t("thead.nutrientPhosphorus")}
+              />
+            </TableHead>
+            <TableHead>
+              <OrderByButton
+                column="nutrientPotassium"
+                label={t("thead.nutrientPotassium")}
+              />
+            </TableHead>
+            <TableHead>
+              <OrderByButton
+                column="moisture.value"
+                label={t("thead.moisture")}
+              />
+            </TableHead>
+            <TableHead>{t("thead.confirmed")} </TableHead>
+            <TableHead>{t("thead.confirmedAt")} </TableHead>
+            <TableHead className="min-w-[200px]">
+              {t("thead.confirmedBy")}{" "}
+            </TableHead>
+            <TableHead></TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {data.map((item) => {
+            return (
+              <TableRow
+                key={item.id}
+                className="cursor-pointer group"
+                onClick={() => handleEdit(item)}
+              >
+                <TableCell>
+                  <SoilPinnedButton
+                    data={item}
+                    className={cn(
+                      !item.pinned && "opacity-0 group-hover:opacity-100"
                     )}
-                  </TableCell>
-                  <TableCell>
-                    <SoilsTableAction data={item} />
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-        <div className="py-4">
-          <NavPagination totalPage={totalPage} />
-        </div>
-      </CardContent>
-    </Card>
+                  />
+                </TableCell>
+                <TableCell>
+                  {dateTime(item.createdAt, {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  })}
+                </TableCell>
+                <TableCell className="text-center">{item.ph}</TableCell>
+
+                <TableCell className="text-center">
+                  <UnitWithValue
+                    value={item.nutrientNitrogen}
+                    unit={item.nutrientUnit?.name}
+                  />
+                </TableCell>
+                <TableCell className="text-center">
+                  <UnitWithValue
+                    value={item.nutrientPhosphorus}
+                    unit={item.nutrientUnit?.name}
+                  />
+                </TableCell>
+                <TableCell className="text-center">
+                  <UnitWithValue
+                    value={item.nutrientPotassium}
+                    unit={item.nutrientUnit?.name}
+                  />
+                </TableCell>
+                <TableCell className="text-center">
+                  <UnitWithValue
+                    value={item.moisture?.value}
+                    unit={item.moisture?.unit.name}
+                  />
+                </TableCell>
+
+                <TableCell>
+                  <SoilConfirmButton data={item} />
+                </TableCell>
+                <TableCell>
+                  {item.confirmedAt
+                    ? relativeTime(item.confirmedAt)
+                    : t("trow.confirmedAt")}
+                </TableCell>
+                <TableCell>
+                  {item.confirmedBy ? (
+                    <SelectItemContent
+                      imageUrl={item.confirmedBy.imageUrl}
+                      title={item.confirmedBy.name}
+                    />
+                  ) : (
+                    t("trow.confirmedBy")
+                  )}
+                </TableCell>
+                <TableCell>
+                  <SoilsTableAction data={item} />
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+      <div className="py-4">
+        <NavPagination totalPage={totalPage} />
+      </div>
+    </div>
   );
 };

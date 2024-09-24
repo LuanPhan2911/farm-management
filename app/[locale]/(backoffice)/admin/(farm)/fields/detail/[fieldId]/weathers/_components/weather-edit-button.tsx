@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { UnitType, WeatherStatus } from "@prisma/client";
 import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -25,6 +25,9 @@ import { SelectOptions } from "@/components/form/select-options";
 import { WeatherTable } from "@/types";
 import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { edit } from "@/actions/weather";
+import { convertNullToUndefined } from "@/lib/utils";
+import { Textarea } from "@/components/ui/textarea";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface WeatherEditButtonProps {
   data: WeatherTable;
@@ -33,19 +36,22 @@ interface WeatherEditButtonProps {
 
 export const WeatherEditButton = ({ data, label }: WeatherEditButtonProps) => {
   const { onOpen } = useDialog();
+  const { isFarmer } = useCurrentStaffRole();
+  const disabled = data.confirmed && isFarmer;
   return (
     <Button
       className="w-full"
-      onClick={() =>
+      onClick={(e) => {
+        e.stopPropagation();
         onOpen("weather.edit", {
           weather: data,
-        })
-      }
+        });
+      }}
       size={"sm"}
       variant={"edit"}
-      disabled={data.confirmed}
+      disabled={disabled}
     >
-      <Edit className="w-6 h-6 mr-2" />
+      <Edit className="w-4 h-4 mr-2" />
       {label}
     </Button>
   );
@@ -61,16 +67,14 @@ export const WeatherEditDialog = () => {
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: useMemo(() => {
+      return !!data.weather ? convertNullToUndefined(data.weather) : undefined;
+    }, [data.weather]),
   });
   const [id, setId] = useState("");
   useEffect(() => {
     if (data?.weather) {
-      form.setValue("atmosphericPressure", data.weather.atmosphericPressure);
-      form.setValue("fieldId", data.weather.fieldId);
-      form.setValue("humidity", data.weather.humidity);
-      form.setValue("rainfall", data.weather.rainfall);
-      form.setValue("status", data.weather.status);
-      form.setValue("temperature", data.weather.temperature);
+      form.reset(convertNullToUndefined(data.weather));
       setId(data.weather.id);
     }
   }, [data, form]);
@@ -102,6 +106,32 @@ export const WeatherEditDialog = () => {
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("status.label")}</FormLabel>
+                <div className="flex gap-x-2">
+                  <FormControl>
+                    <SelectOptions
+                      label="Select status"
+                      onChange={field.onChange}
+                      options={Object.keys(WeatherStatus).map((item) => {
+                        return {
+                          label: tSchema(`status.options.${item}`),
+                          value: item,
+                        };
+                      })}
+                      disabled={isPending}
+                      defaultValue={field.value}
+                    />
+                  </FormControl>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div className="grid grid-cols-4 gap-2">
               <div className="col-span-3">
@@ -298,23 +328,16 @@ export const WeatherEditDialog = () => {
           </div>
           <FormField
             control={form.control}
-            name="status"
+            name="note"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{tSchema("status.label")}</FormLabel>
+                <FormLabel>{tSchema("note.label")}</FormLabel>
                 <div className="flex gap-x-2">
                   <FormControl>
-                    <SelectOptions
-                      label="Select status"
-                      onChange={field.onChange}
-                      options={Object.keys(WeatherStatus).map((item) => {
-                        return {
-                          label: tSchema(`status.options.${item}`),
-                          value: item,
-                        };
-                      })}
+                    <Textarea
+                      {...field}
                       disabled={isPending}
-                      defaultValue={field.value}
+                      placeholder={tSchema("note.placeholder")}
                     />
                   </FormControl>
                 </div>

@@ -301,3 +301,131 @@ export function includeString(str1: string, str2: string): boolean {
 
   return normalizedStr1.includes(normalizedStr2);
 }
+
+export function parseToDate(
+  input?: string | number | undefined | null
+): Date | undefined {
+  if (!input) {
+    return undefined;
+  }
+  const date = new Date(input);
+
+  // Check if the date is valid
+  if (isNaN(date.getTime())) {
+    return undefined;
+  }
+
+  return date;
+}
+
+export function parseToNumber(
+  input: string | undefined,
+  defaultValue: number
+): number {
+  const parsedNumber = Number(input);
+
+  // Check if the parsed result is a valid number, otherwise return the default value
+  if (isNaN(parsedNumber)) {
+    return defaultValue;
+  }
+
+  return parsedNumber;
+}
+
+export function isActive(pathname: string, currentPath: string) {
+  return pathname.startsWith(currentPath);
+}
+
+export function convertNullToUndefined<T extends Record<string, any>>(
+  obj: T
+): {
+  [K in keyof T]: Exclude<T[K], null> | undefined;
+} {
+  const result = { ...obj };
+
+  Object.keys(result).forEach((key) => {
+    const typedKey = key as keyof T;
+    if (result[typedKey] === null) {
+      result[typedKey] = undefined as any; // Replace null with undefined
+    }
+  });
+
+  return result as { [K in keyof T]: Exclude<T[K], null> | undefined };
+}
+/**
+ * Splits an array into chunks of a given size
+ * @param array - The array to chunk
+ * @param chunkSize - The size of each chunk
+ * @returns - A new array containing arrays of chunked elements
+ */
+export function chunkArray<T>(array: T[], chunkSize: number): T[][] {
+  if (chunkSize <= 0) throw new Error("Chunk size must be greater than 0");
+
+  const result: T[][] = [];
+
+  for (let i = 0; i < array.length; i += chunkSize) {
+    const chunk = array.slice(i, i + chunkSize);
+    result.push(chunk);
+  }
+
+  return result;
+}
+
+export function compareDate(date1: Date, date2: Date): boolean {
+  return date1.getTime() === date2.getTime();
+}
+
+export function concat(
+  value1: string | number | undefined | null,
+  value2: string | null | undefined | null,
+  sep: string = " "
+) {
+  return `${value1 || ""}${sep}${value2 || ""}`;
+}
+export function parseUploadedJSONFile(file: File): Promise<{
+  ok: boolean;
+  message?: string;
+  data?: object | any[];
+}> {
+  return new Promise((resolve, reject) => {
+    // Check if the uploaded file is a JSON file
+
+    if (!file.name.endsWith(".json")) {
+      return resolve({
+        ok: false,
+        message: "Uploaded file is not a JSON file.",
+      });
+    }
+
+    const reader = new FileReader();
+
+    // Handle file read errors
+    reader.onerror = () => {
+      reject("Error reading the file.");
+    };
+
+    // Stream large files by reading in chunks
+    reader.onload = (event: ProgressEvent<FileReader>) => {
+      const fileContent = event.target?.result;
+      if (typeof fileContent !== "string") {
+        return reject("File content is not readable as text.");
+      }
+
+      try {
+        const parsedData = JSON.parse(fileContent);
+        resolve({
+          ok: true,
+          data: parsedData,
+        });
+      } catch (err) {
+        resolve({
+          ok: false,
+          message: "Error reading the file.",
+        });
+      }
+    };
+
+    // Read the file content as text
+    reader.readAsText(file);
+  });
+}

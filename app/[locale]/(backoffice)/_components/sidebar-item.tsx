@@ -35,7 +35,7 @@ export const SidebarItem = ({
       )}
       onClick={handleClick}
     >
-      <Icon className="h-6 w-6" />
+      <Icon className="h-4 w-4" />
       <span>{title}</span>
     </Link>
   );
