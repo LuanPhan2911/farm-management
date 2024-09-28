@@ -20,7 +20,7 @@ interface ApplicantCreateUserEmailProps {
   password: string;
 }
 
-const baseUrl = process.env.BASE_URL ? `${process.env.BASE_URL}` : "";
+const baseUrl = process.env.APP_BASE_URL ? `${process.env.APP_BASE_URL}` : "";
 
 export const ApplicantCreateUserEmail = ({
   jobTitle,

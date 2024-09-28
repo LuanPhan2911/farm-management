@@ -7,6 +7,9 @@ import nodemailer from "nodemailer";
 import { currentUser } from "@clerk/nextjs/server";
 import { ApplicantCreateUserEmail } from "@/components/mail/applicant-create-user-email";
 import { StaffCreateUserEmail } from "@/components/mail/staff-create-user-email";
+import { EmailTemplate } from "@/components/mail/email-template";
+import { getFullName } from "./utils";
+import { EmailBody } from "@/types";
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -90,5 +93,14 @@ export const sendStaffCreateUser = async (
         senderName={user?.fullName || "Quản lý nhân sự"}
       />
     ),
+  });
+};
+
+export const sendEmail = async (emailBody: EmailBody) => {
+  await transporter.sendMail({
+    from: `${siteConfig.name} <${process.env.GOOGLE_APP_ACCOUNT}>`,
+    to: emailBody.receivers,
+    subject: emailBody.subject,
+    html: render(<EmailTemplate {...emailBody} />),
   });
 };

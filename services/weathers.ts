@@ -25,12 +25,12 @@ import { openai } from "@/lib/openai";
 type WeatherParams = {
   fieldId: string;
   status: WeatherStatus;
-  temperature?: Partial<UnitValue>;
-  humidity?: Partial<UnitValue>;
-  atmosphericPressure?: Partial<UnitValue>;
-  rainfall?: Partial<UnitValue>;
+  temperature?: Partial<UnitValue> | null;
+  humidity?: Partial<UnitValue> | null;
+  atmosphericPressure?: Partial<UnitValue> | null;
+  rainfall?: Partial<UnitValue> | null;
   createdAt?: Date;
-  note?: string;
+  note?: string | null;
 };
 export const createWeather = async (params: WeatherParams) => {
   return db.$transaction(async (ctx) => {
@@ -234,10 +234,6 @@ export const deleteWeather = async (id: string) => {
         confirmed: false,
       },
     });
-    const { atmosphericPressureId, temperatureId, humidityId, rainfallId } =
-      weather;
-    await deleteManyFloatUnit(ctx, [atmosphericPressureId, temperatureId]);
-    await deleteManyIntUnit(ctx, [humidityId, rainfallId]);
     return weather;
   });
 };
@@ -521,16 +517,16 @@ export const getAnalyzeWeathers = async (weatherData: WeatherChart[]) => {
       //   : data.createdAt.toLocaleDateString();
       const date = data.createdAt.toLocaleDateString();
       const temp = data.temperature
-        ? `${data.temperature.value}°${data.temperature.unit.name}`
+        ? `${data.temperature.value}°${data.temperature.unit?.name}`
         : "unknown temperature";
       const humidity = data.humidity
-        ? `${data.humidity.value}${data.humidity.unit.name}`
+        ? `${data.humidity.value}${data.humidity.unit?.name}`
         : "unknown humidity";
       const pressure = data.atmosphericPressure
-        ? `${data.atmosphericPressure.value}${data.atmosphericPressure.unit.name}`
+        ? `${data.atmosphericPressure.value}${data.atmosphericPressure.unit?.name}`
         : "unknown pressure";
       const rainfall = data.rainfall
-        ? `${data.rainfall.value}${data.rainfall.unit.name}`
+        ? `${data.rainfall.value}${data.rainfall.unit?.name}`
         : "no rainfall";
 
       return `On ${date}, the weather status was "${data.status}", with ${temp}, ${humidity}, ${pressure}, and ${rainfall}.`;

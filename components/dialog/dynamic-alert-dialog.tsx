@@ -1,8 +1,6 @@
 "use client";
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -10,27 +8,29 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
+import { Button } from "../ui/button";
 
 export const DynamicAlertDialog = () => {
-  const { isOpen, onClose, data } = useAlertDialog();
-
+  const { isOpen, onClose, data, isPending } = useAlertDialog();
   if (!data) {
     return null;
   }
-  const { description, onConfirm, title, isPending } = data;
+  const { description, onConfirm, title } = data;
 
   return (
-    <AlertDialog open={isOpen || isPending} onOpenChange={onClose}>
+    <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isPending}>Close</AlertDialogCancel>
-          <AlertDialogAction disabled={isPending} onClick={onConfirm}>
-            Confirm
-          </AlertDialogAction>
+          <Button variant={"outline"} disabled={isPending} onClick={onClose}>
+            Close
+          </Button>
+          <Button variant={"cyan"} disabled={isPending} onClick={onConfirm}>
+            {isPending ? "Processing..." : "Confirm"}
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

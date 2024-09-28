@@ -2,7 +2,7 @@ import { siteConfig } from "@/configs/siteConfig";
 import { ActionResponse } from "@/types";
 import { User } from "@clerk/nextjs/server";
 import { type ClassValue, clsx } from "clsx";
-import { format } from "date-fns";
+import { format, getHours, getMinutes } from "date-fns";
 import slugify from "slugify";
 import { twMerge } from "tailwind-merge";
 
@@ -428,4 +428,24 @@ export function parseUploadedJSONFile(file: File): Promise<{
     // Read the file content as text
     reader.readAsText(file);
   });
+}
+
+export function getHourAndMinute(date: Date | undefined, defaultValue: string) {
+  if (!date) {
+    return defaultValue;
+  }
+  const hour = getHours(date);
+  const minute = getMinutes(date);
+  return `${hour}:${minute}`;
+}
+
+export function safeParseJSON(body: string | null) {
+  if (!body) {
+    return undefined;
+  }
+  try {
+    return JSON.parse(body);
+  } catch (error) {
+    return undefined;
+  }
 }

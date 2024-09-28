@@ -29,7 +29,8 @@ import { UnitsSelectWithQueryClient } from "../../../_components/units-select";
 import { UploadImage } from "@/components/form/upload-image";
 import { Link } from "@/navigation";
 import { Edit } from "lucide-react";
-import { convertNullToUndefined } from "@/lib/utils";
+
+import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 
 interface EquipmentEditButtonProps {
   data: EquipmentTable;
@@ -64,7 +65,7 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      ...convertNullToUndefined(data),
+      ...data,
     },
   });
   const onSubmit = (values: z.infer<typeof formSchema>) => {
@@ -91,6 +92,23 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
       >
         <FormField
           control={form.control}
+          name="imageUrl"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{tSchema("imageUrl.label")}</FormLabel>
+              <FormControl>
+                <UploadImage
+                  defaultValue={field.value}
+                  onChange={field.onChange}
+                  disabled={isPending}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem>
@@ -98,7 +116,8 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
               <FormControl>
                 <Input
                   placeholder={tSchema("name.placeholder")}
-                  {...field}
+                  value={field.value || undefined}
+                  onChange={field.onChange}
                   disabled={isPending}
                 />
               </FormControl>
@@ -117,7 +136,8 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
               <FormControl>
                 <Input
                   placeholder={tSchema("brand.placeholder")}
-                  {...field}
+                  value={field.value || undefined}
+                  onChange={field.onChange}
                   disabled={isPending}
                 />
               </FormControl>
@@ -161,7 +181,7 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
                 <FormControl>
                   <DatePicker
                     onChange={field.onChange}
-                    date={field.value}
+                    value={field.value}
                     disabled={isPending}
                     placeholder={tSchema("purchaseDate.placeholder")}
                   />
@@ -183,7 +203,8 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("purchasePrice.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                       type="number"
                     />
@@ -226,7 +247,8 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
               <FormControl>
                 <Textarea
                   placeholder={tSchema("description.placeholder")}
-                  {...field}
+                  value={field.value || undefined}
+                  onChange={field.onChange}
                   disabled={isPending}
                 />
               </FormControl>
@@ -244,7 +266,8 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
               <FormControl>
                 <Input
                   placeholder={tSchema("status.placeholder")}
-                  {...field}
+                  value={field.value || undefined}
+                  onChange={field.onChange}
                   disabled={isPending}
                 />
               </FormControl>
@@ -262,7 +285,8 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
               <FormControl>
                 <Input
                   placeholder={tSchema("maintenanceSchedule.placeholder")}
-                  {...field}
+                  value={field.value || undefined}
+                  onChange={field.onChange}
                   disabled={isPending}
                 />
               </FormControl>
@@ -281,7 +305,8 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("energyType.placeholder")}
-                    {...field}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
                     disabled={isPending}
                   />
                 </FormControl>
@@ -299,7 +324,8 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("fuelConsumption.placeholder")}
-                    {...field}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
                     disabled={isPending}
                     type="number"
                   />
@@ -319,7 +345,8 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
               <FormControl>
                 <Input
                   placeholder={tSchema("operatingHours.placeholder")}
-                  {...field}
+                  value={field.value || undefined}
+                  onChange={field.onChange}
                   disabled={isPending}
                   type="number"
                 />
@@ -328,26 +355,8 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="imageUrl"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{tSchema("imageUrl.label")}</FormLabel>
-              <FormControl>
-                <UploadImage
-                  defaultValue={field.value}
-                  onChange={field.onChange}
-                  disabled={isPending}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit" disabled={isPending}>
-          Submit
-        </Button>
+
+        <DynamicDialogFooter disabled={isPending} closeButton={false} />
       </form>
     </Form>
   );

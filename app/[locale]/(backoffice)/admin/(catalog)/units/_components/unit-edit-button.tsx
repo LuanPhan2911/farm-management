@@ -1,5 +1,8 @@
 "use client";
-import { DynamicDialog } from "@/components/dialog/dynamic-dialog";
+import {
+  DynamicDialog,
+  DynamicDialogFooter,
+} from "@/components/dialog/dynamic-dialog";
 import { Button } from "@/components/ui/button";
 import { UnitSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
@@ -21,7 +24,6 @@ import {
 import { toast } from "sonner";
 import { edit } from "@/actions/unit";
 import { Input } from "@/components/ui/input";
-import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { SelectOptions } from "@/components/form/select-options";
 
@@ -35,11 +37,12 @@ export const UnitEditButton = ({ data, label }: UnitEditButtonProps) => {
   return (
     <Button
       className="w-full"
-      onClick={() =>
+      onClick={(e) => {
+        e.stopPropagation();
         onOpen("unit.edit", {
           unit: data,
-        })
-      }
+        });
+      }}
       size={"sm"}
       variant={"edit"}
     >
@@ -63,9 +66,7 @@ export const UnitEditDialog = () => {
   const [id, setId] = useState("");
   useEffect(() => {
     if (data?.unit) {
-      form.setValue("name", data.unit.name);
-      form.setValue("description", data.unit.description || undefined);
-      form.setValue("type", data.unit.type || undefined);
+      form.reset(data.unit);
       setId(data.unit.id);
     }
   }, [data, form]);
@@ -105,7 +106,8 @@ export const UnitEditDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("name.placeholder")}
-                    {...field}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
                     disabled={isPending}
                   />
                 </FormControl>
@@ -148,7 +150,8 @@ export const UnitEditDialog = () => {
                 <FormControl>
                   <Textarea
                     placeholder={tSchema("description.placeholder")}
-                    {...field}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
                     disabled={isPending}
                   />
                 </FormControl>
@@ -157,16 +160,7 @@ export const UnitEditDialog = () => {
               </FormItem>
             )}
           />
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="secondary">
-                Close
-              </Button>
-            </DialogClose>
-            <Button type="submit" disabled={isPending}>
-              Submit
-            </Button>
-          </DialogFooter>
+          <DynamicDialogFooter disabled={isPending} />
         </form>
       </Form>
     </DynamicDialog>

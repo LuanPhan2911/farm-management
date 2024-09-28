@@ -14,38 +14,37 @@ interface JobDeleteButtonProps {
 }
 export const JobDeleteButton = ({ data, label }: JobDeleteButtonProps) => {
   const { id } = data;
-  const { onOpen, onClose } = useAlertDialog();
-  const [isPending, startTransition] = useTransition();
+  const { onOpen, onClose, setPending } = useAlertDialog();
+
   const t = useTranslations("jobs");
   const onConfirm = async () => {
-    startTransition(() => {
-      destroy(id)
-        .then(({ message, ok }) => {
-          if (ok) {
-            toast.success(message);
-          } else {
-            toast.error(message);
-          }
-        })
-        .catch((error: Error) => {
-          toast.error(t("status.failure.destroy"));
-        })
-        .finally(() => {
-          onClose();
-        });
-    });
+    setPending(true);
+    destroy(id)
+      .then(({ message, ok }) => {
+        if (ok) {
+          toast.success(message);
+        } else {
+          toast.error(message);
+        }
+      })
+      .catch((error: Error) => {
+        toast.error(t("status.failure.destroy"));
+      })
+      .finally(() => {
+        onClose();
+      });
   };
   return (
     <Button
       className="w-full"
-      onClick={() =>
+      onClick={(e) => {
+        e.stopPropagation();
         onOpen({
           title: t("form.destroy.title"),
           description: t("form.destroy.description"),
           onConfirm,
-          isPending,
-        })
-      }
+        });
+      }}
       size={"sm"}
       variant={"destroy"}
     >

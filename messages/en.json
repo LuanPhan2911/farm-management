@@ -58,6 +58,7 @@
       "sub": "Subscript"
     }
   },
+
   "dashboard": {
     "page": {
       "title": "Dashboard Overview"
@@ -69,7 +70,37 @@
       "none": "No notifications"
     }
   },
-
+  "mails": {
+    "schema": {
+      "errors": {
+        "parse": "Invalid fields!"
+      },
+      "receivers": {
+        "email": {
+          "valid": "Email is invalid"
+        },
+        "atLeast": "At least one receiver is required",
+        "required_error": "Email receivers is required!"
+      },
+      "subject": {
+        "min": "Subject cannot be empty",
+        "max": "Subject must be at most {max} characters",
+        "required_error": "Subject is required!"
+      },
+      "sender": {
+        "min": "Sender cannot be empty",
+        "max": "Sender must be at most {max} characters",
+        "required_error": "Sender is required!"
+      },
+      "contents": {
+        "item": {
+          "min": "Content item cannot be an empty string"
+        },
+        "atLeast": "At least one content item is required",
+        "required_error": "Contents is required!"
+      }
+    }
+  },
   "categories": {
     "page": {
       "title": "Manage Categories"
@@ -102,7 +133,7 @@
       },
       "edit": {
         "label": "Edit",
-        "title": "Be careful w",
+        "title": "Edit category",
         "description": "Be careful when editing category type. That may affect other data!"
       },
       "destroy": {
@@ -110,8 +141,8 @@
         "title": "Delete category?",
         "description": "Are you absolutely sure? This action can not be undone! If category in use, you cannot to delete."
       },
-      "destroySelected": {
-        "label": "Delete all selected",
+      "destroyMany": {
+        "label": "Delete all",
         "title": "Delete all selected categories?",
         "description": "Are you absolutely sure? This action can not be undone! If category in use, you cannot to delete."
       }
@@ -121,16 +152,18 @@
         "parse": "Invalid fields!"
       },
       "name": {
-        "min": "Category name is required!",
-        "max": "Category name's length must be less than 100 characters",
         "label": "Name",
-        "placeholder": "Category name"
+        "placeholder": "Category name",
+        "required_error": "Category is required",
+        "min": "Category name is required!",
+        "max": "Category name's length must be less than {max} characters"
       },
       "slug": {
         "label": "Slug",
         "placeholder": "Slug will be automatically filled in according to name",
+        "required_error": "Slug is required!",
         "min": "Slug is required!",
-        "max": "Slug's length must be less than 100 characters"
+        "max": "Slug's length must be less than {max} characters"
       },
       "type": {
         "label": "Category type",
@@ -143,7 +176,7 @@
       "description": {
         "label": "Description",
         "placeholder": "Category description",
-        "max": "Description's length must be less than 255 characters"
+        "max": "Description's length must be less than {max} characters"
       }
     },
     "status": {
@@ -182,7 +215,7 @@
       "create": {
         "label": "Add",
         "title": "Add unit",
-        "description": "Units that describe the values ​​of data attributes"
+        "description": "Units that describe the values of data attributes"
       },
       "edit": {
         "label": "Edit",
@@ -194,8 +227,8 @@
         "title": "Delete unit?",
         "description": "Are you absolutely sure? This action can not be undone! If unit in use, you cannot to delete."
       },
-      "destroySelected": {
-        "label": "Delete all selected",
+      "destroyMany": {
+        "label": "Delete all",
         "title": "Delete all selected units?",
         "description": "Are you absolutely sure? This action can not be undone! If unit in use, you cannot to delete."
       }
@@ -205,10 +238,11 @@
         "parse": "Invalid fields!"
       },
       "name": {
-        "min": "Unit name is required!",
-        "max": "Unit name's length must be less than 50 characters",
         "label": "Name",
-        "placeholder": "Unit name"
+        "placeholder": "Unit name",
+        "required_error": "Unit name is required!",
+        "min": "Unit name is required!",
+        "max": "Unit name's length must be less than {max} characters"
       },
       "type": {
         "label": "Type of unit",
@@ -230,7 +264,7 @@
         }
       },
       "description": {
-        "max": "Unit description's length must be less than 50 characters",
+        "max": "Unit description's length must be less than {max} characters",
         "label": "Description",
         "placeholder": "Unit description"
       }
@@ -245,6 +279,14 @@
         "create": "Something went wrong while creating unit!",
         "edit": "Something went wrong while editing unit!",
         "destroy": "Something went wrong while deleting unit!"
+      }
+    },
+    "unused": {
+      "title": "Count unused float unit and int unit",
+      "error": "Fail to load count unused unit",
+      "fields": {
+        "floatUnit": "Unused Float Unit",
+        "intUnit": "Unused Integer Unit"
       }
     }
   },
@@ -297,7 +339,7 @@
         "title": "Create staff",
         "description": "A new account will created for applicant with selected role"
       },
-      "destroySelected": {
+      "destroyMany": {
         "label": "Delete all selected",
         "title": "Delete all selected applicants?",
         "description": "Are you absolutely sure? This action can not be undone!"
@@ -312,36 +354,40 @@
         "emailExist": "Applicant email which create staff is in use"
       },
       "name": {
-        "min": "Applicant first name is required!",
-        "max": "Applicant name's length must be less than 100 characters",
-        "label": "First name",
-        "placeholder": "Applicant first name"
+        "label": "Applicant name",
+        "placeholder": "Applicant  name",
+        "required_error": "Applicant name is required!",
+        "min": "Applicant name is required!",
+        "max": "Applicant name's length must be less than {max} characters"
       },
 
       "email": {
-        "min": "Applicant email is required!",
-        "max": "Applicant email's length must be less than 100 characters",
-        "isEmail": "Applicant email is invalid!",
         "label": "Email",
-        "placeholder": "Applicant email"
+        "placeholder": "Applicant email",
+        "required_error": "Applicant email is required!",
+        "min": "Applicant email is required!",
+        "max": "Applicant email's length must be less than {max} characters",
+        "isEmail": "Applicant email is invalid!"
       },
       "phone": {
-        "min": "Applicant phone is required!",
-        "max": "Applicant phone's length must be less than 15 number",
-        "label": "Phone",
+        "label": "Phone number",
         "placeholder": "Applicant phone",
+        "required_error": "Applicant phone is required!",
+        "min": "Applicant phone is required!",
+        "max": "Applicant phone's length must be less than {max} number",
         "isPhone": "Applicant phone number is invalid"
       },
       "address": {
-        "min": "Applicant address is required!",
-        "max": "Applicant address's length must be less than 100 characters",
         "label": "Address",
-        "placeholder": "Applicant address"
+        "placeholder": "Applicant address",
+        "required_error": "Applicant address is required!",
+        "min": "Applicant address is required!",
+        "max": "Applicant address's length must be less than {max} characters"
       },
       "note": {
         "label": "Note",
         "placeholder": "Note",
-        "max": "Applicant note's length must be less than 200 characters"
+        "max": "Applicant note's length must be less than {max} characters"
       },
       "status": {
         "options": {
@@ -365,7 +411,10 @@
   },
   "jobs": {
     "page": {
-      "title": "Manage Jobs"
+      "title": "Manage Jobs",
+      "edit": {
+        "title": "Edit job"
+      }
     },
 
     "table": {
@@ -408,7 +457,7 @@
         "title": "Delete job?",
         "description": "Are you absolutely sure? This action can not be undone! If job in use, you cannot to delete."
       },
-      "destroySelected": {
+      "destroyMany": {
         "label": "Delete all selected",
         "title": "Delete all selected jobs?",
         "description": "Are you absolutely sure? This action can not be undone! If jobs in use, you cannot to delete."
@@ -419,10 +468,11 @@
         "parse": "Invalid fields!"
       },
       "name": {
-        "min": "Job name is required!",
-        "max": "Job name's length must be less than 100 characters",
         "label": "Name",
-        "placeholder": "Job name"
+        "placeholder": "Job name",
+        "required_error": "Job name is required!",
+        "min": "Job name is required!",
+        "max": "Job name's length must be less than {max} characters"
       },
       "experience": {
         "label": "Experience",
@@ -440,10 +490,10 @@
       "quantity": {
         "label": "Quantity",
         "placeholder": "Quantity applicant",
-        "min": "Quantity applicant is at least 1",
-        "max": "Quantity applicant is at most 100",
         "required_error": "Quantity is required",
         "invalid_type_error": "Quantity is number",
+        "min": "Quantity applicant is at least {min}",
+        "max": "Quantity applicant is at most {max}",
         "int": "Quantity is integer number"
       },
       "expiredAt": {
@@ -471,34 +521,39 @@
         }
       },
       "workingTime": {
-        "min": "Working time is required!",
-        "max": "Job working time is maximum 100 characters",
         "label": "Working Time",
-        "placeholder": "Working time eg: Monday to Friday 8:30am to 5pm"
+        "placeholder": "Working time eg: Monday to Friday 8:30am to 5pm",
+        "required_error": "Working time is required!",
+        "min": "Working time is required!",
+        "max": "Job working time is maximum {max} characters"
       },
       "wage": {
-        "min": "Job wage is required!",
-        "max": "Job wage's length must be less than 100 characters",
         "label": "Wage",
-        "placeholder": "Job's wage eg: 1000$ - 2000$"
+        "placeholder": "Job's wage eg: 1000$ - 2000$",
+        "required_error": "Job wage is required!",
+        "min": "Job wage is required!",
+        "max": "Job wage's length must be less than {max} characters"
       },
       "description": {
-        "min": "Job description is required!",
-        "max": "Job description is maximum 5000 characters",
         "label": "Job description",
-        "placeholder": "Job's description"
+        "placeholder": "Job's description",
+        "required_error": "Job description is required!",
+        "min": "Job description is required!",
+        "max": "Job description is maximum {max} characters"
       },
       "requirement": {
-        "min": "Job requirement is required!",
-        "max": "Job requirements is maximum 5000 characters",
         "label": "Job requirement",
-        "placeholder": "Job's requirement"
+        "placeholder": "Job's requirement",
+        "required_error": "Job requirement is required!",
+        "min": "Job requirement is required!",
+        "max": "Job requirements is maximum {max} characters"
       },
       "rights": {
-        "min": "Job rights is required!",
-        "max": "Job right is maximum 5000 characters",
         "label": "Job rights",
-        "placeholder": "Job's right"
+        "placeholder": "Job's right",
+        "required_error": "Job rights is required!",
+        "min": "Job rights is required!",
+        "max": "Job right is maximum {max} characters"
       }
     },
     "status": {
@@ -539,7 +594,10 @@
   },
   "users": {
     "page": {
-      "title": "Manage Users"
+      "title": "Manage Users",
+      "detail": {
+        "title": "User basic information"
+      }
     },
     "table": {
       "title": "All users",
@@ -590,34 +648,39 @@
       "firstName": {
         "label": "First name",
         "placeholder": "First name",
+        "required_error": "First name is required!",
         "min": "First name is required!",
-        "max": "First name's length must be less than 100 characters"
+        "max": "First name's length must be less than {max} characters"
       },
       "lastName": {
         "label": "Last name",
         "placeholder": "Last name",
+        "required_error": "Last name is required!",
         "min": "Last name is required!",
-        "max": "Last name's length must be less than 100 characters"
+        "max": "Last name's length must be less than {max} characters"
       },
       "email": {
-        "min": "Email is required!",
-        "isEmail": "Email is invalid!",
         "label": "Email",
         "placeholder": "Email",
-        "max": "Email's length must be less than 100 characters"
+        "required_error": "Email is required!",
+        "min": "Email is required!",
+        "max": "Email's length must be less than {max} characters",
+        "isEmail": "Email is invalid!"
       },
       "phone": {
+        "label": "Phone number",
+        "placeholder": "+84 182012 293",
+        "required_error": "Phone number is required!",
         "min": "Phone number is required!",
-        "max": "Phone number must be less than 15 number",
-        "label": "Phone",
-        "placeholder": "Phone",
+        "max": "Phone number must be less than {max} number",
         "isPhone": "Phone number is invalid"
       },
       "address": {
-        "min": "Address is required!",
-        "max": "Address's length must be less than 100 characters",
         "label": "Address",
-        "placeholder": "Address"
+        "placeholder": "Address",
+        "required_error": "Address is required!",
+        "min": "Address is required!",
+        "max": "Address's length must be less than {max} characters"
       }
     },
     "status": {
@@ -640,8 +703,7 @@
     "page": {
       "title": "Manage Staffs",
       "detail": {
-        "title": "Staff basic information",
-        "description": "Manage staff profile"
+        "title": "Staff basic information"
       }
     },
     "table": {
@@ -706,44 +768,37 @@
         "placeholder": "Staff name",
         "required_error": "Staff name is required",
         "min": "Staff name is required!",
-        "max": "Staff name's length must be less than 100 characters"
+        "max": "Staff name's length must be less than {max} characters"
       },
       "email": {
         "label": "Email",
         "placeholder": "Email",
-        "min": "Email is required!",
-        "isEmail": "Email is invalid!",
-
         "required_error": "Staff email is required",
-        "max": "Staff email's length must be less than 100 characters"
+        "min": "Email is required!",
+        "max": "Staff email's length must be less than {max} characters",
+        "isEmail": "Email is invalid!"
       },
       "password": {
         "label": "Password",
         "placeholder": "Password",
-        "min": "Password must be more than 8 characters !",
-
-        "max": "Password's length must be less than 100 characters",
-        "required_error": "Staff password is required"
+        "required_error": "Staff password is required",
+        "min": "Password must be more than {min} characters !",
+        "max": "Password's length must be less than {max} characters"
       },
       "role": {
-        "enum": "Select role in list",
         "label": "Role",
-        "placeholder": "Select role"
+        "placeholder": "Select role",
+        "enum": "Select role in list",
+        "options": {
+          "superadmin": "Super Admin",
+          "admin": "Admin",
+          "farmer": "Farmer"
+        }
       },
       "receiverEmail": {
         "label": "Receiver email",
         "placeholder": "Receiver email",
-        "max": "Receiver email's length must be less than 200 characters"
-      },
-      "firstName": {
-        "label": "First name",
-        "placeholder": "First name",
-        "min": "First name is required!"
-      },
-      "lastName": {
-        "label": "Last name",
-        "placeholder": "Last name",
-        "min": "Last name is required!"
+        "max": "Receiver email's length must be less than {max} characters"
       }
     },
     "status": {
@@ -769,7 +824,10 @@
 
   "organizations": {
     "page": {
-      "title": "Manage Organizations"
+      "title": "Manage Organizations",
+      "detail": {
+        "title": "Organization detail"
+      }
     },
     "tabs": {
       "profile": {
@@ -848,7 +906,7 @@
         "title": "Delete organization?",
         "description": "Are you absolutely sure? This action can not be undone!"
       },
-      "destroySelected": {
+      "destroyMany": {
         "label": "Delete all selected",
         "title": "Delete all selected organizations?",
         "description": "Are you absolutely sure? This action can not be undone!"
@@ -883,15 +941,15 @@
         "label": "Organization name",
         "placeholder": "Organization name",
         "required_error": "Organization name is required!",
-        "min": "Min organization name length is 3 characters",
-        "max": "Organization name's length must be less than 100 characters"
+        "min": "Min organization name length is {min} characters",
+        "max": "Organization name's length must be less than {max} characters"
       },
       "slug": {
         "label": "Slug",
         "placeholder": "Slug will be automatically filled in according to name",
         "required_error": "Slug is required!",
-        "min": "Min slug length is 3 characters",
-        "max": "Slug's length must be less than 100 characters"
+        "min": "Min slug length is {min} characters",
+        "max": "Slug's length must be less than {max} characters"
       },
       "createdBy": {
         "label": "Create by",
@@ -954,7 +1012,10 @@
 
   "fields": {
     "page": {
-      "title": "Manage fields"
+      "title": "Manage fields",
+      "detail": {
+        "title": "Field detail"
+      }
     },
     "table": {
       "thead": {
@@ -1023,7 +1084,7 @@
         "title": "Delete field?",
         "description": "Are you absolutely sure? This action can not be undone!"
       },
-      "destroySelected": {
+      "destroyMany": {
         "label": "Delete all selected",
         "title": "Delete all selected fields?",
         "description": "Are you absolutely sure? This action can not be undone!"
@@ -1037,15 +1098,15 @@
         "label": "Name",
         "placeholder": "Field name",
         "required_error": "Field name is required!",
-        "min": "Min field name is 5 characters!",
-        "max": "Field name's length must be less than 100 characters"
+        "min": "Min field name is {min} characters!",
+        "max": "Field name's length must be less than {max} characters"
       },
       "location": {
         "label": "Location",
         "placeholder": "Field location",
-        "min": "Min field location is 5 characters!",
+        "min": "Min field location is {min} characters!",
         "required_error": "Field location is required!",
-        "max": "Field location's length must be less than 100 characters"
+        "max": "Field location's length must be less than {max} characters"
       },
       "orgId": {
         "label": "Organization",
@@ -1059,24 +1120,24 @@
         "placeholder": "Width of field",
         "required_error": "Width is required",
         "invalid_type_error": "Width value must be number",
-        "min": "Width value must be positive number",
-        "max": "Width value must be less than 100 000"
+        "min": "Width value must be at least {min}",
+        "max": "Width value must be less than {max}"
       },
       "height": {
         "label": "Height",
         "placeholder": "Height of field",
         "required_error": "Height is required",
         "invalid_type_error": "Height value must be number",
-        "min": "Height value must be positive number",
-        "max": "Height value must be less than 100 000"
+        "min": "Height value must be at least {min}",
+        "max": "Height value must be less than {max}"
       },
       "area": {
         "label": "Area",
         "placeholder": "Area of field",
         "required_error": "Area is required",
         "invalid_type_error": "Area value must be number",
-        "min": "Area value must be positive number",
-        "max": "Height value must be less than 1 000 000"
+        "min": "Area value must be at least {min}",
+        "max": "Height value must be less than {max}"
       },
       "unitId": {
         "label": "Unit for height, width, area",
@@ -1088,7 +1149,7 @@
       "shape": {
         "label": "Shape",
         "placeholder": "Shape of field eg:circle, square...",
-        "max": "Shape must be less than 100 characters"
+        "max": "Shape must be less than {max} characters"
       },
       "soilType": {
         "label": "Soil type",
@@ -1230,6 +1291,10 @@
       "errors": {
         "parse": "Invalid weathers!"
       },
+      "createdAt": {
+        "label": "Created at",
+        "placeholder": "Select date..."
+      },
       "temperature": {
         "unitId": {
           "required_error": "Required unit",
@@ -1241,8 +1306,8 @@
         "value": {
           "required_error": "Temperature value is required",
           "invalid_type_error": "Temperature value must be number",
-          "min": "Min temperature value is -20",
-          "max": "Max temperature value is 50"
+          "min": "Min temperature value is {min}",
+          "max": "Max temperature value is {max}"
         },
         "label": "Temperature",
         "placeholder": " From -20 degrees to 50 degrees"
@@ -1258,8 +1323,8 @@
         "value": {
           "required_error": "Humidity value is required",
           "invalid_type_error": "Humidity value must be number",
-          "min": "Min humidity value is 0",
-          "max": "Max humidity value is 100",
+          "min": "Min humidity value is {min}",
+          "max": "Max humidity value is {max}",
           "int": "Humidity value must be integer number"
         },
         "label": "Humidity",
@@ -1276,8 +1341,8 @@
         "value": {
           "required_error": "Atmospheric pressure value is required",
           "invalid_type_error": "Atmospheric pressure value must be number",
-          "min": "Min Atmospheric pressure value is 870",
-          "max": "Max Atmospheric pressure value is 1084"
+          "min": "Min Atmospheric pressure value is {min}",
+          "max": "Max Atmospheric pressure value is {max}"
         },
         "label": "Atmospheric pressure",
         "placeholder": "From 870 hPa to 1084 hPa"
@@ -1293,8 +1358,8 @@
         "value": {
           "required_error": "Rainfall value is required",
           "invalid_type_error": "Rainfall value must be number",
-          "min": "Min Rainfall value is 0",
-          "max": "Max Rainfall value is 100",
+          "min": "Min Rainfall value is {min}",
+          "max": "Max Rainfall value is {max}",
           "int": "Rainfall value must be integer number"
         },
         "label": "Rainfall",
@@ -1317,7 +1382,7 @@
       "note": {
         "label": "Note",
         "placeholder": "Take note if necessary",
-        "max": "Max note length is 200 character"
+        "max": "Max note length is {max} character"
       }
     },
     "status": {
@@ -1446,13 +1511,17 @@
       "errors": {
         "parse": "Invalid soils!"
       },
+      "createdAt": {
+        "label": "Created at",
+        "placeholder": "Select date..."
+      },
       "ph": {
         "label": "PH",
         "placeholder": "PH from 0 to 14",
         "required_error": "PH value is required",
         "invalid_type_error": "PH value must be number",
-        "min": "PH value minimum is 0",
-        "max": "PH value maximum is 14"
+        "min": "PH value minimum is {min}",
+        "max": "PH value maximum is {max}"
       },
       "moisture": {
         "unitId": {
@@ -1465,8 +1534,8 @@
         "value": {
           "required_error": "Moisture value is required",
           "invalid_type_error": "Moisture value must be number",
-          "min": "Min Moisture value is 0",
-          "max": "Max Moisture value is 60",
+          "min": "Min Moisture value is {min}",
+          "max": "Max Moisture value is {max}",
           "int": "Moisture value must be integer number"
         },
         "label": "Moisture",
@@ -1478,24 +1547,24 @@
         "placeholder": "From 0 to 5",
         "required_error": "Nutrient Phosphorus value is required",
         "invalid_type_error": "Nutrient Phosphorus value must be number",
-        "min": "Nutrient Phosphorus value minimum is 0",
-        "max": "Nutrient Phosphorus value maximum is 5"
+        "min": "Nutrient Phosphorus value minimum is {min}",
+        "max": "Nutrient Phosphorus value maximum is {max}"
       },
       "nutrientPotassium": {
         "label": "Nutrient Potassium",
         "placeholder": "From 0 to 8",
         "required_error": "Nutrient Potassium value is required",
         "invalid_type_error": "Nutrient Potassium value must be number",
-        "min": "Nutrient Potassium value minimum is 0",
-        "max": "Nutrient Potassium value maximum is 8"
+        "min": "Nutrient Potassium value minimum is {min}",
+        "max": "Nutrient Potassium value maximum is {max}"
       },
       "nutrientNitrogen": {
         "label": "Nutrient Nitrogen",
         "placeholder": "From 0 to 10",
         "required_error": "Nutrient Nitrogen value is required",
         "invalid_type_error": "Nutrient Nitrogen value must be number",
-        "min": "Nutrient Nitrogen value minimum is 0",
-        "max": "Nutrient Nitrogen value maximum is 10"
+        "min": "Nutrient Nitrogen value minimum is {min}",
+        "max": "Nutrient Nitrogen value maximum is {max}"
       },
       "nutrientUnitId": {
         "label": "Nutrient unit",
@@ -1507,7 +1576,7 @@
       "note": {
         "label": "Note",
         "placeholder": "Take note if necessary",
-        "max": "Max note length is 200 character"
+        "max": "Max note length is {max} character"
       }
     },
     "status": {
@@ -1535,7 +1604,16 @@
   },
   "plants": {
     "page": {
-      "title": "Manage plants"
+      "title": "Manage plants",
+      "create": {
+        "title": "New plant"
+      },
+      "detail": {
+        "title": "Plant detail",
+        "danger": {
+          "title": "Delete plant"
+        }
+      }
     },
     "table": {
       "thead": {
@@ -1620,13 +1698,13 @@
         "label": "Plant name",
         "placeholder": "Plant name",
         "required_error": "Name plant is required!",
-        "min": "Min name length is 5 characters",
-        "max": "Name's length must be less than 100 characters"
+        "min": "Min name length is {min} characters",
+        "max": "Name's length must be less than {max} characters"
       },
       "imageUrl": {
         "label": "Image",
         "placeholder": "Image plant",
-        "max": "Image url's length must be less than 255 characters"
+        "max": "Image url's length must be less than {max} characters"
       },
       "categoryId": {
         "label": "Category",
@@ -1638,8 +1716,8 @@
       "growthDuration": {
         "label": "Grow duration",
         "placeholder": "Eg: 3 months",
-        "min": "Min grow duration must be 3 characters",
-        "max": "Max grow duration must be 100 characters"
+        "min": "Min grow duration must be {min} characters",
+        "max": "Max grow duration must be {max} characters"
       },
       "season": {
         "label": "Best growing season",
@@ -1673,8 +1751,8 @@
         "value": {
           "required_error": "Temperature value is required",
           "invalid_type_error": "Temperature value must be number",
-          "min": "Min temperature value is -20",
-          "max": "Max temperature value is 50"
+          "min": "Min temperature value is {min}",
+          "max": "Max temperature value is {max}"
         },
         "label": "Ideal Temperature",
         "placeholder": "Eg: 25 degrees"
@@ -1690,8 +1768,8 @@
         "value": {
           "required_error": "Humidity value is required",
           "invalid_type_error": "Humidity value must be number",
-          "min": "Min humidity value is 0",
-          "max": "Max humidity value is 100",
+          "min": "Min humidity value is {min}",
+          "max": "Max humidity value is {max}",
           "int": "Humidity value must be integer number"
         },
         "label": "Ideal Humidity",
@@ -1708,8 +1786,8 @@
         "value": {
           "required_error": "Water requirement value is required",
           "invalid_type_error": "Water requirement  value must be number",
-          "min": "Min Water requirement  value is 0",
-          "max": "Max Water requirement  value is 100"
+          "min": "Min Water requirement  value is {min}",
+          "max": "Max Water requirement  value is {max}"
         },
         "label": "Ideal Water requirement ",
         "placeholder": "Eg: 2l"
@@ -1790,8 +1868,8 @@
         "label": "Fertilizer name",
         "placeholder": "Fertilizer name",
         "required_error": "Fertilizer name is required!",
-        "min": "Min name length is 5 characters",
-        "max": "Name's length must be less than 100 characters"
+        "min": "Min name length is {min} characters",
+        "max": "Name's length must be less than {max} characters"
       },
       "type": {
         "label": "Fertilizer type",
@@ -1807,24 +1885,23 @@
         "label": "NPK ratio",
         "placeholder": "1/2/1 mean 25% nitrogen, 50% potassium, 25% phosphorus",
         "required_error": "NPK ratio is required!",
-        "min": "Min NPK ratio length is 3 characters",
-        "max": "Max NPK ratio's length is 100 characters"
+        "min": "Min NPK ratio length is {min} characters",
+        "max": "Max NPK ratio's length is {max} characters"
       },
       "composition": {
         "label": "Composition",
         "placeholder": "Other composition is such as Mn, Bo...",
-
-        "max": "Max composition length is 255 characters"
+        "max": "Max composition length is {max} characters"
       },
       "manufacturer": {
         "label": "Manufacturer",
         "placeholder": "Name of manufacturer",
-        "max": "Max manufacturer length is 255 characters"
+        "max": "Max manufacturer length is {max} characters"
       },
       "applicationMethod": {
         "label": "Method",
         "placeholder": "Eg: Root watering, spray on leaves",
-        "max": "Max method length is 100 characters"
+        "max": "Max method length is {max} characters"
       },
       "frequencyOfUse": {
         "label": "Frequency of use",
@@ -1849,8 +1926,8 @@
         "value": {
           "required_error": "Dosage value is required",
           "invalid_type_error": "Dosage value must be number",
-          "min": "Min dosage value is 0",
-          "max": "Max dosage value is 100"
+          "min": "Min dosage value is {min}",
+          "max": "Max dosage value is {max}"
         },
         "label": "Recommended dosage",
         "placeholder": "From 0 to 100"
@@ -1925,8 +2002,8 @@
         "label": "Pesticide name",
         "placeholder": "Pesticide name",
         "required_error": "Pesticide name is required!",
-        "min": "Min name length is 3 characters",
-        "max": "Name's length must be less than 100 characters"
+        "min": "Min name length is {min} characters",
+        "max": "Name's length must be less than {max} characters"
       },
       "type": {
         "label": "Pesticide type",
@@ -1941,13 +2018,12 @@
       "ingredient": {
         "label": "Ingredient",
         "placeholder": "Ingredient of pesticide ",
-        "max": "Max ingredient length is 255 characters"
+        "max": "Max ingredient length is {max} characters"
       },
       "manufacturer": {
         "label": "Manufacturer",
         "placeholder": "Name of manufacturer",
-
-        "max": "Max manufacturer length is 255 characters"
+        "max": "Max manufacturer length is {max} characters"
       },
       "withdrawalPeriod": {
         "unitId": {
@@ -1961,8 +2037,8 @@
           "required_error": "Withdrawal period value is required",
           "invalid_type_error": "Withdrawal period value must be number",
           "int": "Withdrawal period value must be integer",
-          "min": "Min Withdrawal period value is 0",
-          "max": "Max Withdrawal period value is 100"
+          "min": "Min Withdrawal period value is {min}",
+          "max": "Max Withdrawal period value is {max}"
         },
         "label": "Withdrawal period",
         "placeholder": "Eg: 3 months"
@@ -1988,8 +2064,8 @@
         "value": {
           "required_error": "Dosage value is required",
           "invalid_type_error": "Dosage value must be number",
-          "min": "Min dosage value is 0",
-          "max": "Max dosage value is 100"
+          "min": "Min dosage value is {min}",
+          "max": "Max dosage value is {max}"
         },
         "label": "Recommended dosage",
         "placeholder": "From 0 to 100"
@@ -1997,8 +2073,7 @@
       "applicationMethod": {
         "label": "Method",
         "placeholder": "Eg: Root watering, spray on leaves",
-
-        "max": "Max method length is 100 characters"
+        "max": "Max method length is {max} characters"
       }
     },
     "status": {
@@ -2016,7 +2091,13 @@
   },
   "equipments": {
     "page": {
-      "title": "Manage equipments"
+      "title": "Manage equipments",
+      "create": {
+        "title": "New equipment"
+      },
+      "edit": {
+        "title": "Edit equipment"
+      }
     },
     "table": {
       "thead": {
@@ -2065,8 +2146,8 @@
         "label": "Equipment name",
         "placeholder": "Equipment name",
         "required_error": "Equipment name is required!",
-        "min": "Min name length is 5 characters",
-        "max": "Name's length must be less than 100 characters"
+        "min": "Min name length is {min} characters",
+        "max": "Name's length must be less than {max} characters"
       },
       "type": {
         "label": "Equipment type",
@@ -2083,8 +2164,8 @@
         "label": "Equipment brand",
         "placeholder": "Equipment brand",
         "required_error": "Brand is required!",
-        "min": "Min brand length is 3 characters",
-        "max": "Brand's length must be less than 100 characters"
+        "min": "Min brand length is {min} characters",
+        "max": "Brand's length must be less than {max} characters"
       },
       "purchaseDate": {
         "label": "Purchase date",
@@ -2103,8 +2184,8 @@
         "value": {
           "required_error": "Purchase price value is required",
           "invalid_type_error": "Purchase price value must be number",
-          "min": "Min Purchase price value is 0",
-          "max": "Max Purchase price value is 1_000_000_000"
+          "min": "Min Purchase price value is {min}",
+          "max": "Max Purchase price value is {max}"
         },
         "label": "Purchase price",
         "placeholder": "Purchase price"
@@ -2112,50 +2193,47 @@
       "status": {
         "label": "Equipment status",
         "placeholder": "Eg: operating, maintenance, damaged",
-        "max": "Status's length must be less than 100 characters"
+        "max": "Status's length must be less than {max} characters"
       },
       "maintenanceSchedule": {
         "label": "Equipment maintenance Schedule",
         "placeholder": "Eg: monthly, weekly... ",
-        "min": "Maintenance Schedule is required!",
-        "max": "Maintenance Schedule's length must be less than 100 characters"
+        "max": "Maintenance Schedule's length must be less than {max} characters"
       },
       "operatingHours": {
         "label": "Equipment operating hour",
         "placeholder": "Eg: 300 hours",
-        "required_error": "Operating hour value is required",
         "invalid_type_error": "Operating hour value must be number",
         "int": "Operating hour must be integer",
-        "min": "Operating hour  value is 0",
-        "max": "Operating hour  value is 10 000"
+        "min": "Operating hour  value is {min}",
+        "max": "Operating hour  value is {max}"
       },
       "location": {
         "label": "Equipment location",
         "placeholder": "Equipment location",
-        "max": "Location's length must be less than 100 characters"
+        "max": "Location's length must be less than {max} characters"
       },
       "fuelConsumption": {
         "label": "Equipment fuel Consumption",
         "placeholder": "From 0 to 10 000",
-        "required_error": "Fuel Consumption value is required",
         "invalid_type_error": "Fuel Consumption value must be number",
-        "min": "Fuel Consumption  value is 0",
-        "max": "Fuel Consumption  value is 10 000"
+        "min": "Fuel Consumption  value is {min}",
+        "max": "Fuel Consumption  value is {max}"
       },
       "energyType": {
         "label": "Equipment energy type",
         "placeholder": "Eg: petrol",
-        "max": "Energy type's length must be less than 100 characters"
+        "max": "Energy type's length must be less than {max} characters"
       },
       "description": {
         "label": "Equipment description",
         "placeholder": "Equipment description",
-
-        "max": "Description's length must be less than 255 characters"
+        "max": "Description's length must be less than {max} characters"
       },
       "imageUrl": {
         "label": "Image of equipment",
-        "placeholder": "Upload image of equipment"
+        "placeholder": "Upload image of equipment",
+        "max": "Image url's length must be less than {max} characters"
       }
     },
     "status": {
@@ -2225,8 +2303,8 @@
         "label": "Crop name",
         "placeholder": "Crop name",
         "required_error": "Crop name is required!",
-        "min": "Min name length is 5 characters",
-        "max": "Name's length must be less than 100 characters"
+        "min": "Min name length is {min} characters",
+        "max": "Name's length must be less than {max} characters"
       },
       "dateRange": {
         "startDate": {
@@ -2255,8 +2333,8 @@
         "value": {
           "required_error": "Estimated yield value is required",
           "invalid_type_error": "Estimated yield value must be number",
-          "min": "Min Estimated yield value is 0",
-          "max": "Max Estimated yield value is 1_000_000_000"
+          "min": "Min Estimated yield value is {min}",
+          "max": "Max Estimated yield value is {max}"
         },
         "label": "Estimated yield",
         "placeholder": "From 0 to 1 000 000 000"
@@ -2272,8 +2350,8 @@
         "value": {
           "required_error": "Actual yield value is required",
           "invalid_type_error": "Actual yield value must be number",
-          "min": "Min Actual yield value is 0",
-          "max": "Max Actual yield value is 1_000_000_000"
+          "min": "Min Actual yield value is {min}",
+          "max": "Max Actual yield value is {max}"
         },
         "label": "Actual yield",
         "placeholder": "From 0 to 1 000 000 000"
@@ -2281,7 +2359,7 @@
       "status": {
         "label": "Status",
         "placeholder": "Eg: Newly planted",
-        "max": "Max status length is 100"
+        "max": "Max status length is {max}"
       }
     },
     "status": {
@@ -2300,6 +2378,122 @@
       "title": "Crop not found",
       "description": "Sorry, we couldn’t find the crop you’re looking for.",
       "backLabel": "Go to crops page"
+    }
+  },
+  "tasks": {
+    "page": {
+      "title": "Manage Tasks"
+    },
+    "table": {
+      "thead": {
+        "task": "Task",
+        "status": "Status",
+        "scheduled_for": "Scheduled for",
+        "created_at": "Created at"
+      }
+    },
+    "search": {
+      "faceted": {
+        "status": {
+          "placeholder": "Select status..."
+        }
+      },
+      "select": {
+        "staff": {
+          "notFound": "Staff email not found",
+          "error": "Fail load staff",
+          "placeholder": "Select email to send",
+          "label": "Select email to send"
+        }
+      }
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add task",
+        "description": "Schedule to execute task"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit task",
+        "description": "Update task"
+      },
+      "run": {
+        "label": "Run task",
+        "title": "Run task now",
+        "description": "Execute task immediately. Please check task status after run"
+      },
+      "refresh": {
+        "label": "Refresh"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete task?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      },
+      "destroyMany": {
+        "label": "Delete all",
+        "title": "Delete all selected tasks?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      },
+      "deleteUnusedUnit": {
+        "label": "Delete unit task",
+        "title": "Delete unused unit task",
+        "description": "Delete all unit value which are unused"
+      },
+      "sendMail": {
+        "label": "Send email",
+        "title": "Send mail",
+        "description": "Send email for any staff"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid fields!"
+      },
+      "name": {
+        "label": "Task name",
+        "placeholder": "eg: send_email",
+        "min": "Name must be at least {min} characters long",
+        "max": "Name must be at most {max} characters long.",
+        "regex": "Name can only contain alphanumeric characters, underscores, periods, or dashes."
+      },
+      "request": {
+        "url": {
+          "label": "Request URL",
+          "placeholder": "https://yourendpoint.com/api/tasks/send_email",
+          "invalid": "Invalid URL",
+          "noneLocalHost": "URL must be absolute and non-localhost"
+        },
+        "headers": {
+          "label": "Request headers"
+        },
+        "body": {
+          "label": "Request body"
+        }
+      },
+      "scheduled_for": {
+        "label": "Scheduled for",
+        "placeholder": "Select time"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Task created!",
+        "edit": "Task edited!",
+        "destroy": "Task deleted!",
+        "run": "Task executed!",
+        "destroyMany": "Tasks deleted",
+        "refresh": "Refreshed!"
+      },
+      "failure": {
+        "create": "Something went wrong while creating task!",
+        "edit": "Something went wrong while editing task!",
+        "destroy": "Something went wrong while deleting task!",
+        "run": "Something went wrong while running task",
+        "destroyMany": "Something went wrong while deleting tasks!",
+        "refresh": "Something went wrong while refreshing tasks"
+      }
     }
   },
   "errors": {
@@ -2336,6 +2530,7 @@
     "/admin/pesticides": "Pesticide",
     "/admin/equipments": "Equipment",
     "/admin/equipments/create": "Create",
-    "/admin/equipments/edit": "Edit"
+    "/admin/equipments/edit": "Edit",
+    "/admin/tasks": "Tasks"
   }
 }

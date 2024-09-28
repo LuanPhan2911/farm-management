@@ -18,7 +18,6 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { createUser, getUserByEmail } from "@/services/users";
-import { ApplicantStatus } from "@prisma/client";
 
 export const create = async (
   values: z.infer<ReturnType<typeof ApplicantSchema>>,

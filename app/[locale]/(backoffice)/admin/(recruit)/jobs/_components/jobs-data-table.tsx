@@ -1,6 +1,6 @@
 "use client";
 import { DataTable } from "@/components/datatable";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import { useFormatter, useTranslations } from "next-intl";
 
 import { Checkbox } from "@/components/ui/checkbox";
@@ -15,9 +15,8 @@ import { toast } from "sonner";
 import { JobTable } from "@/types";
 import { JobPublishedSwitch } from "./job-published-switch";
 import { JobExpired } from "./job-expired";
-import { JobCreateButton } from "./job-create-button";
 import { JobExperience } from "@prisma/client";
-import { useTransition } from "react";
+import { useRouter } from "next/navigation";
 
 interface JobsTableProps {
   data: JobTable[];
@@ -25,28 +24,31 @@ interface JobsTableProps {
 export const JobsTable = ({ data }: JobsTableProps) => {
   const tSchema = useTranslations("jobs.schema");
   const t = useTranslations("jobs");
-  const [isPending, startTransition] = useTransition();
+
   const { dateTime } = useFormatter();
-  const { onOpen, onClose } = useAlertDialog();
+  const { onOpen, onClose, setPending } = useAlertDialog();
+  const router = useRouter();
 
   const handleConfirm = (rows: JobTable[]) => {
-    startTransition(() => {
-      const ids = rows.map((row) => row.id);
-      destroyMany(ids)
-        .then(({ message, ok }) => {
-          if (ok) {
-            toast.success(message);
-          } else {
-            toast.error(message);
-          }
-        })
-        .catch((error: Error) => {
-          toast.error(t("status.failure.destroy"));
-        })
-        .finally(() => {
-          onClose();
-        });
-    });
+    setPending(true);
+    const ids = rows.map((row) => row.id);
+    destroyMany(ids)
+      .then(({ message, ok }) => {
+        if (ok) {
+          toast.success(message);
+        } else {
+          toast.error(message);
+        }
+      })
+      .catch((error: Error) => {
+        toast.error(t("status.failure.destroy"));
+      })
+      .finally(() => {
+        onClose();
+      });
+  };
+  const handleEdit = (job: JobTable) => {
+    router.push(`/admin/jobs/edit/${job.id}`);
   };
   const columns: ColumnDef<JobTable>[] = [
     {
@@ -132,8 +134,8 @@ export const JobsTable = ({ data }: JobsTableProps) => {
       accessorKey: "published",
       header: t("table.thead.published"),
       cell: ({ row }) => {
-        const { id, published } = row.original;
-        return <JobPublishedSwitch id={id} published={published} />;
+        const data = row.original;
+        return <JobPublishedSwitch data={data} />;
       },
     },
     {
@@ -147,13 +149,12 @@ export const JobsTable = ({ data }: JobsTableProps) => {
 
   const bulkActions = [
     {
-      label: t("form.destroySelected.label"),
+      label: t("form.destroyMany.label"),
       action: (rows: JobTable[]) => {
         onOpen({
-          title: t("form.destroySelected.title"),
-          description: t("form.destroySelected.description"),
+          title: t("form.destroyMany.title"),
+          description: t("form.destroyMany.description"),
           onConfirm: () => handleConfirm(rows),
-          isPending,
         });
       },
     },
@@ -172,25 +173,16 @@ export const JobsTable = ({ data }: JobsTableProps) => {
   ];
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("page.title")}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="flex justify-end">
-          <JobCreateButton />
-        </div>
-        <DataTable
-          columns={columns}
-          data={data}
-          searchable={{
-            value: "name",
-            placeholder: t("search.placeholder"),
-          }}
-          bulkActions={bulkActions}
-          facetedFilters={facetedFilters}
-        />
-      </CardContent>
-    </Card>
+    <DataTable
+      columns={columns}
+      data={data}
+      searchable={{
+        value: "name",
+        placeholder: t("search.placeholder"),
+      }}
+      bulkActions={bulkActions}
+      facetedFilters={facetedFilters}
+      onViewDetail={handleEdit}
+    />
   );
 };

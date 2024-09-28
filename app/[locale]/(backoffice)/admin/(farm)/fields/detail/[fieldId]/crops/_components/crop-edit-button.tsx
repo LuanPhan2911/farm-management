@@ -1,5 +1,8 @@
 "use client";
-import { DynamicDialog } from "@/components/dialog/dynamic-dialog";
+import {
+  DynamicDialog,
+  DynamicDialogFooter,
+} from "@/components/dialog/dynamic-dialog";
 import { Button } from "@/components/ui/button";
 import { CropSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
@@ -20,7 +23,6 @@ import {
 } from "@/components/ui/form";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
-import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 
 import { CropTable } from "@/types";
 import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
@@ -28,7 +30,6 @@ import { edit } from "@/actions/crop";
 import { PlantsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/plants-select";
 import { DatePickerWithRange } from "@/components/form/date-picker-with-range";
 import { DateRange } from "react-day-picker";
-import { convertNullToUndefined } from "@/lib/utils";
 
 interface CropEditButtonProps {
   data: CropTable;
@@ -40,11 +41,12 @@ export const CropEditButton = ({ data, label }: CropEditButtonProps) => {
   return (
     <Button
       className="w-full"
-      onClick={() =>
+      onClick={(e) => {
+        e.stopPropagation();
         onOpen("crop.edit", {
           crop: data,
-        })
-      }
+        });
+      }}
       size={"sm"}
       variant={"edit"}
     >
@@ -69,11 +71,12 @@ export const CropEditDialog = () => {
   useEffect(() => {
     if (data?.crop) {
       const { startDate, endDate } = data.crop;
+
       form.reset({
-        ...convertNullToUndefined(data.crop),
+        ...data.crop,
         dateRange: {
-          startDate: startDate,
-          endDate: endDate || undefined,
+          startDate,
+          endDate,
         },
       });
       setId(data.crop.id);
@@ -105,7 +108,7 @@ export const CropEditDialog = () => {
     const { from: startDate, to: endDate } = dateRange;
     form.setValue("dateRange", {
       startDate,
-      endDate,
+      endDate: endDate || null,
     });
   };
   return (
@@ -126,7 +129,8 @@ export const CropEditDialog = () => {
                 <div className="flex gap-x-2">
                   <FormControl>
                     <Input
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       placeholder={tSchema("name.placeholder")}
                       disabled={isPending}
                     />
@@ -137,29 +141,6 @@ export const CropEditDialog = () => {
             )}
           />
           <div className="grid lg:grid-cols-2 gap-2">
-            <FormField
-              control={form.control}
-              name="dateRange"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("dateRange.label")}</FormLabel>
-                  <div className="flex gap-x-2">
-                    <FormControl>
-                      <DatePickerWithRange
-                        placeholder={tSchema("dateRange.placeholder")}
-                        handleChange={handleChangeDate}
-                        date={{
-                          from: field.value.startDate,
-                          to: field.value.endDate,
-                        }}
-                        disabled={isPending}
-                      />
-                    </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <FormField
               control={form.control}
               name="plantId"
@@ -182,6 +163,29 @@ export const CropEditDialog = () => {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="dateRange"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("dateRange.label")}</FormLabel>
+                  <div className="flex gap-x-2">
+                    <FormControl>
+                      <DatePickerWithRange
+                        placeholder={tSchema("dateRange.placeholder")}
+                        handleChange={handleChangeDate}
+                        date={{
+                          from: field.value.startDate,
+                          to: field.value.endDate || undefined,
+                        }}
+                        disabled={isPending}
+                      />
+                    </FormControl>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
           <div className="grid lg:grid-cols-2 gap-2">
             <div className="grid grid-cols-4 gap-2">
@@ -195,7 +199,8 @@ export const CropEditDialog = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("estimatedYield.placeholder")}
-                          {...field}
+                          value={field.value || undefined}
+                          onChange={field.onChange}
                           disabled={isPending}
                           type="number"
                         />
@@ -224,7 +229,7 @@ export const CropEditDialog = () => {
                         className="w-full"
                         errorLabel={tSchema("estimatedYield.unitId.error")}
                         notFound={tSchema("estimatedYield.unitId.notFound")}
-                        defaultValue={field.value}
+                        defaultValue={field.value || undefined}
                       />
                     </FormControl>
 
@@ -243,7 +248,8 @@ export const CropEditDialog = () => {
                       <FormLabel>{tSchema("actualYield.label")}</FormLabel>
                       <FormControl>
                         <Input
-                          {...field}
+                          value={field.value || undefined}
+                          onChange={field.onChange}
                           placeholder={tSchema("actualYield.placeholder")}
                           disabled={isPending}
                           type="number"
@@ -269,7 +275,7 @@ export const CropEditDialog = () => {
                         className="w-full"
                         errorLabel={tSchema("actualYield.unitId.error")}
                         notFound={tSchema("actualYield.unitId.notFound")}
-                        defaultValue={field.value}
+                        defaultValue={field.value || undefined}
                       />
                     </FormControl>
 
@@ -289,7 +295,8 @@ export const CropEditDialog = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("status.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -298,16 +305,7 @@ export const CropEditDialog = () => {
               </FormItem>
             )}
           />
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="secondary">
-                Close
-              </Button>
-            </DialogClose>
-            <Button type="submit" disabled={isPending}>
-              Submit
-            </Button>
-          </DialogFooter>
+          <DynamicDialogFooter disabled={isPending} />
         </form>
       </Form>
     </DynamicDialog>

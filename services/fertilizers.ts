@@ -18,11 +18,11 @@ type FertilizerParams = {
   name: string;
   type: FertilizerType;
   nutrientOfNPK: string;
-  composition?: string;
-  manufacturer?: string;
-  recommendedDosage?: Partial<UnitValue>;
-  applicationMethod?: string;
-  frequencyOfUse?: Frequency;
+  composition?: string | null;
+  manufacturer?: string | null;
+  recommendedDosage?: Partial<UnitValue> | null;
+  applicationMethod?: string | null;
+  frequencyOfUse?: Frequency | null;
 };
 export const createFertilizer = async (params: FertilizerParams) => {
   const { recommendedDosage: recommendedDosageParam, ...otherParams } = params;
@@ -65,7 +65,6 @@ export const deleteFertilizer = async (id: string) => {
     const fertilizer = await ctx.fertilizer.delete({
       where: { id },
     });
-    await deleteFloatUnit(ctx, fertilizer.recommendedDosageId);
   });
 };
 type FertilizerQuery = {

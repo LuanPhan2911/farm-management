@@ -5,10 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -27,12 +25,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useRef, useTransition } from "react";
+import { useTransition } from "react";
 import { create } from "@/actions/unit";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import { SelectOptions } from "@/components/form/select-options";
 import { UnitType } from "@prisma/client";
+import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 
 export const UnitCreateButton = () => {
   const tSchema = useTranslations("units.schema");
@@ -40,7 +39,7 @@ export const UnitCreateButton = () => {
 
   const formSchema = UnitSchema(tSchema);
   const [isPending, startTransition] = useTransition();
-  const closeRef = useRef<HTMLButtonElement>(null);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -53,7 +52,7 @@ export const UnitCreateButton = () => {
         .then(({ message, ok }) => {
           if (ok) {
             form.reset();
-            closeRef.current?.click();
+
             toast.success(message);
           } else {
             toast.error(message);
@@ -91,7 +90,8 @@ export const UnitCreateButton = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("name.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -133,7 +133,8 @@ export const UnitCreateButton = () => {
                   <FormControl>
                     <Textarea
                       placeholder={tSchema("description.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -143,16 +144,7 @@ export const UnitCreateButton = () => {
               )}
             />
 
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button type="button" variant="secondary" ref={closeRef}>
-                  Close
-                </Button>
-              </DialogClose>
-              <Button type="submit" disabled={isPending}>
-                Submit
-              </Button>
-            </DialogFooter>
+            <DynamicDialogFooter disabled={isPending} />
           </form>
         </Form>
       </DialogContent>

@@ -2,6 +2,7 @@
 
 import { create } from "@/actions/pesticide";
 import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
+import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 import { SelectOptions } from "@/components/form/select-options";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,7 +41,6 @@ export const PesticideCreateButton = () => {
   const t = useTranslations("pesticides");
   const formSchema = PesticideSchema(tSchema);
   const [isPending, startTransition] = useTransition();
-  const closeRef = useRef<HTMLButtonElement>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -54,7 +54,7 @@ export const PesticideCreateButton = () => {
         .then(({ message, ok }) => {
           if (ok) {
             form.reset();
-            closeRef.current?.click();
+
             toast.success(message);
           } else {
             toast.error(message);
@@ -92,7 +92,8 @@ export const PesticideCreateButton = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("name.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -162,7 +163,8 @@ export const PesticideCreateButton = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("recommendedDosage.placeholder")}
-                          {...field}
+                          value={field.value || undefined}
+                          onChange={field.onChange}
                           disabled={isPending}
                           type="number"
                         />
@@ -210,7 +212,8 @@ export const PesticideCreateButton = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("withdrawalPeriod.placeholder")}
-                          {...field}
+                          value={field.value || undefined}
+                          onChange={field.onChange}
                           disabled={isPending}
                           type="number"
                         />
@@ -257,7 +260,8 @@ export const PesticideCreateButton = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("applicationMethod.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -274,7 +278,8 @@ export const PesticideCreateButton = () => {
                   <div className="flex gap-x-2">
                     <FormControl>
                       <Textarea
-                        {...field}
+                        value={field.value || undefined}
+                        onChange={field.onChange}
                         disabled={isPending}
                         placeholder={tSchema("ingredient.placeholder")}
                       />
@@ -294,7 +299,8 @@ export const PesticideCreateButton = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("manufacturer.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -303,16 +309,7 @@ export const PesticideCreateButton = () => {
               )}
             />
 
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button type="button" variant="secondary" ref={closeRef}>
-                  Close
-                </Button>
-              </DialogClose>
-              <Button type="submit" disabled={isPending}>
-                Submit
-              </Button>
-            </DialogFooter>
+            <DynamicDialogFooter disabled={isPending} />
           </form>
         </Form>
       </DialogContent>

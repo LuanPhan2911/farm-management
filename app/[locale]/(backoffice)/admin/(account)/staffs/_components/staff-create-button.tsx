@@ -1,7 +1,10 @@
 "use client";
 
 import { create } from "@/actions/staff";
-import { DynamicDialog } from "@/components/dialog/dynamic-dialog";
+import {
+  DynamicDialog,
+  DynamicDialogFooter,
+} from "@/components/dialog/dynamic-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -24,6 +27,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { StaffSelectRole } from "../../../_components/staff-select-role";
 import { generateEmail, generatePassword } from "@/lib/utils";
+import { StaffRole } from "@prisma/client";
 
 export const StaffCreateButton = () => {
   const { onOpen } = useDialog();
@@ -100,7 +104,8 @@ export const StaffCreateDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("name.placeholder")}
-                    {...field}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
                     disabled={isPending}
                   />
                 </FormControl>
@@ -118,7 +123,8 @@ export const StaffCreateDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("email.placeholder")}
-                    {...field}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
                     disabled={isPending}
                   />
                 </FormControl>
@@ -137,7 +143,8 @@ export const StaffCreateDialog = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("password.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -158,9 +165,11 @@ export const StaffCreateDialog = () => {
                 <FormLabel>{tSchema("role.label")}</FormLabel>
                 <FormControl>
                   <StaffSelectRole
-                    {...field}
-                    label="Select Role"
+                    value={field.value || undefined}
+                    onChange={field.onChange}
+                    label={tSchema("role.placeholder")}
                     disabled={isPending}
+                    hidden={[StaffRole.superadmin]}
                   />
                 </FormControl>
 
@@ -178,7 +187,8 @@ export const StaffCreateDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("receiverEmail.placeholder")}
-                    {...field}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
                     disabled={isPending}
                   />
                 </FormControl>
@@ -187,14 +197,7 @@ export const StaffCreateDialog = () => {
               </FormItem>
             )}
           />
-          <div className="flex gap-x-2 justify-end">
-            <Button variant="secondary" onClick={onClose} type="button">
-              Close
-            </Button>
-            <Button disabled={isPending} type="submit">
-              Submit
-            </Button>
-          </div>
+          <DynamicDialogFooter disabled={isPending} />
         </form>
       </Form>
     </DynamicDialog>

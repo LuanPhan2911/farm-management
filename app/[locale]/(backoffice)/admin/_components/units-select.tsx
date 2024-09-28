@@ -15,7 +15,7 @@ import Creatable from "react-select/creatable";
 import { toast } from "sonner";
 
 interface UnitsSelectProps {
-  defaultValue?: string;
+  defaultValue?: string | null;
   unitType: UnitType;
   onChange: (value: string) => void;
   placeholder: string;

@@ -5,26 +5,19 @@ import { PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
-import { addDays, format } from "date-fns";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
+import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Matcher } from "react-day-picker";
 
 interface DatePickerProps {
-  date: Date | undefined;
+  value: Date | undefined;
   onChange: (date: Date | undefined) => void;
   disabled?: boolean;
   disabledDateRange?: Matcher | Matcher[];
   placeholder?: string;
 }
 export const DatePicker = ({
-  date,
+  value: date,
   disabled,
   onChange,
   placeholder,
@@ -50,22 +43,6 @@ export const DatePicker = ({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="flex w-full flex-col space-y-2 p-2">
-        <Select
-          onValueChange={(value) =>
-            onChange(addDays(new Date(), parseInt(value)))
-          }
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select" />
-          </SelectTrigger>
-          <SelectContent position="popper">
-            <SelectItem value="0">Today</SelectItem>
-            <SelectItem value="1">Tomorrow</SelectItem>
-            <SelectItem value="3">In 3 days</SelectItem>
-            <SelectItem value="7">In a week</SelectItem>
-            <SelectItem value="30">In a month</SelectItem>
-          </SelectContent>
-        </Select>
         <div className="rounded-md border">
           <Calendar
             mode="single"

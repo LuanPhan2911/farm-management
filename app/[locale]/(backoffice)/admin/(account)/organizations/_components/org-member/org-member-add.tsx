@@ -2,10 +2,8 @@
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -22,7 +20,7 @@ import { OrganizationMemberSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useTranslations } from "next-intl";
-import { useRef, useTransition } from "react";
+import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { createMember } from "@/actions/organization";
@@ -30,12 +28,12 @@ import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { OrgMemberRole } from "./org-member-role";
 
-import { StaffSelectWithQueryClient } from "../../../../_components/staffs-select";
+import { StaffsSelectWithQueryClient } from "../../../../_components/staffs-select";
 import { Plus } from "lucide-react";
+import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 
 interface OrgMemberAddProps {}
 export const OrgMemberAdd = ({}: OrgMemberAddProps) => {
-  const closeRef = useRef<HTMLButtonElement>(null);
   const params = useParams<{
     orgId: string;
   }>();
@@ -61,7 +59,7 @@ export const OrgMemberAdd = ({}: OrgMemberAddProps) => {
         .then(({ message, ok }) => {
           if (ok) {
             form.reset();
-            closeRef.current?.click();
+
             toast.success(message);
           } else {
             toast.error(message);
@@ -73,7 +71,7 @@ export const OrgMemberAdd = ({}: OrgMemberAddProps) => {
     });
   };
   const fetchMembers = async () => {
-    const res = await fetch("/api/staffs/members_select");
+    const res = await fetch("/api/staffs/select");
     return await res.json();
   };
   return (
@@ -101,8 +99,8 @@ export const OrgMemberAdd = ({}: OrgMemberAddProps) => {
                   <FormLabel>{tSchema("memberId.label")}</FormLabel>
                   <FormControl>
                     <div className="block">
-                      <StaffSelectWithQueryClient
-                        queryKey={["org_member_select"]}
+                      <StaffsSelectWithQueryClient
+                        queryKey={["staffs_select"]}
                         queryFn={fetchMembers}
                         defaultValue={field.value}
                         onChange={field.onChange}
@@ -138,16 +136,7 @@ export const OrgMemberAdd = ({}: OrgMemberAddProps) => {
               )}
             />
 
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button type="button" variant="secondary" ref={closeRef}>
-                  Close
-                </Button>
-              </DialogClose>
-              <Button type="submit" disabled={isPending}>
-                Submit
-              </Button>
-            </DialogFooter>
+            <DynamicDialogFooter disabled={isPending} />
           </form>
         </Form>
       </DialogContent>

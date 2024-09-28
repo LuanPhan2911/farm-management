@@ -1,6 +1,6 @@
 "use client";
 import { DataTable } from "@/components/datatable";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import { useTranslations } from "next-intl";
 
 import { Checkbox } from "@/components/ui/checkbox";
@@ -13,8 +13,7 @@ import { CategoriesTableAction } from "./categories-table-action";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
 import { destroyMany } from "@/actions/category";
 import { toast } from "sonner";
-import { CategoryCreateButton } from "./category-create-button";
-import { useTransition } from "react";
+import { useDialog } from "@/stores/use-dialog";
 
 interface CategoriesTableProps {
   data: Category[];
@@ -22,26 +21,31 @@ interface CategoriesTableProps {
 export const CategoriesTable = ({ data }: CategoriesTableProps) => {
   const t = useTranslations("categories");
 
-  const { onOpen, onClose } = useAlertDialog();
-  const [isPending, startTransition] = useTransition();
+  const { onOpen, onClose, setPending } = useAlertDialog();
+  const { onOpen: onOpenEdit } = useDialog();
+
   const handleConfirm = (rows: Category[]) => {
     const ids = rows.map((row) => row.id);
-    startTransition(() => {
-      destroyMany(ids)
-        .then(({ message, ok }) => {
-          if (ok) {
-            onClose();
-            toast.success(message);
-          } else {
-            toast.error(message);
-          }
-        })
-        .catch((error) => {
-          toast.error(t("status.failure.destroy"));
-        })
-        .finally(() => {
+    setPending(true);
+    destroyMany(ids)
+      .then(({ message, ok }) => {
+        if (ok) {
           onClose();
-        });
+          toast.success(message);
+        } else {
+          toast.error(message);
+        }
+      })
+      .catch((error) => {
+        toast.error(t("status.failure.destroy"));
+      })
+      .finally(() => {
+        onClose();
+      });
+  };
+  const handleEdit = (data: Category) => {
+    onOpenEdit("category.edit", {
+      category: data,
     });
   };
   const columns: ColumnDef<Category>[] = [
@@ -132,13 +136,12 @@ export const CategoriesTable = ({ data }: CategoriesTableProps) => {
 
   const bulkActions = [
     {
-      label: t("form.destroySelected.label"),
+      label: t("form.destroyMany.label"),
       action: (rows: Category[]) => {
         onOpen({
-          title: t("form.destroySelected.title"),
-          description: t("form.destroySelected.description"),
+          title: t("form.destroyMany.title"),
+          description: t("form.destroyMany.description"),
           onConfirm: () => handleConfirm(rows),
-          isPending,
         });
       },
     },
@@ -157,25 +160,16 @@ export const CategoriesTable = ({ data }: CategoriesTableProps) => {
   ];
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("page.title")}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="flex justify-end">
-          <CategoryCreateButton />
-        </div>
-        <DataTable
-          columns={columns}
-          data={data}
-          searchable={{
-            value: "name",
-            placeholder: t("search.placeholder"),
-          }}
-          bulkActions={bulkActions}
-          facetedFilters={facetedFilters}
-        />
-      </CardContent>
-    </Card>
+    <DataTable
+      columns={columns}
+      data={data}
+      searchable={{
+        value: "name",
+        placeholder: t("search.placeholder"),
+      }}
+      bulkActions={bulkActions}
+      facetedFilters={facetedFilters}
+      onViewDetail={handleEdit}
+    />
   );
 };

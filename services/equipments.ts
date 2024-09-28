@@ -5,7 +5,12 @@ import {
   getObjectFilterString,
   getObjectSortOrder,
 } from "@/lib/utils";
-import { PaginatedResponse, EquipmentTable, EquipmentTypeCount } from "@/types";
+import {
+  PaginatedResponse,
+  EquipmentTable,
+  EquipmentTypeCount,
+  EquipmentSelect,
+} from "@/types";
 import { EquipmentType } from "@prisma/client";
 import { deleteFloatUnit, upsertFloatUnit } from "./units";
 
@@ -18,14 +23,14 @@ type EquipmentParams = {
     unitId: string;
     value: number;
   };
-  status?: string;
-  maintenanceSchedule?: string;
-  operatingHours?: number;
-  location?: string;
-  fuelConsumption?: number;
-  energyType?: string;
-  description?: string;
-  imageUrl?: string;
+  status?: string | null;
+  maintenanceSchedule?: string | null;
+  operatingHours?: number | null;
+  location?: string | null;
+  fuelConsumption?: number | null;
+  energyType?: string | null;
+  description?: string | null;
+  imageUrl?: string | null;
 };
 export const createEquipment = async (params: EquipmentParams) => {
   const { purchasePrice: purchasePriceParam, ...otherParams } = params;
@@ -69,8 +74,6 @@ export const deleteEquipment = async (id: string) => {
     const equipment = await ctx.equipment.delete({
       where: { id },
     });
-
-    await deleteFloatUnit(ctx, equipment.purchasePriceId);
   });
 };
 type EquipmentQuery = {
@@ -129,7 +132,19 @@ export const getEquipments = async ({
     };
   }
 };
-
+export const getEquipmentsSelect = async (): Promise<EquipmentSelect[]> => {
+  try {
+    return await db.equipment.findMany({
+      select: {
+        id: true,
+        name: true,
+        imageUrl: true,
+      },
+    });
+  } catch (error) {
+    return [];
+  }
+};
 export const getEquipmentById = async (id: string) => {
   try {
     return await db.equipment.findUnique({

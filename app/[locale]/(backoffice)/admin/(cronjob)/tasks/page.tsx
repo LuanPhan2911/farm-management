@@ -4,6 +4,13 @@ import { TasksDefault } from "./_components/tasks-default";
 import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TaskRefreshButton } from "./_components/task-refresh-button";
+
+export async function generateMetadata() {
+  const t = await getTranslations("tasks.page");
+  return {
+    title: t("title"),
+  };
+}
 const TasksPage = async () => {
   const tasks = await getTasks();
   const t = await getTranslations("tasks.page");

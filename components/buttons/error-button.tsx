@@ -6,19 +6,15 @@ interface ErrorButtonProps {
 }
 export const ErrorButton = ({ refresh, title }: ErrorButtonProps) => {
   return (
-    <div
-      className="w-full h-10 text-sm text-destructive border 
-  rounded-md px-2 flex items-center justify-center gap-x-2 lg:w-[200px]"
+    <Button
+      variant={"outline"}
+      size={"sm"}
+      type="button"
+      onClick={() => refresh()}
+      className="w-full gap-x-2 lg:w-[200px] flex items-center justify-center text-destructive"
     >
       {title}
-      <Button
-        variant={"link"}
-        size={"sm"}
-        type="button"
-        onClick={() => refresh()}
-      >
-        <RefreshCcw className="h-4 w-4" />
-      </Button>
-    </div>
+      <RefreshCcw className="h-4 w-4" />
+    </Button>
   );
 };

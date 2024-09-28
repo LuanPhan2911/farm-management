@@ -103,7 +103,7 @@
         "title": "Xóa thể loại?",
         "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
       },
-      "destroySelected": {
+      "destroyMany": {
         "label": "Xóa tất cả đã chọn",
         "title": "Xóa tất cả thể loại đã chọn?",
         "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
@@ -167,7 +167,7 @@
         "title": "Xóa đơn vị tính?",
         "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
       },
-      "destroySelected": {
+      "destroyMany": {
         "label": "Xóa tất cả đã chọn",
         "title": "Xóa tất cả đơn vị tính đã chọn?",
         "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
@@ -345,7 +345,7 @@
         "title": "Xóa tổ chức?",
         "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
       },
-      "destroySelected": {
+      "destroyMany": {
         "label": "Xóa tất cả đã chọn",
         "title": "Xóa tất cả tổ chức đã chọn?",
         "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
@@ -547,7 +547,7 @@
         "title": "Tạo nhân viên mới",
         "description": "Một tài khoản mới sẽ được tạo cho ứng viên với quyền được chọn"
       },
-      "destroySelected": {
+      "destroyMany": {
         "label": "Xóa tất cả đã chọn",
         "title": "Xóa tất cả ứng viên đã chọn?",
         "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
@@ -641,7 +641,7 @@
         "title": "Xóa việc làm?",
         "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
       },
-      "destroySelected": {
+      "destroyMany": {
         "label": "Xóa tất cả",
         "title": "Xóa tất cả công việc đã chọn",
         "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
@@ -809,7 +809,7 @@
         "title": "Xóa khu gieo trồng?",
         "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"
       },
-      "destroySelected": {
+      "destroyMany": {
         "label": "Xóa tất cả đã chọn",
         "title": "Xóa tất cả khu gieo trồng đã chọn?",
         "description": "Bạn có chắc chắn không? Hành động này không thể khôi phục!"

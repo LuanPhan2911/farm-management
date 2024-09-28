@@ -104,7 +104,7 @@ export const getLatestJob = async () => {
   }
 };
 
-export const getJobSelect = async () => {
+export const getJobsSelect = async () => {
   try {
     return await db.job.findMany({
       select: {

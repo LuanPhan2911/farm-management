@@ -1,5 +1,8 @@
 "use client";
-import { DynamicDialog } from "@/components/dialog/dynamic-dialog";
+import {
+  DynamicDialog,
+  DynamicDialogFooter,
+} from "@/components/dialog/dynamic-dialog";
 import { Button } from "@/components/ui/button";
 import { CategorySchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
@@ -21,7 +24,6 @@ import {
 import { toast } from "sonner";
 import { edit } from "@/actions/category";
 import { Input } from "@/components/ui/input";
-import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import slugify from "slugify";
 import { SelectOptions } from "@/components/form/select-options";
@@ -39,11 +41,12 @@ export const CategoryEditButton = ({
   return (
     <Button
       className="w-full"
-      onClick={() =>
+      onClick={(e) => {
+        e.stopPropagation();
         onOpen("category.edit", {
           category: data,
-        })
-      }
+        });
+      }}
       variant={"edit"}
     >
       <Edit className="w-4 h-4 mr-2" />
@@ -76,10 +79,7 @@ export const CategoryEditDialog = () => {
   }, [name, form]);
   useEffect(() => {
     if (data?.category) {
-      form.setValue("name", data.category.name);
-      form.setValue("description", data.category.description || undefined);
-      form.setValue("slug", data.category.slug);
-      form.setValue("type", data.category.type || undefined);
+      form.reset(data.category);
       setId(data.category.id);
     }
   }, [data, form]);
@@ -119,7 +119,8 @@ export const CategoryEditDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("name.placeholder")}
-                    {...field}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
                     disabled={isPending}
                   />
                 </FormControl>
@@ -137,7 +138,8 @@ export const CategoryEditDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("slug.placeholder")}
-                    {...field}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
                     disabled={isPending}
                   />
                 </FormControl>
@@ -180,7 +182,8 @@ export const CategoryEditDialog = () => {
                 <FormControl>
                   <Textarea
                     placeholder={tSchema("description.placeholder")}
-                    {...field}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
                     disabled={isPending}
                   />
                 </FormControl>
@@ -189,16 +192,7 @@ export const CategoryEditDialog = () => {
               </FormItem>
             )}
           />
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="secondary">
-                Close
-              </Button>
-            </DialogClose>
-            <Button type="submit" disabled={isPending}>
-              Submit
-            </Button>
-          </DialogFooter>
+          <DynamicDialogFooter disabled={isPending} />
         </form>
       </Form>
     </DynamicDialog>

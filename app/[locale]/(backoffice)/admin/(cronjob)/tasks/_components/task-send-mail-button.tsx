@@ -176,7 +176,8 @@ export const TaskSendMailButton = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("request.url.placeholder")}
-                          {...field}
+                          value={field.value || undefined}
+                          onChange={field.onChange}
                           disabled={isPending}
                         />
                       </FormControl>

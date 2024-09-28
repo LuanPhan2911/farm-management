@@ -1,10 +1,11 @@
 import { db, PrismaTransactionalClient } from "@/lib/db";
+import { UnusedUnitCount } from "@/types";
 import { FloatUnit, IntUnit, Prisma, UnitType } from "@prisma/client";
 
 type UnitParams = {
   name: string;
-  description?: string | undefined;
-  type?: UnitType | undefined;
+  description?: string | null;
+  type?: UnitType | null;
 };
 
 export const createUnit = async (params: UnitParams) => {
@@ -76,8 +77,8 @@ export const getUnitsByType = async (type: UnitType) => {
 };
 
 export type UnitValue = {
-  unitId: string;
-  value: number;
+  unitId?: string | null;
+  value?: number | null;
 };
 
 export const deleteFloatUnit = async (
@@ -111,22 +112,22 @@ export const upsertFloatUnit = async ({
 }: {
   ctx: PrismaTransactionalClient;
   id?: string | null | undefined;
-  data?: Partial<UnitValue>;
+  data?: Partial<UnitValue> | null;
 }): Promise<FloatUnit | null> => {
-  if (!data || data.unitId === undefined || data.value === undefined) {
-    return null;
-  }
   if (!id) {
     return await ctx.floatUnit.create({
       data: {
-        value: data.value,
-        unitId: data.unitId,
+        value: data?.value,
+        unitId: data?.unitId,
       },
     });
   } else {
     return await ctx.floatUnit.update({
       where: { id },
-      data,
+      data: {
+        value: data?.value,
+        unitId: data?.unitId,
+      },
     });
   }
 };
@@ -162,22 +163,98 @@ export const upsertIntUnit = async ({
 }: {
   ctx: PrismaTransactionalClient;
   id?: string | null | undefined;
-  data?: Partial<UnitValue>;
+  data?: Partial<UnitValue> | null;
 }): Promise<IntUnit | null> => {
-  if (!data || data.unitId === undefined || data.value === undefined) {
-    return null;
-  }
   if (!id) {
     return await ctx.intUnit.create({
       data: {
-        value: data.value,
-        unitId: data.unitId,
+        value: data?.value,
+        unitId: data?.unitId,
       },
     });
   } else {
     return await ctx.intUnit.update({
       where: { id },
-      data,
+      data: {
+        value: data?.value,
+        unitId: data?.unitId,
+      },
     });
+  }
+};
+const floatUnitRelations = {
+  temperatures: { none: {} },
+  atmosphericPressures: { none: {} },
+  idealTemperatures: { none: {} },
+  waterRequirements: { none: {} },
+  fertilizerDosages: { none: {} },
+  pesticideDosages: { none: {} },
+  purchasePrices: { none: {} },
+  estimatedYields: { none: {} },
+  actualYields: { none: {} },
+};
+const intUnitRelations = {
+  humidities: { none: {} },
+  idealHumidities: { none: {} },
+  moistures: { none: {} },
+  rainfalls: { none: {} },
+  withdrawalPeriods: { none: {} },
+};
+export const deleteUnusedFloatUnits = async () => {
+  // Find all FloatUnits that are not referenced by any of the relations
+  const unusedFloatUnits = await db.floatUnit.findMany({
+    where: {
+      // Check for absence of relations
+      ...floatUnitRelations,
+    },
+  });
+
+  // Delete the unused FloatUnits
+  const deletePromises = unusedFloatUnits.map((floatUnit) =>
+    db.floatUnit.delete({
+      where: {
+        id: floatUnit.id,
+      },
+    })
+  );
+
+  await Promise.all(deletePromises);
+};
+
+export const deleteUnusedIntegerUnits = async () => {
+  const unusedIntUnits = await db.intUnit.findMany({
+    where: {
+      ...intUnitRelations,
+    },
+  });
+  const deletePromises = unusedIntUnits.map((intUnit) => {
+    return db.intUnit.delete({
+      where: { id: intUnit.id },
+    });
+  });
+  await Promise.all(deletePromises);
+};
+
+export const getCountUnusedUnit = async (): Promise<UnusedUnitCount> => {
+  try {
+    const floatUnitCount = await db.floatUnit.count({
+      where: {
+        ...floatUnitRelations,
+      },
+    });
+    const intUnitCount = await db.intUnit.count({
+      where: {
+        ...intUnitRelations,
+      },
+    });
+    return {
+      floatUnit: floatUnitCount,
+      intUnit: intUnitCount,
+    };
+  } catch (error) {
+    return {
+      floatUnit: 0,
+      intUnit: 0,
+    };
   }
 };

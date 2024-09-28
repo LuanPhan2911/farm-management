@@ -3,9 +3,11 @@ import { cn, isActive } from "@/lib/utils";
 import { usePathname } from "@/navigation";
 import { useDashboardSidebar } from "@/stores/use-dashboard-sidebar";
 import {
+  BookCheck,
   BugOff,
   Building,
   Clipboard,
+  Clock,
   Columns2,
   Compass,
   Flower,
@@ -17,6 +19,7 @@ import {
   LayoutGrid,
   Leaf,
   MountainSnow,
+  ScrollText,
   Section,
   Settings,
   SquareUserRound,
@@ -146,6 +149,20 @@ export const AdminSidebar = () => {
             active={isActive(pathname, "/admin/applicants")}
             icon={User}
             title="Applicants"
+          />
+        </SidebarAccordionItem>
+        <SidebarAccordionItem icon={ScrollText} title="Cron Job">
+          <SidebarItem
+            href="/admin/tasks"
+            active={isActive(pathname, "/admin/tasks")}
+            icon={BookCheck}
+            title="Tasks"
+          />
+          <SidebarItem
+            href="/admin/schedules"
+            active={isActive(pathname, "/admin/schedules")}
+            icon={Clock}
+            title="Schedules"
           />
         </SidebarAccordionItem>
 

@@ -19,24 +19,22 @@ export const SoilConfirmButton = ({
   data,
   isButton = false,
 }: SoilConfirmButtonProps) => {
-  const { onOpen } = useAlertDialog();
+  const { onOpen, setPending, isPending } = useAlertDialog();
 
-  const [isPending, startTransition] = useTransition();
   const t = useTranslations("soils");
   const onClick = () => {
-    startTransition(() => {
-      editConfirmed(data.id, !data.confirmed)
-        .then(({ message, ok }) => {
-          if (ok) {
-            toast.success(message);
-          } else {
-            toast.error(message);
-          }
-        })
-        .catch((error: Error) => {
-          toast.error(t("status.failure.editConfirmed"));
-        });
-    });
+    setPending(true);
+    editConfirmed(data.id, !data.confirmed)
+      .then(({ message, ok }) => {
+        if (ok) {
+          toast.success(message);
+        } else {
+          toast.error(message);
+        }
+      })
+      .catch((error: Error) => {
+        toast.error(t("status.failure.editConfirmed"));
+      });
   };
   if (isButton) {
     return (
@@ -50,7 +48,6 @@ export const SoilConfirmButton = ({
             title: t("form.editConfirmed.title"),
             description: t("form.editConfirmed.description"),
             onConfirm: () => onClick(),
-            isPending,
           });
         }}
       >
@@ -68,7 +65,6 @@ export const SoilConfirmButton = ({
           title: t("form.editConfirmed.title"),
           description: t("form.editConfirmed.description"),
           onConfirm: onClick,
-          isPending,
         });
       }}
       disabled={isPending}
@@ -77,26 +73,25 @@ export const SoilConfirmButton = ({
 };
 
 export const SoilsConfirmedAllButton = () => {
-  const { onOpen } = useAlertDialog();
-  const [isPending, startTransition] = useTransition();
+  const { onOpen, setPending, isPending } = useAlertDialog();
+
   const t = useTranslations("soils");
   const params = useParams<{
     fieldId: string;
   }>();
   const onClick = () => {
-    startTransition(() => {
-      editManyConfirmed(params.fieldId)
-        .then(({ message, ok }) => {
-          if (ok) {
-            toast.success(message);
-          } else {
-            toast.error(message);
-          }
-        })
-        .catch((error: Error) => {
-          toast.error(t("status.failure.editManyConfirmed"));
-        });
-    });
+    setPending(true);
+    editManyConfirmed(params.fieldId)
+      .then(({ message, ok }) => {
+        if (ok) {
+          toast.success(message);
+        } else {
+          toast.error(message);
+        }
+      })
+      .catch((error: Error) => {
+        toast.error(t("status.failure.editManyConfirmed"));
+      });
   };
   return (
     <Button
@@ -108,7 +103,6 @@ export const SoilsConfirmedAllButton = () => {
           title: t("form.editManyConfirmed.title"),
           description: t("form.editManyConfirmed.description"),
           onConfirm: () => onClick(),
-          isPending,
         });
       }}
     >

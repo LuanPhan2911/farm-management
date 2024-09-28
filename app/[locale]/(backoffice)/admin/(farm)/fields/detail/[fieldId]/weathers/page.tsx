@@ -18,6 +18,12 @@ interface WeathersPageProps {
     end?: string;
   };
 }
+export async function generateMetadata() {
+  const t = await getTranslations("weathers.page");
+  return {
+    title: t("title"),
+  };
+}
 const WeathersPage = async ({ params, searchParams }: WeathersPageProps) => {
   const page = parseToNumber(searchParams.page, 1);
   const { orderBy, filterNumber, filterString } = searchParams;

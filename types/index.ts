@@ -275,6 +275,11 @@ export type EquipmentTable = Equipment & {
       })
     | null;
 };
+export type EquipmentSelect = {
+  id: string;
+  name: string;
+  imageUrl: string | null;
+};
 
 export type EquipmentTypeCount = {
   type: EquipmentType;
