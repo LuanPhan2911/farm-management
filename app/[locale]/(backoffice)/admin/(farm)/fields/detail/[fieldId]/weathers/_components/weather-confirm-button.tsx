@@ -8,7 +8,6 @@ import { WeatherTable } from "@/types";
 import { Check, Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { useTransition } from "react";
 import { toast } from "sonner";
 
 interface WeatherConfirmButtonProps {
@@ -19,24 +18,26 @@ export const WeatherConfirmButton = ({
   data,
   isButton = false,
 }: WeatherConfirmButtonProps) => {
-  const { onOpen } = useAlertDialog();
-  const [isPending, startTransition] = useTransition();
+  const { onOpen, setPending, isPending, onClose } = useAlertDialog();
+
   const t = useTranslations("weathers");
 
   const onClick = () => {
-    startTransition(() => {
-      editConfirmed(data.id, !data.confirmed)
-        .then(({ message, ok }) => {
-          if (ok) {
-            toast.success(message);
-          } else {
-            toast.error(message);
-          }
-        })
-        .catch((error: Error) => {
-          toast.error(t("status.failure.editConfirmed"));
-        });
-    });
+    setPending(true);
+    editConfirmed(data.id, !data.confirmed)
+      .then(({ message, ok }) => {
+        if (ok) {
+          toast.success(message);
+        } else {
+          toast.error(message);
+        }
+      })
+      .catch((error: Error) => {
+        toast.error(t("status.failure.editConfirmed"));
+      })
+      .finally(() => {
+        onClose();
+      });
   };
   if (isButton) {
     return (
@@ -50,7 +51,6 @@ export const WeatherConfirmButton = ({
             title: t("form.editConfirmed.title"),
             description: t("form.editConfirmed.description"),
             onConfirm: () => onClick(),
-            isPending,
           });
         }}
       >
@@ -68,7 +68,6 @@ export const WeatherConfirmButton = ({
           title: t("form.editConfirmed.title"),
           description: t("form.editConfirmed.description"),
           onConfirm: () => onClick(),
-          isPending,
         });
       }}
       disabled={isPending}
@@ -77,26 +76,25 @@ export const WeatherConfirmButton = ({
 };
 
 export const WeathersConfirmedAllButton = () => {
-  const { onOpen } = useAlertDialog();
-  const [isPending, startTransition] = useTransition();
+  const { onOpen, setPending } = useAlertDialog();
+
   const t = useTranslations("weathers");
   const params = useParams<{
     fieldId: string;
   }>();
   const onClick = () => {
-    startTransition(() => {
-      editManyConfirmed(params.fieldId)
-        .then(({ message, ok }) => {
-          if (ok) {
-            toast.success(message);
-          } else {
-            toast.error(message);
-          }
-        })
-        .catch((error: Error) => {
-          toast.error(t("status.failure.editManyConfirmed"));
-        });
-    });
+    setPending(true);
+    editManyConfirmed(params.fieldId)
+      .then(({ message, ok }) => {
+        if (ok) {
+          toast.success(message);
+        } else {
+          toast.error(message);
+        }
+      })
+      .catch((error: Error) => {
+        toast.error(t("status.failure.editManyConfirmed"));
+      });
   };
   return (
     <Button
@@ -107,7 +105,6 @@ export const WeathersConfirmedAllButton = () => {
           title: t("form.editManyConfirmed.title"),
           description: t("form.editManyConfirmed.description"),
           onConfirm: () => onClick(),
-          isPending,
         });
       }}
     >

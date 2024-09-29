@@ -4,10 +4,7 @@ import { parseToDate, parseToNumber } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { getTranslations } from "next-intl/server";
-import {
-  SoilsBarChart,
-  SoilsBarChartContentWithQueryClient,
-} from "./_components/soils-bar-chart";
+import { SoilsBarChart } from "./_components/soils-bar-chart";
 interface SoilsPageProps {
   params: {
     fieldId: string;
@@ -19,6 +16,12 @@ interface SoilsPageProps {
     filterNumber?: string;
     begin?: string;
     end?: string;
+  };
+}
+export async function generateMetadata() {
+  const t = await getTranslations("soils.page");
+  return {
+    title: t("title"),
   };
 }
 const SoilsPage = async ({ params, searchParams }: SoilsPageProps) => {

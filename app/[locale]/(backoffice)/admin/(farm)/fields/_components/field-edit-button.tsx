@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -24,7 +23,8 @@ import { useParams } from "next/navigation";
 import { FieldTable } from "@/types";
 import { SoilType, UnitType } from "@prisma/client";
 import { SelectOptions } from "@/components/form/select-options";
-import { convertNullToUndefined } from "@/lib/utils";
+
+import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 
 interface FieldEditFormProps {
   data: FieldTable;
@@ -41,7 +41,7 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      ...convertNullToUndefined(data),
+      ...data,
     },
   });
 
@@ -76,7 +76,8 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
               <FormControl>
                 <Input
                   placeholder={tSchema("name.placeholder")}
-                  {...field}
+                  value={field.value || undefined}
+                  onChange={field.onChange}
                   disabled={isPending}
                 />
               </FormControl>
@@ -94,7 +95,8 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
               <FormControl>
                 <Input
                   placeholder={tSchema("name.placeholder")}
-                  {...field}
+                  value={field.value || undefined}
+                  onChange={field.onChange}
                   disabled={isPending}
                 />
               </FormControl>
@@ -158,7 +160,8 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
 
                 <FormControl>
                   <Input
-                    {...field}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
                     type="number"
                     placeholder={tSchema("height.placeholder")}
                     disabled={isPending}
@@ -178,7 +181,8 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
 
                 <FormControl>
                   <Input
-                    {...field}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
                     type="number"
                     placeholder={tSchema("width.placeholder")}
                     disabled={isPending}
@@ -198,7 +202,8 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
 
                 <FormControl>
                   <Input
-                    {...field}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
                     type="number"
                     placeholder={tSchema("area.placeholder")}
                     disabled={isPending}
@@ -219,7 +224,8 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
               <FormControl>
                 <Input
                   placeholder={tSchema("shape.placeholder")}
-                  {...field}
+                  value={field.value || undefined}
+                  onChange={field.onChange}
                   disabled={isPending}
                 />
               </FormControl>
@@ -254,9 +260,7 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
           )}
         />
 
-        <Button type="submit" disabled={isPending}>
-          Submit
-        </Button>
+        <DynamicDialogFooter disabled={isPending} closeButton={false} />
       </form>
     </Form>
   );

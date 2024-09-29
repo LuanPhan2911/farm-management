@@ -127,7 +127,7 @@ export const getStaffsTable = async ({
   }
 };
 
-export const getStaffsForCreatedByOrganization = async () => {
+export const getStaffsSelectContainAdmin = async () => {
   try {
     const staffs = await db.staff.findMany({
       where: {
@@ -145,7 +145,7 @@ export const getStaffsForCreatedByOrganization = async () => {
     return [];
   }
 };
-export const getStaffsForAddMemberOrganization = async () => {
+export const getStaffsSelect = async () => {
   try {
     const staffs = await db.staff.findMany({
       cacheStrategy: {

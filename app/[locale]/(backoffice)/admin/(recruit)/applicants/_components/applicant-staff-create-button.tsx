@@ -1,6 +1,9 @@
 "use client";
 import { createApplicantStaff } from "@/actions/applicant";
-import { DynamicDialog } from "@/components/dialog/dynamic-dialog";
+import {
+  DynamicDialog,
+  DynamicDialogFooter,
+} from "@/components/dialog/dynamic-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -24,6 +27,7 @@ import { z } from "zod";
 import { StaffSelectRole } from "../../../_components/staff-select-role";
 import { useForm } from "react-hook-form";
 import { ApplicantTable } from "@/types";
+import { StaffRole } from "@prisma/client";
 
 interface ApplicantStaffCreateButtonProps {
   data: ApplicantTable;
@@ -38,11 +42,12 @@ export const ApplicantStaffCreateButton = ({
   return (
     <Button
       className="w-full"
-      onClick={() =>
+      onClick={(e) => {
+        e.stopPropagation();
         onOpen("applicant.createStaff", {
           applicant: data,
-        })
-      }
+        });
+      }}
       variant={"success"}
     >
       <Edit className="h-4 w-4 mr-2" />
@@ -126,7 +131,8 @@ export const ApplicantStaffCreateDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("name.placeholder")}
-                    {...field}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
                     disabled={isPending}
                   />
                 </FormControl>
@@ -144,7 +150,8 @@ export const ApplicantStaffCreateDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("email.placeholder")}
-                    {...field}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
                     disabled={isPending}
                   />
                 </FormControl>
@@ -163,7 +170,8 @@ export const ApplicantStaffCreateDialog = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("password.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -189,7 +197,12 @@ export const ApplicantStaffCreateDialog = () => {
               <FormItem>
                 <FormLabel>{tSchema("role.label")}</FormLabel>
                 <FormControl>
-                  <StaffSelectRole {...field} label="Select Role" />
+                  <StaffSelectRole
+                    value={field.value || undefined}
+                    onChange={field.onChange}
+                    label={tSchema("role.placeholder")}
+                    hidden={[StaffRole.superadmin]}
+                  />
                 </FormControl>
 
                 <FormMessage />
@@ -206,7 +219,8 @@ export const ApplicantStaffCreateDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("receiverEmail.placeholder")}
-                    {...field}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
                     disabled={isPending}
                   />
                 </FormControl>
@@ -215,14 +229,7 @@ export const ApplicantStaffCreateDialog = () => {
               </FormItem>
             )}
           />
-          <div className="flex gap-x-2 justify-end">
-            <Button variant="secondary" onClick={onClose} type="button">
-              Close
-            </Button>
-            <Button disabled={isPending} type="submit">
-              Submit
-            </Button>
-          </div>
+          <DynamicDialogFooter disabled={isPending} />
         </form>
       </Form>
     </DynamicDialog>

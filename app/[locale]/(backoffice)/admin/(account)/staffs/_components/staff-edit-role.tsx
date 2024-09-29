@@ -27,11 +27,12 @@ export const StaffEditRole = ({ data, label }: UserSetRoleProps) => {
   return (
     <Button
       className="w-full"
-      onClick={() =>
+      onClick={(e) => {
+        e.stopPropagation();
         onOpen("staff.editRole", {
           user: data,
-        })
-      }
+        });
+      }}
       variant={"success"}
       disabled={isSuperAdmin}
     >
@@ -83,12 +84,13 @@ export const StaffEditRoleDialog = () => {
       description={t("form.editRole.description")}
     >
       <StaffSelectRole
-        label="Select Role"
+        label={t("schema.role.placeholder")}
         onChange={(value) => {
           setRole(value as StaffRole);
         }}
         value={role}
         disabled={isPending}
+        hidden={[StaffRole.superadmin]}
       />
 
       <div className="flex gap-x-2 justify-end">

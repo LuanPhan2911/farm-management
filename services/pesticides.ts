@@ -19,17 +19,16 @@ import {
   upsertFloatUnit,
   upsertIntUnit,
 } from "./units";
-import { count } from "console";
 
 type PesticideParams = {
   name: string;
   type: PesticideType;
-  ingredient?: string;
-  manufacturer?: string;
-  withdrawalPeriod?: Partial<UnitValue>;
-  recommendedDosage?: Partial<UnitValue>;
-  applicationMethod?: string;
-  toxicityLevel?: ToxicityLevel;
+  ingredient?: string | null;
+  manufacturer?: string | null;
+  withdrawalPeriod?: Partial<UnitValue> | null;
+  recommendedDosage?: Partial<UnitValue> | null;
+  applicationMethod?: string | null;
+  toxicityLevel?: ToxicityLevel | null;
 };
 export const createPesticide = async (params: PesticideParams) => {
   const {
@@ -87,8 +86,6 @@ export const deletePesticide = async (id: string) => {
     const pesticide = await ctx.pesticide.delete({
       where: { id },
     });
-    await deleteFloatUnit(ctx, pesticide.recommendedDosageId);
-    await deleteIntUnit(ctx, pesticide.withdrawalPeriodId);
   });
 };
 type PesticideQuery = {

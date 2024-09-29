@@ -2,9 +2,10 @@ import { siteConfig } from "@/configs/siteConfig";
 import { ActionResponse } from "@/types";
 import { User } from "@clerk/nextjs/server";
 import { type ClassValue, clsx } from "clsx";
-import { format } from "date-fns";
+import { format, getHours, getMinutes } from "date-fns";
 import slugify from "slugify";
 import { twMerge } from "tailwind-merge";
+import * as cronParser from "cron-parser";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -428,4 +429,45 @@ export function parseUploadedJSONFile(file: File): Promise<{
     // Read the file content as text
     reader.readAsText(file);
   });
+}
+
+export function getHourAndMinute(date: Date | undefined, defaultValue: string) {
+  if (!date) {
+    return defaultValue;
+  }
+  const hour = getHours(date);
+  const minute = getMinutes(date);
+  return `${hour}:${minute}`;
+}
+
+export function safeParseJSON(body: string | null) {
+  if (!body) {
+    return undefined;
+  }
+  try {
+    return JSON.parse(body);
+  } catch (error) {
+    return undefined;
+  }
+}
+
+export function generateCronExplanation(
+  cronString: string | undefined | null
+): string {
+  try {
+    // Attempt to parse the cron string
+    if (!cronString) {
+      throw Error("Empty cron");
+    }
+    const interval = cronParser.parseExpression(cronString);
+
+    // Generate next run time for explanation
+    const nextRun = interval.next().toDate();
+
+    // Return a valid cron explanation with next run time
+    return `${format(nextRun, "yyyy-MM-dd hh:mm aaa")}`;
+  } catch (error) {
+    // If the cron string is invalid, return an error message
+    return "Invalid cron format";
+  }
 }

@@ -129,9 +129,3 @@ export const getUserById = async (id: string) => {
     return null;
   }
 };
-
-export const getUsersToAddOrganization = async () => {
-  try {
-    const {} = await clerkClient().users.getUserList({});
-  } catch (error) {}
-};

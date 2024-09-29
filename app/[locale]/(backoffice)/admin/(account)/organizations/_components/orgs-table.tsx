@@ -1,5 +1,5 @@
 "use client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import {
   Table,
   TableBody,
@@ -16,7 +16,6 @@ import { NavPagination } from "@/components/nav-pagination";
 import { UserAvatar } from "@/components/user-avatar";
 
 import { useRouter } from "@/navigation";
-import { OrgCreateButton } from "./org-create-button";
 import { OrgsTableSortBy } from "./orgs-table-sort-by";
 
 interface OrgsTableProps {
@@ -32,53 +31,45 @@ export const OrgsTable = ({ orgs, totalPage }: OrgsTableProps) => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("page.title")}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="flex justify-end">
-          <OrgCreateButton />
-        </div>
-        <div className="py-4 flex gap-2 lg:flex-row flex-col items-start lg:items-center">
-          <SearchBar placeholder={t("search.placeholder")} isPagination />
-          <OrgsTableSortBy />
-        </div>
+    <>
+      <div className="py-4 flex gap-2 lg:flex-row flex-col items-start lg:items-center">
+        <SearchBar placeholder={t("search.placeholder")} isPagination />
+        <OrgsTableSortBy />
+      </div>
 
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead></TableHead>
-              <TableHead>{t("table.thead.name")}</TableHead>
-              <TableHead>{t("table.thead.slug")}</TableHead>
-              <TableHead>{t("table.thead.memberCount")}</TableHead>
-              <TableHead>{t("table.thead.createdAt")} </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {orgs.map((organization) => {
-              return (
-                <TableRow
-                  key={organization.id}
-                  className="cursor-pointer"
-                  onClick={() => handleClick(organization)}
-                >
-                  <TableCell>
-                    <UserAvatar src={organization.imageUrl} />
-                  </TableCell>
-                  <TableCell>{organization.name}</TableCell>
-                  <TableCell>{organization.slug}</TableCell>
-                  <TableCell>{organization.membersCount}</TableCell>
-                  <TableCell>{relativeTime(organization.createdAt)}</TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-        <div className="py-4">
-          <NavPagination totalPage={totalPage} />
-        </div>
-      </CardContent>
-    </Card>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead></TableHead>
+            <TableHead>{t("table.thead.name")}</TableHead>
+            <TableHead>{t("table.thead.slug")}</TableHead>
+            <TableHead>{t("table.thead.memberCount")}</TableHead>
+            <TableHead>{t("table.thead.createdAt")} </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {orgs.map((organization) => {
+            return (
+              <TableRow
+                key={organization.id}
+                className="cursor-pointer"
+                onClick={() => handleClick(organization)}
+              >
+                <TableCell>
+                  <UserAvatar src={organization.imageUrl} />
+                </TableCell>
+                <TableCell>{organization.name}</TableCell>
+                <TableCell>{organization.slug}</TableCell>
+                <TableCell>{organization.membersCount}</TableCell>
+                <TableCell>{relativeTime(organization.createdAt)}</TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+      <div className="py-4">
+        <NavPagination totalPage={totalPage} />
+      </div>
+    </>
   );
 };

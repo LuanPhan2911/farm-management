@@ -2,14 +2,13 @@
 
 import { create, createMany } from "@/actions/soil";
 import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
-import { SelectOptions } from "@/components/form/select-options";
+import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
+import { DatePickerWithTime } from "@/components/form/date-picker-with-time";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -32,7 +31,7 @@ import { UnitType } from "@prisma/client";
 import { Plus, Upload } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { useCallback, useRef, useState, useTransition } from "react";
+import { useCallback, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Content, JSONContent, Mode, OnChangeStatus } from "vanilla-jsoneditor";
@@ -43,7 +42,7 @@ export const SoilCreateButton = () => {
   const t = useTranslations("soils");
   const formSchema = SoilSchema(tSchema);
   const [isPending, startTransition] = useTransition();
-  const closeRef = useRef<HTMLButtonElement>(null);
+
   const params = useParams<{
     fieldId: string;
   }>();
@@ -51,6 +50,7 @@ export const SoilCreateButton = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       fieldId: params.fieldId,
+      createdAt: new Date(),
     },
   });
   const onSubmit = (values: z.infer<typeof formSchema>) => {
@@ -59,7 +59,7 @@ export const SoilCreateButton = () => {
         .then(({ message, ok }) => {
           if (ok) {
             form.reset();
-            closeRef.current?.click();
+
             toast.success(message);
           } else {
             toast.error(message);
@@ -88,26 +88,49 @@ export const SoilCreateButton = () => {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="ph"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("ph.label")}</FormLabel>
-                  <div className="flex gap-x-2">
-                    <FormControl>
-                      <Input
-                        placeholder={tSchema("ph.placeholder")}
-                        {...field}
-                        disabled={isPending}
-                        type="number"
-                      />
-                    </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid lg:grid-col-2 gap-2">
+              <FormField
+                control={form.control}
+                name="createdAt"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("createdAt.label")}</FormLabel>
+                    <div className="flex gap-x-2">
+                      <FormControl>
+                        <DatePickerWithTime
+                          onChange={field.onChange}
+                          value={field.value}
+                          disabled={isPending}
+                          placeholder={tSchema("createdAt.placeholder")}
+                        />
+                      </FormControl>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="ph"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("ph.label")}</FormLabel>
+                    <div className="flex gap-x-2">
+                      <FormControl>
+                        <Input
+                          placeholder={tSchema("ph.placeholder")}
+                          value={field.value || undefined}
+                          onChange={field.onChange}
+                          disabled={isPending}
+                          type="number"
+                        />
+                      </FormControl>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <div className="grid lg:grid-cols-2 gap-2">
               <div className="grid grid-cols-4 gap-2">
@@ -121,7 +144,8 @@ export const SoilCreateButton = () => {
                         <FormControl>
                           <Input
                             placeholder={tSchema("moisture.placeholder")}
-                            {...field}
+                            value={field.value || undefined}
+                            onChange={field.onChange}
                             disabled={isPending}
                             type="number"
                           />
@@ -190,7 +214,8 @@ export const SoilCreateButton = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("nutrientNitrogen.placeholder")}
-                          {...field}
+                          value={field.value || undefined}
+                          onChange={field.onChange}
                           disabled={isPending}
                           type="number"
                         />
@@ -212,7 +237,8 @@ export const SoilCreateButton = () => {
                           placeholder={tSchema(
                             "nutrientPhosphorus.placeholder"
                           )}
-                          {...field}
+                          value={field.value || undefined}
+                          onChange={field.onChange}
                           disabled={isPending}
                           type="number"
                         />
@@ -232,7 +258,8 @@ export const SoilCreateButton = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("nutrientPotassium.placeholder")}
-                          {...field}
+                          value={field.value || undefined}
+                          onChange={field.onChange}
                           disabled={isPending}
                           type="number"
                         />
@@ -252,7 +279,8 @@ export const SoilCreateButton = () => {
                   <div className="flex gap-x-2">
                     <FormControl>
                       <Textarea
-                        {...field}
+                        value={field.value || undefined}
+                        onChange={field.onChange}
                         disabled={isPending}
                         placeholder={tSchema("note.placeholder")}
                       />
@@ -263,16 +291,7 @@ export const SoilCreateButton = () => {
               )}
             />
 
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button type="button" variant="secondary" ref={closeRef}>
-                  Close
-                </Button>
-              </DialogClose>
-              <Button type="submit" disabled={isPending}>
-                Submit
-              </Button>
-            </DialogFooter>
+            <DynamicDialogFooter disabled={isPending} />
           </form>
         </Form>
       </DialogContent>
@@ -302,7 +321,7 @@ export const SoilCreateManyButton = () => {
   const [jsonContent, setJsonContent] = useState<Content>({
     json: initialContent,
   });
-  const closeRef = useRef<HTMLButtonElement>(null);
+
   const handler = useCallback(
     (content: Content, previousContent: Content, status: OnChangeStatus) => {
       setJsonContent(content);
@@ -337,8 +356,6 @@ export const SoilCreateManyButton = () => {
       createMany(params.fieldId, data)
         .then(({ message, ok }) => {
           if (ok) {
-            closeRef.current?.click();
-
             toast.success(message);
             setJsonContent({
               json: initialContent,
@@ -376,16 +393,7 @@ export const SoilCreateManyButton = () => {
           clearHandler={() => setJsonContent({ json: [] })}
           generateSample={() => setJsonContent({ json: initialContent })}
         />
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="secondary" ref={closeRef}>
-              Close
-            </Button>
-          </DialogClose>
-          <Button disabled={isPending} onClick={onSubmit}>
-            Submit
-          </Button>
-        </DialogFooter>
+        <DynamicDialogFooter disabled={isPending} />
       </DialogContent>
     </Dialog>
   );

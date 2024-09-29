@@ -8,13 +8,13 @@ type CropParams = {
   name: string;
   dateRange: {
     startDate: Date;
-    endDate?: Date;
+    endDate?: Date | null;
   };
   fieldId: string;
   plantId: string;
-  estimatedYield?: Partial<UnitValue>;
-  actualYield?: Partial<UnitValue>;
-  status?: string;
+  estimatedYield?: Partial<UnitValue> | null;
+  actualYield?: Partial<UnitValue> | null;
+  status?: string | null;
 };
 
 export const createCrop = async (params: CropParams) => {
@@ -54,23 +54,22 @@ export const updateCrop = async (id: string, params: CropParams) => {
       ...other
     } = params;
 
-    const crop = await ctx.crop.update({
+    let crop = await ctx.crop.update({
       where: { id },
       data: {
         ...other,
-        startDate,
-        endDate,
       },
     });
+
     const estimatedYield = await upsertFloatUnit({
       ctx,
       data: estimatedYieldParam,
-      id: crop.estimatedYieldId,
+      id: crop?.estimatedYieldId,
     });
     const actualYield = await upsertFloatUnit({
       ctx,
       data: actualYieldParam,
-      id: crop.actualYieldId,
+      id: crop?.actualYieldId,
     });
 
     return crop;
@@ -79,8 +78,6 @@ export const updateCrop = async (id: string, params: CropParams) => {
 export const deleteCrop = async (id: string) => {
   return await db.$transaction(async (ctx) => {
     const crop = await ctx.crop.delete({ where: { id } });
-    await deleteFloatUnit(ctx, crop.estimatedYieldId);
-    await deleteFloatUnit(ctx, crop.actualYieldId);
     return crop;
   });
 };

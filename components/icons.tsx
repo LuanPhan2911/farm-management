@@ -6,7 +6,7 @@ export const Icons = {
     return <Image src={"/logo.png"} alt="Logo" width={width} height={height} />;
   },
   emailLogo: () => {
-    const logoUrl = `${process.env.BASE_URL}/logo.png`;
+    const logoUrl = `${process.env.APP_BASE_URL}/logo.png`;
     return <Img src={logoUrl} width={50} height={50} alt="Logo" />;
   },
 };

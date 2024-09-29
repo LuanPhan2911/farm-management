@@ -12,6 +12,7 @@ import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 
 import { ourFileRouter } from "@/app/[locale]/api/uploadthing/core";
+import { SheetProvider } from "@/components/providers/sheet-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -54,6 +55,7 @@ export default async function RootLayout({
               {children}
               <Toaster />
               <DialogProvider />
+              <SheetProvider />
             </ThemeProvider>
           </NextIntlClientProvider>
         </body>

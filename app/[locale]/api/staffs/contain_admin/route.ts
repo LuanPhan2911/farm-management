@@ -1,10 +1,10 @@
-import { getStaffsForAddMemberOrganization } from "@/services/staffs";
+import { getStaffsSelectContainAdmin } from "@/services/staffs";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (req: NextRequest) => {
   try {
-    const staffsForAddMember = await getStaffsForAddMemberOrganization();
-    return NextResponse.json(staffsForAddMember);
+    const staffsForCreatedByOrg = await getStaffsSelectContainAdmin();
+    return NextResponse.json(staffsForCreatedByOrg);
   } catch (error) {
     return NextResponse.json("Internal Error", { status: 500 });
   }

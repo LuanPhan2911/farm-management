@@ -8,9 +8,9 @@ type FieldParams = {
   height: number;
   width: number;
   area: number;
-  unitId: string;
-  shape?: string;
-  soilType?: SoilType;
+  unitId?: string | null;
+  shape?: string | null;
+  soilType?: SoilType | null;
 };
 export const createField = async (params: FieldParams) => {
   const field = await db.field.create({
@@ -43,6 +43,10 @@ export const getFields = async () => {
     const fields = await db.field.findMany({
       include: {
         unit: true,
+      },
+      cacheStrategy: {
+        swr: 60,
+        ttl: 60,
       },
     });
     return fields;

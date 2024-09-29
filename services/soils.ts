@@ -10,15 +10,15 @@ import { PaginatedResponse, SoilChart, SoilTable } from "@/types";
 import { deleteIntUnit, UnitValue, upsertIntUnit } from "./units";
 
 type SoilParams = {
-  ph?: number;
-  moisture?: Partial<UnitValue>;
-  nutrientNitrogen?: number;
-  nutrientPhosphorus?: number;
-  nutrientPotassium?: number;
-  nutrientUnitId?: string;
-  createdAt?: Date;
-  note?: string;
   fieldId: string;
+  ph?: number | null;
+  createdAt?: Date;
+  moisture?: Partial<UnitValue> | null;
+  nutrientNitrogen?: number | null;
+  nutrientPhosphorus?: number | null;
+  nutrientPotassium?: number | null;
+  nutrientUnitId?: string | null;
+  note?: string | null;
 };
 
 export const createSoil = async (params: SoilParams) => {
@@ -130,7 +130,6 @@ export const deleteSoil = async (id: string) => {
     const soil = await ctx.soil.delete({
       where: { id },
     });
-    const moisture = await deleteIntUnit(ctx, soil.moistureId);
     return soil;
   });
 };

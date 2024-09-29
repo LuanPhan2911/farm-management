@@ -42,8 +42,6 @@ export const POST = async (
     createManySoilInChunk(validatedSoils);
     return NextResponse.json(validatedSoils);
   } catch (error) {
-    console.log(error);
-
     return NextResponse.json("Internal error", { status: 500 });
   }
 };

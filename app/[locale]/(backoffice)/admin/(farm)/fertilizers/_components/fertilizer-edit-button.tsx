@@ -1,5 +1,8 @@
 "use client";
-import { DynamicDialog } from "@/components/dialog/dynamic-dialog";
+import {
+  DynamicDialog,
+  DynamicDialogFooter,
+} from "@/components/dialog/dynamic-dialog";
 import { Button } from "@/components/ui/button";
 import { FertilizerSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
@@ -7,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FertilizerType, Frequency, UnitType } from "@prisma/client";
 import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -20,13 +23,11 @@ import {
 } from "@/components/ui/form";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
-import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { SelectOptions } from "@/components/form/select-options";
 import { FertilizerTable } from "@/types";
 import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { edit } from "@/actions/fertilizer";
 import { Textarea } from "@/components/ui/textarea";
-import { convertNullToUndefined } from "@/lib/utils";
 
 interface FertilizerEditButtonProps {
   data: FertilizerTable;
@@ -41,11 +42,12 @@ export const FertilizerEditButton = ({
   return (
     <Button
       className="w-full"
-      onClick={() =>
+      onClick={(e) => {
+        e.stopPropagation();
         onOpen("fertilizer.edit", {
           fertilizer: data,
-        })
-      }
+        });
+      }}
       size={"sm"}
       variant={"edit"}
     >
@@ -65,16 +67,11 @@ export const FertilizerEditDialog = () => {
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: useMemo(() => {
-      return !!data.fertilizer
-        ? convertNullToUndefined(data.fertilizer)
-        : undefined;
-    }, [data.fertilizer]),
   });
   const [id, setId] = useState("");
   useEffect(() => {
     if (data?.fertilizer) {
-      form.reset(convertNullToUndefined(data.fertilizer));
+      form.reset(data.fertilizer);
       setId(data.fertilizer.id);
     }
   }, [data, form]);
@@ -115,7 +112,8 @@ export const FertilizerEditDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("name.placeholder")}
-                    {...field}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
                     disabled={isPending}
                   />
                 </FormControl>
@@ -132,7 +130,8 @@ export const FertilizerEditDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("nutrientOfNPK.placeholder")}
-                    {...field}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
                     disabled={isPending}
                   />
                 </FormControl>
@@ -178,7 +177,8 @@ export const FertilizerEditDialog = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("recommendedDosage.placeholder")}
-                          {...field}
+                          value={field.value || undefined}
+                          onChange={field.onChange}
                           disabled={isPending}
                           type="number"
                         />
@@ -227,7 +227,8 @@ export const FertilizerEditDialog = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("applicationMethod.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -271,7 +272,8 @@ export const FertilizerEditDialog = () => {
                 <div className="flex gap-x-2">
                   <FormControl>
                     <Textarea
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                       placeholder={tSchema("composition.placeholder")}
                     />
@@ -291,7 +293,8 @@ export const FertilizerEditDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("manufacturer.placeholder")}
-                    {...field}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
                     disabled={isPending}
                   />
                 </FormControl>
@@ -299,16 +302,7 @@ export const FertilizerEditDialog = () => {
               </FormItem>
             )}
           />
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="secondary">
-                Close
-              </Button>
-            </DialogClose>
-            <Button type="submit" disabled={isPending}>
-              Submit
-            </Button>
-          </DialogFooter>
+          <DynamicDialogFooter disabled={isPending} />
         </form>
       </Form>
     </DynamicDialog>

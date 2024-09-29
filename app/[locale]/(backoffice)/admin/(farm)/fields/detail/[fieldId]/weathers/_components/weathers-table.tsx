@@ -133,7 +133,7 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
                     <span>
                       {item.temperature?.value}
                       <sup>o</sup>
-                      {item.temperature?.unit.name}
+                      {item.temperature?.unit?.name}
                     </span>
                   ) : (
                     t("trow.temperature")
@@ -143,7 +143,7 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
                   {item.humidity ? (
                     <UnitWithValue
                       value={item.humidity?.value}
-                      unit={item.humidity?.unit.name}
+                      unit={item.humidity?.unit?.name}
                     />
                   ) : (
                     t("trow.humidity")
@@ -153,7 +153,7 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
                   {item.atmosphericPressure ? (
                     <UnitWithValue
                       value={item.atmosphericPressure?.value}
-                      unit={item.atmosphericPressure?.unit.name}
+                      unit={item.atmosphericPressure?.unit?.name}
                     />
                   ) : (
                     t("trow.atmosphericPressure")
@@ -163,7 +163,7 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
                   {item.rainfall ? (
                     <UnitWithValue
                       value={item.rainfall?.value}
-                      unit={item.rainfall?.unit.name}
+                      unit={item.rainfall?.unit?.name}
                     />
                   ) : (
                     t("trow.rainfall")

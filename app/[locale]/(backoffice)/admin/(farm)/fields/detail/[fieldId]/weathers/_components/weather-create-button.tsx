@@ -6,10 +6,8 @@ import { SelectOptions } from "@/components/form/select-options";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -29,7 +27,7 @@ import { UnitType, WeatherStatus } from "@prisma/client";
 import { Plus, Upload } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { useRef, useTransition } from "react";
+import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -39,7 +37,7 @@ export const WeatherCreateButton = () => {
   const t = useTranslations("weathers");
   const formSchema = WeatherSchema(tSchema);
   const [isPending, startTransition] = useTransition();
-  const closeRef = useRef<HTMLButtonElement>(null);
+
   const params = useParams<{
     fieldId: string;
   }>();
@@ -47,6 +45,8 @@ export const WeatherCreateButton = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       fieldId: params.fieldId,
+      createdAt: new Date(),
+      note: null,
     },
   });
   const onSubmit = (values: z.infer<typeof formSchema>) => {
@@ -55,7 +55,7 @@ export const WeatherCreateButton = () => {
         .then(({ message, ok }) => {
           if (ok) {
             form.reset();
-            closeRef.current?.click();
+
             toast.success(message);
           } else {
             toast.error(message);
@@ -84,31 +84,55 @@ export const WeatherCreateButton = () => {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("status.label")}</FormLabel>
-                  <div className="flex gap-x-2">
-                    <FormControl>
-                      <SelectOptions
-                        label={tSchema("status.placeholder")}
-                        onChange={field.onChange}
-                        options={Object.keys(WeatherStatus).map((item) => {
-                          return {
-                            label: tSchema(`status.options.${item}`),
-                            value: item,
-                          };
-                        })}
-                        disabled={isPending}
-                      />
-                    </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid lg:grid-cols-2 gap-2">
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("status.label")}</FormLabel>
+                    <div className="flex gap-x-2">
+                      <FormControl>
+                        <SelectOptions
+                          label={tSchema("status.placeholder")}
+                          onChange={field.onChange}
+                          options={Object.keys(WeatherStatus).map((item) => {
+                            return {
+                              label: tSchema(`status.options.${item}`),
+                              value: item,
+                            };
+                          })}
+                          defaultValue={field.value}
+                          disabled={isPending}
+                        />
+                      </FormControl>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="createdAt"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("createdAt.label")}</FormLabel>
+                    <div className="flex gap-x-2">
+                      <FormControl>
+                        <DatePickerWithTime
+                          onChange={field.onChange}
+                          value={field.value}
+                          disabled={isPending}
+                          placeholder={tSchema("createdAt.placeholder")}
+                        />
+                      </FormControl>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <div className="grid grid-cols-4 gap-2">
                 <div className="col-span-3">
@@ -121,7 +145,8 @@ export const WeatherCreateButton = () => {
                         <FormControl>
                           <Input
                             placeholder={tSchema("temperature.placeholder")}
-                            {...field}
+                            value={field.value || undefined}
+                            onChange={field.onChange}
                             disabled={isPending}
                             type="number"
                           />
@@ -169,7 +194,8 @@ export const WeatherCreateButton = () => {
                         <FormControl>
                           <Input
                             placeholder={tSchema("humidity.placeholder")}
-                            {...field}
+                            value={field.value || undefined}
+                            onChange={field.onChange}
                             disabled={isPending}
                             type="number"
                           />
@@ -219,7 +245,8 @@ export const WeatherCreateButton = () => {
                             placeholder={tSchema(
                               "atmosphericPressure.placeholder"
                             )}
-                            {...field}
+                            value={field.value || undefined}
+                            onChange={field.onChange}
                             disabled={isPending}
                             type="number"
                           />
@@ -271,7 +298,8 @@ export const WeatherCreateButton = () => {
                         <FormControl>
                           <Input
                             placeholder={tSchema("rainfall.placeholder")}
-                            {...field}
+                            value={field.value || undefined}
+                            onChange={field.onChange}
                             disabled={isPending}
                             type="number"
                           />
@@ -314,7 +342,8 @@ export const WeatherCreateButton = () => {
                   <div className="flex gap-x-2">
                     <FormControl>
                       <Textarea
-                        {...field}
+                        value={field.value || undefined}
+                        onChange={field.onChange}
                         disabled={isPending}
                         placeholder={tSchema("note.placeholder")}
                       />
@@ -325,21 +354,7 @@ export const WeatherCreateButton = () => {
               )}
             />
 
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  ref={closeRef}
-                  disabled={isPending}
-                >
-                  Close
-                </Button>
-              </DialogClose>
-              <Button type="submit" disabled={isPending}>
-                Submit
-              </Button>
-            </DialogFooter>
+            <DynamicDialogFooter disabled={isPending} />
           </form>
         </Form>
       </DialogContent>
@@ -358,6 +373,8 @@ import {
 import { JSONEditorReact } from "@/components/vanila-json-editor";
 import { parseUploadedJSONFile } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
+import { DatePickerWithTime } from "@/components/form/date-picker-with-time";
+import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 
 export const WeatherCreateManyButton = () => {
   const params = useParams<{
@@ -389,7 +406,7 @@ export const WeatherCreateManyButton = () => {
   const [jsonContent, setJsonContent] = useState<Content>({
     json: initialContent,
   });
-  const closeRef = useRef<HTMLButtonElement>(null);
+
   const handler = useCallback(
     (content: Content, previousContent: Content, status: OnChangeStatus) => {
       setJsonContent(content);
@@ -424,8 +441,6 @@ export const WeatherCreateManyButton = () => {
       createMany(params.fieldId, data)
         .then(({ message, ok }) => {
           if (ok) {
-            closeRef.current?.click();
-
             toast.success(message);
             setJsonContent({
               json: initialContent,
@@ -463,16 +478,7 @@ export const WeatherCreateManyButton = () => {
           clearHandler={() => setJsonContent({ json: [] })}
           generateSample={() => setJsonContent({ json: initialContent })}
         />
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="secondary" ref={closeRef}>
-              Close
-            </Button>
-          </DialogClose>
-          <Button disabled={isPending} onClick={onSubmit}>
-            Submit
-          </Button>
-        </DialogFooter>
+        <DynamicDialogFooter disabled={isPending} />
       </DialogContent>
     </Dialog>
   );

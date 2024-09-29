@@ -35,6 +35,7 @@ import { RadioOptions } from "@/components/form/radio-options";
 
 import { addDays } from "date-fns";
 import { useRouter } from "@/navigation";
+import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 
 export const JobCreateButton = () => {
   const t = useTranslations("jobs.form.create");
@@ -113,7 +114,8 @@ export const JobCreateForm = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("name.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -157,7 +159,8 @@ export const JobCreateForm = () => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("quantity.placeholder")}
-                        {...field}
+                        value={field.value || undefined}
+                        onChange={field.onChange}
                         disabled={isPending}
                         type="number"
                       />
@@ -175,7 +178,7 @@ export const JobCreateForm = () => {
                     <FormLabel>{tSchema("expiredAt.label")}</FormLabel>
                     <FormControl>
                       <DatePicker
-                        date={field.value}
+                        value={field.value}
                         onChange={field.onChange}
                         disabled={isPending}
                         disabledDateRange={(date) => {
@@ -248,7 +251,8 @@ export const JobCreateForm = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("workingTime.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -266,7 +270,8 @@ export const JobCreateForm = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("wage.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -317,11 +322,7 @@ export const JobCreateForm = () => {
                 </FormItem>
               )}
             />
-            <div className="flex gap-x-2 justify-center">
-              <Button type="submit" disabled={isPending}>
-                Submit
-              </Button>
-            </div>
+            <DynamicDialogFooter disabled={isPending} closeButton={false} />
           </form>
         </Form>
       </CardContent>

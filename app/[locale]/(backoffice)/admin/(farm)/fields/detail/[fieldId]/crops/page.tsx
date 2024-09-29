@@ -1,6 +1,9 @@
 import { getCropsOnField } from "@/services/crops";
 import { CropsTable } from "./_components/crops-table";
 import { parseToDate, parseToNumber } from "@/lib/utils";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CropCreateButton } from "./_components/crop-create-button";
+import { getTranslations } from "next-intl/server";
 interface CropsPageProps {
   params: {
     fieldId: string;
@@ -16,12 +19,18 @@ interface CropsPageProps {
     query?: string;
   };
 }
+export async function generateMetadata() {
+  const t = await getTranslations("crops.page");
+  return {
+    title: t("title"),
+  };
+}
 const CropsPage = async ({ params, searchParams }: CropsPageProps) => {
   const { query: name, orderBy, plantId, filterNumber } = searchParams;
   const startDate = parseToDate(searchParams.begin);
   const endDate = parseToDate(searchParams.end);
   const page = parseToNumber(searchParams.page, 1);
-
+  const t = await getTranslations("crops.page");
   const { data, totalPage } = await getCropsOnField({
     fieldId: params.fieldId,
     page,
@@ -35,7 +44,17 @@ const CropsPage = async ({ params, searchParams }: CropsPageProps) => {
 
   return (
     <div className="flex flex-col gap-y-4 py-4 h-full">
-      <CropsTable data={data} totalPage={totalPage} />
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("title")}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex justify-end">
+            <CropCreateButton />
+          </div>
+          <CropsTable data={data} totalPage={totalPage} />
+        </CardContent>
+      </Card>
     </div>
   );
 };

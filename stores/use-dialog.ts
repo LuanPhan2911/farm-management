@@ -7,7 +7,7 @@ import {
   WeatherTable,
 } from "@/types";
 import { User } from "@clerk/nextjs/server";
-import { Category, Unit, Applicant } from "@prisma/client";
+import { Category, Unit } from "@prisma/client";
 import { create } from "zustand";
 
 export type DialogType =

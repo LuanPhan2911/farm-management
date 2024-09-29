@@ -5,7 +5,6 @@ import { useAlertDialog } from "@/stores/use-alert-dialog";
 import { Unit } from "@prisma/client";
 import { Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useTransition } from "react";
 import { toast } from "sonner";
 
 interface UnitDeleteButtonProps {
@@ -14,38 +13,37 @@ interface UnitDeleteButtonProps {
 }
 export const UnitDeleteButton = ({ data, label }: UnitDeleteButtonProps) => {
   const { id } = data;
-  const { onOpen, onClose } = useAlertDialog();
-  const [isPending, startTransition] = useTransition();
+  const { onOpen, onClose, setPending } = useAlertDialog();
+
   const t = useTranslations("units");
   const onConfirm = async () => {
-    startTransition(() => {
-      destroy(id)
-        .then(({ message, ok }) => {
-          if (ok) {
-            toast.success(message);
-          } else {
-            toast.error(message);
-          }
-        })
-        .catch((error: Error) => {
-          toast.error(t("status.failure.destroy"));
-        })
-        .finally(() => {
-          onClose();
-        });
-    });
+    setPending(true);
+    destroy(id)
+      .then(({ message, ok }) => {
+        if (ok) {
+          toast.success(message);
+        } else {
+          toast.error(message);
+        }
+      })
+      .catch((error: Error) => {
+        toast.error(t("status.failure.destroy"));
+      })
+      .finally(() => {
+        onClose();
+      });
   };
   return (
     <Button
       className="w-full"
-      onClick={() =>
+      onClick={(e) => {
+        e.stopPropagation();
         onOpen({
           title: t("form.destroy.title"),
           description: t("form.destroy.description"),
           onConfirm,
-          isPending,
-        })
-      }
+        });
+      }}
       size={"sm"}
       variant={"destroy"}
     >

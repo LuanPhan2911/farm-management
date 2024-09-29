@@ -42,7 +42,7 @@ export const SoilsTable = ({ data, totalPage }: SoilsTableProps) => {
     onOpen("soil.edit", { soil: data });
   };
   return (
-    <div className="flex flex-col gap-y-4 p-4 border rounded-lg max-w-6xl my-4">
+    <div className="flex flex-col gap-y-4 p-4 border rounded-lg my-4">
       <div className="flex lg:justify-end gap-1.5 flex-wrap">
         <SoilCreateManyButton />
         <SoilsExportButton />
@@ -148,7 +148,7 @@ export const SoilsTable = ({ data, totalPage }: SoilsTableProps) => {
                 <TableCell className="text-center">
                   <UnitWithValue
                     value={item.moisture?.value}
-                    unit={item.moisture?.unit.name}
+                    unit={item.moisture?.unit?.name}
                   />
                 </TableCell>
 

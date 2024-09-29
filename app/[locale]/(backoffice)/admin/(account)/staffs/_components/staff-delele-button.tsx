@@ -11,7 +11,7 @@ import { StaffRole } from "@prisma/client";
 
 import { Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useTransition } from "react";
+
 import { toast } from "sonner";
 
 interface StaffDeleteButtonProps {
@@ -20,49 +20,45 @@ interface StaffDeleteButtonProps {
 }
 export const StaffDeleteButton = ({ data, label }: StaffDeleteButtonProps) => {
   const { id } = data;
-  const { onOpen, onClose } = useAlertDialog();
-  const [isPending, startTransition] = useTransition();
+  const { onOpen, onClose, setPending } = useAlertDialog();
+
   const t = useTranslations("staffs");
   const { isSuperAdmin } = useRole(data.publicMetadata.role as StaffRole);
 
   const router = useRouter();
 
   const onConfirm = async () => {
-    startTransition(() => {
-      destroy(id)
-        .then(({ message, ok }) => {
-          if (ok) {
-            onClose();
-            toast.success(message);
-            router.push("/admin/staffs");
-          } else {
-            toast.error(message);
-          }
-        })
-        .catch((error) => {
-          toast.error(t("status.failure.destroy"));
-        })
-        .finally(() => {
+    setPending(true);
+    destroy(id)
+      .then(({ message, ok }) => {
+        if (ok) {
           onClose();
-        });
-    });
-  };
-  const handleClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-    onOpen({
-      title: t("form.destroy.title"),
-      description: t("form.destroy.description"),
-      onConfirm,
-      isPending,
-    });
+          toast.success(message);
+          router.push("/admin/staffs");
+        } else {
+          toast.error(message);
+        }
+      })
+      .catch((error) => {
+        toast.error(t("status.failure.destroy"));
+      })
+      .finally(() => {
+        onClose();
+      });
   };
 
   return (
     <Button
       variant={"destroy"}
       className="w-full"
-      onClick={handleClick}
+      onClick={(e) => {
+        e.stopPropagation();
+        onOpen({
+          title: t("form.destroy.title"),
+          description: t("form.destroy.description"),
+          onConfirm,
+        });
+      }}
       size={"sm"}
       disabled={isSuperAdmin}
     >

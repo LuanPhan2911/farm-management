@@ -1,5 +1,8 @@
 "use client";
-import { DynamicDialog } from "@/components/dialog/dynamic-dialog";
+import {
+  DynamicDialog,
+  DynamicDialogFooter,
+} from "@/components/dialog/dynamic-dialog";
 import { Button } from "@/components/ui/button";
 import { PesticideSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
@@ -7,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { PesticideType, UnitType, ToxicityLevel } from "@prisma/client";
 import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -20,13 +23,11 @@ import {
 } from "@/components/ui/form";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
-import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { SelectOptions } from "@/components/form/select-options";
 import { PesticideTable } from "@/types";
 import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { edit } from "@/actions/pesticide";
 import { Textarea } from "@/components/ui/textarea";
-import { convertNullToUndefined } from "@/lib/utils";
 
 interface PesticideEditButtonProps {
   data: PesticideTable;
@@ -41,11 +42,12 @@ export const PesticideEditButton = ({
   return (
     <Button
       className="w-full"
-      onClick={() =>
+      onClick={(e) => {
+        e.stopPropagation();
         onOpen("pesticide.edit", {
           pesticide: data,
-        })
-      }
+        });
+      }}
       size={"sm"}
       variant={"edit"}
     >
@@ -65,16 +67,11 @@ export const PesticideEditDialog = () => {
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: useMemo(() => {
-      return data.pesticide
-        ? convertNullToUndefined(data.pesticide)
-        : undefined;
-    }, [data.pesticide]),
   });
   const [id, setId] = useState("");
   useEffect(() => {
     if (data?.pesticide) {
-      form.reset(convertNullToUndefined(data.pesticide));
+      form.reset(data.pesticide);
       setId(data.pesticide.id);
     }
   }, [data, form]);
@@ -115,7 +112,8 @@ export const PesticideEditDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("name.placeholder")}
-                    {...field}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
                     disabled={isPending}
                   />
                 </FormControl>
@@ -185,7 +183,8 @@ export const PesticideEditDialog = () => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("recommendedDosage.placeholder")}
-                        {...field}
+                        value={field.value || undefined}
+                        onChange={field.onChange}
                         disabled={isPending}
                         type="number"
                       />
@@ -234,7 +233,8 @@ export const PesticideEditDialog = () => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("withdrawalPeriod.placeholder")}
-                        {...field}
+                        value={field.value || undefined}
+                        onChange={field.onChange}
                         disabled={isPending}
                         type="number"
                       />
@@ -282,7 +282,8 @@ export const PesticideEditDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("applicationMethod.placeholder")}
-                    {...field}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
                     disabled={isPending}
                   />
                 </FormControl>
@@ -299,7 +300,8 @@ export const PesticideEditDialog = () => {
                 <div className="flex gap-x-2">
                   <FormControl>
                     <Textarea
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                       placeholder={tSchema("ingredient.placeholder")}
                     />
@@ -319,7 +321,8 @@ export const PesticideEditDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("manufacturer.placeholder")}
-                    {...field}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
                     disabled={isPending}
                   />
                 </FormControl>
@@ -327,16 +330,7 @@ export const PesticideEditDialog = () => {
               </FormItem>
             )}
           />
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="secondary">
-                Close
-              </Button>
-            </DialogClose>
-            <Button type="submit" disabled={isPending}>
-              Submit
-            </Button>
-          </DialogFooter>
+          <DynamicDialogFooter disabled={isPending} />
         </form>
       </Form>
     </DynamicDialog>

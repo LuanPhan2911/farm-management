@@ -1,11 +1,10 @@
 "use client";
 import { DataTable } from "@/components/datatable";
 import { DataTableColumnHeader } from "@/components/datatable/datatable-column-header";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import { Checkbox } from "@radix-ui/react-checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
-import { FieldCreateButton } from "./field-create-button";
 import { FieldTable } from "@/types";
 import { FieldsTableAction } from "./fields-table-action";
 import { UnitWithValue } from "../../../_components/unit-with-value";
@@ -15,6 +14,7 @@ import { SoilType } from "@prisma/client";
 interface FieldsDataTableProps {
   data: FieldTable[];
 }
+
 export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
   const t = useTranslations("fields");
   const router = useRouter();
@@ -152,25 +152,15 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
     router.push(`/admin/fields/detail/${item.id}`);
   };
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("page.title")}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="flex justify-end">
-          <FieldCreateButton />
-        </div>
-        <DataTable
-          columns={columns}
-          data={data}
-          searchable={{
-            value: "name",
-            placeholder: t("search.placeholder"),
-          }}
-          onViewDetail={onViewDetail}
-          facetedFilters={facetedFilters}
-        />
-      </CardContent>
-    </Card>
+    <DataTable
+      columns={columns}
+      data={data}
+      searchable={{
+        value: "name",
+        placeholder: t("search.placeholder"),
+      }}
+      onViewDetail={onViewDetail}
+      facetedFilters={facetedFilters}
+    />
   );
 };

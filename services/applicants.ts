@@ -7,8 +7,8 @@ type ApplicantParams = {
   email: string;
   phone: string;
   address: string;
-  note?: string | undefined;
   jobId: string;
+  note?: string | null;
 };
 export const getApplicants = async ({
   jobId,
