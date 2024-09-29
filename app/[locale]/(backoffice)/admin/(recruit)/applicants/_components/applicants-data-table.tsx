@@ -1,6 +1,6 @@
 "use client";
 import { DataTable } from "@/components/datatable";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import { useTranslations } from "next-intl";
 
 import { Checkbox } from "@/components/ui/checkbox";
@@ -14,34 +14,38 @@ import { destroyMany } from "@/actions/applicant";
 import { toast } from "sonner";
 import { ApplicantStatus } from "@prisma/client";
 import { Badge } from "@/components/ui/badge";
-import { JobSelectWithQueryClient } from "../../../_components/jobs-select";
-import { useTransition } from "react";
 import { ApplicantTable } from "@/types";
+import { useDialog } from "@/stores/use-dialog";
 
 interface ApplicantsTableProps {
   applicants: ApplicantTable[];
 }
 export const ApplicantsTable = ({ applicants }: ApplicantsTableProps) => {
   const t = useTranslations("applicants");
-  const [isPending, startTransition] = useTransition();
-  const { onOpen, onClose } = useAlertDialog();
+
+  const { onOpen, onClose, setPending } = useAlertDialog();
+  const { onOpen: onOpenModal } = useDialog();
   const handleConfirm = (rows: ApplicantTable[]) => {
-    startTransition(() => {
-      const ids = rows.map((row) => row.id);
-      destroyMany(ids)
-        .then(({ message, ok }) => {
-          if (ok) {
-            toast.success(message);
-          } else {
-            toast.error(message);
-          }
-        })
-        .catch((error: Error) => {
-          toast.error(t("status.failure.destroy"));
-        })
-        .finally(() => {
-          onClose();
-        });
+    setPending(true);
+    const ids = rows.map((row) => row.id);
+    destroyMany(ids)
+      .then(({ message, ok }) => {
+        if (ok) {
+          toast.success(message);
+        } else {
+          toast.error(message);
+        }
+      })
+      .catch((error: Error) => {
+        toast.error(t("status.failure.destroy"));
+      })
+      .finally(() => {
+        onClose();
+      });
+  };
+  const handleCreateStaff = (data: ApplicantTable) => {
+    onOpenModal("applicant.createStaff", {
+      applicant: data,
     });
   };
   const columns: ColumnDef<ApplicantTable>[] = [
@@ -135,13 +139,12 @@ export const ApplicantsTable = ({ applicants }: ApplicantsTableProps) => {
 
   const bulkActions = [
     {
-      label: t("form.destroySelected.label"),
+      label: t("form.destroyMany.label"),
       action: (rows: ApplicantTable[]) => {
         onOpen({
-          title: t("form.destroySelected.title"),
-          description: t("form.destroySelected.description"),
+          title: t("form.destroyMany.title"),
+          description: t("form.destroyMany.description"),
           onConfirm: () => handleConfirm(rows),
-          isPending,
         });
       },
     },
@@ -160,23 +163,16 @@ export const ApplicantsTable = ({ applicants }: ApplicantsTableProps) => {
   ];
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("page.title")}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <JobSelectWithQueryClient />
-        <DataTable
-          columns={columns}
-          data={applicants}
-          searchable={{
-            value: "email",
-            placeholder: t("search.placeholder"),
-          }}
-          bulkActions={bulkActions}
-          facetedFilters={facetedFilters}
-        />
-      </CardContent>
-    </Card>
+    <DataTable
+      columns={columns}
+      data={applicants}
+      searchable={{
+        value: "email",
+        placeholder: t("search.placeholder"),
+      }}
+      bulkActions={bulkActions}
+      facetedFilters={facetedFilters}
+      onViewDetail={handleCreateStaff}
+    />
   );
 };

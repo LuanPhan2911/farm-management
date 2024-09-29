@@ -2,14 +2,13 @@
 
 import { create } from "@/actions/fertilizer";
 import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
+import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 import { SelectOptions } from "@/components/form/select-options";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -30,7 +29,7 @@ import { FertilizerType, Frequency, UnitType } from "@prisma/client";
 
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useRef, useTransition } from "react";
+import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -40,7 +39,6 @@ export const FertilizerCreateButton = () => {
   const t = useTranslations("fertilizers");
   const formSchema = FertilizerSchema(tSchema);
   const [isPending, startTransition] = useTransition();
-  const closeRef = useRef<HTMLButtonElement>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -55,7 +53,7 @@ export const FertilizerCreateButton = () => {
         .then(({ message, ok }) => {
           if (ok) {
             form.reset();
-            closeRef.current?.click();
+
             toast.success(message);
           } else {
             toast.error(message);
@@ -93,7 +91,8 @@ export const FertilizerCreateButton = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("name.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -110,7 +109,8 @@ export const FertilizerCreateButton = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("nutrientOfNPK.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -157,7 +157,8 @@ export const FertilizerCreateButton = () => {
                             placeholder={tSchema(
                               "recommendedDosage.placeholder"
                             )}
-                            {...field}
+                            value={field.value || undefined}
+                            onChange={field.onChange}
                             disabled={isPending}
                             type="number"
                           />
@@ -208,7 +209,8 @@ export const FertilizerCreateButton = () => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("applicationMethod.placeholder")}
-                        {...field}
+                        value={field.value || undefined}
+                        onChange={field.onChange}
                         disabled={isPending}
                       />
                     </FormControl>
@@ -251,7 +253,8 @@ export const FertilizerCreateButton = () => {
                   <div className="flex gap-x-2">
                     <FormControl>
                       <Textarea
-                        {...field}
+                        value={field.value || undefined}
+                        onChange={field.onChange}
                         disabled={isPending}
                         placeholder={tSchema("composition.placeholder")}
                       />
@@ -271,7 +274,8 @@ export const FertilizerCreateButton = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("manufacturer.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -280,16 +284,7 @@ export const FertilizerCreateButton = () => {
               )}
             />
 
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button type="button" variant="secondary" ref={closeRef}>
-                  Close
-                </Button>
-              </DialogClose>
-              <Button type="submit" disabled={isPending}>
-                Submit
-              </Button>
-            </DialogFooter>
+            <DynamicDialogFooter disabled={isPending} />
           </form>
         </Form>
       </DialogContent>

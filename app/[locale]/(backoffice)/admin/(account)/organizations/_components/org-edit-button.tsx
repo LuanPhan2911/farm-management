@@ -1,5 +1,6 @@
 "use client";
 import { edit, editLogo } from "@/actions/organization";
+import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 import { InputClipboard } from "@/components/form/input-clipboard";
 import { Button } from "@/components/ui/button";
 import {
@@ -84,8 +85,6 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
               }
             })
             .catch((error: Error) => {
-              console.log(error);
-
               toast.error(t("status.failure.editLogo"));
             });
         });
@@ -108,7 +107,8 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
               <FormControl>
                 <Input
                   placeholder={tSchema("name.placeholder")}
-                  {...field}
+                  value={field.value || undefined}
+                  onChange={field.onChange}
                   disabled={isPending}
                 />
               </FormControl>
@@ -126,7 +126,8 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
               <FormControl>
                 <Input
                   placeholder={tSchema("slug.placeholder")}
-                  {...field}
+                  value={field.value || undefined}
+                  onChange={field.onChange}
                   disabled={isPending}
                 />
               </FormControl>
@@ -146,11 +147,7 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
           <FileUploader handleChange={onUpload} types={["JPG", "PNG"]} />
         </FormItem>
 
-        <div className="ml-auto">
-          <Button type="submit" disabled={isPending}>
-            Submit
-          </Button>
-        </div>
+        <DynamicDialogFooter disabled={isPending} closeButton={false} />
       </form>
     </Form>
   );

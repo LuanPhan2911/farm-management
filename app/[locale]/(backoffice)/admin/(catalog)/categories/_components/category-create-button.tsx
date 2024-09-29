@@ -5,10 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -27,20 +25,21 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useEffect, useRef, useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import { create } from "@/actions/category";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import slugify from "slugify";
 import { SelectOptions } from "@/components/form/select-options";
 import { CategoryType } from "@prisma/client";
+import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 
 export const CategoryCreateButton = () => {
   const tSchema = useTranslations("categories.schema");
   const formSchema = CategorySchema(tSchema);
   const t = useTranslations("categories");
   const [isPending, startTransition] = useTransition();
-  const closeRef = useRef<HTMLButtonElement>(null);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -62,7 +61,6 @@ export const CategoryCreateButton = () => {
         .then(({ message, ok }) => {
           if (ok) {
             toast.success(message);
-            closeRef.current?.click();
           } else {
             toast.error(message);
           }
@@ -99,7 +97,8 @@ export const CategoryCreateButton = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("name.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -117,7 +116,8 @@ export const CategoryCreateButton = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("slug.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -160,7 +160,8 @@ export const CategoryCreateButton = () => {
                   <FormControl>
                     <Textarea
                       placeholder={tSchema("description.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -170,16 +171,7 @@ export const CategoryCreateButton = () => {
               )}
             />
 
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button type="button" variant="secondary" ref={closeRef}>
-                  Cancel
-                </Button>
-              </DialogClose>
-              <Button type="submit" disabled={isPending}>
-                Submit
-              </Button>
-            </DialogFooter>
+            <DynamicDialogFooter disabled={isPending} />
           </form>
         </Form>
       </DialogContent>

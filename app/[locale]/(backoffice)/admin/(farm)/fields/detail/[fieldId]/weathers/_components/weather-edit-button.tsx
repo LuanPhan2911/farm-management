@@ -1,5 +1,8 @@
 "use client";
-import { DynamicDialog } from "@/components/dialog/dynamic-dialog";
+import {
+  DynamicDialog,
+  DynamicDialogFooter,
+} from "@/components/dialog/dynamic-dialog";
 import { Button } from "@/components/ui/button";
 import { WeatherSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
@@ -20,7 +23,6 @@ import {
 } from "@/components/ui/form";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
-import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { SelectOptions } from "@/components/form/select-options";
 import { WeatherTable } from "@/types";
 import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
@@ -67,14 +69,12 @@ export const WeatherEditDialog = () => {
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: useMemo(() => {
-      return !!data.weather ? convertNullToUndefined(data.weather) : undefined;
-    }, [data.weather]),
   });
   const [id, setId] = useState("");
   useEffect(() => {
     if (data?.weather) {
-      form.reset(convertNullToUndefined(data.weather));
+      form.reset(data.weather);
+
       setId(data.weather.id);
     }
   }, [data, form]);
@@ -82,6 +82,7 @@ export const WeatherEditDialog = () => {
     if (!id) {
       return;
     }
+
     startTransition(() => {
       edit(values, id)
         .then(({ message, ok }) => {
@@ -144,7 +145,8 @@ export const WeatherEditDialog = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("temperature.placeholder")}
-                          {...field}
+                          value={field.value || undefined}
+                          onChange={field.onChange}
                           disabled={isPending}
                           type="number"
                         />
@@ -189,7 +191,8 @@ export const WeatherEditDialog = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("humidity.placeholder")}
-                          {...field}
+                          value={field.value || undefined}
+                          onChange={field.onChange}
                           disabled={isPending}
                           type="number"
                         />
@@ -240,7 +243,8 @@ export const WeatherEditDialog = () => {
                           placeholder={tSchema(
                             "atmosphericPressure.placeholder"
                           )}
-                          {...field}
+                          value={field.value || undefined}
+                          onChange={field.onChange}
                           disabled={isPending}
                           type="number"
                         />
@@ -291,7 +295,8 @@ export const WeatherEditDialog = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("rainfall.placeholder")}
-                          {...field}
+                          value={field.value || undefined}
+                          onChange={field.onChange}
                           disabled={isPending}
                           type="number"
                         />
@@ -335,7 +340,8 @@ export const WeatherEditDialog = () => {
                 <div className="flex gap-x-2">
                   <FormControl>
                     <Textarea
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                       placeholder={tSchema("note.placeholder")}
                     />
@@ -346,16 +352,7 @@ export const WeatherEditDialog = () => {
             )}
           />
 
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="secondary">
-                Close
-              </Button>
-            </DialogClose>
-            <Button type="submit" disabled={isPending}>
-              Submit
-            </Button>
-          </DialogFooter>
+          <DynamicDialogFooter disabled={isPending} />
         </form>
       </Form>
     </DynamicDialog>

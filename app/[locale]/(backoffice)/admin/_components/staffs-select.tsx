@@ -28,6 +28,7 @@ import { QueryProvider } from "@/components/providers/query-provider";
 import { UserAvatar } from "@/components/user-avatar";
 import { StaffMetadataRole } from "./staff-metadata-role";
 import { StaffRole } from "@prisma/client";
+import ReactSelect, { MultiValue } from "react-select";
 interface StaffSelectItemProps {
   imageUrl: string | undefined | null;
   name: string;
@@ -75,7 +76,7 @@ interface StaffsSelectProps {
   errorLabel: string;
 }
 
-function StaffsSelect({
+const StaffsSelect = ({
   queryKey,
   defaultValue,
   disabled,
@@ -84,7 +85,7 @@ function StaffsSelect({
   errorLabel,
   queryFn,
   onChange,
-}: StaffsSelectProps) {
+}: StaffsSelectProps) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(defaultValue || "");
   const { data, isPending, isError, refetch } = useQuery({
@@ -162,9 +163,78 @@ function StaffsSelect({
       </PopoverContent>
     </Popover>
   );
+};
+interface StaffsSelectMultipleProps {
+  onChange: (value: string) => void;
+  disabled?: boolean;
+  label: string;
+  notFound: string;
+  errorLabel: string;
+  defaultValue?: string;
+  className?: string;
 }
+const StaffsSelectMultiple = ({
+  defaultValue,
+  disabled,
+  label,
+  notFound,
+  errorLabel,
+  onChange,
+  className,
+}: StaffsSelectMultipleProps) => {
+  const { data, isPending, isError, refetch } = useQuery({
+    queryKey: ["staffs_select"],
+    queryFn: async () => {
+      const res = await fetch("/api/staffs/select");
+      return (await res.json()) as Staff[];
+    },
+  });
+  const handleChange = (
+    newValue: MultiValue<{
+      label: string;
+      value: string;
+    }>
+  ) => {
+    const result = JSON.stringify(newValue.map((item) => item.value));
+    onChange(result);
+  };
+  if (isPending) {
+    return <Skeleton className="w-full h-12"></Skeleton>;
+  }
+  if (isError) {
+    return <ErrorButton title={errorLabel} refresh={refetch} />;
+  }
+  const options = data.map((item) => {
+    return {
+      label: item.email,
+      value: item.email,
+    };
+  });
+  return (
+    <ReactSelect
+      placeholder={label}
+      options={options}
+      onChange={handleChange}
+      isDisabled={disabled}
+      className={cn("my-react-select-container", className)}
+      classNamePrefix="my-react-select"
+      isMulti
+      noOptionsMessage={() => notFound}
+    />
+  );
+};
 
-export const StaffSelectWithQueryClient = (props: StaffsSelectProps) => {
+export const StaffsSelectMultipleWithQueryClient = (
+  props: StaffsSelectMultipleProps
+) => {
+  return (
+    <QueryProvider>
+      <StaffsSelectMultiple {...props} />
+    </QueryProvider>
+  );
+};
+
+export const StaffsSelectWithQueryClient = (props: StaffsSelectProps) => {
   return (
     <QueryProvider>
       <StaffsSelect {...props} />

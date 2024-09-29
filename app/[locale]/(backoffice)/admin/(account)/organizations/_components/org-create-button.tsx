@@ -3,10 +3,8 @@ import { create } from "@/actions/organization";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -25,16 +23,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useRef, useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import slugify from "slugify";
 import { toast } from "sonner";
 import { z } from "zod";
-import { StaffSelectWithQueryClient } from "../../../_components/staffs-select";
+import { StaffsSelectWithQueryClient } from "../../../_components/staffs-select";
+import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 interface OrgCreateButtonProps {}
 
 export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
-  const closeRef = useRef<HTMLButtonElement>(null);
   const t = useTranslations("organizations");
   const tSchema = useTranslations("organizations.schema");
   const formSchema = OrganizationSchema(tSchema);
@@ -64,7 +62,7 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
         .then(({ message, ok }) => {
           if (ok) {
             form.reset();
-            closeRef.current?.click();
+
             toast.success(message);
           } else {
             toast.error(message);
@@ -76,7 +74,7 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
     });
   };
   const fetchCreatedByOrg = async () => {
-    const res = await fetch("/api/staffs/created_by_org");
+    const res = await fetch("/api/staffs/contain_admin");
     return await res.json();
   };
   return (
@@ -108,7 +106,8 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("name.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -126,7 +125,8 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("slug.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -143,8 +143,8 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
                   <FormLabel>{tSchema("createdBy.label")}</FormLabel>
                   <FormControl>
                     <div className="block">
-                      <StaffSelectWithQueryClient
-                        queryKey={["org_created_by"]}
+                      <StaffsSelectWithQueryClient
+                        queryKey={["staffs_contain_admin"]}
                         queryFn={fetchCreatedByOrg}
                         defaultValue={field.value}
                         onChange={field.onChange}
@@ -161,16 +161,7 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
               )}
             />
 
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button type="button" variant="secondary" ref={closeRef}>
-                  Close
-                </Button>
-              </DialogClose>
-              <Button type="submit" disabled={isPending}>
-                Submit
-              </Button>
-            </DialogFooter>
+            <DynamicDialogFooter disabled={isPending} />
           </form>
         </Form>
       </DialogContent>

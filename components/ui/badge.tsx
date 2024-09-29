@@ -21,6 +21,7 @@ const badgeVariants = cva(
         info: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
         cyanToBlue:
           "text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl",
+        edit: "bg-yellow-100 text-yellow-800 dark:bg-gray-700 dark:text-yellow-300 border border-yellow-300",
       },
     },
     defaultVariants: {

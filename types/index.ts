@@ -68,6 +68,10 @@ export type UnitSelect = {
   id: string;
   name: string;
 };
+export type UnusedUnitCount = {
+  floatUnit: number;
+  intUnit: number;
+};
 export type CategorySelect = {
   id: string;
   name: string;
@@ -92,28 +96,28 @@ export type WeatherTable = Weather & {
     | (FloatUnit & {
         unit: {
           name: string;
-        };
+        } | null;
       })
     | null;
   humidity:
     | (IntUnit & {
         unit: {
           name: string;
-        };
+        } | null;
       })
     | null;
   atmosphericPressure:
     | (FloatUnit & {
         unit: {
           name: string;
-        };
+        } | null;
       })
     | null;
   rainfall:
     | (IntUnit & {
         unit: {
           name: string;
-        };
+        } | null;
       })
     | null;
 };
@@ -130,28 +134,28 @@ export type WeatherChart = {
     | (FloatUnit & {
         unit: {
           name: string;
-        };
+        } | null;
       })
     | null;
   humidity:
     | (IntUnit & {
         unit: {
           name: string;
-        };
+        } | null;
       })
     | null;
   atmosphericPressure:
     | (FloatUnit & {
         unit: {
           name: string;
-        };
+        } | null;
       })
     | null;
   rainfall:
     | (IntUnit & {
         unit: {
           name: string;
-        };
+        } | null;
       })
     | null;
 };
@@ -165,7 +169,7 @@ export type SoilTable = Soil & {
     | (IntUnit & {
         unit: {
           name: string;
-        };
+        } | null;
       })
     | null;
   nutrientUnit: {
@@ -185,7 +189,7 @@ export type SoilChart = {
     | (IntUnit & {
         unit: {
           name: string;
-        };
+        } | null;
       })
     | null;
 };
@@ -195,21 +199,21 @@ export type PlantTable = Plant & {
     | (FloatUnit & {
         unit: {
           name: string;
-        };
+        } | null;
       })
     | null;
   idealHumidity:
     | (IntUnit & {
         unit: {
           name: string;
-        };
+        } | null;
       })
     | null;
   waterRequirement:
     | (FloatUnit & {
         unit: {
           name: string;
-        };
+        } | null;
       })
     | null;
 };
@@ -223,7 +227,7 @@ export type FertilizerTable = Fertilizer & {
     | (FloatUnit & {
         unit: {
           name: string;
-        };
+        } | null;
       })
     | null;
 };
@@ -241,14 +245,14 @@ export type PesticideTable = Pesticide & {
     | (FloatUnit & {
         unit: {
           name: string;
-        };
+        } | null;
       })
     | null;
   withdrawalPeriod:
     | (IntUnit & {
         unit: {
           name: string;
-        };
+        } | null;
       })
     | null;
 };
@@ -267,9 +271,14 @@ export type EquipmentTable = Equipment & {
     | (FloatUnit & {
         unit: {
           name: string;
-        };
+        } | null;
       })
     | null;
+};
+export type EquipmentSelect = {
+  id: string;
+  name: string;
+  imageUrl: string | null;
 };
 
 export type EquipmentTypeCount = {
@@ -282,18 +291,57 @@ export type CropTable = Crop & {
     | (FloatUnit & {
         unit: {
           name: string;
-        };
+        } | null;
       })
     | null;
   estimatedYield:
     | (FloatUnit & {
         unit: {
           name: string;
-        };
+        } | null;
       })
     | null;
   plant: {
     id: string;
     name: string;
   };
+};
+export type TaskStatus = "queued" | "working" | "success" | "failure";
+export type TaskResponse = {
+  id: string;
+  name: string | null;
+  queue: string;
+  status: TaskStatus;
+  request: {
+    url: string;
+    headers: Record<string, any> | null;
+    body: string | null;
+  };
+  scheduled_for: string | null;
+  created_at: string;
+};
+
+export type EmailBody = {
+  subject: string;
+  receivers: string[];
+  sender: string;
+  contents: string[];
+};
+
+export type ScheduleResponse = {
+  id: string;
+  name: string | null;
+  description: string | null;
+  queue: string;
+  request: {
+    url: string;
+    headers: Record<string, any> | null;
+    body: string | null;
+  };
+  cron: string | null;
+  rrule: string | null;
+  dtstart: string | null;
+  paused: boolean;
+  scheduled_for: string | null;
+  created_at: string;
 };

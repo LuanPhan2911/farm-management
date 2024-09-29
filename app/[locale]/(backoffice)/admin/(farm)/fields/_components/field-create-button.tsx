@@ -31,6 +31,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 
 export const FieldCreateButton = () => {
   const t = useTranslations("fields.form");
@@ -90,7 +91,8 @@ export const FieldCreateForm = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("name.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -108,7 +110,8 @@ export const FieldCreateForm = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("location.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -172,7 +175,8 @@ export const FieldCreateForm = () => {
 
                     <FormControl>
                       <Input
-                        {...field}
+                        value={field.value || undefined}
+                        onChange={field.onChange}
                         type="number"
                         placeholder={tSchema("height.placeholder")}
                       />
@@ -191,7 +195,8 @@ export const FieldCreateForm = () => {
 
                     <FormControl>
                       <Input
-                        {...field}
+                        value={field.value || undefined}
+                        onChange={field.onChange}
                         type="number"
                         placeholder={tSchema("width.placeholder")}
                       />
@@ -210,7 +215,8 @@ export const FieldCreateForm = () => {
 
                     <FormControl>
                       <Input
-                        {...field}
+                        value={field.value || undefined}
+                        onChange={field.onChange}
                         type="number"
                         placeholder={tSchema("area.placeholder")}
                       />
@@ -230,7 +236,8 @@ export const FieldCreateForm = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("shape.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -264,9 +271,7 @@ export const FieldCreateForm = () => {
               )}
             />
 
-            <Button type="submit" disabled={isPending}>
-              Submit
-            </Button>
+            <DynamicDialogFooter disabled={isPending} closeButton={false} />
           </form>
         </Form>
       </CardContent>

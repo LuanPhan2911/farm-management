@@ -1,14 +1,7 @@
 "use client";
 
 import { ClipboardButton } from "@/components/buttons/clipboard-button";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+
 import {
   Form,
   FormControl,
@@ -22,7 +15,7 @@ import { UserSchema } from "@/schemas";
 import { User } from "@clerk/nextjs/server";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { useEffect, useTransition } from "react";
+import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -30,6 +23,7 @@ import { Separator } from "@/components/ui/separator";
 import { StaffInfo } from "./staff-info";
 import { edit } from "@/actions/staff";
 import { getEmailAddress } from "@/lib/utils";
+import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 
 interface StaffBasicInfoProps {
   data: User;
@@ -66,126 +60,121 @@ export const StaffBasicInfo = ({ data }: StaffBasicInfoProps) => {
     });
   };
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("page.detail.title")}</CardTitle>
-        <CardDescription>{t("page.detail.description")}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <StaffInfo data={data} />
-        <Separator className="my-4" />
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormItem>
-              <FormLabel>{tSchema("id.label")}</FormLabel>
-              <div className="flex gap-x-2">
-                <Input
-                  placeholder={tSchema("id.placeholder")}
-                  value={data.id}
-                  disabled={true}
-                />
-                <ClipboardButton value={data.id} />
-              </div>
-            </FormItem>
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("email.label")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={tSchema("email.placeholder")}
-                      {...field}
-                      disabled={true}
-                    />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="firstName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("firstName.label")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={tSchema("firstName.placeholder")}
-                      {...field}
-                      disabled={isPending}
-                    />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="lastName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("lastName.label")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={tSchema("lastName.placeholder")}
-                      {...field}
-                      disabled={isPending}
-                    />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="address"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("address.label")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={tSchema("address.placeholder")}
-                      {...field}
-                      disabled={isPending}
-                    />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("phone.label")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={tSchema("phone.placeholder")}
-                      {...field}
-                      disabled={isPending}
-                    />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="flex gap-x-2 justify-center">
-              <Button type="submit" disabled={isPending}>
-                Submit
-              </Button>
+    <>
+      <StaffInfo data={data} />
+      <Separator className="my-4" />
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormItem>
+            <FormLabel>{tSchema("id.label")}</FormLabel>
+            <div className="flex gap-x-2">
+              <Input
+                placeholder={tSchema("id.placeholder")}
+                value={data.id}
+                disabled={true}
+              />
+              <ClipboardButton value={data.id} />
             </div>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+          </FormItem>
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("email.label")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={tSchema("email.placeholder")}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
+                    disabled={true}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="firstName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("firstName.label")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={tSchema("firstName.placeholder")}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
+                    disabled={isPending}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="lastName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("lastName.label")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={tSchema("lastName.placeholder")}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
+                    disabled={isPending}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="address"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("address.label")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={tSchema("address.placeholder")}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
+                    disabled={isPending}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="phone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("phone.label")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={tSchema("phone.placeholder")}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
+                    disabled={isPending}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <DynamicDialogFooter disabled={isPending} closeButton={false} />
+        </form>
+      </Form>
+    </>
   );
 };

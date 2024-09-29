@@ -12,14 +12,14 @@ import { PlantSelect } from "@/types";
 
 type PlantParams = {
   name: string;
-  imageUrl?: string;
   categoryId: string;
   growthDuration: string;
-  season?: Season;
-  idealTemperature?: Partial<UnitValue>;
-  idealHumidity?: Partial<UnitValue>;
-  waterRequirement?: Partial<UnitValue>;
   fertilizerType: FertilizerType;
+  imageUrl?: string | null;
+  season?: Season | null;
+  idealTemperature?: Partial<UnitValue> | null;
+  idealHumidity?: Partial<UnitValue> | null;
+  waterRequirement?: Partial<UnitValue> | null;
 };
 export const createPlant = async (params: PlantParams) => {
   return await db.$transaction(async (ctx) => {
@@ -90,10 +90,6 @@ export const updatePlant = async (id: string, params: PlantParams) => {
 export const deletePlant = async (id: string) => {
   return await db.$transaction(async (ctx) => {
     const plant = await ctx.plant.delete({ where: { id } });
-    await deleteFloatUnit(ctx, plant.idealTemperatureId);
-    await deleteIntUnit(ctx, plant.idealHumidityId);
-    await deleteFloatUnit(ctx, plant.waterRequirementId);
-
     return plant;
   });
 };

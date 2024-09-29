@@ -9,17 +9,15 @@ import {
 } from "@/components/ui/form";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useTranslations } from "next-intl";
 import { ApplicantSchema } from "@/schemas";
-import { useEffect, useRef, useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { create } from "@/actions/applicant";
@@ -28,6 +26,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@clerk/nextjs";
+import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 
 interface JobApplyButtonProps {
   jobId: string;
@@ -37,7 +36,7 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
   const t = useTranslations("applicants");
   const formSchema = ApplicantSchema(tSchema);
   const [isPending, startTransition] = useTransition();
-  const closeRef = useRef<HTMLButtonElement>(null);
+
   const { user } = useUser();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -61,7 +60,7 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
       create(values, jobId)
         .then(({ message }) => {
           form.reset();
-          closeRef.current?.click();
+
           toast.success(message);
         })
         .catch((error: Error) => {
@@ -90,7 +89,8 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("name.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -108,7 +108,8 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("email.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -126,7 +127,8 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("phone.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -144,7 +146,8 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("address.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -162,7 +165,8 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
                   <FormControl>
                     <Textarea
                       placeholder={tSchema("note.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -172,16 +176,7 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
               )}
             />
 
-            <DialogFooter className="gap-2">
-              <DialogClose asChild>
-                <Button type="button" variant="secondary" ref={closeRef}>
-                  Close
-                </Button>
-              </DialogClose>
-              <Button type="submit" disabled={isPending}>
-                Submit
-              </Button>
-            </DialogFooter>
+            <DynamicDialogFooter disabled={isPending} />
           </form>
         </Form>
       </DialogContent>

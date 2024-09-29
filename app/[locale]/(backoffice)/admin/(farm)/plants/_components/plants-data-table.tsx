@@ -4,13 +4,10 @@ import { PlantTable } from "@/types";
 import { Checkbox } from "@radix-ui/react-checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
-import { EnumValue } from "../../../_components/enum-value";
 import { UserAvatar } from "@/components/user-avatar";
-import { UnitWithValue } from "../../../_components/unit-with-value";
 import { PlantsTableAction } from "./plants-table-action";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import { DataTable } from "@/components/datatable";
-import { PlantCreateButton } from "./plant-create-button";
 import { useRouter } from "@/navigation";
 import { FertilizerType, Season } from "@prisma/client";
 
@@ -151,25 +148,15 @@ export const PlantsDataTable = ({ data }: PlantsDataTableProps) => {
     router.push(`/admin/plants/detail/${data.id}`);
   };
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("page.title")}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="flex justify-end">
-          <PlantCreateButton />
-        </div>
-        <DataTable
-          columns={columns}
-          data={data}
-          searchable={{
-            value: "name",
-            placeholder: t("search.placeholder"),
-          }}
-          onViewDetail={onViewDetail}
-          facetedFilters={facetedFilters}
-        />
-      </CardContent>
-    </Card>
+    <DataTable
+      columns={columns}
+      data={data}
+      searchable={{
+        value: "name",
+        placeholder: t("search.placeholder"),
+      }}
+      onViewDetail={onViewDetail}
+      facetedFilters={facetedFilters}
+    />
   );
 };

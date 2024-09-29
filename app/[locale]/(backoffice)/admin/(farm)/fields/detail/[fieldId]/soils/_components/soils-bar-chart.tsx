@@ -42,7 +42,7 @@ export const SoilsBarChart = ({}: SoilsBarChartProps) => {
   const t = useTranslations("soils.chart");
 
   return (
-    <div className="flex flex-col gap-y-4 p-4 max-w-6xl border rounded-lg">
+    <div className="flex flex-col gap-y-4 p-4 border rounded-lg">
       <div className="flex justify-between">
         <DatePickerInRange
           dateRange={dateRange}

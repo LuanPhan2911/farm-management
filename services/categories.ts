@@ -2,9 +2,9 @@ import { db } from "@/lib/db";
 import { CategoryType } from "@prisma/client";
 type CategoryParams = {
   name: string;
-  description?: string;
   slug: string;
-  type?: CategoryType;
+  description?: string | null;
+  type?: CategoryType | null;
 };
 export const createCategory = async (params: CategoryParams) => {
   return await db.category.create({

@@ -41,16 +41,16 @@ enum UnitType {
 }
 
 model FloatUnit {
-  id     String @id @default(uuid())
-  value  Float
-  unitId String
-  unit   Unit   @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  id     String  @id @default(uuid())
+  value  Float?
+  unitId String?
+  unit   Unit?   @relation(fields: [unitId], references: [id], onDelete: SetNull)
 
-  tempuratures         Weather[] @relation(name: "temperature")
+  temperatures         Weather[] @relation(name: "temperature")
   atmosphericPressures Weather[] @relation(name: "atmosphericPressure")
 
   idealTemperatures Plant[]      @relation(name: "idealTemperature")
-  waterRequirments  Plant[]      @relation(name: "waterRequirement")
+  waterRequirements Plant[]      @relation(name: "waterRequirement")
   fertilizerDosages Fertilizer[] @relation(name: "fertilizerDosage")
   pesticideDosages  Pesticide[]  @relation(name: "pesticideDosage")
 
@@ -62,12 +62,12 @@ model FloatUnit {
 
 model IntUnit {
   id    String @id @default(uuid())
-  value Int
+  value Int?
 
-  unitId String
-  unit   Unit   @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  unitId String?
+  unit   Unit?   @relation(fields: [unitId], references: [id], onDelete: SetNull)
 
-  himidities Weather[] @relation(name: "humidity")
+  humidities Weather[] @relation(name: "humidity")
   moistures  Soil[]    @relation(name: "moisture")
 
   rainfalls         Weather[]   @relation(name: "rainfall")

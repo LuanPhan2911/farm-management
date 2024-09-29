@@ -18,29 +18,28 @@ interface SoilDeleteButtonProps {
 }
 export const SoilDeleteButton = ({ data, label }: SoilDeleteButtonProps) => {
   const { id } = data;
-  const { onOpen, onClose } = useAlertDialog();
-  const [isPending, startTransition] = useTransition();
+  const { onOpen, onClose, setPending } = useAlertDialog();
+
   const t = useTranslations("soils");
   const { isFarmer } = useCurrentStaffRole();
 
   const disabled = data.confirmed && isFarmer;
   const onConfirm = async () => {
-    startTransition(() => {
-      destroy(id)
-        .then(({ message, ok }) => {
-          if (ok) {
-            toast.success(message);
-          } else {
-            toast.error(message);
-          }
-        })
-        .catch((error: Error) => {
-          toast.error(t("status.failure.destroy"));
-        })
-        .finally(() => {
-          onClose();
-        });
-    });
+    setPending(true);
+    destroy(id)
+      .then(({ message, ok }) => {
+        if (ok) {
+          toast.success(message);
+        } else {
+          toast.error(message);
+        }
+      })
+      .catch((error: Error) => {
+        toast.error(t("status.failure.destroy"));
+      })
+      .finally(() => {
+        onClose();
+      });
   };
   return (
     <Button
@@ -51,7 +50,6 @@ export const SoilDeleteButton = ({ data, label }: SoilDeleteButtonProps) => {
           title: t("form.destroy.title"),
           description: t("form.destroy.description"),
           onConfirm,
-          isPending,
         });
       }}
       size={"sm"}
@@ -65,29 +63,28 @@ export const SoilDeleteButton = ({ data, label }: SoilDeleteButtonProps) => {
 };
 
 export const SoilDeleteManyUnConfirmedButton = () => {
-  const { onOpen, onClose } = useAlertDialog();
-  const [isPending, startTransition] = useTransition();
+  const { onOpen, onClose, setPending } = useAlertDialog();
+
   const params = useParams<{
     fieldId: string;
   }>();
   const t = useTranslations("soils");
   const onConfirm = async () => {
-    startTransition(() => {
-      destroyManyUnConfirmed(params.fieldId)
-        .then(({ message, ok }) => {
-          if (ok) {
-            toast.success(message);
-          } else {
-            toast.error(message);
-          }
-        })
-        .catch((error: Error) => {
-          toast.error(t("status.failure.destroyManyConfirmed"));
-        })
-        .finally(() => {
-          onClose();
-        });
-    });
+    setPending(true);
+    destroyManyUnConfirmed(params.fieldId)
+      .then(({ message, ok }) => {
+        if (ok) {
+          toast.success(message);
+        } else {
+          toast.error(message);
+        }
+      })
+      .catch((error: Error) => {
+        toast.error(t("status.failure.destroyManyConfirmed"));
+      })
+      .finally(() => {
+        onClose();
+      });
   };
   return (
     <Button
@@ -97,7 +94,6 @@ export const SoilDeleteManyUnConfirmedButton = () => {
           title: t("form.destroyManyConfirmed.title"),
           description: t("form.destroyManyConfirmed.description"),
           onConfirm,
-          isPending,
         });
       }}
       size={"sm"}

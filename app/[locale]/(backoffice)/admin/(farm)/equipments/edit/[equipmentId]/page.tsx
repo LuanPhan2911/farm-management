@@ -1,11 +1,5 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { getEquipmentById } from "@/services/equipments";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getEquipmentById, getEquipmentsSelect } from "@/services/equipments";
 
 import { notFound } from "next/navigation";
 import { EquipmentEditForm } from "../../_components/equipment-edit-button";
@@ -16,9 +10,25 @@ interface EquipmentEditPageProps {
     equipmentId: string;
   };
 }
+export async function generateMetadata() {
+  const t = await getTranslations("equipments.page.edit");
+  return {
+    title: t("title"),
+  };
+}
+
+export async function generateStaticParams() {
+  const equipments = await getEquipmentsSelect();
+  return equipments.map((item) => {
+    return {
+      equipmentId: item.id,
+    };
+  });
+}
+
 const EquipmentEditPage = async ({ params }: EquipmentEditPageProps) => {
   const data = await getEquipmentById(params.equipmentId);
-  const t = await getTranslations("equipments.form");
+  const t = await getTranslations("equipments.page.edit");
   if (!data) {
     notFound();
   }
@@ -26,8 +36,7 @@ const EquipmentEditPage = async ({ params }: EquipmentEditPageProps) => {
     <div className="flex flex-col gap-4 py-4 h-full">
       <Card>
         <CardHeader>
-          <CardTitle>{t("edit.title")}</CardTitle>
-          <CardDescription>{t("edit.description")}</CardDescription>
+          <CardTitle>{t("title")}</CardTitle>
         </CardHeader>
         <CardContent>
           <EquipmentEditForm data={data} />

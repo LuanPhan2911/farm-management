@@ -1,5 +1,5 @@
 "use client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import {
   Table,
   TableBody,
@@ -30,76 +30,71 @@ export const UsersTable = ({ data, totalPage }: UsersTableProps) => {
     router.push(`/admin/users/detail/${id}`);
   };
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("page.title")}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="py-4 flex gap-2 lg:flex-row flex-col items-start lg:items-center">
-          <SearchBar placeholder={t("search.placeholder")} isPagination />
-          <UsersTableSortBy />
-        </div>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead></TableHead>
-              <TableHead>{t("table.thead.name")}</TableHead>
-              <TableHead>{t("table.thead.lastSignedInAt")}</TableHead>
-              <TableHead>{t("table.thead.lastActiveAt")}</TableHead>
-              <TableHead>{t("table.thead.joinedAt")} </TableHead>
-              <TableHead></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data.map((user) => {
-              return (
-                <TableRow
-                  key={user.id}
-                  className="cursor-pointer"
-                  onClick={() => handleClick(user.id)}
-                >
-                  <TableCell>
-                    <UserAvatar
-                      src={user.imageUrl}
-                      size={"default"}
-                      className="rounded-full"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <div className="ml-4 space-y-1">
-                      <p className="text-sm font-medium leading-none">
-                        {getFullName(user) || t("table.trow.name")}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {getEmailAddress(user)}
-                      </p>
-                    </div>
-                  </TableCell>
+    <>
+      <div className="py-4 flex gap-2 lg:flex-row flex-col items-start lg:items-center">
+        <SearchBar placeholder={t("search.placeholder")} isPagination />
+        <UsersTableSortBy />
+      </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead></TableHead>
+            <TableHead>{t("table.thead.name")}</TableHead>
+            <TableHead>{t("table.thead.lastSignedInAt")}</TableHead>
+            <TableHead>{t("table.thead.lastActiveAt")}</TableHead>
+            <TableHead>{t("table.thead.joinedAt")} </TableHead>
+            <TableHead></TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {data.map((user) => {
+            return (
+              <TableRow
+                key={user.id}
+                className="cursor-pointer"
+                onClick={() => handleClick(user.id)}
+              >
+                <TableCell>
+                  <UserAvatar
+                    src={user.imageUrl}
+                    size={"default"}
+                    className="rounded-full"
+                  />
+                </TableCell>
+                <TableCell>
+                  <div className="ml-4 space-y-1">
+                    <p className="text-sm font-medium leading-none">
+                      {getFullName(user) || t("table.trow.name")}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {getEmailAddress(user)}
+                    </p>
+                  </div>
+                </TableCell>
 
-                  <TableCell>
-                    {user.lastSignInAt
-                      ? relativeTime(user.lastSignInAt)
-                      : t("table.trow.lastSignedInAt")}
-                  </TableCell>
-                  <TableCell>
-                    {user.lastActiveAt
-                      ? relativeTime(user.lastActiveAt)
-                      : t("table.trow.lastActiveAt")}
-                  </TableCell>
-                  <TableCell>{relativeTime(user.createdAt)}</TableCell>
+                <TableCell>
+                  {user.lastSignInAt
+                    ? relativeTime(user.lastSignInAt)
+                    : t("table.trow.lastSignedInAt")}
+                </TableCell>
+                <TableCell>
+                  {user.lastActiveAt
+                    ? relativeTime(user.lastActiveAt)
+                    : t("table.trow.lastActiveAt")}
+                </TableCell>
+                <TableCell>{relativeTime(user.createdAt)}</TableCell>
 
-                  <TableCell>
-                    <UsersTableAction data={user} />
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-        <div className="py-4">
-          <NavPagination totalPage={totalPage} />
-        </div>
-      </CardContent>
-    </Card>
+                <TableCell>
+                  <UsersTableAction data={user} />
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+      <div className="py-4">
+        <NavPagination totalPage={totalPage} />
+      </div>
+    </>
   );
 };

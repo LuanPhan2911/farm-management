@@ -9,7 +9,7 @@ import { UploadButton } from "../uploadthing";
 import { ClientUploadedFileData } from "uploadthing/types";
 
 interface UploadImageProps {
-  defaultValue?: string;
+  defaultValue?: string | null;
   onChange: (url: string) => void;
   disabled?: boolean;
 }

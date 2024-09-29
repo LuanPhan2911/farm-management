@@ -26,6 +26,7 @@ import { SelectOptions } from "@/components/form/select-options";
 import { UnitsSelectWithQueryClient } from "../../../_components/units-select";
 import { Link, useRouter } from "@/navigation";
 import { UploadImage } from "@/components/form/upload-image";
+import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 
 export const PlantCreateButton = () => {
   const t = useTranslations("plants.form");
@@ -85,7 +86,8 @@ export const PlantCreateForm = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("name.placeholder")}
-                    {...field}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
                     disabled={isPending}
                   />
                 </FormControl>
@@ -125,7 +127,8 @@ export const PlantCreateForm = () => {
               <FormControl>
                 <Input
                   placeholder={tSchema("growthDuration.placeholder")}
-                  {...field}
+                  value={field.value || undefined}
+                  onChange={field.onChange}
                   disabled={isPending}
                 />
               </FormControl>
@@ -195,7 +198,8 @@ export const PlantCreateForm = () => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("idealTemperature.placeholder")}
-                        {...field}
+                        value={field.value || undefined}
+                        onChange={field.onChange}
                         disabled={isPending}
                         type="number"
                       />
@@ -245,7 +249,8 @@ export const PlantCreateForm = () => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("idealHumidity.placeholder")}
-                        {...field}
+                        value={field.value || undefined}
+                        onChange={field.onChange}
                         disabled={isPending}
                         type="number"
                       />
@@ -295,7 +300,8 @@ export const PlantCreateForm = () => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("waterRequirement.placeholder")}
-                        {...field}
+                        value={field.value || undefined}
+                        onChange={field.onChange}
                         disabled={isPending}
                         type="number"
                       />
@@ -354,11 +360,7 @@ export const PlantCreateForm = () => {
           )}
         />
 
-        <div className="flex gap-x-2 justify-center">
-          <Button type="submit" disabled={isPending}>
-            Submit
-          </Button>
-        </div>
+        <DynamicDialogFooter disabled={isPending} closeButton={false} />
       </form>
     </Form>
   );

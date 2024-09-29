@@ -3,10 +3,12 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useDialog } from "@/stores/use-dialog";
+import { Button } from "../ui/button";
 
 type Props = {
   title: React.ReactNode | string;
@@ -35,5 +37,34 @@ export const DynamicDialog = ({
         {children}
       </DialogContent>
     </Dialog>
+  );
+};
+
+interface DynamicDialogFooterProps {
+  disabled?: boolean;
+  closeButton?: boolean;
+}
+export const DynamicDialogFooter = ({
+  disabled,
+  closeButton = true,
+}: DynamicDialogFooterProps) => {
+  const { onClose } = useDialog();
+  return (
+    <div className="flex items-center justify-center gap-2 p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+      {closeButton && (
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={onClose}
+          disabled={disabled}
+        >
+          Close
+        </Button>
+      )}
+
+      <Button type="submit" disabled={disabled} variant={"blue"}>
+        Submit
+      </Button>
+    </div>
   );
 };

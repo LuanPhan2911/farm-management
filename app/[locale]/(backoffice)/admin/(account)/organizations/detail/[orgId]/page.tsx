@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 
 import { OrgTabs } from "../../_components/org-tabs";
 import { parseToNumber } from "@/lib/utils";
+import { getTranslations } from "next-intl/server";
 
 interface OrganizationDetailPageProps {
   params: {
@@ -18,6 +19,12 @@ interface OrganizationDetailPageProps {
   };
 }
 
+export async function generateMetadata() {
+  const t = await getTranslations("organizations.page.detail");
+  return {
+    title: t("title"),
+  };
+}
 const OrganizationDetailPage = async ({
   params,
   searchParams,

@@ -1,7 +1,6 @@
 "use client";
 
 import { edit } from "@/actions/plant";
-import { Button } from "@/components/ui/button";
 
 import {
   Form,
@@ -27,6 +26,7 @@ import { UnitsSelectWithQueryClient } from "../../../_components/units-select";
 import { PlantTable } from "@/types";
 import { UploadImage } from "@/components/form/upload-image";
 import { convertNullToUndefined } from "@/lib/utils";
+import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 
 interface PlantCreateFormProps {
   data: PlantTable;
@@ -40,7 +40,7 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      ...convertNullToUndefined(data),
+      ...data,
     },
   });
 
@@ -76,7 +76,8 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("name.placeholder")}
-                    {...field}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
                     disabled={isPending}
                   />
                 </FormControl>
@@ -116,7 +117,8 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
               <FormControl>
                 <Input
                   placeholder={tSchema("growthDuration.placeholder")}
-                  {...field}
+                  value={field.value || undefined}
+                  onChange={field.onChange}
                   disabled={isPending}
                 />
               </FormControl>
@@ -188,7 +190,8 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("idealTemperature.placeholder")}
-                        {...field}
+                        value={field.value || undefined}
+                        onChange={field.onChange}
                         disabled={isPending}
                         type="number"
                       />
@@ -239,7 +242,8 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("idealHumidity.placeholder")}
-                        {...field}
+                        value={field.value || undefined}
+                        onChange={field.onChange}
                         disabled={isPending}
                         type="number"
                       />
@@ -290,7 +294,8 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("waterRequirement.placeholder")}
-                        {...field}
+                        value={field.value || undefined}
+                        onChange={field.onChange}
                         disabled={isPending}
                         type="number"
                       />
@@ -350,11 +355,7 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
           )}
         />
 
-        <div className="flex gap-x-2 justify-center">
-          <Button type="submit" disabled={isPending}>
-            Submit
-          </Button>
-        </div>
+        <DynamicDialogFooter disabled={isPending} closeButton={false} />
       </form>
     </Form>
   );

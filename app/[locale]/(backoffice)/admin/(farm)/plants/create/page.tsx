@@ -8,6 +8,12 @@ import {
 import { getTranslations } from "next-intl/server";
 import { PlantCreateForm } from "../_components/plant-create-button";
 
+export async function generateMetadata() {
+  const t = await getTranslations("plants.page.create");
+  return {
+    title: t("title"),
+  };
+}
 const PlantCreatePage = async () => {
   const t = await getTranslations("plants");
   return (

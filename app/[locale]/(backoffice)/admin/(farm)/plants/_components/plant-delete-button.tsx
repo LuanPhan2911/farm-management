@@ -10,41 +10,38 @@ import { useParams } from "next/navigation";
 import { useTransition } from "react";
 import { toast } from "sonner";
 export const PlantDeleteButton = () => {
-  const { onOpen, onClose } = useAlertDialog();
-  const [isPending, startTransition] = useTransition();
+  const { onOpen, onClose, setPending } = useAlertDialog();
+
   const t = useTranslations("plants");
   const router = useRouter();
   const params = useParams<{
     plantId: string;
   }>();
   const onConfirm = async () => {
-    startTransition(() => {
-      destroy(params.plantId)
-        .then(({ message, ok }) => {
-          if (ok) {
-            onClose();
-            toast.success(message);
-            router.replace("/admin/plants");
-          } else {
-            toast.error(message);
-          }
-        })
-        .catch((error) => {
-          toast.error(t("status.failure.destroy"));
-        })
-        .finally(() => {
+    setPending(true);
+    destroy(params.plantId)
+      .then(({ message, ok }) => {
+        if (ok) {
           onClose();
-        });
-    });
+          toast.success(message);
+          router.replace("/admin/plants");
+        } else {
+          toast.error(message);
+        }
+      })
+      .catch((error) => {
+        toast.error(t("status.failure.destroy"));
+      })
+      .finally(() => {
+        onClose();
+      });
   };
   const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
     e.stopPropagation();
     onOpen({
       title: t("form.destroy.title"),
       description: t("form.destroy.description"),
       onConfirm,
-      isPending,
     });
   };
   return (

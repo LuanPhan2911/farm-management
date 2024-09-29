@@ -1,5 +1,8 @@
 "use client";
-import { DynamicDialog } from "@/components/dialog/dynamic-dialog";
+import {
+  DynamicDialog,
+  DynamicDialogFooter,
+} from "@/components/dialog/dynamic-dialog";
 import { Button } from "@/components/ui/button";
 import { SoilSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
@@ -20,7 +23,6 @@ import {
 } from "@/components/ui/form";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
-import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 
 import { SoilTable } from "@/types";
 import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
@@ -67,15 +69,11 @@ export const SoilEditDialog = () => {
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: useMemo(() => {
-      return !!data.soil ? convertNullToUndefined(data.soil) : undefined;
-    }, [data.soil]),
   });
   const [id, setId] = useState("");
   useEffect(() => {
     if (data?.soil) {
-      form.reset(convertNullToUndefined(data.soil));
-
+      form.reset(data.soil);
       setId(data.soil.id);
     }
   }, [data, form]);
@@ -117,7 +115,8 @@ export const SoilEditDialog = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("ph.placeholder")}
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                       type="number"
                     />
@@ -140,7 +139,8 @@ export const SoilEditDialog = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("moisture.placeholder")}
-                          {...field}
+                          value={field.value || undefined}
+                          onChange={field.onChange}
                           disabled={isPending}
                           type="number"
                         />
@@ -211,7 +211,8 @@ export const SoilEditDialog = () => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("nutrientNitrogen.placeholder")}
-                        {...field}
+                        value={field.value || undefined}
+                        onChange={field.onChange}
                         disabled={isPending}
                         type="number"
                       />
@@ -231,7 +232,8 @@ export const SoilEditDialog = () => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("nutrientPhosphorus.placeholder")}
-                        {...field}
+                        value={field.value || undefined}
+                        onChange={field.onChange}
                         disabled={isPending}
                         type="number"
                       />
@@ -251,7 +253,8 @@ export const SoilEditDialog = () => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("nutrientPotassium.placeholder")}
-                        {...field}
+                        value={field.value || undefined}
+                        onChange={field.onChange}
                         disabled={isPending}
                         type="number"
                       />
@@ -271,7 +274,8 @@ export const SoilEditDialog = () => {
                 <div className="flex gap-x-2">
                   <FormControl>
                     <Textarea
-                      {...field}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
                       disabled={isPending}
                       placeholder={tSchema("note.placeholder")}
                     />
@@ -282,16 +286,7 @@ export const SoilEditDialog = () => {
             )}
           />
 
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="secondary">
-                Close
-              </Button>
-            </DialogClose>
-            <Button type="submit" disabled={isPending}>
-              Submit
-            </Button>
-          </DialogFooter>
+          <DynamicDialogFooter disabled={isPending} />
         </form>
       </Form>
     </DynamicDialog>

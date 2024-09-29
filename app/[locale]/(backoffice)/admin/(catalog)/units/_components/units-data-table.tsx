@@ -1,6 +1,6 @@
 "use client";
 import { DataTable } from "@/components/datatable";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import { useTranslations } from "next-intl";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
@@ -10,35 +10,36 @@ import { UnitsTableAction } from "./units-table-action";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
 import { destroyMany } from "@/actions/unit";
 import { toast } from "sonner";
-import { UnitCreateButton } from "./unit-create-button";
 import { UnitSuperscript } from "../../../_components/unit-with-value";
-import { useTransition } from "react";
+import { useDialog } from "@/stores/use-dialog";
 
 interface UnitsTableProps {
   data: Unit[];
 }
 export const UnitsTable = ({ data }: UnitsTableProps) => {
   const t = useTranslations("units");
-  const { onOpen, onClose } = useAlertDialog();
-  const [isPending, startTransition] = useTransition();
+  const { onOpen, onClose, setPending } = useAlertDialog();
+  const { onOpen: onOpenEdit } = useDialog();
   const handleConfirm = (rows: Unit[]) => {
-    startTransition(() => {
-      const ids = rows.map((row) => row.id);
-      destroyMany(ids)
-        .then(({ message, ok }) => {
-          if (ok) {
-            toast.success(message);
-          } else {
-            toast.error(message);
-          }
-        })
-        .catch((error: Error) => {
-          toast.error(t("status.failure.destroy"));
-        })
-        .finally(() => {
-          onClose();
-        });
-    });
+    setPending(true);
+    const ids = rows.map((row) => row.id);
+    destroyMany(ids)
+      .then(({ message, ok }) => {
+        if (ok) {
+          toast.success(message);
+        } else {
+          toast.error(message);
+        }
+      })
+      .catch((error: Error) => {
+        toast.error(t("status.failure.destroy"));
+      })
+      .finally(() => {
+        onClose();
+      });
+  };
+  const handleEdit = (data: Unit) => {
+    onOpenEdit("unit.edit", { unit: data });
   };
 
   const columns: ColumnDef<Unit>[] = [
@@ -112,13 +113,12 @@ export const UnitsTable = ({ data }: UnitsTableProps) => {
 
   const bulkActions = [
     {
-      label: t("form.destroySelected.label"),
+      label: t("form.destroyMany.label"),
       action: (rows: Unit[]) => {
         onOpen({
-          title: t("form.destroySelected.title"),
-          description: t("form.destroySelected.description"),
+          title: t("form.destroyMany.title"),
+          description: t("form.destroyMany.description"),
           onConfirm: () => handleConfirm(rows),
-          isPending,
         });
       },
     },
@@ -136,25 +136,16 @@ export const UnitsTable = ({ data }: UnitsTableProps) => {
     },
   ];
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("page.title")}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="flex justify-end">
-          <UnitCreateButton />
-        </div>
-        <DataTable
-          columns={columns}
-          data={data}
-          searchable={{
-            value: "name",
-            placeholder: t("search.placeholder"),
-          }}
-          bulkActions={bulkActions}
-          facetedFilters={facetedFilters}
-        />
-      </CardContent>
-    </Card>
+    <DataTable
+      columns={columns}
+      data={data}
+      searchable={{
+        value: "name",
+        placeholder: t("search.placeholder"),
+      }}
+      bulkActions={bulkActions}
+      facetedFilters={facetedFilters}
+      onViewDetail={handleEdit}
+    />
   );
 };
