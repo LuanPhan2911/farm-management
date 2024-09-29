@@ -19,7 +19,7 @@ export const SoilConfirmButton = ({
   data,
   isButton = false,
 }: SoilConfirmButtonProps) => {
-  const { onOpen, setPending, isPending } = useAlertDialog();
+  const { onOpen, setPending, isPending, onClose } = useAlertDialog();
 
   const t = useTranslations("soils");
   const onClick = () => {
@@ -34,6 +34,9 @@ export const SoilConfirmButton = ({
       })
       .catch((error: Error) => {
         toast.error(t("status.failure.editConfirmed"));
+      })
+      .finally(() => {
+        onClose();
       });
   };
   if (isButton) {

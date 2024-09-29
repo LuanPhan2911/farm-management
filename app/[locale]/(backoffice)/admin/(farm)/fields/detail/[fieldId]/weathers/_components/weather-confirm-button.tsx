@@ -8,7 +8,6 @@ import { WeatherTable } from "@/types";
 import { Check, Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { useTransition } from "react";
 import { toast } from "sonner";
 
 interface WeatherConfirmButtonProps {
@@ -19,7 +18,7 @@ export const WeatherConfirmButton = ({
   data,
   isButton = false,
 }: WeatherConfirmButtonProps) => {
-  const { onOpen, setPending, isPending } = useAlertDialog();
+  const { onOpen, setPending, isPending, onClose } = useAlertDialog();
 
   const t = useTranslations("weathers");
 
@@ -35,6 +34,9 @@ export const WeatherConfirmButton = ({
       })
       .catch((error: Error) => {
         toast.error(t("status.failure.editConfirmed"));
+      })
+      .finally(() => {
+        onClose();
       });
   };
   if (isButton) {

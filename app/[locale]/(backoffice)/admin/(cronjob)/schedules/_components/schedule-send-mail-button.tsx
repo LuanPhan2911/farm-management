@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { SendEmailSchema, TaskSchema } from "@/schemas";
+import { SendEmailSchema, ScheduleSchema } from "@/schemas";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import {
@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useState, useTransition } from "react";
-import { create } from "@/actions/task";
+import { create } from "@/actions/schedule";
 import { toast } from "sonner";
 import {
   Sheet,
@@ -26,8 +26,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { DatePickerWithTime } from "@/components/form/date-picker-with-time";
-import { parseToDate, safeParseJSON } from "@/lib/utils";
+import { generateCronExplanation, safeParseJSON } from "@/lib/utils";
 import {
   Content,
   Mode,
@@ -41,18 +40,20 @@ import { EmailTemplate } from "@/components/mail/email-template";
 import { StaffsSelectMultipleWithQueryClient } from "../../../_components/staffs-select";
 import { Label } from "@/components/ui/label";
 import { ClipboardButton } from "@/components/buttons/clipboard-button";
+import { ScheduleSelectCron } from "./schedule-select-cron";
+import { Textarea } from "@/components/ui/textarea";
 const initialBody = {
   receivers: ["example@gmail.com"],
   subject: "Email notification salary",
   contents: ["Notify salary..."],
   sender: "From Accountant",
 };
-export const TaskSendMailButton = () => {
-  const tSchema = useTranslations("tasks.schema");
+export const ScheduleSendMailButton = () => {
+  const tSchema = useTranslations("schedules.schema");
 
-  const t = useTranslations("tasks");
+  const t = useTranslations("schedules");
 
-  const formSchema = TaskSchema(tSchema);
+  const formSchema = ScheduleSchema(tSchema);
 
   const [isPending, startTransition] = useTransition();
 
@@ -60,8 +61,9 @@ export const TaskSendMailButton = () => {
     mode: "onChange",
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "send_mail_task",
-      scheduled_for: new Date().toISOString(),
+      name: "send_mail_schedule",
+      description: "Schedule for automatically send email",
+      cron: "",
       request: {
         url: "[Your HOST]/en/api/mails",
         headers: JSON.stringify({
@@ -115,7 +117,7 @@ export const TaskSendMailButton = () => {
           <div className="flex-1 lg:block hidden">
             <div className="text-md font-semibold mb-2">Preview Email</div>
             <div className="border rounded-lg p-3">
-              <TaskEmailTemplate initialBody={initialBody} body={body} />
+              <ScheduleEmailTemplate initialBody={initialBody} body={body} />
             </div>
           </div>
           <div className="lg:w-[600px] w-full">
@@ -145,25 +147,57 @@ export const TaskSendMailButton = () => {
                 />
                 <FormField
                   control={form.control}
-                  name="scheduled_for"
+                  name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{tSchema("scheduled_for.label")}</FormLabel>
+                      <FormLabel>{tSchema("description.label")}</FormLabel>
                       <FormControl>
-                        <DatePickerWithTime
-                          value={parseToDate(field.value)}
-                          onChange={(date) => {
-                            field.onChange(date?.toISOString());
-                          }}
+                        <Textarea
+                          placeholder={tSchema("description.placeholder")}
+                          value={field.value || undefined}
+                          onChange={field.onChange}
                           disabled={isPending}
-                          placeholder={tSchema("scheduled_for.placeholder")}
-                          disabledDateRange={{
-                            before: new Date(),
-                          }}
                         />
                       </FormControl>
 
                       <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="cron"
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <FormLabel>{tSchema("cron.label")}</FormLabel>
+                      <FormControl>
+                        <div className="grid grid-cols-4 gap-2">
+                          <div className="col-span-3">
+                            <Input
+                              placeholder={tSchema("cron.placeholder")}
+                              value={field.value || undefined}
+                              onChange={field.onChange}
+                              disabled={isPending}
+                            />
+                          </div>
+                          <ScheduleSelectCron
+                            onChange={field.onChange}
+                            placeholder="Custom"
+                            defaultValue={field.value || undefined}
+                            disabled={isPending}
+                          />
+                        </div>
+                      </FormControl>
+                      {fieldState.invalid ? (
+                        <FormMessage />
+                      ) : (
+                        <div className="text-sm font-medium text-green-400 my-2">
+                          <span>Next run: </span>
+                          <span className="text-green-400">
+                            {generateCronExplanation(field.value)}
+                          </span>
+                        </div>
+                      )}
                     </FormItem>
                   )}
                 />
@@ -215,7 +249,7 @@ export const TaskSendMailButton = () => {
                     </FormItem>
                   )}
                 />
-                <TaskEmailSelect disabled={isPending} />
+                <ScheduleEmailSelect disabled={isPending} />
                 <FormField
                   control={form.control}
                   name="request.body"
@@ -255,11 +289,14 @@ export const TaskSendMailButton = () => {
     </Sheet>
   );
 };
-interface TaskEmailTemplateProps {
+interface ScheduleEmailTemplateProps {
   body: string | null;
   initialBody: EmailBody;
 }
-const TaskEmailTemplate = ({ body, initialBody }: TaskEmailTemplateProps) => {
+const ScheduleEmailTemplate = ({
+  body,
+  initialBody,
+}: ScheduleEmailTemplateProps) => {
   const tSchema = useTranslations("mails.schema");
   const paramSchema = SendEmailSchema(tSchema);
   const parsedBody = safeParseJSON(body);
@@ -277,12 +314,12 @@ const TaskEmailTemplate = ({ body, initialBody }: TaskEmailTemplateProps) => {
   }
   return <EmailTemplate {...validatedFields.data} isPreview />;
 };
-interface TaskEmailSelectProps {
+interface ScheduleEmailSelectProps {
   disabled?: boolean;
 }
-const TaskEmailSelect = ({ disabled }: TaskEmailSelectProps) => {
+const ScheduleEmailSelect = ({ disabled }: ScheduleEmailSelectProps) => {
   const [value, setValue] = useState("");
-  const t = useTranslations("tasks.search.select.staff");
+  const t = useTranslations("schedules.search.select.staff");
   return (
     <div>
       <Label>{t("label")} </Label>

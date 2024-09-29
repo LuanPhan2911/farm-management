@@ -327,3 +327,21 @@ export type EmailBody = {
   sender: string;
   contents: string[];
 };
+
+export type ScheduleResponse = {
+  id: string;
+  name: string | null;
+  description: string | null;
+  queue: string;
+  request: {
+    url: string;
+    headers: Record<string, any> | null;
+    body: string | null;
+  };
+  cron: string | null;
+  rrule: string | null;
+  dtstart: string | null;
+  paused: boolean;
+  scheduled_for: string | null;
+  created_at: string;
+};

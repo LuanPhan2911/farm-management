@@ -1,13 +1,13 @@
 "use client";
-import { refresh } from "@/actions/task";
+import { refresh } from "@/actions/schedule";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { LucideIcon, Pause, RefreshCcw } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
 
-export const TaskRefreshButton = () => {
-  const t = useTranslations("tasks");
+export const ScheduleRefreshButton = () => {
+  const t = useTranslations("schedules");
   const [isLive, setLive] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -17,7 +17,7 @@ export const TaskRefreshButton = () => {
     if (isLive) {
       const id = setInterval(() => {
         startTransition(async () => {
-          await refresh(); // Call your refresh function to revalidate tasks
+          await refresh(); // Call your refresh function to revalidate schedules
         });
       }, 10000); // Every 10 seconds
 

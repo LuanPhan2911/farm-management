@@ -2393,6 +2393,8 @@
       }
     },
     "search": {
+      "placeholder": "Search by name...",
+
       "faceted": {
         "status": {
           "placeholder": "Select status..."
@@ -2496,6 +2498,118 @@
       }
     }
   },
+  "schedules": {
+    "page": {
+      "title": "Manage Schedules"
+    },
+    "table": {
+      "thead": {
+        "schedule": "Schedule",
+        "paused": "Paused",
+        "cron": "Cron",
+        "scheduled_for": "Scheduled for",
+        "created_at": "Created at"
+      }
+    },
+    "search": {
+      "placeholder": "Search by name...",
+      "select": {
+        "staff": {
+          "notFound": "Staff email not found",
+          "error": "Fail load staff",
+          "placeholder": "Select email to send",
+          "label": "Select email to send"
+        }
+      }
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add schedule",
+        "description": "Schedule recurring tasks"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit schedule",
+        "description": "Update schedule"
+      },
+      "editPaused": {
+        "label": "Edit paused",
+        "title": "Edit paused",
+        "description": "Pause or run schedule"
+      },
+      "refresh": {
+        "label": "Refresh"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete schedule?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      },
+      "deleteUnusedUnit": {
+        "label": "Delete unit schedule",
+        "title": "Delete unused unit schedule",
+        "description": "Delete all unit value which are unused"
+      },
+      "sendMail": {
+        "label": "Send email",
+        "title": "Send mail",
+        "description": "Send email for any staff"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid fields!"
+      },
+      "name": {
+        "label": "Schedule name",
+        "placeholder": "eg: send_email",
+        "min": "Name must be at least {min} characters long",
+        "max": "Name must be at most {max} characters long.",
+        "regex": "Name can only contain alphanumeric characters, underscores, periods, or dashes."
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Description",
+        "max": "Max description length is {max} characters"
+      },
+      "request": {
+        "url": {
+          "label": "Request URL",
+          "placeholder": "https://yourendpoint.com/api/schedules/send_email",
+          "invalid": "Invalid URL",
+          "noneLocalHost": "URL must be absolute and non-localhost"
+        },
+        "headers": {
+          "label": "Request headers"
+        },
+        "body": {
+          "label": "Request body"
+        }
+      },
+      "cron": {
+        "label": "Cron",
+        "placeholder": "Select or custom cron",
+        "regex": "Invalid cron format"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Schedule created!",
+        "edit": "Schedule edited!",
+        "destroy": "Schedule deleted!",
+        "editPaused": "Schedule edited paused",
+        "refresh": "Refreshed!"
+      },
+      "failure": {
+        "create": "Something went wrong while creating schedule!",
+        "edit": "Something went wrong while editing schedule!",
+        "destroy": "Something went wrong while deleting schedule!",
+        "editPaused": "Something went wrong while editing schedule paused!",
+        "refresh": "Something went wrong while refreshing schedules"
+      }
+    }
+  },
   "errors": {
     "error": "Something went wrong!"
   },
@@ -2531,6 +2645,7 @@
     "/admin/equipments": "Equipment",
     "/admin/equipments/create": "Create",
     "/admin/equipments/edit": "Edit",
-    "/admin/tasks": "Tasks"
+    "/admin/tasks": "Tasks",
+    "/admin/schedules": "Schedules"
   }
 }

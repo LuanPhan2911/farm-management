@@ -5,6 +5,7 @@ import { type ClassValue, clsx } from "clsx";
 import { format, getHours, getMinutes } from "date-fns";
 import slugify from "slugify";
 import { twMerge } from "tailwind-merge";
+import * as cronParser from "cron-parser";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -447,5 +448,26 @@ export function safeParseJSON(body: string | null) {
     return JSON.parse(body);
   } catch (error) {
     return undefined;
+  }
+}
+
+export function generateCronExplanation(
+  cronString: string | undefined | null
+): string {
+  try {
+    // Attempt to parse the cron string
+    if (!cronString) {
+      throw Error("Empty cron");
+    }
+    const interval = cronParser.parseExpression(cronString);
+
+    // Generate next run time for explanation
+    const nextRun = interval.next().toDate();
+
+    // Return a valid cron explanation with next run time
+    return `${format(nextRun, "yyyy-MM-dd hh:mm aaa")}`;
+  } catch (error) {
+    // If the cron string is invalid, return an error message
+    return "Invalid cron format";
   }
 }

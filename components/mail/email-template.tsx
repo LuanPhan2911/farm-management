@@ -6,6 +6,7 @@ import {
   Hr,
   Html,
   Link,
+  Tailwind,
   Text,
 } from "@react-email/components";
 
@@ -27,127 +28,81 @@ export const EmailTemplate = ({
 }: EmailTemplateProps) => {
   if (isPreview) {
     return (
-      <Container style={container}>
-        <Text
-          style={{
-            ...paragraph,
-            wordBreak: "break-word",
-          }}
-        >
-          Receivers:
-          {receivers.join("; ")}
-        </Text>
-        <Link
-          href={baseUrl}
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "5px",
-            fontSize: "24px",
-            fontWeight: 700,
-          }}
-        >
-          <span>{siteConfig.name}</span>
-        </Link>
-        Subject:
-        <Heading
-          style={{
-            ...h1,
-            wordBreak: "break-word",
-          }}
-        >
-          {subject}
-        </Heading>
-        Contents:
-        {contents.map((content) => {
-          return (
-            <Text
-              style={{
-                ...paragraph,
-                wordBreak: "break-word",
-              }}
-              key={content}
-            >
-              {content}
+      <Tailwind>
+        <Container className="my-0 mx-auto">
+          <Text className="text-muted-foreground text-md m-1">Receivers:</Text>
+          <Text className="line-clamp-2 m-0">{receivers.join("; ")}</Text>
+          <Link
+            href={baseUrl}
+            className="text-2xl block text-center font-bold my-4 text-blue-600"
+          >
+            {siteConfig.name}
+          </Link>
+          <Heading className="flex items-center gap-x-2">
+            <Text className="text-md m-1 text-muted-foreground"> Subject:</Text>
+            <Text className="text-lg font-semibold line-clamp-1 m-0">
+              {subject}
             </Text>
-          );
-        })}{" "}
-        <Text style={{ ...paragraph, wordBreak: "break-word" }}>
-          {" "}
-          Sender:{sender}
-        </Text>
-        <Hr style={hr} />
-        <Text style={footer}>{siteConfig.address}</Text>
-      </Container>
+          </Heading>
+
+          <Text className="text-muted-foreground text-md m-1">Contents:</Text>
+          {contents.map((content) => {
+            return (
+              <Text className="text-md m-1" key={content}>
+                {content}
+              </Text>
+            );
+          })}
+          <Heading className="flex items-center gap-x-2">
+            <Text className="text-md m-1 text-muted-foreground"> Sender:</Text>
+            <Text className="text-md m-1 font-semibold line-clamp-1">
+              {sender}
+            </Text>
+          </Heading>
+          <Hr className="my-3" />
+          <Text className="text-muted-foreground text-xs">
+            {siteConfig.address}
+          </Text>
+        </Container>
+      </Tailwind>
     );
   }
   return (
     <Html>
       <Head />
-      <Body style={main}>
-        <Container style={container}>
-          <Link
-            href={baseUrl}
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: "5px",
-              fontSize: "24px",
-              fontWeight: 700,
-            }}
-          >
-            <span>{siteConfig.name}</span>
-          </Link>
-          <Heading style={h1}>{subject}</Heading>
-          {contents.map((content) => {
-            return (
-              <Text style={paragraph} key={content}>
-                {content}
+      <Tailwind>
+        <Body className="font-sans">
+          <Container className="my-0 mx-auto">
+            <Link
+              href={baseUrl}
+              className="text-2xl block text-center font-bold my-4 text-blue-600"
+            >
+              {siteConfig.name}
+            </Link>
+            <Heading className="flex items-center gap-x-2">
+              <Text className="text-lg font-semibold line-clamp-1 m-0">
+                {subject}
               </Text>
-            );
-          })}
-
-          <Text style={paragraph}>{sender}</Text>
-          <Hr style={hr} />
-          <Text style={footer}>{siteConfig.address}</Text>
-        </Container>
-      </Body>
+            </Heading>
+            {contents.map((content) => {
+              return (
+                <Text className="text-md m-1" key={content}>
+                  {content}
+                </Text>
+              );
+            })}
+            <Heading className="flex items-center gap-x-2">
+              <Text className="text-sm font-semibold line-clamp-1 m-0">
+                {sender}
+              </Text>
+            </Heading>
+            <Hr className="my-3" />
+            <Text className="text-muted-foreground text-xs">
+              {siteConfig.address}
+            </Text>
+          </Container>
+        </Body>
+      </Tailwind>
     </Html>
   );
-};
-
-const main = {
-  backgroundColor: "#ffffff",
-  fontFamily:
-    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
-};
-const h1 = {
-  color: "#333",
-  fontFamily:
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
-  fontSize: "20px",
-  fontWeight: "bold",
-  marginBottom: "15px",
-};
-const container = {
-  margin: "0 auto",
-  padding: "20px 0 48px",
-};
-
-const paragraph = {
-  fontSize: "16px",
-  lineHeight: "26px",
-  display: "block",
-};
-
-const hr = {
-  borderColor: "#cccccc",
-  margin: "20px 0",
-};
-
-const footer = {
-  color: "#8898aa",
-  fontSize: "12px",
 };

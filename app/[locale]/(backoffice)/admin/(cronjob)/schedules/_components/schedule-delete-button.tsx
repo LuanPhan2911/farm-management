@@ -1,25 +1,26 @@
 "use client";
-import { run } from "@/actions/task";
+import { destroy } from "@/actions/schedule";
 import { Button } from "@/components/ui/button";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
-import { TaskResponse } from "@/types";
-import { Play } from "lucide-react";
+import { ScheduleResponse } from "@/types";
+import { Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
-
 import { toast } from "sonner";
 
-interface TaskRunButtonProps {
-  data: TaskResponse;
+interface ScheduleDeleteButtonProps {
+  data: ScheduleResponse;
   label: string;
 }
-export const TaskRunButton = ({ data, label }: TaskRunButtonProps) => {
+export const ScheduleDeleteButton = ({
+  data,
+  label,
+}: ScheduleDeleteButtonProps) => {
   const { id } = data;
   const { onOpen, onClose, setPending } = useAlertDialog();
-  const t = useTranslations("tasks");
-  const disabled = data.status !== "queued";
-  const onConfirm = async () => {
+  const t = useTranslations("schedules");
+  const onConfirm = () => {
     setPending(true);
-    run(id)
+    destroy(id)
       .then(({ message, ok }) => {
         if (ok) {
           toast.success(message);
@@ -28,28 +29,28 @@ export const TaskRunButton = ({ data, label }: TaskRunButtonProps) => {
         }
       })
       .catch((error: Error) => {
-        toast.error(t("status.failure.run"));
+        toast.error(t("status.failure.destroy"));
       })
       .finally(() => {
         onClose();
       });
   };
+
   return (
     <Button
       className="w-full"
       onClick={(e) => {
         e.stopPropagation();
         onOpen({
-          title: t("form.run.title"),
-          description: t("form.run.description"),
+          title: t("form.destroy.title"),
+          description: t("form.destroy.description"),
           onConfirm,
         });
       }}
       size={"sm"}
-      variant={"blue"}
-      disabled={disabled}
+      variant={"destroy"}
     >
-      <Play className="h-4 w-4 mr-2" />
+      <Trash className="h-4 w-4 mr-2" />
       {label}
     </Button>
   );

@@ -1,10 +1,11 @@
-import { TaskResponse } from "@/types";
+import { ScheduleResponse, TaskResponse } from "@/types";
 import { create } from "zustand";
 
-export type SheetType = "task.edit";
+export type SheetType = "task.edit" | "schedule.edit";
 
 export interface SheetData {
   task?: TaskResponse;
+  schedule?: ScheduleResponse;
 }
 
 interface SheetStore {

@@ -13,7 +13,6 @@ import { useAlertDialog } from "@/stores/use-alert-dialog";
 
 import { TaskStatusValue } from "./task-status-value";
 import { parseToDate } from "@/lib/utils";
-import { TaskCreateButton } from "./task-create-button";
 import { Hint } from "@/components/hint";
 import { useSheet } from "@/stores/use-sheet";
 import { TasksTableAction } from "./tasks-table-action";
@@ -79,7 +78,7 @@ export const TasksDataTable = ({ data }: TaskDataTableProps) => {
       enableHiding: false,
     },
     {
-      id: "task",
+      accessorKey: "name",
       header: ({ column }) => {
         return (
           <DataTableColumnHeader
@@ -88,6 +87,7 @@ export const TasksDataTable = ({ data }: TaskDataTableProps) => {
           />
         );
       },
+
       cell: ({ row }) => {
         const data = row.original;
         return (
@@ -222,15 +222,16 @@ export const TasksDataTable = ({ data }: TaskDataTableProps) => {
   ];
   return (
     <>
-      <div className="flex justify-end gap-x-2">
-        <TaskCreateButton />
-      </div>
       <DataTable
         columns={columns}
         data={data}
         bulkActions={bulkActions}
         onViewDetail={handleEdit}
         facetedFilters={facetedFilters}
+        searchable={{
+          placeholder: t("search.placeholder"),
+          value: "name",
+        }}
       />
     </>
   );

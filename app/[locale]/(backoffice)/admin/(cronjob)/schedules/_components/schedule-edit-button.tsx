@@ -1,11 +1,11 @@
 "use client";
 
-import { edit } from "@/actions/task";
+import { edit } from "@/actions/schedule";
 import {
   DynamicSheet,
   DynamicSheetFooter,
 } from "@/components/dialog/dynamic-sheet";
-import { TaskSchema } from "@/schemas";
+import { ScheduleSchema } from "@/schemas";
 import { useSheet } from "@/stores/use-sheet";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
@@ -23,8 +23,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { DatePickerWithTime } from "@/components/form/date-picker-with-time";
-import { parseToDate } from "@/lib/utils";
+import { generateCronExplanation } from "@/lib/utils";
 import { JSONEditorReact } from "@/components/vanila-json-editor";
 import {
   Content,
@@ -32,14 +31,16 @@ import {
   OnChangeStatus,
   toTextContent,
 } from "vanilla-jsoneditor";
+import { ScheduleSelectCron } from "./schedule-select-cron";
+import { Textarea } from "@/components/ui/textarea";
 
-export const TaskEditSheet = () => {
+export const ScheduleEditSheet = () => {
   const { data, isOpen, onClose, type } = useSheet();
-  const isOpenSheet = isOpen && type === "task.edit";
-  const tSchema = useTranslations("tasks.schema");
-  const t = useTranslations("tasks");
+  const isOpenSheet = isOpen && type === "schedule.edit";
+  const tSchema = useTranslations("schedules.schema");
+  const t = useTranslations("schedules");
 
-  const formSchema = TaskSchema(tSchema);
+  const formSchema = ScheduleSchema(tSchema);
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -48,10 +49,10 @@ export const TaskEditSheet = () => {
   });
   const [id, setId] = useState("");
   useEffect(() => {
-    if (data?.task) {
-      const { id, request } = data.task;
+    if (data?.schedule) {
+      const { id, request } = data.schedule;
       form.reset({
-        ...data.task,
+        ...data.schedule,
         request: {
           url: request.url,
           body: request.body,
@@ -113,25 +114,57 @@ export const TaskEditSheet = () => {
           />
           <FormField
             control={form.control}
-            name="scheduled_for"
+            name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{tSchema("scheduled_for.label")}</FormLabel>
+                <FormLabel>{tSchema("description.label")}</FormLabel>
                 <FormControl>
-                  <DatePickerWithTime
-                    value={parseToDate(field.value)}
-                    onChange={(date) => {
-                      field.onChange(date?.toISOString());
-                    }}
+                  <Textarea
+                    placeholder={tSchema("description.placeholder")}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
                     disabled={isPending}
-                    placeholder={tSchema("scheduled_for.placeholder")}
-                    disabledDateRange={{
-                      before: new Date(),
-                    }}
                   />
                 </FormControl>
 
                 <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="cron"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>{tSchema("cron.label")}</FormLabel>
+                <FormControl>
+                  <div className="grid grid-cols-4 gap-2">
+                    <div className="col-span-3">
+                      <Input
+                        placeholder={tSchema("cron.placeholder")}
+                        value={field.value || undefined}
+                        onChange={field.onChange}
+                        disabled={isPending}
+                      />
+                    </div>
+                    <ScheduleSelectCron
+                      onChange={field.onChange}
+                      placeholder="Custom"
+                      defaultValue={field.value || undefined}
+                      disabled={isPending}
+                    />
+                  </div>
+                </FormControl>
+                {fieldState.invalid ? (
+                  <FormMessage />
+                ) : (
+                  <div className="text-sm font-medium text-green-400 my-2">
+                    <span>Next run: </span>
+                    <span className="text-green-400">
+                      {generateCronExplanation(field.value)}
+                    </span>
+                  </div>
+                )}
               </FormItem>
             )}
           />

@@ -662,7 +662,9 @@ export const CropSchema = (
   });
 };
 
-export const TaskSchema = (t: (arg: string) => string) => {
+export const TaskSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
   return z.object({
     name: stringSchema(t, "name", {
       min: 3,
@@ -670,7 +672,6 @@ export const TaskSchema = (t: (arg: string) => string) => {
       required: false,
     })
       .regex(/^[a-zA-Z0-9_.-]+$/, t("name.regex"))
-      .transform((val) => (val === "" ? null : val)) // Transform empty string to null
       .nullable(), // Allow name to be null
     request: z.object({
       url: z
@@ -722,7 +723,78 @@ export const TaskSchema = (t: (arg: string) => string) => {
     delay: z.string().default("5s"),
   });
 };
+export const ScheduleSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    name: stringSchema(t, "name", {
+      min: 3,
+      max: 100,
+      required: false,
+    })
+      .regex(/^[a-zA-Z0-9_.-]+$/, t("name.regex"))
+      .nullable(), // Allow name to be null
+    description: stringSchema(t, "description", {
+      max: 255,
+      required: false,
+    }).nullable(),
+    request: z.object({
+      url: z
+        .string()
+        .url(t("request.url.invalid"))
+        .refine((url) => {
+          try {
+            const parsedUrl = new URL(url);
+            // Ensure the URL is absolute and not localhost
+            return (
+              parsedUrl.hostname !== "localhost" &&
+              parsedUrl.hostname !== "127.0.0.1"
+            );
+          } catch (e) {
+            return false;
+          }
+        }, t("request.url.noneLocalHost")),
+      headers: z.union([
+        z.object({}).passthrough(),
+        z.string().transform((val) => {
+          // Remove all newline characters and extra spaces
+          if (!val) {
+            return null;
+          }
+          const sanitizedBody = val.replace(/\n/g, "").trim();
+          // Try parsing it as JSON, return the original string if it fails
+          try {
+            return JSON.parse(sanitizedBody);
+          } catch (error) {
+            return null;
+          }
+        }),
+        z.null(),
+      ]),
+      body: z.union([
+        z.string().transform((val) => {
+          // Remove all newline characters and extra spaces
+          if (!val) {
+            return null;
+          }
+          const sanitizedBody = val.replace(/\n/g, "").trim();
 
+          return sanitizedBody;
+        }),
+        z.null(),
+      ]),
+    }),
+    cron: stringSchema(t, "cron", {
+      required: false,
+    })
+      .regex(
+        /^(\*|([0-5]?\d|\*\/[0-5]?\d|[0-5]?\d(?:-[0-5]?\d)?(?:,[0-5]?\d(?:-[0-5]?\d)?)*)?) (\*|([01]?\d|2[0-3]|\*\/[01]?\d|[01]?\d(?:-[01]?\d)?(?:,[01]?\d(?:-[01]?\d)?)*)?) (\*|([1-9]|[12]\d|3[01]|\*\/[1-9]|[1-9](?:-[12]?\d|3[01])?(?:,[1-9]|[12]?\d|3[01](?:-[12]?\d|3[01])?)*)?) (\*|([1-9]|1[0-2]|\*\/[1-9]|[1-9](?:-[1-9]|1[0-2])?(?:,[1-9]|1[0-2](?:-[1-9]|1[0-2])?)*)?) (\*|([0-6]|\*\/[0-6]|[0-6](?:-[0-6])?(?:,[0-6](?:-[0-6])?)*)?)$/,
+        { message: t("cron.regex") }
+      )
+      .nullable(),
+    paused: z.boolean().default(false),
+  });
+};
 export const SendEmailSchema = (
   t: (arg: string, obj?: Record<string, any>) => string
 ) => {
