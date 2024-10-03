@@ -11,7 +11,7 @@ import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 
 interface JobsSelectProps {}
-const JobsSelect = ({}: JobsSelectProps) => {
+export const JobsSelect = ({}: JobsSelectProps) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
@@ -24,14 +24,14 @@ const JobsSelect = ({}: JobsSelectProps) => {
     },
   });
   const handleChange = (value: string) => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams!);
     if (!value) {
-      params.delete("jobId");
+      params!.delete("jobId");
     } else {
-      params.set("jobId", value);
+      params!.set("jobId", value);
     }
 
-    router.replace(`${pathname}?${params.toString()}`);
+    router.replace(`${pathname}?${params!.toString()}`);
   };
   if (isPending) {
     return <Skeleton className="h-10 w-60" />;
@@ -45,7 +45,7 @@ const JobsSelect = ({}: JobsSelectProps) => {
       value: item.id,
     };
   });
-  const selectedOption = searchParams.get("jobId") || undefined;
+  const selectedOption = searchParams!.get("jobId") || undefined;
   return (
     <ComboBox
       options={options}
@@ -55,13 +55,5 @@ const JobsSelect = ({}: JobsSelectProps) => {
       isSearch={false}
       defaultValue={selectedOption}
     />
-  );
-};
-
-export const JobSelectWithQueryClient = (props: JobsSelectProps) => {
-  return (
-    <QueryProvider>
-      <JobsSelect {...props} />
-    </QueryProvider>
   );
 };

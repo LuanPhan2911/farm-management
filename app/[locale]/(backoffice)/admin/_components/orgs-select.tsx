@@ -22,7 +22,6 @@ import { useState } from "react";
 import { Organization } from "@clerk/nextjs/server";
 import { PaginatedResponse } from "@/types";
 
-import { QueryProvider } from "@/components/providers/query-provider";
 import queryString from "query-string";
 import { useDebounceValue } from "usehooks-ts";
 import { ErrorButton } from "@/components/buttons/error-button";
@@ -37,7 +36,7 @@ interface OrgsSelectProps {
   errorLabel: string;
   notFound: string;
 }
-const OrgsSelect = ({
+export const OrgsSelect = ({
   onChange,
   defaultValue,
   disabled,
@@ -175,13 +174,5 @@ const OrgsSelect = ({
         </Command>
       </PopoverContent>
     </Popover>
-  );
-};
-
-export const OrgsSelectWithQueryClient = (props: OrgsSelectProps) => {
-  return (
-    <QueryProvider>
-      <OrgsSelect {...props} />
-    </QueryProvider>
   );
 };

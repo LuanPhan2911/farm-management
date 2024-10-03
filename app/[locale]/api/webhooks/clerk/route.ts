@@ -75,6 +75,7 @@ export async function POST(req: Request) {
     const user = evt.data;
     const name = `${user.first_name || ""} ${user.last_name || ""}`.trim();
     const role = evt.data.public_metadata?.role;
+
     if (!role) {
       await updateStaff(user.id, {
         imageUrl: user.image_url,

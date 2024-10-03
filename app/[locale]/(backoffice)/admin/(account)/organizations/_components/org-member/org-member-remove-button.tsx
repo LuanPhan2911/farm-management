@@ -27,7 +27,7 @@ export const OrgMemberRemoveButton = ({
   const onConfirm = async () => {
     setPending(true);
 
-    destroyMember(data.userId, params.orgId)
+    destroyMember(data.userId, params!.orgId)
       .then(({ message, ok }) => {
         if (ok) {
           onClose();
@@ -43,21 +43,20 @@ export const OrgMemberRemoveButton = ({
         onClose();
       });
   };
-  const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onOpen({
-      title: t("form.destroyMember.title"),
-      description: t("form.destroyMember.description"),
-      onConfirm,
-    });
-  };
+
   return (
     <Button
       variant={"destroy"}
       size={"sm"}
       className="w-full"
-      onClick={handleClick}
+      onClick={(e) => {
+        e.stopPropagation();
+        onOpen({
+          title: t("form.destroyMember.title"),
+          description: t("form.destroyMember.description"),
+          onConfirm,
+        });
+      }}
     >
       {label}
     </Button>

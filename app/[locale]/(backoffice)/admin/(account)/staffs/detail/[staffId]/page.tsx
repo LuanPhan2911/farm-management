@@ -31,7 +31,7 @@ export async function generateStaticParams() {
   });
 }
 const StaffDetailPage = async ({ params }: StaffDetailPageProps) => {
-  const staff = await getUserById(params.staffId);
+  const staff = await getUserById(params!.staffId);
   const t = await getTranslations("staffs.page.detail");
   if (!staff) {
     notFound();

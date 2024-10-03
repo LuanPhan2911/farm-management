@@ -838,9 +838,13 @@
         "title": "Member",
         "description": "Manage member organization"
       },
+      "messages": {
+        "title": "Message",
+        "description": "Chat with other members"
+      },
       "danger": {
-        "title": "Danger",
-        "description": "Danger area"
+        "title": "Danger zone",
+        "description": "Delete organization. This action cannot be undone!"
       }
     },
     "table": {
@@ -2607,6 +2611,39 @@
         "destroy": "Something went wrong while deleting schedule!",
         "editPaused": "Something went wrong while editing schedule paused!",
         "refresh": "Something went wrong while refreshing schedules"
+      }
+    }
+  },
+  "messages": {
+    "schema": {
+      "fileId": {},
+      "content": {
+        "placeholder": "Enter new message",
+        "required_error": "Message is required",
+        "min": "Min message length is {min} character",
+        "max": "Max message length is {max} character",
+        "keyDown": "Press escape to cancel, enter to save"
+      }
+    },
+    "fetch": {
+      "notFound": "Loading message ...",
+      "error": "Fail load message!",
+      "welcome": "Enter new message to start chat with other member!",
+      "loadPrevious": "Load previous message"
+    },
+    "form": {
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete message",
+        "description": "Delete this message"
+      }
+    },
+    "status": {
+      "success": {
+        "destroy": "Message deleted"
+      },
+      "failure": {
+        "destroy": "Something went wrong while deleting message!"
       }
     }
   },

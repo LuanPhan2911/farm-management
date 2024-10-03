@@ -13,6 +13,7 @@ import { extractRouterConfig } from "uploadthing/server";
 
 import { ourFileRouter } from "@/app/[locale]/api/uploadthing/core";
 import { SheetProvider } from "@/components/providers/sheet-provider";
+import { QueryProvider } from "@/components/providers/query-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -52,10 +53,12 @@ export default async function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              {children}
-              <Toaster />
-              <DialogProvider />
-              <SheetProvider />
+              <QueryProvider>
+                {children}
+                <Toaster />
+                <DialogProvider />
+                <SheetProvider />
+              </QueryProvider>
             </ThemeProvider>
           </NextIntlClientProvider>
         </body>

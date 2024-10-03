@@ -20,7 +20,8 @@ export type DialogType =
   | "soil.edit"
   | "fertilizer.edit"
   | "pesticide.edit"
-  | "crop.edit";
+  | "crop.edit"
+  | "file.createMany";
 
 export interface DialogData {
   category?: Category;

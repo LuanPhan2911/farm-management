@@ -21,19 +21,19 @@ export const DatePickerWithRangeButton = ({
     to,
   });
   const handelChangeDate = (date: DateRange | undefined) => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams!);
     if (!date) {
       setDateRange(undefined);
-      params.delete("begin");
-      params.delete("end");
+      params!.delete("begin");
+      params!.delete("end");
     } else {
       setDateRange(date);
 
       if (date.from) {
-        params.set("begin", `${format(date.from, "yyyy-MM-dd")}`);
+        params!.set("begin", `${format(date.from, "yyyy-MM-dd")}`);
       }
       if (date.to) {
-        params.set("end", `${format(date.to, "yyyy-MM-dd")}`);
+        params!.set("end", `${format(date.to, "yyyy-MM-dd")}`);
       }
     }
 

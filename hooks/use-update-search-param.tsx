@@ -7,13 +7,13 @@ export const useUpdateSearchParam = (key: string) => {
   const router = useRouter();
 
   const handleChange = (value: string | undefined) => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams!);
 
-    const currentValue = params.get(key);
+    const currentValue = params!.get(key);
     if (!value || currentValue === value) {
-      params.delete(key);
+      params!.delete(key);
     } else {
-      params.set(key, value);
+      params!.set(key, value);
     }
 
     router.replace(`${pathname}?${params}`);

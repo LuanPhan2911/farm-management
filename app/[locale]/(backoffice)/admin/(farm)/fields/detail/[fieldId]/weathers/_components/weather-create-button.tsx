@@ -1,7 +1,7 @@
 "use client";
 
 import { create, createMany } from "@/actions/weather";
-import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
+import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { SelectOptions } from "@/components/form/select-options";
 import { Button } from "@/components/ui/button";
 import {
@@ -44,7 +44,7 @@ export const WeatherCreateButton = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fieldId: params.fieldId,
+      fieldId: params!.fieldId,
       createdAt: new Date(),
       note: null,
     },
@@ -165,7 +165,7 @@ export const WeatherCreateButton = () => {
                         {tSchema("temperature.unitId.label")}
                       </FormLabel>
                       <FormControl>
-                        <UnitsSelectWithQueryClient
+                        <UnitsSelect
                           onChange={field.onChange}
                           placeholder={tSchema(
                             "temperature.unitId.placeholder"
@@ -212,7 +212,7 @@ export const WeatherCreateButton = () => {
                     <FormItem>
                       <FormLabel>{tSchema("humidity.unitId.label")}</FormLabel>
                       <FormControl>
-                        <UnitsSelectWithQueryClient
+                        <UnitsSelect
                           onChange={field.onChange}
                           placeholder={tSchema("humidity.unitId.placeholder")}
                           unitType={UnitType.PERCENT}
@@ -265,7 +265,7 @@ export const WeatherCreateButton = () => {
                         {tSchema("atmosphericPressure.unitId.label")}
                       </FormLabel>
                       <FormControl>
-                        <UnitsSelectWithQueryClient
+                        <UnitsSelect
                           onChange={field.onChange}
                           placeholder={tSchema(
                             "atmosphericPressure.unitId.placeholder"
@@ -316,7 +316,7 @@ export const WeatherCreateButton = () => {
                     <FormItem>
                       <FormLabel>{tSchema("rainfall.unitId.label")}</FormLabel>
                       <FormControl>
-                        <UnitsSelectWithQueryClient
+                        <UnitsSelect
                           onChange={field.onChange}
                           placeholder={tSchema("rainfall.unitId.placeholder")}
                           unitType={UnitType.RAINFALL}
@@ -399,7 +399,7 @@ export const WeatherCreateManyButton = () => {
         value: 0,
       },
       status: "SUNNY",
-      fieldId: params.fieldId || "f20cfcc8-eb88-4d23-9451-79e2c94c842e",
+      fieldId: params!.fieldId || "f20cfcc8-eb88-4d23-9451-79e2c94c842e",
       createdAt: "2024-08-01T12:00:00Z",
     },
   ];
@@ -438,7 +438,7 @@ export const WeatherCreateManyButton = () => {
   const onSubmit = () => {
     startTransition(() => {
       const data = (jsonContent as JSONContent).json;
-      createMany(params.fieldId, data)
+      createMany(params!.fieldId, data)
         .then(({ message, ok }) => {
           if (ok) {
             toast.success(message);

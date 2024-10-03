@@ -12,7 +12,7 @@ export const GET = async (
   }
 ) => {
   try {
-    const fieldId = params.fieldId;
+    const fieldId = params!.fieldId;
     const result = await getCountWeatherStatus({
       fieldId,
     });

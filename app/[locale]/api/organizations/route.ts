@@ -1,13 +1,12 @@
+import { parseToNumber } from "@/lib/utils";
 import { getOrganizations } from "@/services/organizations";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (req: NextRequest) => {
   try {
     const searchParams = req.nextUrl.searchParams;
-    const page = searchParams.get("page")
-      ? Number(searchParams.get("page"))
-      : null;
-    const query = searchParams.get("query") || "";
+    const page = parseToNumber(searchParams.get("page") || undefined, 1);
+    const query = searchParams!.get("query") || undefined;
 
     if (!page) {
       return NextResponse.json({
@@ -15,7 +14,10 @@ export const GET = async (req: NextRequest) => {
         totalPage: 0,
       });
     }
-    const data = await getOrganizations(query, page);
+    const data = await getOrganizations({
+      currentPage: page,
+      query,
+    });
 
     return NextResponse.json(data);
   } catch (error) {

@@ -2,7 +2,7 @@ import { LIMIT } from "@/configs/paginationConfig";
 import { db } from "@/lib/db";
 import { getObjectFilterNumber, getObjectSortOrder } from "@/lib/utils";
 import { CropTable, PaginatedResponse } from "@/types";
-import { deleteFloatUnit, UnitValue, upsertFloatUnit } from "./units";
+import { UnitValue, upsertFloatUnit } from "./units";
 
 type CropParams = {
   name: string;

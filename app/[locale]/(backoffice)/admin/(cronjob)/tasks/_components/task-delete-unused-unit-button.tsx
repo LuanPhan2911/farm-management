@@ -36,7 +36,7 @@ import {
 } from "vanilla-jsoneditor";
 import { JSONEditorReact } from "@/components/vanila-json-editor";
 import { DynamicSheetFooter } from "@/components/dialog/dynamic-sheet";
-import { UnitsUnusedWithQueryClient } from "../../../_components/units-unused";
+import { UnitsUnused } from "../../../_components/units-unused";
 
 export const TaskDeleteUnusedUnitButton = () => {
   const tSchema = useTranslations("tasks.schema");
@@ -105,7 +105,7 @@ export const TaskDeleteUnusedUnitButton = () => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-4 my-4"
           >
-            <UnitsUnusedWithQueryClient />
+            <UnitsUnused />
             <FormField
               control={form.control}
               name="name"

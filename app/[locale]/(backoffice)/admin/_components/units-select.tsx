@@ -2,7 +2,6 @@
 
 import { create } from "@/actions/unit";
 import { ErrorButton } from "@/components/buttons/error-button";
-import { QueryProvider } from "@/components/providers/query-provider";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { UnitSelect } from "@/types";
@@ -24,7 +23,7 @@ interface UnitsSelectProps {
   errorLabel: string;
   notFound: string;
 }
-const UnitsSelect = ({
+export const UnitsSelect = ({
   defaultValue,
   unitType: type,
   onChange,
@@ -106,12 +105,5 @@ const UnitsSelect = ({
       className={cn("my-react-select-container", className)}
       classNamePrefix="my-react-select"
     />
-  );
-};
-export const UnitsSelectWithQueryClient = (props: UnitsSelectProps) => {
-  return (
-    <QueryProvider>
-      <UnitsSelect {...props} />
-    </QueryProvider>
   );
 };

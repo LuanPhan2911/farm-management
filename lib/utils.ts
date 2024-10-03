@@ -471,3 +471,19 @@ export function generateCronExplanation(
     return "Invalid cron format";
   }
 }
+export function isImage(file: File): boolean {
+  const imageMimeTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+    "image/bmp",
+    "image/webp",
+    "image/svg+xml",
+    "image/tiff",
+    "image/x-icon",
+    "image/heif",
+    "image/heic",
+  ];
+
+  return imageMimeTypes.includes(file.type);
+}

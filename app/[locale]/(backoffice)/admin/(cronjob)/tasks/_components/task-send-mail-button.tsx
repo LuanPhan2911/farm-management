@@ -38,7 +38,7 @@ import { JSONEditorReact } from "@/components/vanila-json-editor";
 import { DynamicSheetFooter } from "@/components/dialog/dynamic-sheet";
 import { EmailBody } from "@/types";
 import { EmailTemplate } from "@/components/mail/email-template";
-import { StaffsSelectMultipleWithQueryClient } from "../../../_components/staffs-select";
+import { StaffsSelectMultiple } from "../../../_components/staffs-select";
 import { Label } from "@/components/ui/label";
 import { ClipboardButton } from "@/components/buttons/clipboard-button";
 const initialBody = {
@@ -287,7 +287,7 @@ const TaskEmailSelect = ({ disabled }: TaskEmailSelectProps) => {
     <div>
       <Label>{t("label")} </Label>
       <div className="flex gap-x-2 items-center">
-        <StaffsSelectMultipleWithQueryClient
+        <StaffsSelectMultiple
           errorLabel={t("error")}
           label={t("placeholder")}
           notFound={t("notFound")}

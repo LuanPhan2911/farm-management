@@ -9,12 +9,12 @@ import { OrgDeleteButton } from "./org-delete-button";
 import { useTranslations } from "next-intl";
 
 export const OrgDanger = () => {
-  const t = useTranslations("organizations.form");
+  const t = useTranslations("organizations.tabs");
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("destroy.title")}</CardTitle>
-        <CardDescription>{t("destroy.description")}</CardDescription>
+        <CardTitle>{t("danger.title")}</CardTitle>
+        <CardDescription>{t("danger.description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <OrgDeleteButton />

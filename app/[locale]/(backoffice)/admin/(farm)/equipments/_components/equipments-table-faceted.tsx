@@ -1,7 +1,6 @@
 "use client";
 import { ErrorButton } from "@/components/buttons/error-button";
 import { FacetedFilterStringButton } from "@/components/buttons/faceted-filter-string-button";
-import { QueryProvider } from "@/components/providers/query-provider";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EquipmentTypeCount } from "@/types";
 import { EquipmentType } from "@prisma/client";
@@ -12,7 +11,7 @@ import queryString from "query-string";
 
 const EquipmentsFacetedType = () => {
   const searchParams = useSearchParams();
-  const filterString = searchParams.get("filterString");
+  const filterString = searchParams!.get("filterString");
   const t = useTranslations("equipments");
   const options = Object.values(EquipmentType).map((item) => ({
     label: t(`schema.type.options.${item}`),
@@ -60,18 +59,10 @@ const EquipmentsFacetedType = () => {
   );
 };
 
-const EquipmentsFacetedTypeWithQueryClient = () => {
-  return (
-    <QueryProvider>
-      <EquipmentsFacetedType />
-    </QueryProvider>
-  );
-};
-
 export const EquipmentsTableFaceted = () => {
   return (
     <div className="flex gap-2 my-2 lg:flex-row flex-col">
-      <EquipmentsFacetedTypeWithQueryClient />
+      <EquipmentsFacetedType />
     </div>
   );
 };

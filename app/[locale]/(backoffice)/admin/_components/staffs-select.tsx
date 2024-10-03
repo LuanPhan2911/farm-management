@@ -23,8 +23,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 import { ErrorButton } from "@/components/buttons/error-button";
 
-import { QueryProvider } from "@/components/providers/query-provider";
-
 import { UserAvatar } from "@/components/user-avatar";
 import { StaffMetadataRole } from "./staff-metadata-role";
 import { StaffRole } from "@prisma/client";
@@ -76,7 +74,7 @@ interface StaffsSelectProps {
   errorLabel: string;
 }
 
-const StaffsSelect = ({
+export const StaffsSelect = ({
   queryKey,
   defaultValue,
   disabled,
@@ -173,7 +171,7 @@ interface StaffsSelectMultipleProps {
   defaultValue?: string;
   className?: string;
 }
-const StaffsSelectMultiple = ({
+export const StaffsSelectMultiple = ({
   defaultValue,
   disabled,
   label,
@@ -221,23 +219,5 @@ const StaffsSelectMultiple = ({
       isMulti
       noOptionsMessage={() => notFound}
     />
-  );
-};
-
-export const StaffsSelectMultipleWithQueryClient = (
-  props: StaffsSelectMultipleProps
-) => {
-  return (
-    <QueryProvider>
-      <StaffsSelectMultiple {...props} />
-    </QueryProvider>
-  );
-};
-
-export const StaffsSelectWithQueryClient = (props: StaffsSelectProps) => {
-  return (
-    <QueryProvider>
-      <StaffsSelect {...props} />
-    </QueryProvider>
   );
 };

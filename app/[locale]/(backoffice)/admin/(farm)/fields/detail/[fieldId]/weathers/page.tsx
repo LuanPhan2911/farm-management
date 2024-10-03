@@ -25,14 +25,14 @@ export async function generateMetadata() {
   };
 }
 const WeathersPage = async ({ params, searchParams }: WeathersPageProps) => {
-  const page = parseToNumber(searchParams.page, 1);
+  const page = parseToNumber(searchParams!.page, 1);
   const { orderBy, filterNumber, filterString } = searchParams;
-  const begin = parseToDate(searchParams.begin);
-  const end = parseToDate(searchParams.end);
+  const begin = parseToDate(searchParams!.begin);
+  const end = parseToDate(searchParams!.end);
   const t = await getTranslations("weathers.page");
 
   const { data, totalPage } = await getWeathersOnField({
-    fieldId: params.fieldId,
+    fieldId: params!.fieldId,
     page,
     orderBy,
     filterString,

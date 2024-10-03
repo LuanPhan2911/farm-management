@@ -613,7 +613,6 @@ export const EquipmentSchema = (t: (arg: string) => string) => {
     fuelConsumption: numberSchema(t, "fuelConsumption", {
       min: 0,
       max: 100_000,
-      int: true,
       required: false,
     }).nullish(),
     energyType: stringSchema(t, "energyType", {
@@ -817,5 +816,15 @@ export const SendEmailSchema = (
         required_error: t("contents.required_error"),
       })
       .min(1, t("contents.atLeast")),
+  });
+};
+
+export const MessageSchema = () => {
+  return z.object({
+    content: z
+      .string({ required_error: "Content is required" })
+      .min(1, "Min content length is 1 character")
+      .max(5000, "Max content length is 5000 characters"),
+    fileId: z.string().nullish(),
   });
 };

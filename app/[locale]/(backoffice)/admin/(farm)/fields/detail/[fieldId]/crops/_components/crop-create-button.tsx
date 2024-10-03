@@ -1,8 +1,8 @@
 "use client";
 
 import { create } from "@/actions/crop";
-import { PlantsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/plants-select";
-import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
+import { PlantsSelect } from "@/app/[locale]/(backoffice)/admin/_components/plants-select";
+import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 import { DatePickerWithRange } from "@/components/form/date-picker-with-range";
 import { Button } from "@/components/ui/button";
@@ -48,7 +48,7 @@ export const CropCreateButton = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      fieldId: params.fieldId,
+      fieldId: params!.fieldId,
       dateRange: {
         startDate: new Date(),
         endDate: null,
@@ -129,7 +129,7 @@ export const CropCreateButton = () => {
                     <FormLabel>{tSchema("plantId.label")}</FormLabel>
                     <div className="flex gap-x-2">
                       <FormControl>
-                        <PlantsSelectWithQueryClient
+                        <PlantsSelect
                           errorLabel={tSchema("plantId.error")}
                           label={tSchema("plantId.placeholder")}
                           notFound={tSchema("plantId.notFound")}
@@ -200,7 +200,7 @@ export const CropCreateButton = () => {
                         {tSchema("estimatedYield.unitId.label")}
                       </FormLabel>
                       <FormControl>
-                        <UnitsSelectWithQueryClient
+                        <UnitsSelect
                           onChange={field.onChange}
                           placeholder={tSchema(
                             "estimatedYield.unitId.placeholder"
@@ -249,7 +249,7 @@ export const CropCreateButton = () => {
                         {tSchema("actualYield.unitId.label")}
                       </FormLabel>
                       <FormControl>
-                        <UnitsSelectWithQueryClient
+                        <UnitsSelect
                           onChange={field.onChange}
                           placeholder={tSchema(
                             "actualYield.unitId.placeholder"

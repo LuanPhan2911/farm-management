@@ -13,18 +13,18 @@ export const SearchBar = ({ placeholder, isPagination }: SearchBarProps) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const handleSearch = useDebounceCallback((term: string) => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams!);
     if (isPagination) {
-      params.set("page", "1");
+      params!.set("page", "1");
     }
 
     if (term) {
-      params.set("query", term);
+      params!.set("query", term);
     } else {
-      params.delete("query");
+      params!.delete("query");
     }
 
-    router.replace(`${pathname}?${params.toString()}`);
+    router.replace(`${pathname}?${params!.toString()}`);
   }, 300);
   return (
     <div className="relative lg:w-[250px] w-full">
@@ -33,7 +33,7 @@ export const SearchBar = ({ placeholder, isPagination }: SearchBarProps) => {
         placeholder={placeholder}
         className="pl-8 h-8"
         onChange={(e) => handleSearch(e.target.value)}
-        defaultValue={searchParams.get("query")?.toString()}
+        defaultValue={searchParams!.get("query")?.toString()}
       />
     </div>
   );

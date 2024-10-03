@@ -57,7 +57,7 @@ export const GET = async (
   }
 ) => {
   try {
-    const soils = await getSoilsForExport(params.fieldId);
+    const soils = await getSoilsForExport(params!.fieldId);
     return NextResponse.json(soils);
   } catch (error) {
     return NextResponse.json("Internal error", { status: 500 });

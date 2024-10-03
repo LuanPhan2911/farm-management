@@ -23,27 +23,27 @@ export const OrderByButton = ({
     if (!defaultValue) {
       return;
     }
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams!);
 
-    params.set("orderBy", `${column}_${defaultValue}`);
+    params!.set("orderBy", `${column}_${defaultValue}`);
     router.replace(`${pathname}?${params}`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValue]);
   const router = useRouter();
   const handleClick = () => {
     const value = `${column}_${getPostfixSortOrder(
-      searchParams.get("orderBy") || "",
+      searchParams!.get("orderBy") || "",
       "desc"
     )}`;
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams!);
 
-    if (!params.get("orderBy")) {
-      params.set("orderBy", value);
+    if (!params!.get("orderBy")) {
+      params!.set("orderBy", value);
     } else {
-      if (value === params.get("orderBy")) {
-        params.set("orderBy", toggleSortOrder(value));
+      if (value === params!.get("orderBy")) {
+        params!.set("orderBy", toggleSortOrder(value));
       } else {
-        params.set("orderBy", value);
+        params!.set("orderBy", value);
       }
     }
     router.replace(`${pathname}?${params}`);

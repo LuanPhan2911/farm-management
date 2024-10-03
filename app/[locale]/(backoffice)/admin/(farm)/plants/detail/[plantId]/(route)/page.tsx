@@ -24,7 +24,7 @@ export async function generateStaticParams() {
 }
 
 const PlantDetailPage = async ({ params }: PlantDetailPageProps) => {
-  const plant = await getPlantById(params.plantId);
+  const plant = await getPlantById(params!.plantId);
 
   if (!plant) {
     notFound();

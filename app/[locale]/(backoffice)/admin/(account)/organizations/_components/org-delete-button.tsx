@@ -19,7 +19,7 @@ export const OrgDeleteButton = () => {
   }>();
   const onConfirm = () => {
     setPending(true);
-    destroy(params.orgId)
+    destroy(params!.orgId)
       .then(({ message, ok }) => {
         if (ok) {
           onClose();

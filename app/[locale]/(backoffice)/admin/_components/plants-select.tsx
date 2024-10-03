@@ -1,6 +1,5 @@
 import { ErrorButton } from "@/components/buttons/error-button";
 import { SelectItemContent } from "@/components/form/select-item";
-import { QueryProvider } from "@/components/providers/query-provider";
 import {
   Select,
   SelectContent,
@@ -22,7 +21,7 @@ interface PlantsSelectProps {
   errorLabel: string;
   className?: string;
 }
-const PlantsSelect = ({
+export const PlantsSelect = ({
   defaultValue,
   errorLabel,
   label,
@@ -71,13 +70,5 @@ const PlantsSelect = ({
         })}
       </SelectContent>
     </Select>
-  );
-};
-
-export const PlantsSelectWithQueryClient = (props: PlantsSelectProps) => {
-  return (
-    <QueryProvider>
-      <PlantsSelect {...props} />
-    </QueryProvider>
   );
 };

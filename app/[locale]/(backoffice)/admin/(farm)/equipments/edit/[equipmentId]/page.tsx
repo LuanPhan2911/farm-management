@@ -27,7 +27,7 @@ export async function generateStaticParams() {
 }
 
 const EquipmentEditPage = async ({ params }: EquipmentEditPageProps) => {
-  const data = await getEquipmentById(params.equipmentId);
+  const data = await getEquipmentById(params!.equipmentId);
   const t = await getTranslations("equipments.page.edit");
   if (!data) {
     notFound();

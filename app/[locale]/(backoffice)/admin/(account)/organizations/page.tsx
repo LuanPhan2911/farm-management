@@ -19,7 +19,7 @@ export async function generateMetadata() {
   };
 }
 const OrganizationsPage = async ({ searchParams }: OrganizationPageProps) => {
-  const page = parseToNumber(searchParams.page, 1);
+  const page = parseToNumber(searchParams!.page, 1);
   const t = await getTranslations("organizations.page");
   const { orderBy, query } = searchParams;
   const { data: organizations, totalPage } = await getOrganizations({

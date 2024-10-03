@@ -19,10 +19,10 @@ import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { CategoriesSelectWithQueryClient } from "../../../_components/categories-select";
+import { CategoriesSelect } from "../../../_components/categories-select";
 import { CategoryType, FertilizerType, Season, UnitType } from "@prisma/client";
 import { SelectOptions } from "@/components/form/select-options";
-import { UnitsSelectWithQueryClient } from "../../../_components/units-select";
+import { UnitsSelect } from "../../../_components/units-select";
 import { PlantTable } from "@/types";
 import { UploadImage } from "@/components/form/upload-image";
 import { convertNullToUndefined } from "@/lib/utils";
@@ -93,7 +93,7 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
               <FormItem>
                 <FormLabel>{tSchema("categoryId.label")}</FormLabel>
                 <FormControl>
-                  <CategoriesSelectWithQueryClient
+                  <CategoriesSelect
                     errorLabel={tSchema("categoryId.error")}
                     notFound={tSchema("categoryId.notFound")}
                     onChange={field.onChange}
@@ -211,7 +211,7 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
                       {tSchema("idealTemperature.unitId.label")}
                     </FormLabel>
                     <FormControl>
-                      <UnitsSelectWithQueryClient
+                      <UnitsSelect
                         onChange={field.onChange}
                         placeholder={tSchema(
                           "idealTemperature.unitId.placeholder"
@@ -263,7 +263,7 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
                       {tSchema("idealHumidity.unitId.label")}
                     </FormLabel>
                     <FormControl>
-                      <UnitsSelectWithQueryClient
+                      <UnitsSelect
                         onChange={field.onChange}
                         placeholder={tSchema(
                           "idealHumidity.unitId.placeholder"
@@ -315,7 +315,7 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
                       {tSchema("waterRequirement.unitId.label")}
                     </FormLabel>
                     <FormControl>
-                      <UnitsSelectWithQueryClient
+                      <UnitsSelect
                         onChange={field.onChange}
                         placeholder={tSchema(
                           "waterRequirement.unitId.placeholder"

@@ -29,7 +29,7 @@ interface EquipmentsTableProps {
 export const EquipmentsTable = ({ data, totalPage }: EquipmentsTableProps) => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const query = searchParams.get("query");
+  const query = searchParams!.get("query");
 
   if (query) {
     data = data.filter((item) => includeString(item.name, query));

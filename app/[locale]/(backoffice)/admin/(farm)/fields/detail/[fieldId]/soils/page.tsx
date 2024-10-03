@@ -25,13 +25,13 @@ export async function generateMetadata() {
   };
 }
 const SoilsPage = async ({ params, searchParams }: SoilsPageProps) => {
-  const page = parseToNumber(searchParams.page, 1);
+  const page = parseToNumber(searchParams!.page, 1);
   const { orderBy, filterNumber, filterString } = searchParams;
-  const begin = parseToDate(searchParams.begin);
-  const end = parseToDate(searchParams.end);
+  const begin = parseToDate(searchParams!.begin);
+  const end = parseToDate(searchParams!.end);
   const t = await getTranslations("soils.page");
   const { data, totalPage } = await getSoilsOnField({
-    fieldId: params.fieldId,
+    fieldId: params!.fieldId,
     page,
     orderBy,
     filterString,

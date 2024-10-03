@@ -42,15 +42,15 @@ export const FacetedFilterStringButton = ({
   const router = useRouter();
   const searchParams = useSearchParams();
   const selectedValues = new Set(
-    getPostfixArrayFilterString(searchParams.get("filterString") || "")
+    getPostfixArrayFilterString(searchParams!.get("filterString") || "")
   );
 
   const handlePushUrl = (values: string[] | undefined) => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams!);
     if (!values) {
-      params.delete("filterString");
+      params!.delete("filterString");
     } else {
-      params.set("filterString", `${column}_${values.join(",")}`);
+      params!.set("filterString", `${column}_${values.join(",")}`);
     }
     router.replace(`${pathname}?${params}`);
   };

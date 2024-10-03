@@ -45,21 +45,21 @@ export const FacetedFilterNumberButton = ({
   const router = useRouter();
   const searchParams = useSearchParams();
   const selectedValues = new Set(
-    getArrayFilterNumber(searchParams.get("filterNumber") || "")
+    getArrayFilterNumber(searchParams!.get("filterNumber") || "")
   );
 
   const [value, setValue] = useState(() => {
     return (
       getPostfixValueFilterNumber(
-        searchParams.get("filterNumber") || "",
+        searchParams!.get("filterNumber") || "",
         column
       ) || ""
     );
   });
 
   const handlePushUrl = (value: string | undefined) => {
-    const params = new URLSearchParams(searchParams);
-    const filterNumber = params.get("filterNumber") || "";
+    const params = new URLSearchParams(searchParams!);
+    const filterNumber = params!.get("filterNumber") || "";
     const postfixValue = getPostfixValueFilterNumber(filterNumber, column);
     if (postfixValue) {
       selectedValues.delete(`${column}_${postfixValue}`);
@@ -74,9 +74,9 @@ export const FacetedFilterNumberButton = ({
     }
     //no value: clear set
     if (selectedValues.size === 0) {
-      params.delete("filterNumber");
+      params!.delete("filterNumber");
     } else {
-      params.set("filterNumber", Array.from(selectedValues).join(","));
+      params!.set("filterNumber", Array.from(selectedValues).join(","));
     }
 
     router.replace(`${pathname}?${params}`);

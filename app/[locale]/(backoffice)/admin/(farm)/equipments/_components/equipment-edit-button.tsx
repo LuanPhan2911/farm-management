@@ -25,7 +25,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { EquipmentType, UnitType } from "@prisma/client";
 import { SelectOptions } from "@/components/form/select-options";
 import { DatePicker } from "@/components/form/date-picker";
-import { UnitsSelectWithQueryClient } from "../../../_components/units-select";
+import { UnitsSelect } from "../../../_components/units-select";
 import { UploadImage } from "@/components/form/upload-image";
 import { Link } from "@/navigation";
 import { Edit } from "lucide-react";
@@ -70,7 +70,7 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
   });
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
-      edit(values, params.equipmentId)
+      edit(values, params!.equipmentId)
         .then(({ message, ok }) => {
           if (ok) {
             toast.success(message);
@@ -221,7 +221,7 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
               <FormItem>
                 <FormLabel>{tSchema("purchasePrice.unitId.label")}</FormLabel>
                 <FormControl>
-                  <UnitsSelectWithQueryClient
+                  <UnitsSelect
                     onChange={field.onChange}
                     placeholder={tSchema("purchasePrice.unitId.placeholder")}
                     unitType={UnitType.MONEY}

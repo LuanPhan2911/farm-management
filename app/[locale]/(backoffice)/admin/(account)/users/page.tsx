@@ -19,7 +19,7 @@ export async function generateMetadata() {
 }
 
 const UsersPage = async ({ searchParams }: UsersPageProps) => {
-  const page = parseToNumber(searchParams.page, 1);
+  const page = parseToNumber(searchParams!.page, 1);
   const { orderBy, query } = searchParams;
   const t = await getTranslations("users.page");
 

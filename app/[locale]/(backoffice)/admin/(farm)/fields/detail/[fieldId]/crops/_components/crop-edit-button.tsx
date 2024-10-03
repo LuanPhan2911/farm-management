@@ -25,9 +25,9 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 
 import { CropTable } from "@/types";
-import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
+import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { edit } from "@/actions/crop";
-import { PlantsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/plants-select";
+import { PlantsSelect } from "@/app/[locale]/(backoffice)/admin/_components/plants-select";
 import { DatePickerWithRange } from "@/components/form/date-picker-with-range";
 import { DateRange } from "react-day-picker";
 
@@ -149,7 +149,7 @@ export const CropEditDialog = () => {
                   <FormLabel>{tSchema("plantId.label")}</FormLabel>
                   <div className="flex gap-x-2">
                     <FormControl>
-                      <PlantsSelectWithQueryClient
+                      <PlantsSelect
                         errorLabel={tSchema("plantId.error")}
                         label={tSchema("plantId.placeholder")}
                         notFound={tSchema("plantId.notFound")}
@@ -219,7 +219,7 @@ export const CropEditDialog = () => {
                       {tSchema("estimatedYield.unitId.label")}
                     </FormLabel>
                     <FormControl>
-                      <UnitsSelectWithQueryClient
+                      <UnitsSelect
                         onChange={field.onChange}
                         placeholder={tSchema(
                           "estimatedYield.unitId.placeholder"
@@ -267,7 +267,7 @@ export const CropEditDialog = () => {
                   <FormItem>
                     <FormLabel>{tSchema("actualYield.unitId.label")}</FormLabel>
                     <FormControl>
-                      <UnitsSelectWithQueryClient
+                      <UnitsSelect
                         onChange={field.onChange}
                         placeholder={tSchema("actualYield.unitId.placeholder")}
                         unitType={UnitType.WEIGHT}

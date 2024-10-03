@@ -2,7 +2,7 @@
 
 import { ErrorButton } from "@/components/buttons/error-button";
 import { FacetedFilterStringButton } from "@/components/buttons/faceted-filter-string-button";
-import { QueryProvider } from "@/components/providers/query-provider";
+
 import { Skeleton } from "@/components/ui/skeleton";
 import { FertilizerFrequencyCount, FertilizerTypeCount } from "@/types";
 import { FertilizerType, Frequency } from "@prisma/client";
@@ -13,7 +13,7 @@ import queryString from "query-string";
 
 const FertilizersFacetedFrequency = () => {
   const searchParams = useSearchParams();
-  const filterString = searchParams.get("filterString");
+  const filterString = searchParams!.get("filterString");
   const t = useTranslations("fertilizers");
   const options = Object.values(Frequency).map((item) => ({
     label: t(`schema.frequencyOfUse.options.${item}`),
@@ -64,16 +64,9 @@ const FertilizersFacetedFrequency = () => {
   );
 };
 
-const FertilizersFacetedFrequencyWithQueryClient = () => {
-  return (
-    <QueryProvider>
-      <FertilizersFacetedFrequency />
-    </QueryProvider>
-  );
-};
 const FertilizersFacetedStatus = () => {
   const searchParams = useSearchParams();
-  const filterString = searchParams.get("filterString");
+  const filterString = searchParams!.get("filterString");
   const t = useTranslations("fertilizers");
   const options = Object.values(FertilizerType).map((item) => ({
     label: t(`schema.type.options.${item}`),
@@ -121,19 +114,11 @@ const FertilizersFacetedStatus = () => {
   );
 };
 
-const FertilizersFacetedTypeWithQueryClient = () => {
-  return (
-    <QueryProvider>
-      <FertilizersFacetedStatus />
-    </QueryProvider>
-  );
-};
-
 export const FertilizersTableFaceted = () => {
   return (
     <div className="flex gap-2 my-2 lg:flex-row flex-col">
-      <FertilizersFacetedTypeWithQueryClient />
-      <FertilizersFacetedFrequencyWithQueryClient />
+      <FertilizersFacetedStatus />
+      <FertilizersFacetedFrequency />
     </div>
   );
 };

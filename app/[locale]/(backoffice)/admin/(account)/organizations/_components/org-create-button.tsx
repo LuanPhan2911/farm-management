@@ -28,7 +28,7 @@ import { useForm } from "react-hook-form";
 import slugify from "slugify";
 import { toast } from "sonner";
 import { z } from "zod";
-import { StaffsSelectWithQueryClient } from "../../../_components/staffs-select";
+import { StaffsSelect } from "../../../_components/staffs-select";
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 interface OrgCreateButtonProps {}
 
@@ -143,7 +143,7 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
                   <FormLabel>{tSchema("createdBy.label")}</FormLabel>
                   <FormControl>
                     <div className="block">
-                      <StaffsSelectWithQueryClient
+                      <StaffsSelect
                         queryKey={["staffs_contain_admin"]}
                         queryFn={fetchCreatedByOrg}
                         defaultValue={field.value}
