@@ -6,28 +6,36 @@ type MessageParams = {
   staffId: string;
   orgId: string;
   content: string;
-  fileId?: string | null;
+  fileIds?: string[] | null;
   deleted?: boolean;
 };
 
 export const createMessage = async (params: MessageParams) => {
+  const { fileIds, ...other } = params;
   return await db.message.create({
     data: {
-      ...params,
+      ...other,
+      ...(!!fileIds &&
+        fileIds?.length > 0 && {
+          files: {
+            connect: fileIds?.map((fileId) => ({ id: fileId })),
+          },
+        }),
     },
     include: {
       staff: true,
-      file: true,
+      files: true,
     },
   });
 };
 export const updateMessage = async (id: string, params: MessageParams) => {
+  const { fileIds, ...other } = params;
   return await db.message.update({
     where: { id },
-    data: { ...params },
+    data: { ...other },
     include: {
       staff: true,
-      file: true,
+      files: true,
     },
   });
 };
@@ -38,10 +46,20 @@ export const updateMessageDeleted = async (id: string) => {
     },
     data: {
       deleted: true,
+      files: {
+        updateMany: {
+          data: {
+            deleted: true,
+          },
+          where: {
+            messageId: id,
+          },
+        },
+      },
     },
     include: {
       staff: true,
-      file: true,
+      files: true,
     },
   });
 };
@@ -73,7 +91,7 @@ export const getMessagesByOrg = async ({
       },
       include: {
         staff: true,
-        file: true,
+        files: true,
       },
     });
     let nextCursor = null;
@@ -97,7 +115,7 @@ export const getMessageById = async (id: string) => {
     where: { id, deleted: false },
     include: {
       staff: true,
-      file: true,
+      files: true,
     },
   });
 };

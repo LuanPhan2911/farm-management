@@ -70,3 +70,34 @@ export const DownloadButton = ({
     </Button>
   );
 };
+
+interface DownloadButtonWithUrlProps {
+  url: string;
+  name: string;
+  className?: string;
+}
+export const DownloadButtonWithUrl = ({
+  name,
+  url,
+  className,
+}: DownloadButtonWithUrlProps) => {
+  const handleDownload = () => {
+    // Create an invisible anchor element to trigger the download
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = name; // Extract the file name from the URL
+    document.body.appendChild(link); // Append link to the body
+    link.click(); // Programmatically click the link to trigger the download
+    document.body.removeChild(link); // Remove the link from the DOM
+  };
+  return (
+    <Button
+      onClick={handleDownload}
+      variant={"cyan"}
+      size={"icon"}
+      className={className}
+    >
+      <Download />
+    </Button>
+  );
+};

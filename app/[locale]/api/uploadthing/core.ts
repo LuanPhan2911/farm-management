@@ -70,25 +70,26 @@ export const ourFileRouter = {
         uploadedFile: string | null;
       }> => {
         // This code RUNS ON YOUR SERVER after upload
-        // try {
-        //   const staff = await getStaffByExternalId(metadata.userId);
-        //   if (!staff) {
-        //     return { uploadedBy: metadata.userId, uploadedFile: null };
-        //   }
-        //   const newFile = await createFile({
-        //     key: file.key,
-        //     ownerId: staff.id,
-        //     url: file.url,
-        //     isPublic: metadata.isPublic || false,
-        //     orgId: metadata.orgId,
-        //   });
-        //   return {
-        //     uploadedBy: metadata.userId,
-        //     uploadedFile: JSON.stringify(newFile),
-        //   };
-        // } catch (error) {
-        return { uploadedBy: metadata.userId, uploadedFile: null };
-        // }
+        try {
+          const staff = await getStaffByExternalId(metadata.userId);
+          if (!staff) {
+            return { uploadedBy: metadata.userId, uploadedFile: null };
+          }
+          const { customId, size, ...other } = file;
+
+          const newFile = await createFile({
+            ...other,
+            ownerId: staff.id,
+            isPublic: metadata.isPublic || false,
+            orgId: metadata.orgId,
+          });
+          return {
+            uploadedBy: metadata.userId,
+            uploadedFile: JSON.stringify(newFile),
+          };
+        } catch (error) {
+          return { uploadedBy: metadata.userId, uploadedFile: null };
+        }
 
         // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
       }

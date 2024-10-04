@@ -32,25 +32,17 @@ interface UploadFilesProps {
   };
   disabled?: boolean;
   onUploadCompleted: (files: FilePrisma[]) => void;
+  mode?: "auto" | "manual";
+  setUploading: (value: boolean) => void;
 }
 export const UploadFiles = ({
   disabled,
   input,
   onUploadCompleted,
+  setUploading,
+  mode = "auto",
 }: UploadFilesProps) => {
   const [files, setFiles] = useState<FileUpload[]>([]);
-
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    setFiles(
-      acceptedFiles.map((file) =>
-        Object.assign(file, {
-          preview: isImage(file) ? URL.createObjectURL(file) : undefined,
-          id: v4(),
-          status: "prepare",
-        })
-      )
-    );
-  }, []);
 
   const { startUpload, permittedFileInfo, isUploading } = useUploadThing(
     "fileUploader",
@@ -81,12 +73,35 @@ export const UploadFiles = ({
             })
           );
         });
+        setUploading(false);
       },
       onUploadError: () => {
+        setUploading(false);
         toast.error("Fail upload file");
+      },
+      onUploadBegin: (file: string) => {
+        setUploading(true);
       },
     }
   );
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      setFiles(
+        acceptedFiles.map((file) =>
+          Object.assign(file, {
+            preview: isImage(file.type) ? URL.createObjectURL(file) : undefined,
+            id: v4(),
+            status: "prepare",
+          })
+        )
+      );
+      if (mode === "auto") {
+        startUpload(acceptedFiles, input || { isPublic: false });
+      }
+    },
+    [input, startUpload, mode]
+  );
+
   useEffect(() => {
     // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
     return () =>
@@ -112,8 +127,8 @@ export const UploadFiles = ({
   };
 
   return (
-    <section className="container">
-      <p className="text-xs text-green-500 text-center py-2">
+    <section className="w-full">
+      <p className="text-xs text-green-500 text-center p-2">
         Max file uploaded at the same time is {MAX_FILES}
       </p>
       <div
@@ -121,15 +136,10 @@ export const UploadFiles = ({
         className="border flex justify-center items-center h-16 bg-blue-300 rounded-lg"
       >
         <input {...getInputProps()} />
-        <p>Drag & drop some files here, or click to select files</p>
+        <p className="p-2 text-center">Drag & drop some files here</p>
       </div>
       <div className="flex justify-center py-2">
-        <Carousel
-          className="w-full max-w-md"
-          opts={{
-            align: "end",
-          }}
-        >
+        <Carousel className="w-full max-w-md">
           <CarouselContent className="-ml-1">
             {files.length > 0 &&
               files.map((file, index) => {
@@ -164,7 +174,7 @@ export const UploadFiles = ({
                           {file.preview ? (
                             <Image src={file.preview} alt="Preview" fill />
                           ) : (
-                            <div className="flex flex-col items-center max-w-full">
+                            <div className="flex flex-col justify-end h-full max-w-full">
                               <div className="text-xs text-center text-blue-400 font-semibold w-full line-clamp-1">
                                 {file.type}
                               </div>
@@ -183,23 +193,25 @@ export const UploadFiles = ({
         </Carousel>
       </div>
 
-      <div className="flex justify-center py-2">
-        <Button
-          variant={"blue"}
-          size={"sm"}
-          disabled={disabled || isUploading}
-          onClick={() =>
-            startUpload(
-              files,
-              input || {
-                isPublic: false,
-              }
-            )
-          }
-        >
-          {isUploading ? "Uploading" : "Upload"}
-        </Button>
-      </div>
+      {mode === "manual" && (
+        <div className="flex justify-center py-2">
+          <Button
+            variant={"blue"}
+            size={"sm"}
+            disabled={disabled || isUploading}
+            onClick={() =>
+              startUpload(
+                files,
+                input || {
+                  isPublic: false,
+                }
+              )
+            }
+          >
+            {isUploading ? "Uploading" : "Upload"}
+          </Button>
+        </div>
+      )}
     </section>
   );
 };

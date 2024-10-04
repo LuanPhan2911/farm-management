@@ -825,6 +825,6 @@ export const MessageSchema = () => {
       .string({ required_error: "Content is required" })
       .min(1, "Min content length is 1 character")
       .max(5000, "Max content length is 5000 characters"),
-    fileId: z.string().nullish(),
+    fileIds: z.array(z.string()).nullish(),
   });
 };

@@ -18,7 +18,7 @@ export const EmojiPicker = ({ onChange, disabled }: EmojiPickerProps) => {
   const { resolvedTheme } = useTheme();
   return (
     <Popover>
-      <PopoverTrigger>
+      <PopoverTrigger asChild>
         <Button
           variant={"outline"}
           size={"icon"}

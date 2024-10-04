@@ -471,7 +471,7 @@ export function generateCronExplanation(
     return "Invalid cron format";
   }
 }
-export function isImage(file: File): boolean {
+export function isImage(type: string): boolean {
   const imageMimeTypes = [
     "image/jpeg",
     "image/png",
@@ -485,5 +485,5 @@ export function isImage(file: File): boolean {
     "image/heic",
   ];
 
-  return imageMimeTypes.includes(file.type);
+  return imageMimeTypes.includes(type);
 }

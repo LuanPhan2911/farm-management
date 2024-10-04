@@ -364,5 +364,5 @@ export type ScheduleResponse = {
 };
 export type MessageWithStaff = Message & {
   staff: Staff;
-  file: File | null;
+  files: File[] | null;
 };

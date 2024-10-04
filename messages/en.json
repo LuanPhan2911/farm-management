@@ -2616,9 +2616,10 @@
   },
   "messages": {
     "schema": {
-      "fileId": {},
+      "fileIds": {},
       "content": {
-        "placeholder": "Enter new message",
+        "label": "Message",
+        "placeholder": "Enter new message...",
         "required_error": "Message is required",
         "min": "Min message length is {min} character",
         "max": "Max message length is {max} character",
@@ -2636,6 +2637,11 @@
         "label": "Delete",
         "title": "Delete message",
         "description": "Delete this message"
+      },
+      "createFiles": {
+        "label": "Upload files",
+        "title": "Upload files",
+        "description": "Any other members in organizations read uploaded file"
       }
     },
     "status": {

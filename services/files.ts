@@ -3,6 +3,8 @@ import { PaginatedResponse } from "@/types";
 import { File } from "@prisma/client";
 
 type FIleParams = {
+  name: string;
+  type: string;
   key: string;
   url: string;
   ownerId: string;
@@ -39,7 +41,7 @@ export const getFiles = async ({
     const totalPage = Math.ceil(count / limit);
     return {
       data: files,
-      totalPage: count,
+      totalPage,
     };
   } catch (error) {
     return {
