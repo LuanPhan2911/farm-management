@@ -1,3 +1,4 @@
+"use client";
 import { UserAvatar } from "@/components/user-avatar";
 import { ChatParamKey, useChatQuery } from "@/hooks/use-chat-query";
 import { useChatSocket } from "@/hooks/use-chat-socket";
@@ -5,7 +6,7 @@ import { useRole } from "@/hooks/use-role";
 import { MessageWithStaff } from "@/types";
 import { File, Staff } from "@prisma/client";
 import { Loader2, ServerCrash } from "lucide-react";
-import { ElementRef, Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useState } from "react";
 import { useFormatter, useTranslations } from "next-intl";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -23,6 +24,8 @@ import {
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
 import { DownloadButtonWithUrl } from "@/components/buttons/download-button";
+import { StaffMetadataRole } from "../../../_components/staff-metadata-role";
+import { Separator } from "@/components/ui/separator";
 
 interface ChatMessagesProps {
   chatId: string;
@@ -82,7 +85,7 @@ export const ChatMessages = ({
   return (
     <div className="flex-1 flex flex-col py-4 overflow-y-auto gap-2">
       {!hasNextPage && <div className="flex-1"></div>}
-      {!data?.pages?.[0]?.items.length && <ChatWelcome title={t("welcome")} />}
+      {!data?.pages?.[0]?.items?.length && <ChatWelcome title={t("welcome")} />}
       {hasNextPage && (
         <div className="flex justify-center">
           {isFetchingNextPage ? (
@@ -173,10 +176,12 @@ const ChatItem = ({
             <p className="font-semibold text-sm hover:underline cursor-pointer">
               {staff.name}
             </p>
+            <StaffMetadataRole metadata={{ role: staff.role }} />
             <p className="text-xs text-muted-foreground">
               {relativeTime(createdAt)}
             </p>
           </div>
+          <Separator className="my-2" />
           {hasFiles && <ChatItemFiles files={files} />}
           {!isEditing && (
             <p

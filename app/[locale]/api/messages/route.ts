@@ -1,10 +1,10 @@
 import { getMessagesByOrg } from "@/services/messages";
-import { currentStaff } from "@/services/staffs";
+import { getCurrentStaff } from "@/services/staffs";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (req: NextRequest) => {
   try {
-    const staff = await currentStaff();
+    const staff = await getCurrentStaff();
     if (!staff) {
       return NextResponse.json("Unauthorize", { status: 400 });
     }

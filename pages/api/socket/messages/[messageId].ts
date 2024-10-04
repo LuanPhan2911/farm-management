@@ -6,8 +6,7 @@ import {
   updateMessage,
   updateMessageDeleted,
 } from "@/services/messages";
-import { getOrganizationById } from "@/services/organizations";
-import { currentStaffPages } from "@/services/staffs";
+import { getCurrentStaffPages } from "@/services/staffs";
 import { ActionResponse, NextApiResponseServerIo } from "@/types";
 import { NextApiRequest } from "next";
 
@@ -33,15 +32,12 @@ export default async function handler(
       return res.status(400).json(errorResponse("Invalid field"));
     }
 
-    const staff = await currentStaffPages(req);
+    const staff = await getCurrentStaffPages(req);
 
     if (!staff) {
       return res.status(400).json(errorResponse("Staff is not exist"));
     }
-    const org = await getOrganizationById(orgId as string);
-    if (!org) {
-      return res.status(400).json(errorResponse("Org is not exist"));
-    }
+
     let message = await getMessageById(messageId as string);
     if (!message) {
       return res.status(400).json(errorResponse("Message is not exist"));
@@ -61,8 +57,6 @@ export default async function handler(
     if (req.method === "PATCH") {
       message = await updateMessage(message.id, {
         ...validatedFields!.data,
-        orgId: org.id,
-        staffId: staff.id,
       });
       successMessage = "Message edited";
     }

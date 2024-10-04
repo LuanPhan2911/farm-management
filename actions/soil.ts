@@ -2,7 +2,7 @@
 
 import { errorResponse, successResponse } from "@/lib/utils";
 import { SoilSchema } from "@/schemas";
-import { currentStaff } from "@/services/staffs";
+import { getCurrentStaff } from "@/services/staffs";
 
 import {
   updateSoilConfirmed,
@@ -65,7 +65,7 @@ export const editConfirmed = async (id: string, confirmed: boolean) => {
   const tSchema = await getTranslations("soils.schema");
 
   try {
-    const staff = await currentStaff();
+    const staff = await getCurrentStaff();
     if (!staff) {
       return errorResponse(tSchema("errors.existStaff"));
     }
@@ -126,7 +126,7 @@ export const editManyConfirmed = async (fieldId: string) => {
   const tSchema = await getTranslations("soils.schema");
 
   try {
-    const staff = await currentStaff();
+    const staff = await getCurrentStaff();
     if (!staff) {
       return errorResponse(tSchema("errors.existStaff"));
     }

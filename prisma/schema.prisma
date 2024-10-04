@@ -526,7 +526,7 @@ model Message {
   staffId String
   staff   Staff  @relation(fields: [staffId], references: [id], onDelete: Cascade)
 
-  orgId String
+  orgId String?
   files File[]
 
   deleted   Boolean  @default(false)

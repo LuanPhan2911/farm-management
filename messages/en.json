@@ -2615,8 +2615,10 @@
     }
   },
   "messages": {
+    "page": {
+      "title": "Chat all"
+    },
     "schema": {
-      "fileIds": {},
       "content": {
         "label": "Message",
         "placeholder": "Enter new message...",
@@ -2651,6 +2653,11 @@
       "failure": {
         "destroy": "Something went wrong while deleting message!"
       }
+    },
+    "notFound": {
+      "title": "Unauthenticated",
+      "description": "Current staff not found",
+      "backLabel": "Go to dashboard"
     }
   },
   "errors": {
@@ -2689,6 +2696,7 @@
     "/admin/equipments/create": "Create",
     "/admin/equipments/edit": "Edit",
     "/admin/tasks": "Tasks",
-    "/admin/schedules": "Schedules"
+    "/admin/schedules": "Schedules",
+    "/admin/messages": "All messages"
   }
 }

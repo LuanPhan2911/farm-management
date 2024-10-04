@@ -4,7 +4,7 @@ import { MessageWithStaff, PaginatedWithCursorResponse } from "@/types";
 
 type MessageParams = {
   staffId: string;
-  orgId: string;
+  orgId?: string | null;
   content: string;
   fileIds?: string[] | null;
   deleted?: boolean;
@@ -28,11 +28,16 @@ export const createMessage = async (params: MessageParams) => {
     },
   });
 };
-export const updateMessage = async (id: string, params: MessageParams) => {
-  const { fileIds, ...other } = params;
+type UpdateMessageParams = {
+  content: string;
+};
+export const updateMessage = async (
+  id: string,
+  params: UpdateMessageParams
+) => {
   return await db.message.update({
     where: { id },
-    data: { ...other },
+    data: { ...params },
     include: {
       staff: true,
       files: true,

@@ -9,7 +9,7 @@ type StaffParams = {
   email: string;
   name: string;
   role: StaffRole;
-  imageUrl: string | null;
+  imageUrl?: string | null;
 };
 export const createStaff = async (externalId: string, params: StaffParams) => {
   const staff = await db.staff.create({
@@ -30,20 +30,29 @@ export const getStaffByExternalId = async (externalId: string) => {
     where: { externalId },
   });
 };
-export const updateStaffRole = async (externalId: string, role: StaffRole) => {
-  return await db.staff.update({
+export const upsertStaff = async (externalId: string, params: StaffParams) => {
+  return await db.staff.upsert({
     where: { externalId },
-    data: {
-      role,
+    update: {
+      ...params,
+    },
+    create: {
+      ...params,
+      externalId,
     },
   });
 };
 export const updateStaff = async (
   externalId: string,
-  params: { imageUrl: string; name: string }
+  params: {
+    name: string;
+    imageUrl?: string | null;
+  }
 ) => {
   return await db.staff.update({
-    where: { externalId },
+    where: {
+      externalId,
+    },
     data: {
       ...params,
     },
@@ -139,7 +148,7 @@ export const getStaffsSelect = async () => {
 export const getStaffById = async (id: string) => {
   return await db.staff.findUnique({ where: { id } });
 };
-export const currentStaff = async () => {
+export const getCurrentStaff = async () => {
   const user = await currentUser();
 
   if (!user) {
@@ -154,7 +163,7 @@ export const currentStaff = async () => {
 
   return staff;
 };
-export const currentStaffPages = async (req: NextApiRequest) => {
+export const getCurrentStaffPages = async (req: NextApiRequest) => {
   const { userId } = getAuth(req);
   if (!userId) {
     return null;

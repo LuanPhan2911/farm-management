@@ -8,9 +8,9 @@ import {
 } from "@/components/ui/card";
 import { Organization } from "@clerk/nextjs/server";
 import { useTranslations } from "next-intl";
-import { ChatMessages } from "../../../messages/_components/chat-messages";
+import { ChatMessages } from "../../messages/_components/chat-messages";
 import { Staff } from "@prisma/client";
-import { ChatMessageCreateForm } from "../../../messages/_components/chat-message-create-button";
+import { ChatMessageCreateForm } from "../../messages/_components/chat-message-create-button";
 import { SocketIndicator } from "@/components/socket-indicator";
 interface OrgMessages {
   org: Organization;

@@ -18,6 +18,7 @@ import {
   House,
   LayoutGrid,
   Leaf,
+  MessageCircle,
   MountainSnow,
   ScrollText,
   Section,
@@ -87,6 +88,12 @@ export const AdminSidebar = () => {
             active={isActive(pathname, "/admin/organizations")}
             icon={Building}
             title="Organizations"
+          />
+          <SidebarItem
+            href="/admin/messages"
+            active={isActive(pathname, "/admin/messages")}
+            icon={MessageCircle}
+            title="Messages"
           />
         </SidebarAccordionItem>
 
