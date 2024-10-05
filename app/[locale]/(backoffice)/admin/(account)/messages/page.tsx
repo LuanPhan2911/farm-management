@@ -5,6 +5,16 @@ import { getCurrentStaff } from "@/services/staffs";
 import { ChatMessageCreateForm } from "./_components/chat-message-create-button";
 import { notFound } from "next/navigation";
 import { SocketIndicator } from "@/components/socket-indicator";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Ellipsis } from "lucide-react";
+import { Link } from "@/navigation";
 
 export async function generateMetadata() {
   const t = await getTranslations("messages.page");
@@ -27,6 +37,20 @@ const MessagesPage = async () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="flex-1 flex flex-col gap-4">
+          <div className="flex justify-end">
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Ellipsis />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>Manage messages</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <Link href={"/admin/messages/files"}>Uploaded files</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
           <ChatMessages
             chatId={"all"}
             apiUrl="/api/messages"
@@ -42,6 +66,9 @@ const MessagesPage = async () => {
             socketUrl="/api/socket/messages"
             socketQuery={{
               orgId: "all",
+            }}
+            fileQuery={{
+              isPublic: true,
             }}
           />
         </CardContent>

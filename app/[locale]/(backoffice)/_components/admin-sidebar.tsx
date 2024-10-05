@@ -8,10 +8,12 @@ import {
   Building,
   Clipboard,
   Clock,
+  CloudUpload,
   Columns2,
   Compass,
   Flower,
   Flower2,
+  Folder,
   Globe,
   Grid2X2,
   Hammer,
@@ -173,28 +175,20 @@ export const AdminSidebar = () => {
           />
         </SidebarAccordionItem>
 
-        {/* <SidebarItem
-        href="/dashboard/staff"
-        active={pathname === "/dashboard/staff"}
-        icon={User}
-        title="Our staff"
-      />
-      <SidebarItem
-        href="/dashboard/settings"
-        active={pathname === "/dashboard/settings"}
-        icon={Settings}
-        title="Settings"
-      />
-
-      <SidebarAccordionItem title="International" icon={Globe}>
-        <div></div>
-      </SidebarAccordionItem>
-      <SidebarAccordionItem title="Online stores" icon={Store}>
-        <div></div>
-      </SidebarAccordionItem>
-      <SidebarAccordionItem title="Pages" icon={Columns2}>
-        <div></div>
-      </SidebarAccordionItem> */}
+        <SidebarAccordionItem title="Files" icon={CloudUpload}>
+          <SidebarItem
+            href="/admin/my-files"
+            active={isActive(pathname, "/admin/my-files")}
+            icon={Folder}
+            title="My files"
+          />
+          <SidebarItem
+            href="/admin/public-files"
+            active={isActive(pathname, "/admin/public-files")}
+            icon={Folder}
+            title="Public files"
+          />
+        </SidebarAccordionItem>
       </div>
     </div>
   );

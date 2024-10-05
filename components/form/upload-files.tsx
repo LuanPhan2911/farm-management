@@ -53,19 +53,18 @@ export const UploadFiles = ({
           uploadedFile: string | null;
         }>[]
       ) => {
-        onUploadCompleted(
-          res
-            .map((item) => {
-              const file = safeParseJSON(
-                item.serverData.uploadedFile
-              ) as FilePrisma;
-              if (!file) {
-                return null;
-              }
-              return file;
-            })
-            .filter((item) => item != null)
-        );
+        const uploadedFiles = res
+          .map((item) => {
+            const file = safeParseJSON(
+              item.serverData.uploadedFile
+            ) as FilePrisma;
+            if (!file) {
+              return null;
+            }
+            return file;
+          })
+          .filter((item) => item != null);
+        onUploadCompleted(uploadedFiles);
         setFiles((prev) => {
           return prev.map((item) =>
             Object.assign(item, {
@@ -74,6 +73,7 @@ export const UploadFiles = ({
           );
         });
         setUploading(false);
+        toast.success("Filed uploaded");
       },
       onUploadError: () => {
         setUploading(false);

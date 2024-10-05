@@ -44,7 +44,7 @@ const OrganizationDetailPage = async ({
   }
 
   return (
-    <div className="flex flex-col gap-y-4 min-h-full py-4">
+    <div className="flex flex-col gap-y-4 h-full py-4">
       <OrgTabs
         org={structuredClone(org)}
         orgMember={structuredClone(orgMember)}

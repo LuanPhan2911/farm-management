@@ -549,8 +549,6 @@ model File {
 
   messageId String?
   message   Message? @relation(fields: [messageId], references: [id])
-
-  deleted   Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

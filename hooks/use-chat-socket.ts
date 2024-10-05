@@ -7,11 +7,13 @@ interface ChatSocketProps {
   addKey: string;
   updateKey: string;
   queryKey: string;
+  onNewMessage: () => void;
 }
 export const useChatSocket = ({
   addKey,
   queryKey,
   updateKey,
+  onNewMessage,
 }: ChatSocketProps) => {
   const { socket } = useSocket();
   const queryClient = useQueryClient();
@@ -44,6 +46,7 @@ export const useChatSocket = ({
       });
     });
     socket.on(addKey, (message: MessageWithStaff) => {
+      onNewMessage();
       queryClient.setQueryData([queryKey], (oldData: any) => {
         if (!oldData || !oldData.pages || oldData.pages.length === 0) {
           return {

@@ -1,5 +1,4 @@
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
-import { UploadFiles } from "@/components/form/upload-files";
 
 import { Button } from "@/components/ui/button";
 import {

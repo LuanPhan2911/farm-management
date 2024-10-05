@@ -366,3 +366,6 @@ export type MessageWithStaff = Message & {
   staff: Staff;
   files: File[] | null;
 };
+export type FileWithOwner = File & {
+  owner: Staff;
+};

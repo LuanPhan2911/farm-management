@@ -52,13 +52,8 @@ export const updateMessageDeleted = async (id: string) => {
     data: {
       deleted: true,
       files: {
-        updateMany: {
-          data: {
-            deleted: true,
-          },
-          where: {
-            messageId: id,
-          },
+        deleteMany: {
+          messageId: id,
         },
       },
     },

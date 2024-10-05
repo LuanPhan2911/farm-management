@@ -75,16 +75,19 @@ interface DownloadButtonWithUrlProps {
   url: string;
   name: string;
   className?: string;
+  label?: string;
 }
 export const DownloadButtonWithUrl = ({
   name,
   url,
   className,
+  label,
 }: DownloadButtonWithUrlProps) => {
   const handleDownload = () => {
     // Create an invisible anchor element to trigger the download
     const link = document.createElement("a");
     link.href = url;
+    link.target = "_blank";
     link.download = name; // Extract the file name from the URL
     document.body.appendChild(link); // Append link to the body
     link.click(); // Programmatically click the link to trigger the download
@@ -94,10 +97,11 @@ export const DownloadButtonWithUrl = ({
     <Button
       onClick={handleDownload}
       variant={"cyan"}
-      size={"icon"}
+      size={"sm"}
       className={className}
     >
-      <Download />
+      <Download className="h-4 w-4" />
+      {label}
     </Button>
   );
 };

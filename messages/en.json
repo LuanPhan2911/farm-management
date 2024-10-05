@@ -826,7 +826,10 @@
     "page": {
       "title": "Manage Organizations",
       "detail": {
-        "title": "Organization detail"
+        "title": "Organization detail",
+        "files": {
+          "title": "Uploaded files"
+        }
       }
     },
     "tabs": {
@@ -2442,7 +2445,7 @@
         "title": "Delete all selected tasks?",
         "description": "Are you absolutely sure? This action can not be undone!"
       },
-      "deleteUnusedUnit": {
+      "destroyUnusedUnit": {
         "label": "Delete unit task",
         "title": "Delete unused unit task",
         "description": "Delete all unit value which are unused"
@@ -2550,7 +2553,7 @@
         "title": "Delete schedule?",
         "description": "Are you absolutely sure? This action can not be undone!"
       },
-      "deleteUnusedUnit": {
+      "destroyUnusedUnit": {
         "label": "Delete unit schedule",
         "title": "Delete unused unit schedule",
         "description": "Delete all unit value which are unused"
@@ -2616,7 +2619,10 @@
   },
   "messages": {
     "page": {
-      "title": "Chat all"
+      "title": "Chat all",
+      "files": {
+        "title": "Uploaded files"
+      }
     },
     "schema": {
       "content": {
@@ -2660,6 +2666,43 @@
       "backLabel": "Go to dashboard"
     }
   },
+  "files": {
+    "table": {
+      "thead": {
+        "url": "File",
+        "name": "Name",
+        "type": "Type",
+        "owner": "Owner",
+        "createdAt": "Created at"
+      }
+    },
+    "search": {
+      "placeholder": "Search file name..."
+    },
+    "form": {
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete file?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      },
+      "download": {
+        "label": "Download"
+      }
+    },
+    "status": {
+      "success": {
+        "destroy": "File deleted!"
+      },
+      "failure": {
+        "destroy": "Something went wrong while deleting file!"
+      }
+    },
+    "notFound": {
+      "title": "Unauthenticated",
+      "description": "Current staff not found",
+      "backLabel": "Go to dashboard"
+    }
+  },
   "errors": {
     "error": "Something went wrong!"
   },
@@ -2679,6 +2722,7 @@
     "/admin/staffs/detail": "Detail",
     "/admin/organizations": "Organization",
     "/admin/organizations/detail": "Detail",
+    "/admin/organizations/detail/files": "Uploaded files",
     "/admin/fields": "Field",
     "/admin/fields/create": "Create",
     "/admin/fields/detail": "Detail",
@@ -2697,6 +2741,7 @@
     "/admin/equipments/edit": "Edit",
     "/admin/tasks": "Tasks",
     "/admin/schedules": "Schedules",
-    "/admin/messages": "All messages"
+    "/admin/messages": "All messages",
+    "/admin/messages/files": "Uploaded files"
   }
 }

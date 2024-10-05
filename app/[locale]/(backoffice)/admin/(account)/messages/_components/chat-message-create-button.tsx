@@ -34,10 +34,14 @@ import { useState } from "react";
 interface ChatMessageCreateFormProps {
   socketUrl: string;
   socketQuery: Record<string, any>;
+  fileQuery?: {
+    isPublic: boolean;
+  };
 }
 export const ChatMessageCreateForm = ({
   socketUrl,
   socketQuery,
+  fileQuery,
 }: ChatMessageCreateFormProps) => {
   const tSchema = useTranslations("messages.schema");
   const formSchema = MessageSchema();
@@ -93,6 +97,7 @@ export const ChatMessageCreateForm = ({
                       <ChatMessageCreateFilesButton
                         socketQuery={socketQuery}
                         socketUrl={socketUrl}
+                        fileQuery={fileQuery}
                       />
                     </div>
 
@@ -139,10 +144,14 @@ export const ChatMessageCreateForm = ({
 interface ChatMessageCreateFilesButtonProps {
   socketUrl: string;
   socketQuery: Record<string, any>;
+  fileQuery?: {
+    isPublic: boolean;
+  };
 }
 export const ChatMessageCreateFilesButton = ({
   socketQuery,
   socketUrl,
+  fileQuery,
 }: ChatMessageCreateFilesButtonProps) => {
   const t = useTranslations("messages.form");
   const [isUploading, setUploading] = useState(false);
@@ -214,6 +223,7 @@ export const ChatMessageCreateFilesButton = ({
                         }}
                         disabled={isPending}
                         setUploading={setUploading}
+                        input={fileQuery}
                       />
                     </FormControl>
                   </FormItem>

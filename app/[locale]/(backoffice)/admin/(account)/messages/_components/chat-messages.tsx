@@ -6,7 +6,7 @@ import { useRole } from "@/hooks/use-role";
 import { MessageWithStaff } from "@/types";
 import { File, Staff } from "@prisma/client";
 import { Loader2, ServerCrash } from "lucide-react";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useFormatter, useTranslations } from "next-intl";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -26,6 +26,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { DownloadButtonWithUrl } from "@/components/buttons/download-button";
 import { StaffMetadataRole } from "../../../_components/staff-metadata-role";
 import { Separator } from "@/components/ui/separator";
+import { useScrollToBottom } from "@/hooks/use-scroll-bottom";
 
 interface ChatMessagesProps {
   chatId: string;
@@ -49,6 +50,7 @@ export const ChatMessages = ({
   const queryKey = `chat:${chatId}`;
   const addKey = `chat:${chatId}:messages`;
   const updateKey = `chat:${chatId}:messages:update`;
+  const bottomRef = useRef<HTMLInputElement>(null);
 
   const {
     data,
@@ -63,11 +65,36 @@ export const ChatMessages = ({
     paramValue,
     queryKey,
   });
-  useChatSocket({ queryKey, addKey, updateKey });
+  // Track whether it's the first load
+  const isInitialLoad = useRef(true);
+  // Track whether a new message is added
+  const isNewMessageAdded = useRef(false);
+
+  useChatSocket({
+    queryKey,
+    addKey,
+    updateKey,
+    onNewMessage: () => {
+      isNewMessageAdded.current = true;
+    },
+  });
+  useScrollToBottom({
+    bottomRef,
+    data,
+    isNewMessageAdded: isNewMessageAdded.current,
+    isInitialLoad: isInitialLoad.current,
+  });
+  // Reset the new message flag after rendering
+  useEffect(() => {
+    isNewMessageAdded.current = false;
+    if (data && isInitialLoad.current) {
+      isInitialLoad.current = false; // Initial load has happened
+    }
+  }, [data]);
 
   if (status === "pending") {
     return (
-      <div className="flex flex-col flex-1 justify-center items-center">
+      <div className="flex flex-col h-[300px] justify-center items-center">
         <Loader2 className="w-7 h-7 animate-spin my-4 " />
         <p className="text-xs">{t("notFound")}</p>
       </div>
@@ -75,7 +102,7 @@ export const ChatMessages = ({
   }
   if (status === "error") {
     return (
-      <div className="flex flex-col flex-1 justify-center items-center">
+      <div className="flex flex-col h-[300px] justify-center items-center">
         <ServerCrash className="w-7 h-7 my-4 " />
         <ErrorButton title={t("error")} refresh={refetch} />
       </div>
@@ -103,7 +130,7 @@ export const ChatMessages = ({
         </div>
       )}
       <div className="flex flex-col-reverse mt-auto">
-        {data?.pages?.map(({ items, nextCursor }, i) => {
+        {data?.pages?.map(({ items }, i) => {
           return (
             <Fragment key={i}>
               {items?.map((message: MessageWithStaff) => {
@@ -121,6 +148,7 @@ export const ChatMessages = ({
           );
         })}
       </div>
+      <div ref={bottomRef}></div>
     </div>
   );
 };
@@ -261,7 +289,6 @@ const ChatItemFiles = ({ files }: ChatItemFilesProps) => {
                         <DownloadButtonWithUrl
                           name={file.name}
                           url={file.url}
-                          className="h-8 w-8"
                         />
                       </div>
                     </CardContent>

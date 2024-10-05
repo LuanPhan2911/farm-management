@@ -86,7 +86,7 @@ export const TaskDeleteUnusedUnitButton = () => {
           size={"sm"}
           className="w-full justify-start font-bold"
         >
-          {t("form.deleteUnusedUnit.label")}
+          {t("form.destroyUnusedUnit.label")}
         </Button>
       </SheetTrigger>
       <SheetContent
@@ -94,9 +94,9 @@ export const TaskDeleteUnusedUnitButton = () => {
         className="lg:max-w-[600px] w-full overflow-y-auto"
       >
         <SheetHeader>
-          <SheetTitle>{t("form.deleteUnusedUnit.title")}</SheetTitle>
+          <SheetTitle>{t("form.destroyUnusedUnit.title")}</SheetTitle>
           <SheetDescription>
-            {t("form.deleteUnusedUnit.description")}
+            {t("form.destroyUnusedUnit.description")}
           </SheetDescription>
         </SheetHeader>
 

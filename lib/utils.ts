@@ -332,6 +332,13 @@ export function parseToNumber(
 
   return parsedNumber;
 }
+export function parseToBoolean(value: string) {
+  if (value === JSON.stringify(true)) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 export function isActive(pathname: string, currentPath: string) {
   return pathname.startsWith(currentPath);
