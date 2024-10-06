@@ -828,3 +828,21 @@ export const MessageSchema = () => {
     fileIds: z.array(z.string()).nullish(),
   });
 };
+export const FileNameSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    name: stringSchema(t, "name", { min: 1, max: 255 }),
+  });
+};
+export const FileCopySchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    name: stringSchema(t, "name", { min: 1, max: 265 }),
+    url: z.string().url(t("url.invalid")),
+    ownerId: z.string(),
+    isPublic: z.boolean().optional(),
+    orgId: z.string().nullish(),
+  });
+};

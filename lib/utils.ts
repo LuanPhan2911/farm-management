@@ -480,6 +480,7 @@ export function generateCronExplanation(
 }
 export function isImage(type: string): boolean {
   const imageMimeTypes = [
+    "image",
     "image/jpeg",
     "image/png",
     "image/gif",

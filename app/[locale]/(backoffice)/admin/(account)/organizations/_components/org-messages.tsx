@@ -71,6 +71,10 @@ export const OrgMessages = ({ org, currentStaff }: OrgMessages) => {
           socketQuery={{
             orgId: org.id,
           }}
+          fileQuery={{
+            isPublic: false,
+            orgId: org.id,
+          }}
         />
       </CardContent>
     </Card>

@@ -6,37 +6,37 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { parseToNumber } from "@/lib/utils";
-import { getPublicFiles } from "@/services/files";
+import { getFilesDeletedByOwnerId } from "@/services/files";
 import { getCurrentStaff } from "@/services/staffs";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { FileCreateButton } from "../_components/file-create-button";
-import { FilesTable } from "../_components/files-table";
+import { FilesDeletedTable } from "../_components/files-deleted-table";
 
 export async function generateMetadata() {
-  const t = await getTranslations("files.page.public-files");
+  const t = await getTranslations("files.page.my-trash");
   return {
     title: t("title"),
   };
 }
-interface PublicFilesPageProps {
+interface MyTrashPageProps {
   searchParams: {
     page?: string;
     query?: string;
     orderBy?: string;
   };
 }
-const PublicFilesPage = async ({ searchParams }: PublicFilesPageProps) => {
+const MyTrashPage = async ({ searchParams }: MyTrashPageProps) => {
+  const t = await getTranslations("files.page.my-trash");
   const page = parseToNumber(searchParams.page, 1);
   const { query, orderBy } = searchParams;
-  const t = await getTranslations("files.page.public-files");
   const currentStaff = await getCurrentStaff();
   if (!currentStaff) {
     notFound();
   }
-  const { data, totalPage } = await getPublicFiles({
-    page,
+  const { data, totalPage } = await getFilesDeletedByOwnerId({
+    ownerId: currentStaff.id,
     orderBy,
+    page,
     query,
   });
   return (
@@ -47,14 +47,7 @@ const PublicFilesPage = async ({ searchParams }: PublicFilesPageProps) => {
           <CardDescription>{t("description")}</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex justify-end">
-            <FileCreateButton
-              input={{
-                isPublic: true,
-              }}
-            />
-          </div>
-          <FilesTable
+          <FilesDeletedTable
             data={data}
             totalPage={totalPage}
             currentStaff={currentStaff}
@@ -65,4 +58,4 @@ const PublicFilesPage = async ({ searchParams }: PublicFilesPageProps) => {
   );
 };
 
-export default PublicFilesPage;
+export default MyTrashPage;

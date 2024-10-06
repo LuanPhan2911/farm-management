@@ -1,6 +1,7 @@
 import { createFile } from "@/services/files";
 import { getStaffByExternalId } from "@/services/staffs";
 import { auth } from "@clerk/nextjs/server";
+
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
 import { z } from "zod";
@@ -48,18 +49,19 @@ export const ourFileRouter = {
     // Set permissions and file types for this FileRoute
     .input(
       z.object({
-        isPublic: z.boolean().nullish().default(false),
+        isPublic: z.boolean().optional(),
+        orgId: z.string().nullish(),
       })
     )
     .middleware(async ({ req, input }) => {
       // This code runs on your server before upload
-      const { userId, orgId } = auth();
+      const { userId } = auth();
 
       // If you throw, the user will not be able to upload
       if (!userId) throw new UploadThingError("Unauthorized");
 
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
-      return { userId, orgId, ...input };
+      return { userId, input };
     })
     .onUploadComplete(
       async ({
@@ -80,9 +82,10 @@ export const ourFileRouter = {
           const newFile = await createFile({
             ...other,
             ownerId: staff.id,
-            isPublic: metadata.isPublic || false,
-            orgId: metadata.orgId,
+            isPublic: metadata.input.isPublic ?? false,
+            orgId: metadata.input.orgId,
           });
+
           return {
             uploadedBy: metadata.userId,
             uploadedFile: JSON.stringify(newFile),

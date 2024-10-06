@@ -22,17 +22,18 @@ import {
 import { PropsWithChildren } from "react";
 import { FileEditNameButton } from "./file-edit-name-button";
 import { FileCopyButton } from "./file-copy-button";
-interface FilesTableActionProps {
+import { FileRestoreButton } from "./file-restore-button";
+import { FileDeleteButton } from "./file-delete-button";
+interface FilesDeletedTableActionProps {
   data: FileWithOwner;
   currentStaff: Staff;
 }
-export const FilesTableAction = ({
+export const FilesDeletedTableAction = ({
   data,
   currentStaff,
-}: FilesTableActionProps) => {
+}: FilesDeletedTableActionProps) => {
   const t = useTranslations("files.form");
-  const { isSuperAdmin } = useRole(currentStaff.role);
-  const isOwner = currentStaff.id === data.owner.id || isSuperAdmin;
+  const isOwner = currentStaff.id === data.owner.id;
 
   return (
     <DropdownMenu>
@@ -43,32 +44,16 @@ export const FilesTableAction = ({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-fit">
         <DropdownMenuItem>
-          <FileEditNameButton
+          <FileRestoreButton
             data={data}
-            label={t("editName.label")}
+            label={t("restore.label")}
             disabled={!isOwner}
           />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <FileCopyButton
+          <FileDeleteButton
             data={data}
-            label={t("copy.label")}
-            disabled={data.isPublic}
-          />
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <DownloadButtonWithUrl
-            name={data.name}
-            url={data.url}
-            label={t("download.label")}
-            className="w-full"
-            variant={"outline"}
-          />
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <FileEditDeletedButton
-            data={data}
-            label={t("editDeleted.label")}
+            label={t("destroy.label")}
             disabled={!isOwner}
           />
         </DropdownMenuItem>
@@ -76,50 +61,34 @@ export const FilesTableAction = ({
     </DropdownMenu>
   );
 };
-interface FilesTableActionContextMenuProps extends PropsWithChildren {
+interface FilesDeletedTableActionContextMenuProps extends PropsWithChildren {
   data: FileWithOwner;
   currentStaff: Staff;
 }
-export const FilesTableActionContextMenu = ({
+export const FilesDeletedTableActionContextMenu = ({
   currentStaff,
   data,
   children,
-}: FilesTableActionContextMenuProps) => {
+}: FilesDeletedTableActionContextMenuProps) => {
   const t = useTranslations("files.form");
-  const { isSuperAdmin } = useRole(currentStaff.role);
-  const isOwner = currentStaff.id === data.owner.id || isSuperAdmin;
+
+  const isOwner = currentStaff.id === data.owner.id;
 
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
       <ContextMenuContent className="w-40">
         <ContextMenuItem>
-          <FileEditNameButton
+          <FileRestoreButton
             data={data}
-            label={t("editName.label")}
+            label={t("restore.label")}
             disabled={!isOwner}
           />
         </ContextMenuItem>
         <ContextMenuItem>
-          <FileCopyButton
+          <FileDeleteButton
             data={data}
-            label={t("copy.label")}
-            disabled={data.isPublic}
-          />
-        </ContextMenuItem>
-        <ContextMenuItem>
-          <DownloadButtonWithUrl
-            name={data.name}
-            url={data.url}
-            label={t("download.label")}
-            className="w-full justify-start"
-            variant={"outline"}
-          />
-        </ContextMenuItem>
-        <ContextMenuItem>
-          <FileEditDeletedButton
-            data={data}
-            label={t("editDeleted.label")}
+            label={t("destroy.label")}
             disabled={!isOwner}
           />
         </ContextMenuItem>

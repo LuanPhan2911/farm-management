@@ -1,4 +1,6 @@
-import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
+"use client";
+import { create } from "@/actions/file";
+import { InputUploadFile, UploadFiles } from "@/components/form/upload-files";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -9,17 +11,30 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { File } from "@prisma/client";
 import { Upload } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 
-interface FileCreateButtonProps {}
-export const FileCreateButton = ({}: FileCreateButtonProps) => {
+interface FileCreateButtonProps {
+  input?: InputUploadFile;
+}
+export const FileCreateButton = ({ input }: FileCreateButtonProps) => {
   const t = useTranslations("files.form");
+
+  const [isPending, setPending] = useState(false);
+  const onCreateCompleted = (files: File[]) => {
+    if (!files.length) {
+      return;
+    }
+    const [file] = files;
+    create(file);
+  };
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button size={"icon"} variant={"outline"}>
-          <Upload className="h-4 w-4" />
+        <Button size={"sm"} variant={"success"}>
+          <Upload className="h-4 w-4 mr-2" /> {t("create.label")}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-4xl overflow-y-auto max-h-screen">
@@ -27,8 +42,13 @@ export const FileCreateButton = ({}: FileCreateButtonProps) => {
           <DialogTitle>{t("create.title")}</DialogTitle>
           <DialogDescription>{t("create.description")}</DialogDescription>
         </DialogHeader>
-
-        <DynamicDialogFooter />
+        <UploadFiles
+          onUploadCompleted={onCreateCompleted}
+          setUploading={setPending}
+          disabled={isPending}
+          mode="manual"
+          input={input}
+        />
       </DialogContent>
     </Dialog>
   );

@@ -28,15 +28,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { UploadFiles } from "@/components/form/upload-files";
+import { InputUploadFile, UploadFiles } from "@/components/form/upload-files";
 import { useState } from "react";
 
 interface ChatMessageCreateFormProps {
   socketUrl: string;
   socketQuery: Record<string, any>;
-  fileQuery?: {
-    isPublic: boolean;
-  };
+  fileQuery?: InputUploadFile;
 }
 export const ChatMessageCreateForm = ({
   socketUrl,
@@ -144,9 +142,7 @@ export const ChatMessageCreateForm = ({
 interface ChatMessageCreateFilesButtonProps {
   socketUrl: string;
   socketQuery: Record<string, any>;
-  fileQuery?: {
-    isPublic: boolean;
-  };
+  fileQuery?: InputUploadFile;
 }
 export const ChatMessageCreateFilesButton = ({
   socketQuery,

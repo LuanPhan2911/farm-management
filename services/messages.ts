@@ -52,8 +52,13 @@ export const updateMessageDeleted = async (id: string) => {
     data: {
       deleted: true,
       files: {
-        deleteMany: {
-          messageId: id,
+        updateMany: {
+          where: {
+            messageId: id,
+          },
+          data: {
+            deleted: true,
+          },
         },
       },
     },
@@ -62,9 +67,6 @@ export const updateMessageDeleted = async (id: string) => {
       files: true,
     },
   });
-};
-export const deleteMessage = async (id: string) => {
-  return await db.message.delete({ where: { id } });
 };
 type MessageQuery = {
   cursor?: string | null;

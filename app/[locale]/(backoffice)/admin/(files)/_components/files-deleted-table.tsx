@@ -14,23 +14,23 @@ import {
 import { FileWithOwner } from "@/types";
 import { useFormatter, useTranslations } from "next-intl";
 import Image from "next/image";
-import {
-  FilesTableAction,
-  FilesTableActionContextMenu,
-} from "./files-table-action";
 import { Staff } from "@prisma/client";
 
 import { isImage } from "@/lib/utils";
-interface FilesTableProps {
+import {
+  FilesDeletedTableAction,
+  FilesDeletedTableActionContextMenu,
+} from "./files-deleted-table-action";
+interface FilesDeletedTableProps {
   data: FileWithOwner[];
   totalPage: number;
   currentStaff: Staff;
 }
-export const FilesTable = ({
+export const FilesDeletedTable = ({
   data,
   totalPage,
   currentStaff,
-}: FilesTableProps) => {
+}: FilesDeletedTableProps) => {
   const { dateTime } = useFormatter();
   const t = useTranslations("files");
   return (
@@ -52,8 +52,8 @@ export const FilesTable = ({
               <TableHead>{t("table.thead.owner")}</TableHead>
               <TableHead>
                 <OrderByButton
-                  column="createdAt"
-                  label={t("table.thead.createdAt")}
+                  column="deletedAt"
+                  label={t("table.thead.deletedAt")}
                   defaultValue="desc"
                 />
               </TableHead>
@@ -63,7 +63,7 @@ export const FilesTable = ({
           <TableBody>
             {data.map((item) => {
               return (
-                <FilesTableActionContextMenu
+                <FilesDeletedTableActionContextMenu
                   key={item.id}
                   data={item}
                   currentStaff={currentStaff}
@@ -89,22 +89,24 @@ export const FilesTable = ({
                       />
                     </TableCell>
                     <TableCell>
-                      {dateTime(item.createdAt, {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                      {item.deletedAt
+                        ? dateTime(item.deletedAt, {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })
+                        : "Null"}
                     </TableCell>
                     <TableCell>
-                      <FilesTableAction
+                      <FilesDeletedTableAction
                         data={item}
                         currentStaff={currentStaff}
                       />
                     </TableCell>
                   </TableRow>
-                </FilesTableActionContextMenu>
+                </FilesDeletedTableActionContextMenu>
               );
             })}
           </TableBody>

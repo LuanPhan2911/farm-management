@@ -3,18 +3,17 @@ import { cn, isActive } from "@/lib/utils";
 import { usePathname } from "@/navigation";
 import { useDashboardSidebar } from "@/stores/use-dashboard-sidebar";
 import {
+  ArchiveRestore,
   BookCheck,
   BugOff,
   Building,
   Clipboard,
   Clock,
-  CloudUpload,
-  Columns2,
   Compass,
   Flower,
   Flower2,
   Folder,
-  Globe,
+  FolderLock,
   Grid2X2,
   Hammer,
   House,
@@ -24,12 +23,9 @@ import {
   MountainSnow,
   ScrollText,
   Section,
-  Settings,
   SquareUserRound,
-  Store,
+  Trash,
   User,
-  UserCheck,
-  UserCog,
   Users,
 } from "lucide-react";
 
@@ -175,11 +171,11 @@ export const AdminSidebar = () => {
           />
         </SidebarAccordionItem>
 
-        <SidebarAccordionItem title="Files" icon={CloudUpload}>
+        <SidebarAccordionItem title="Files" icon={ArchiveRestore}>
           <SidebarItem
             href="/admin/my-files"
             active={isActive(pathname, "/admin/my-files")}
-            icon={Folder}
+            icon={FolderLock}
             title="My files"
           />
           <SidebarItem
@@ -187,6 +183,12 @@ export const AdminSidebar = () => {
             active={isActive(pathname, "/admin/public-files")}
             icon={Folder}
             title="Public files"
+          />
+          <SidebarItem
+            href="/admin/my-trash"
+            active={isActive(pathname, "/admin/my-trash")}
+            icon={Trash}
+            title="My trash"
           />
         </SidebarAccordionItem>
       </div>

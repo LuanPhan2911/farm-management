@@ -1,9 +1,10 @@
 "use client";
 
 import { Download, Loader } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
+import { VariantProps } from "class-variance-authority";
 
 interface DownloadButtonProps {
   apiEndpoint: string; // API endpoint to fetch data from
@@ -71,7 +72,8 @@ export const DownloadButton = ({
   );
 };
 
-interface DownloadButtonWithUrlProps {
+interface DownloadButtonWithUrlProps
+  extends VariantProps<typeof buttonVariants> {
   url: string;
   name: string;
   className?: string;
@@ -82,6 +84,8 @@ export const DownloadButtonWithUrl = ({
   url,
   className,
   label,
+  variant,
+  size,
 }: DownloadButtonWithUrlProps) => {
   const handleDownload = () => {
     // Create an invisible anchor element to trigger the download
@@ -96,11 +100,11 @@ export const DownloadButtonWithUrl = ({
   return (
     <Button
       onClick={handleDownload}
-      variant={"cyan"}
-      size={"sm"}
+      variant={variant || "cyan"}
+      size={size || "sm"}
       className={className}
     >
-      <Download className="h-4 w-4" />
+      <Download className="h-4 w-4 mr-2" />
       {label}
     </Button>
   );

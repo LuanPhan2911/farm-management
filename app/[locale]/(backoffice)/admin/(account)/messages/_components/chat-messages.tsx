@@ -9,7 +9,7 @@ import { Loader2, ServerCrash } from "lucide-react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useFormatter, useTranslations } from "next-intl";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
+import { cn, isImage } from "@/lib/utils";
 import {
   ChatMessageEditButton,
   ChatMessageEditForm,
@@ -273,7 +273,7 @@ const ChatItemFiles = ({ files }: ChatItemFilesProps) => {
                 <div className="p-1">
                   <Card>
                     <CardContent className="flex aspect-square items-center justify-center px-1 relative cursor-pointer">
-                      {file.type === "image" ? (
+                      {isImage(file.type) ? (
                         <Image src={file.url} alt="Preview" fill />
                       ) : (
                         <div className="h-full w-full flex flex-col justify-center">

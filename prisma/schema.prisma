@@ -548,7 +548,9 @@ model File {
   owner    Staff   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
   messageId String?
-  message   Message? @relation(fields: [messageId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  message   Message?  @relation(fields: [messageId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deleted   Boolean   @default(false)
+  deletedAt DateTime?
 }

@@ -25,11 +25,12 @@ type FileUpload = File & {
   id: string;
   status: string;
 };
-
+export type InputUploadFile = {
+  isPublic?: boolean;
+  orgId?: string;
+};
 interface UploadFilesProps {
-  input?: {
-    isPublic: boolean;
-  };
+  input?: InputUploadFile;
   disabled?: boolean;
   onUploadCompleted: (files: FilePrisma[]) => void;
   mode?: "auto" | "manual";
@@ -73,11 +74,11 @@ export const UploadFiles = ({
           );
         });
         setUploading(false);
-        toast.success("Filed uploaded");
+        toast.success("Files uploaded");
       },
       onUploadError: () => {
         setUploading(false);
-        toast.error("Fail upload file");
+        toast.error("Fail upload files");
       },
       onUploadBegin: (file: string) => {
         setUploading(true);
@@ -96,7 +97,7 @@ export const UploadFiles = ({
         )
       );
       if (mode === "auto") {
-        startUpload(acceptedFiles, input || { isPublic: false });
+        startUpload(acceptedFiles, input || {});
       }
     },
     [input, startUpload, mode]
