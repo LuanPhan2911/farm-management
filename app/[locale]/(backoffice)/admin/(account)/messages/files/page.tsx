@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FilesTable } from "../../../(files)/_components/files-table";
 import { getTranslations } from "next-intl/server";
-import { getFiles } from "@/services/files";
+import { getMessageFiles } from "@/services/files";
 import { parseToNumber } from "@/lib/utils";
 import { getCurrentStaff } from "@/services/staffs";
 import { notFound } from "next/navigation";
@@ -23,7 +23,7 @@ const MessageFilesPage = async ({ searchParams }: MessageFilesPageProps) => {
   const t = await getTranslations("messages.page.files");
   const { query, orderBy } = searchParams;
   const page = parseToNumber(searchParams.page, 1);
-  const { data, totalPage } = await getFiles({
+  const { data, totalPage } = await getMessageFiles({
     isPublic: true,
     page,
     query,

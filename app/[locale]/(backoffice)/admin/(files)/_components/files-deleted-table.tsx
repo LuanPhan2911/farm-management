@@ -50,6 +50,7 @@ export const FilesDeletedTable = ({
               </TableHead>
               <TableHead>{t("table.thead.type")}</TableHead>
               <TableHead>{t("table.thead.owner")}</TableHead>
+              <TableHead>{t("table.thead.messageId")}</TableHead>
               <TableHead>
                 <OrderByButton
                   column="deletedAt"
@@ -87,6 +88,17 @@ export const FilesDeletedTable = ({
                         imageUrl={item.owner.imageUrl}
                         title={item.owner.name}
                       />
+                    </TableCell>
+                    <TableCell>
+                      {item.messageId ? (
+                        <span className="text-green-500 font-semibold">
+                          Deleted message
+                        </span>
+                      ) : (
+                        <span className="text-blue-500 font-semibold">
+                          My files
+                        </span>
+                      )}
                     </TableCell>
                     <TableCell>
                       {item.deletedAt

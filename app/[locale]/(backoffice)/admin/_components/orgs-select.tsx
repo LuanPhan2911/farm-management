@@ -27,7 +27,6 @@ import { useDebounceValue } from "usehooks-ts";
 import { ErrorButton } from "@/components/buttons/error-button";
 import { SelectItemContent } from "@/components/form/select-item";
 
-export type pageParam = number | undefined;
 interface OrgsSelectProps {
   defaultValue?: string;
   onChange: (val: string) => void;
@@ -59,7 +58,7 @@ export const OrgsSelect = ({
     isFetchingNextPage,
   } = useInfiniteQuery({
     queryKey: ["orgs_select", debounceQuery],
-    queryFn: async ({ pageParam }: { pageParam: pageParam }) => {
+    queryFn: async ({ pageParam }: { pageParam: number | undefined }) => {
       const url = queryString.stringifyUrl(
         {
           url: "/api/organizations/",

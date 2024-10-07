@@ -9,10 +9,7 @@ import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { FileWithOwner } from "@/types";
-import { FileEditDeletedButton } from "./file-edit-deleted-button";
 import { Staff } from "@prisma/client";
-import { useRole } from "@/hooks/use-role";
-import { DownloadButtonWithUrl } from "@/components/buttons/download-button";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -20,8 +17,6 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { PropsWithChildren } from "react";
-import { FileEditNameButton } from "./file-edit-name-button";
-import { FileCopyButton } from "./file-copy-button";
 import { FileRestoreButton } from "./file-restore-button";
 import { FileDeleteButton } from "./file-delete-button";
 interface FilesDeletedTableActionProps {
@@ -34,7 +29,7 @@ export const FilesDeletedTableAction = ({
 }: FilesDeletedTableActionProps) => {
   const t = useTranslations("files.form");
   const isOwner = currentStaff.id === data.owner.id;
-
+  const canRestore = isOwner && data.messageId === null;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -47,7 +42,7 @@ export const FilesDeletedTableAction = ({
           <FileRestoreButton
             data={data}
             label={t("restore.label")}
-            disabled={!isOwner}
+            disabled={!canRestore}
           />
         </DropdownMenuItem>
         <DropdownMenuItem>

@@ -369,3 +369,11 @@ export type MessageWithStaff = Message & {
 export type FileWithOwner = File & {
   owner: Staff;
 };
+export type FileSelect = {
+  name: string;
+  url: string;
+  ownerId: string;
+  isPublic: boolean;
+  orgId: string | null;
+  type: string;
+};

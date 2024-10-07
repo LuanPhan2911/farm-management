@@ -41,7 +41,7 @@ export const copy = async (
     if (file.orgId) {
       revalidatePath(`/admin/organizations/detail/${file.orgId}/files`);
     }
-    return successResponse(tStatus("success.copy"));
+    return successResponse(tStatus("success.copy"), file);
   } catch (error) {
     return errorResponse(tStatus("failure.copy"));
   }

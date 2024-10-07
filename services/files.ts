@@ -1,7 +1,7 @@
 import { LIMIT } from "@/configs/paginationConfig";
 import { db } from "@/lib/db";
 import { getObjectSortOrder } from "@/lib/utils";
-import { FileWithOwner, PaginatedResponse } from "@/types";
+import { FileSelect, FileWithOwner, PaginatedResponse } from "@/types";
 import { UTApi } from "uploadthing/server";
 export const utapi = new UTApi({
   defaultKeyType: "fileKey",
@@ -86,7 +86,9 @@ type FileQuery = {
   query?: string;
   orderBy?: string;
 };
-export const getFiles = async ({
+// all messages: files: public=true, messageId!=null
+// org message: files: public=false, messageId!=null, orgId='id'
+export const getMessageFiles = async ({
   isPublic,
   orgId,
   ownerId,
@@ -108,6 +110,9 @@ export const getFiles = async ({
             mode: "insensitive",
           },
           deleted: false,
+          messageId: {
+            not: null,
+          },
         },
         include: {
           owner: true,
@@ -198,6 +203,7 @@ export const getFilesByOrgId = async ({
   }
 };
 
+// public files contain public=true and not message file
 export const getPublicFiles = async ({
   page = 1,
   orderBy,
@@ -214,6 +220,7 @@ export const getPublicFiles = async ({
         skip: (page - 1) * LIMIT,
         where: {
           isPublic: true,
+          messageId: null,
           deleted: false,
           name: {
             contains: query,
@@ -267,7 +274,7 @@ export const getFilesByOwnerId = async ({
         where: {
           ownerId,
           orgId: null,
-          message: null,
+          messageId: null,
           isPublic: false,
           deleted: false,
           name: {
@@ -306,7 +313,7 @@ export const getFilesByOwnerId = async ({
     };
   }
 };
-
+// deleted files contain deleted from my-files, message files from org or all
 export const getFilesDeletedByOwnerId = async ({
   ownerId,
   page = 1,
@@ -325,7 +332,6 @@ export const getFilesDeletedByOwnerId = async ({
         skip: (page - 1) * LIMIT,
         where: {
           ownerId,
-          orgId: null,
           deleted: true,
           name: {
             contains: query,
@@ -360,5 +366,35 @@ export const getFilesDeletedByOwnerId = async ({
       data: [],
       totalPage: 0,
     };
+  }
+};
+
+export const getFilesByOwnerIdSelect = async ({
+  ownerId,
+}: {
+  ownerId: string;
+}): Promise<FileSelect[]> => {
+  try {
+    const files = db.file.findMany({
+      take: 500,
+      where: {
+        ownerId,
+        orgId: null,
+        messageId: null,
+        isPublic: false,
+        deleted: false,
+      },
+      select: {
+        name: true,
+        url: true,
+        type: true,
+        isPublic: true,
+        orgId: true,
+        ownerId: true,
+      },
+    });
+    return files;
+  } catch (error) {
+    return [];
   }
 };

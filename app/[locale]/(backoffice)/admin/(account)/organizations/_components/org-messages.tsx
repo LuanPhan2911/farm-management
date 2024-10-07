@@ -12,16 +12,9 @@ import { ChatMessages } from "../../messages/_components/chat-messages";
 import { Staff } from "@prisma/client";
 import { ChatMessageCreateForm } from "../../messages/_components/chat-message-create-button";
 import { SocketIndicator } from "@/components/socket-indicator";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Ellipsis } from "lucide-react";
 import { Link } from "@/navigation";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 interface OrgMessages {
   org: Organization;
   currentStaff: Staff;
@@ -39,22 +32,14 @@ export const OrgMessages = ({ org, currentStaff }: OrgMessages) => {
         <CardDescription>{t("messages.description")}</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        <div className="flex justify-end">
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Ellipsis />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>Manage messages</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Link href={`/admin/organizations/detail/${org.id}/files`}>
-                  Uploaded files
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+        <div className="flex justify-start">
+          <Link href={`/admin/organizations/detail/${org.id}/files`}>
+            <Button variant={"blue"} size={"sm"}>
+              Uploaded files
+            </Button>
+          </Link>
         </div>
+        <Separator />
         <ChatMessages
           chatId={org.id}
           apiUrl="/api/messages"
@@ -66,6 +51,7 @@ export const OrgMessages = ({ org, currentStaff }: OrgMessages) => {
             orgId: org.id,
           }}
         />
+        <Separator />
         <ChatMessageCreateForm
           socketUrl="/api/socket/messages"
           socketQuery={{

@@ -5,6 +5,7 @@ import { Button, buttonVariants } from "../ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
 import { VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 
 interface DownloadButtonProps {
   apiEndpoint: string; // API endpoint to fetch data from
@@ -104,7 +105,7 @@ export const DownloadButtonWithUrl = ({
       size={size || "sm"}
       className={className}
     >
-      <Download className="h-4 w-4 mr-2" />
+      <Download className={cn("h-4 w-4", label && "mr-2")} />
       {label}
     </Button>
   );

@@ -210,7 +210,7 @@ const ChatItem = ({
             </p>
           </div>
           <Separator className="my-2" />
-          {hasFiles && <ChatItemFiles files={files} />}
+          {!deleted && hasFiles && <ChatItemFiles files={files} />}
           {!isEditing && (
             <p
               className={cn(
@@ -272,12 +272,17 @@ const ChatItemFiles = ({ files }: ChatItemFilesProps) => {
               <CarouselItem className="pl-1 basis-1/3" key={index}>
                 <div className="p-1">
                   <Card>
-                    <CardContent className="flex aspect-square items-center justify-center px-1 relative cursor-pointer">
+                    <CardContent className="flex aspect-square items-center justify-center relative cursor-pointer">
                       {isImage(file.type) ? (
-                        <Image src={file.url} alt="Preview" fill />
+                        <Image
+                          src={file.url}
+                          alt="Preview"
+                          fill
+                          className="p-2"
+                        />
                       ) : (
                         <div className="h-full w-full flex flex-col justify-center">
-                          <div className="text-sm text-center text-blue-400 font-semibold w-full line-clamp-1">
+                          <div className="text-xs text-center text-blue-400 font-semibold w-full line-clamp-1">
                             {file.type}
                           </div>
                           <div className="text-xs text-center text-muted-foreground w-full break-words">

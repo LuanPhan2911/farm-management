@@ -2632,6 +2632,11 @@
         "min": "Min message length is {min} character",
         "max": "Max message length is {max} character",
         "keyDown": "Press escape to cancel, enter to save"
+      },
+      "fileUrl": {
+        "error": "Fail load files",
+        "notFound": "File not found",
+        "placeholder": "Select file..."
       }
     },
     "fetch": {
@@ -2649,7 +2654,9 @@
       "createFiles": {
         "label": "Upload files",
         "title": "Upload files",
-        "description": "Any other members in organizations read uploaded file"
+        "description": "Any other members in organizations read uploaded file",
+        "fileFromComputer": "Upload from this computer",
+        "fileFromCloud": "Upload from cloud"
       }
     },
     "status": {
@@ -2687,7 +2694,8 @@
         "type": "Type",
         "owner": "Owner",
         "createdAt": "Created at",
-        "deletedAt": "Deleted at"
+        "deletedAt": "Deleted at",
+        "messageId": "Belong to"
       }
     },
     "search": {
@@ -2712,7 +2720,7 @@
       "editDeleted": {
         "label": "Move to trash",
         "title": "Move to trash?",
-        "description": "File will be moved to my trash page!"
+        "description": "File will be moved to owner file trash page!"
       },
       "editName": {
         "label": "Edit name",

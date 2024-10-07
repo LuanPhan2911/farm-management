@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { getTranslations } from "next-intl/server";
-import { getFiles } from "@/services/files";
+import { getMessageFiles } from "@/services/files";
 import { parseToNumber } from "@/lib/utils";
 import { getCurrentStaff } from "@/services/staffs";
 import { notFound } from "next/navigation";
@@ -31,7 +31,7 @@ const OrgMessageFilesPage = async ({
   const { query, orderBy } = searchParams;
   const page = parseToNumber(searchParams.page, 1);
   const { orgId } = params;
-  const { data, totalPage } = await getFiles({
+  const { data, totalPage } = await getMessageFiles({
     orgId,
     page,
     query,
