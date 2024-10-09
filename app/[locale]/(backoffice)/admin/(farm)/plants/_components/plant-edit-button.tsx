@@ -19,10 +19,10 @@ import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { CategoriesSelectWithQueryClient } from "../../../_components/categories-select";
+import { CategoriesSelect } from "../../../_components/categories-select";
 import { CategoryType, FertilizerType, Season, UnitType } from "@prisma/client";
 import { SelectOptions } from "@/components/form/select-options";
-import { UnitsSelectWithQueryClient } from "../../../_components/units-select";
+import { UnitsSelect } from "../../../_components/units-select";
 import { PlantTable } from "@/types";
 import { UploadImage } from "@/components/form/upload-image";
 import { convertNullToUndefined } from "@/lib/utils";
@@ -66,6 +66,23 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4 max-w-4xl"
       >
+        <FormField
+          control={form.control}
+          name="imageUrl"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{tSchema("imageUrl.label")}</FormLabel>
+              <FormControl>
+                <UploadImage
+                  onChange={field.onChange}
+                  defaultValue={field.value}
+                  disabled={isPending}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <div className="grid lg:grid-cols-2 gap-2">
           <FormField
             control={form.control}
@@ -93,7 +110,7 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
               <FormItem>
                 <FormLabel>{tSchema("categoryId.label")}</FormLabel>
                 <FormControl>
-                  <CategoriesSelectWithQueryClient
+                  <CategoriesSelect
                     errorLabel={tSchema("categoryId.error")}
                     notFound={tSchema("categoryId.notFound")}
                     onChange={field.onChange}
@@ -211,7 +228,7 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
                       {tSchema("idealTemperature.unitId.label")}
                     </FormLabel>
                     <FormControl>
-                      <UnitsSelectWithQueryClient
+                      <UnitsSelect
                         onChange={field.onChange}
                         placeholder={tSchema(
                           "idealTemperature.unitId.placeholder"
@@ -263,7 +280,7 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
                       {tSchema("idealHumidity.unitId.label")}
                     </FormLabel>
                     <FormControl>
-                      <UnitsSelectWithQueryClient
+                      <UnitsSelect
                         onChange={field.onChange}
                         placeholder={tSchema(
                           "idealHumidity.unitId.placeholder"
@@ -315,7 +332,7 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
                       {tSchema("waterRequirement.unitId.label")}
                     </FormLabel>
                     <FormControl>
-                      <UnitsSelectWithQueryClient
+                      <UnitsSelect
                         onChange={field.onChange}
                         placeholder={tSchema(
                           "waterRequirement.unitId.placeholder"
@@ -336,24 +353,6 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
             </div>
           </div>
         </div>
-
-        <FormField
-          control={form.control}
-          name="imageUrl"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{tSchema("imageUrl.label")}</FormLabel>
-              <FormControl>
-                <UploadImage
-                  onChange={field.onChange}
-                  defaultValue={field.value}
-                  disabled={isPending}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
         <DynamicDialogFooter disabled={isPending} closeButton={false} />
       </form>

@@ -5,7 +5,7 @@ import {
   createStaff,
   deleteStaff,
   updateStaff,
-  updateStaffRole,
+  upsertStaff,
 } from "@/services/staffs";
 import { StaffRole } from "@prisma/client";
 
@@ -75,13 +75,19 @@ export async function POST(req: Request) {
     const user = evt.data;
     const name = `${user.first_name || ""} ${user.last_name || ""}`.trim();
     const role = evt.data.public_metadata?.role;
+
     if (!role) {
       await updateStaff(user.id, {
         imageUrl: user.image_url,
         name,
       });
     } else {
-      await updateStaffRole(user.id, role as StaffRole);
+      await upsertStaff(user.id, {
+        email: user.email_addresses[0].email_address,
+        name,
+        role: role as StaffRole,
+        imageUrl: user.image_url,
+      });
     }
   }
 

@@ -8,7 +8,6 @@ import { currentUser } from "@clerk/nextjs/server";
 import { ApplicantCreateUserEmail } from "@/components/mail/applicant-create-user-email";
 import { StaffCreateUserEmail } from "@/components/mail/staff-create-user-email";
 import { EmailTemplate } from "@/components/mail/email-template";
-import { getFullName } from "./utils";
 import { EmailBody } from "@/types";
 
 const transporter = nodemailer.createTransport({

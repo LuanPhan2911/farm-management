@@ -27,12 +27,12 @@ export async function generateMetadata() {
 }
 const CropsPage = async ({ params, searchParams }: CropsPageProps) => {
   const { query: name, orderBy, plantId, filterNumber } = searchParams;
-  const startDate = parseToDate(searchParams.begin);
-  const endDate = parseToDate(searchParams.end);
-  const page = parseToNumber(searchParams.page, 1);
+  const startDate = parseToDate(searchParams!.begin);
+  const endDate = parseToDate(searchParams!.end);
+  const page = parseToNumber(searchParams!.page, 1);
   const t = await getTranslations("crops.page");
   const { data, totalPage } = await getCropsOnField({
-    fieldId: params.fieldId,
+    fieldId: params!.fieldId,
     page,
     orderBy,
     filterNumber,

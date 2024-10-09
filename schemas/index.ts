@@ -613,7 +613,6 @@ export const EquipmentSchema = (t: (arg: string) => string) => {
     fuelConsumption: numberSchema(t, "fuelConsumption", {
       min: 0,
       max: 100_000,
-      int: true,
       required: false,
     }).nullish(),
     energyType: stringSchema(t, "energyType", {
@@ -817,5 +816,34 @@ export const SendEmailSchema = (
         required_error: t("contents.required_error"),
       })
       .min(1, t("contents.atLeast")),
+  });
+};
+
+export const MessageSchema = () => {
+  return z.object({
+    content: z
+      .string({ required_error: "Content is required" })
+      .min(1, "Min content length is 1 character")
+      .max(5000, "Max content length is 5000 characters"),
+    fileIds: z.array(z.string()).nullish(),
+    fileUrl: z.string().nullish(),
+  });
+};
+export const FileNameSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    name: stringSchema(t, "name", { min: 1, max: 255 }),
+  });
+};
+export const FileCopySchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    name: z.string(),
+    url: z.string().url(t("url.invalid")),
+    ownerId: z.string(),
+    isPublic: z.boolean().optional(),
+    orgId: z.string().nullish(),
   });
 };

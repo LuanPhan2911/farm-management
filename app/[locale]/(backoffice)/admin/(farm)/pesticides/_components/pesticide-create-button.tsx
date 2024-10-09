@@ -1,7 +1,7 @@
 "use client";
 
 import { create } from "@/actions/pesticide";
-import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
+import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 import { SelectOptions } from "@/components/form/select-options";
 import { Button } from "@/components/ui/button";
@@ -183,7 +183,7 @@ export const PesticideCreateButton = () => {
                       {tSchema("recommendedDosage.unitId.label")}
                     </FormLabel>
                     <FormControl>
-                      <UnitsSelectWithQueryClient
+                      <UnitsSelect
                         onChange={field.onChange}
                         placeholder={tSchema(
                           "recommendedDosage.unitId.placeholder"
@@ -232,7 +232,7 @@ export const PesticideCreateButton = () => {
                       {tSchema("withdrawalPeriod.unitId.label")}
                     </FormLabel>
                     <FormControl>
-                      <UnitsSelectWithQueryClient
+                      <UnitsSelect
                         onChange={field.onChange}
                         placeholder={tSchema(
                           "withdrawalPeriod.unitId.placeholder"

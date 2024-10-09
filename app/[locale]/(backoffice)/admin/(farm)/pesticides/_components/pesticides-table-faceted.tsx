@@ -2,7 +2,6 @@
 
 import { ErrorButton } from "@/components/buttons/error-button";
 import { FacetedFilterStringButton } from "@/components/buttons/faceted-filter-string-button";
-import { QueryProvider } from "@/components/providers/query-provider";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PesticideToxicityLevelCount, PesticideTypeCount } from "@/types";
 import { PesticideType, ToxicityLevel } from "@prisma/client";
@@ -13,7 +12,7 @@ import queryString from "query-string";
 
 const PesticidesFacetedStatus = () => {
   const searchParams = useSearchParams();
-  const filterString = searchParams.get("filterString");
+  const filterString = searchParams!.get("filterString");
   const t = useTranslations("pesticides");
   const options = Object.values(PesticideType).map((item) => ({
     label: t(`schema.type.options.${item}`),
@@ -61,16 +60,9 @@ const PesticidesFacetedStatus = () => {
   );
 };
 
-const PesticidesFacetedTypeWithQueryClient = () => {
-  return (
-    <QueryProvider>
-      <PesticidesFacetedStatus />
-    </QueryProvider>
-  );
-};
 const PesticidesFacetedToxicityLevel = () => {
   const searchParams = useSearchParams();
-  const filterString = searchParams.get("filterString");
+  const filterString = searchParams!.get("filterString");
   const t = useTranslations("pesticides");
   const options = Object.values(ToxicityLevel).map((item) => ({
     label: t(`schema.toxicityLevel.options.${item}`),
@@ -121,19 +113,11 @@ const PesticidesFacetedToxicityLevel = () => {
   );
 };
 
-export const PesticidesFacetedToxicityLevelWithQueryClient = () => {
-  return (
-    <QueryProvider>
-      <PesticidesFacetedToxicityLevel />
-    </QueryProvider>
-  );
-};
-
 export const PesticidesTableFaceted = () => {
   return (
     <div className="flex gap-2 my-2 lg:flex-row flex-col">
-      <PesticidesFacetedTypeWithQueryClient />
-      <PesticidesFacetedToxicityLevelWithQueryClient />
+      <PesticidesFacetedStatus />
+      <PesticidesFacetedToxicityLevel />
     </div>
   );
 };

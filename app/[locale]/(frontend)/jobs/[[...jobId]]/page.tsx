@@ -15,7 +15,7 @@ interface JobsPageProps {
   };
 }
 const JobsPage = async ({ searchParams, params }: JobsPageProps) => {
-  const jobId = params.jobId?.[0];
+  const jobId = params!.jobId?.[0];
 
   const queryString = searchParams?.query || "";
   let data;

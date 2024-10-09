@@ -4,7 +4,6 @@ import { FacetedFilterNumberButton } from "@/components/buttons/faceted-filter-n
 import { useTranslations } from "next-intl";
 import { ErrorButton } from "@/components/buttons/error-button";
 import { FacetedFilterStringButton } from "@/components/buttons/faceted-filter-string-button";
-import { QueryProvider } from "@/components/providers/query-provider";
 import { Skeleton } from "@/components/ui/skeleton";
 import { WeatherStatusCount } from "@/types";
 import { WeatherStatus } from "@prisma/client";
@@ -77,9 +76,9 @@ const WeathersFacetedStatus = () => {
     fieldId: string;
   }>();
   const searchParams = useSearchParams();
-  const begin = searchParams.get("begin");
-  const end = searchParams.get("end");
-  const filterString = searchParams.get("filterString");
+  const begin = searchParams!.get("begin");
+  const end = searchParams!.get("end");
+  const filterString = searchParams!.get("filterString");
   const t = useTranslations("weathers");
   const options = Object.values(WeatherStatus).map((item) => ({
     label: t(`schema.status.options.${item}`),
@@ -129,13 +128,6 @@ const WeathersFacetedStatus = () => {
   );
 };
 
-export const WeathersFacetedStatusWithQueryClient = () => {
-  return (
-    <QueryProvider>
-      <WeathersFacetedStatus />
-    </QueryProvider>
-  );
-};
 const WeathersFacetedTemperature = () => {
   const t = useTranslations("weathers.search.faceted");
   const options = [
@@ -172,7 +164,7 @@ const WeathersFacetedTemperature = () => {
 export const WeatherTableFaceted = () => {
   return (
     <div className="flex gap-2 my-2 lg:flex-row flex-col">
-      <WeathersFacetedStatusWithQueryClient />
+      <WeathersFacetedStatus />
       <WeathersFacetedTemperature />
       <WeathersFacetedHumidity />
       <WeathersFacetedRainfall />

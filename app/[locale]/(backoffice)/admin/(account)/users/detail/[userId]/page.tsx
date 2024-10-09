@@ -17,7 +17,7 @@ export async function generateMetadata() {
 }
 
 const UserDetailPage = async ({ params }: UserDetailPageProps) => {
-  const user = await getUserById(params.userId);
+  const user = await getUserById(params!.userId);
   const t = await getTranslations("users.page.detail");
   if (!user) {
     notFound();

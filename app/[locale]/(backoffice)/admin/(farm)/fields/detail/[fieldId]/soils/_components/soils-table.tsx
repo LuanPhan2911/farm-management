@@ -42,7 +42,7 @@ export const SoilsTable = ({ data, totalPage }: SoilsTableProps) => {
     onOpen("soil.edit", { soil: data });
   };
   return (
-    <div className="flex flex-col gap-y-4 p-4 border rounded-lg my-4">
+    <div className="flex flex-col gap-y-2 p-4 border rounded-lg my-4">
       <div className="flex lg:justify-end gap-1.5 flex-wrap">
         <SoilCreateManyButton />
         <SoilsExportButton />
@@ -50,7 +50,7 @@ export const SoilsTable = ({ data, totalPage }: SoilsTableProps) => {
         <SoilsConfirmedAllButton />
         <SoilDeleteManyUnConfirmedButton />
       </div>
-      <DatePickerWithRangeButton from={undefined} />
+      <DatePickerWithRangeButton />
       <SoilsTableFaceted />
 
       <Table>

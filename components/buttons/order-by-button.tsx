@@ -2,10 +2,8 @@
 
 import { ArrowDownUp } from "lucide-react";
 import { Button } from "../ui/button";
-import { usePathname, useRouter } from "@/navigation";
-import { useSearchParams } from "next/navigation";
 import { getPostfixSortOrder, toggleSortOrder } from "@/lib/utils";
-import { useEffect } from "react";
+import { useUpdateSearchParam } from "@/hooks/use-update-search-param";
 
 interface OrderByButtonProps {
   column: string;
@@ -17,36 +15,18 @@ export const OrderByButton = ({
   column,
   label,
 }: OrderByButtonProps) => {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  useEffect(() => {
-    if (!defaultValue) {
-      return;
-    }
-    const params = new URLSearchParams(searchParams);
+  const { updateSearchParam, initialParam } = useUpdateSearchParam(
+    "orderBy",
+    defaultValue ? `${column}_${defaultValue}` : undefined
+  );
 
-    params.set("orderBy", `${column}_${defaultValue}`);
-    router.replace(`${pathname}?${params}`);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultValue]);
-  const router = useRouter();
   const handleClick = () => {
-    const value = `${column}_${getPostfixSortOrder(
-      searchParams.get("orderBy") || "",
-      "desc"
-    )}`;
-    const params = new URLSearchParams(searchParams);
-
-    if (!params.get("orderBy")) {
-      params.set("orderBy", value);
+    const value = `${column}_${getPostfixSortOrder(initialParam, "desc")}`;
+    if (initialParam === value) {
+      updateSearchParam(toggleSortOrder(value));
     } else {
-      if (value === params.get("orderBy")) {
-        params.set("orderBy", toggleSortOrder(value));
-      } else {
-        params.set("orderBy", value);
-      }
+      updateSearchParam(value);
     }
-    router.replace(`${pathname}?${params}`);
   };
   return (
     <Button size={"sm"} variant={"ghost"} onClick={handleClick}>

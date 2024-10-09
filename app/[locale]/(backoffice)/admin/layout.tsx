@@ -12,9 +12,7 @@ const AdminLayout = ({ children }: PropsWithChildren) => {
   return (
     <>
       <AdminSidebar />
-      <main className="min-h-full h-fit w-full py-16 sm:px-6 px-2 ">
-        {children}
-      </main>
+      <main className="min-h-full w-full pt-16 sm:px-6 px-2">{children}</main>
     </>
   );
 };

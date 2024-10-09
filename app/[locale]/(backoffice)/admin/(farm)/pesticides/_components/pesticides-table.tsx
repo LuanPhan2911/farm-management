@@ -27,7 +27,7 @@ interface PesticidesTableProps {
 }
 export const PesticidesTable = ({ data, totalPage }: PesticidesTableProps) => {
   const searchParams = useSearchParams();
-  const query = searchParams.get("query");
+  const query = searchParams!.get("query");
   const { onOpen } = useDialog();
   const handleEdit = (row: PesticideTable) => {
     onOpen("pesticide.edit", { pesticide: row });

@@ -28,7 +28,7 @@ import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { OrgMemberRole } from "./org-member-role";
 
-import { StaffsSelectWithQueryClient } from "../../../../_components/staffs-select";
+import { StaffsSelect } from "../../../../_components/staffs-select";
 import { Plus } from "lucide-react";
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 
@@ -99,7 +99,7 @@ export const OrgMemberAdd = ({}: OrgMemberAddProps) => {
                   <FormLabel>{tSchema("memberId.label")}</FormLabel>
                   <FormControl>
                     <div className="block">
-                      <StaffsSelectWithQueryClient
+                      <StaffsSelect
                         queryKey={["staffs_select"]}
                         queryFn={fetchMembers}
                         defaultValue={field.value}

@@ -8,6 +8,7 @@ import { notFound } from "next/navigation";
 import { OrgTabs } from "../../_components/org-tabs";
 import { parseToNumber } from "@/lib/utils";
 import { getTranslations } from "next-intl/server";
+import { getCurrentStaff } from "@/services/staffs";
 
 interface OrganizationDetailPageProps {
   params: {
@@ -29,15 +30,16 @@ const OrganizationDetailPage = async ({
   params,
   searchParams,
 }: OrganizationDetailPageProps) => {
-  const page = parseToNumber(searchParams.page, 1);
+  const page = parseToNumber(searchParams!.page, 1);
   const { orderBy } = searchParams;
-  const org = await getOrganizationById(params.orgId);
+  const org = await getOrganizationById(params!.orgId);
+  const currentStaff = await getCurrentStaff();
   const { data: orgMember, totalPage } = await getOrganizationMembership({
     currentPage: page,
-    orgId: params.orgId,
+    orgId: params!.orgId,
     orderBy,
   });
-  if (!org || !orgMember.length) {
+  if (!org || !orgMember.length || !currentStaff) {
     notFound();
   }
 
@@ -47,6 +49,7 @@ const OrganizationDetailPage = async ({
         org={structuredClone(org)}
         orgMember={structuredClone(orgMember)}
         totalPageOrgMember={totalPage}
+        currentStaff={currentStaff}
       />
     </div>
   );

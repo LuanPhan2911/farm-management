@@ -25,7 +25,7 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { SelectOptions } from "@/components/form/select-options";
 import { FertilizerTable } from "@/types";
-import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
+import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { edit } from "@/actions/fertilizer";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -197,7 +197,7 @@ export const FertilizerEditDialog = () => {
                       {tSchema("recommendedDosage.unitId.label")}
                     </FormLabel>
                     <FormControl>
-                      <UnitsSelectWithQueryClient
+                      <UnitsSelect
                         onChange={field.onChange}
                         placeholder={tSchema(
                           "recommendedDosage.unitId.placeholder"

@@ -53,7 +53,7 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
         <WeathersConfirmedAllButton />
         <WeatherDeleteManyUnConfirmedButton />
       </div>
-      <DatePickerWithRangeButton from={undefined} />
+      <DatePickerWithRangeButton />
       <WeatherTableFaceted />
 
       <Table>

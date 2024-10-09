@@ -3,30 +3,29 @@ import { cn, isActive } from "@/lib/utils";
 import { usePathname } from "@/navigation";
 import { useDashboardSidebar } from "@/stores/use-dashboard-sidebar";
 import {
+  ArchiveRestore,
   BookCheck,
   BugOff,
   Building,
   Clipboard,
   Clock,
-  Columns2,
   Compass,
   Flower,
   Flower2,
-  Globe,
+  Folder,
+  FolderLock,
   Grid2X2,
   Hammer,
   House,
   LayoutGrid,
   Leaf,
+  MessageCircle,
   MountainSnow,
   ScrollText,
   Section,
-  Settings,
   SquareUserRound,
-  Store,
+  Trash,
   User,
-  UserCheck,
-  UserCog,
   Users,
 } from "lucide-react";
 
@@ -87,6 +86,12 @@ export const AdminSidebar = () => {
             active={isActive(pathname, "/admin/organizations")}
             icon={Building}
             title="Organizations"
+          />
+          <SidebarItem
+            href="/admin/messages"
+            active={isActive(pathname, "/admin/messages")}
+            icon={MessageCircle}
+            title="Messages"
           />
         </SidebarAccordionItem>
 
@@ -166,28 +171,26 @@ export const AdminSidebar = () => {
           />
         </SidebarAccordionItem>
 
-        {/* <SidebarItem
-        href="/dashboard/staff"
-        active={pathname === "/dashboard/staff"}
-        icon={User}
-        title="Our staff"
-      />
-      <SidebarItem
-        href="/dashboard/settings"
-        active={pathname === "/dashboard/settings"}
-        icon={Settings}
-        title="Settings"
-      />
-
-      <SidebarAccordionItem title="International" icon={Globe}>
-        <div></div>
-      </SidebarAccordionItem>
-      <SidebarAccordionItem title="Online stores" icon={Store}>
-        <div></div>
-      </SidebarAccordionItem>
-      <SidebarAccordionItem title="Pages" icon={Columns2}>
-        <div></div>
-      </SidebarAccordionItem> */}
+        <SidebarAccordionItem title="Files" icon={ArchiveRestore}>
+          <SidebarItem
+            href="/admin/my-files"
+            active={isActive(pathname, "/admin/my-files")}
+            icon={FolderLock}
+            title="My files"
+          />
+          <SidebarItem
+            href="/admin/public-files"
+            active={isActive(pathname, "/admin/public-files")}
+            icon={Folder}
+            title="Public files"
+          />
+          <SidebarItem
+            href="/admin/my-trash"
+            active={isActive(pathname, "/admin/my-trash")}
+            icon={Trash}
+            title="My trash"
+          />
+        </SidebarAccordionItem>
       </div>
     </div>
   );

@@ -23,12 +23,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 import { ErrorButton } from "@/components/buttons/error-button";
 
-import { QueryProvider } from "@/components/providers/query-provider";
-
 import { UserAvatar } from "@/components/user-avatar";
 import { StaffMetadataRole } from "./staff-metadata-role";
 import { StaffRole } from "@prisma/client";
 import ReactSelect, { MultiValue } from "react-select";
+import {
+  ComboBoxCustom,
+  ComboBoxCustomAppearance,
+} from "@/components/form/combo-box";
 interface StaffSelectItemProps {
   imageUrl: string | undefined | null;
   name: string;
@@ -68,15 +70,16 @@ const StaffSelectItem = ({
 interface StaffsSelectProps {
   queryKey: string[];
   queryFn: QueryFunction<Staff[]>;
-  onChange: (value: string) => void;
+  onChange: (value: string | undefined) => void;
   defaultValue: string;
   disabled?: boolean;
   label: string;
   notFound: string;
   errorLabel: string;
+  appearance?: ComboBoxCustomAppearance;
 }
 
-const StaffsSelect = ({
+export const StaffsSelect = ({
   queryKey,
   defaultValue,
   disabled,
@@ -85,83 +88,33 @@ const StaffsSelect = ({
   errorLabel,
   queryFn,
   onChange,
+  appearance,
 }: StaffsSelectProps) => {
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(defaultValue || "");
   const { data, isPending, isError, refetch } = useQuery({
     queryKey,
     queryFn,
   });
-  const onSelect = (currentValue: string) => {
-    setValue(currentValue === value ? "" : currentValue);
-    const currentStaff = data?.find((item) => item.email === currentValue);
-    if (currentStaff) {
-      onChange(currentValue === value ? "" : currentStaff.externalId);
-    }
-    setOpen(false);
-  };
+
   if (isPending) {
     return <Skeleton className="w-full h-12"></Skeleton>;
   }
   if (isError) {
     return <ErrorButton title={errorLabel} refresh={refetch} />;
   }
-  const currentStaff = data.find((item) => item.email === value);
+
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-full justify-between px-2"
-          disabled={disabled}
-          size={"lg"}
-        >
-          {currentStaff ? (
-            <StaffSelectItem
-              email={currentStaff.email}
-              imageUrl={currentStaff.imageUrl || undefined}
-              name={currentStaff.name}
-              role={currentStaff.role}
-            />
-          ) : (
-            label
-          )}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[450px] p-0">
-        <Command>
-          <CommandInput placeholder={label} />
-          <CommandList>
-            <CommandEmpty>{notFound}</CommandEmpty>
-            <CommandGroup>
-              {data.map((staff) => (
-                <CommandItem
-                  key={staff.externalId}
-                  value={staff.email}
-                  onSelect={onSelect}
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      value === staff.email ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  <StaffSelectItem
-                    email={staff.email}
-                    imageUrl={staff.imageUrl || undefined}
-                    name={staff.name}
-                    role={staff.role}
-                  />
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+    <ComboBoxCustom
+      label={label}
+      notFound={notFound}
+      defaultValue={defaultValue}
+      options={data}
+      valueKey="id"
+      labelKey="name"
+      renderItem={(item) => <StaffSelectItem {...item} />}
+      disabled={disabled}
+      onChange={onChange}
+      appearance={appearance}
+    />
   );
 };
 interface StaffsSelectMultipleProps {
@@ -173,8 +126,7 @@ interface StaffsSelectMultipleProps {
   defaultValue?: string;
   className?: string;
 }
-const StaffsSelectMultiple = ({
-  defaultValue,
+export const StaffsSelectMultiple = ({
   disabled,
   label,
   notFound,
@@ -221,23 +173,5 @@ const StaffsSelectMultiple = ({
       isMulti
       noOptionsMessage={() => notFound}
     />
-  );
-};
-
-export const StaffsSelectMultipleWithQueryClient = (
-  props: StaffsSelectMultipleProps
-) => {
-  return (
-    <QueryProvider>
-      <StaffsSelectMultiple {...props} />
-    </QueryProvider>
-  );
-};
-
-export const StaffsSelectWithQueryClient = (props: StaffsSelectProps) => {
-  return (
-    <QueryProvider>
-      <StaffsSelect {...props} />
-    </QueryProvider>
   );
 };

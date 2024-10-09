@@ -2,7 +2,7 @@ import { getApplicants } from "@/services/applicants";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ApplicantsTable } from "./_components/applicants-data-table";
 import { getTranslations } from "next-intl/server";
-import { JobSelectWithQueryClient } from "../../_components/jobs-select";
+import { JobsSelect } from "../../_components/jobs-select";
 
 interface ApplicantsPageProps {
   searchParams: {
@@ -17,7 +17,7 @@ export async function generateMetadata() {
 }
 
 const ApplicantsPage = async ({ searchParams }: ApplicantsPageProps) => {
-  const jobId = searchParams.jobId;
+  const jobId = searchParams!.jobId;
   const applicants = await getApplicants({
     jobId,
   });
@@ -30,7 +30,7 @@ const ApplicantsPage = async ({ searchParams }: ApplicantsPageProps) => {
           <CardTitle>{t("title")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <JobSelectWithQueryClient />
+          <JobsSelect />
           <ApplicantsTable applicants={applicants} />
         </CardContent>
       </Card>

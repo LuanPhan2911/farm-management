@@ -24,7 +24,7 @@ export const UnsavedChangesDialog = () => {
   const searchParams = useSearchParams();
 
   const prevPathname = usePrevious(pathname);
-  const prevSearchParams = usePrevious(searchParams);
+  const prevSearchParams = usePrevious(searchParams!);
   const onRouteChangeStart = useCallback(
     (nextPath: string) => {
       if (!shouldConfirmLeave) {

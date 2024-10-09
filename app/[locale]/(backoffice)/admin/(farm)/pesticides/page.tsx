@@ -22,7 +22,7 @@ export async function generateMetadata() {
   };
 }
 const PesticidesPage = async ({ searchParams }: PesticidePageProps) => {
-  const page = parseToNumber(searchParams.page, 1);
+  const page = parseToNumber(searchParams!.page, 1);
   const { orderBy, filterNumber, filterString } = searchParams;
   const t = await getTranslations("pesticides.page");
   const { data, totalPage } = await getPesticides({

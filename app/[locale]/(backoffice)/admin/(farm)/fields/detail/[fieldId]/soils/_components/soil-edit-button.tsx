@@ -25,7 +25,7 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 
 import { SoilTable } from "@/types";
-import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
+import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { edit } from "@/actions/soil";
 import { convertNullToUndefined } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
@@ -157,7 +157,7 @@ export const SoilEditDialog = () => {
                   <FormItem>
                     <FormLabel>{tSchema("moisture.unitId.label")}</FormLabel>
                     <FormControl>
-                      <UnitsSelectWithQueryClient
+                      <UnitsSelect
                         onChange={field.onChange}
                         placeholder={tSchema("moisture.unitId.placeholder")}
                         unitType={UnitType.PERCENT}
@@ -182,7 +182,7 @@ export const SoilEditDialog = () => {
                   <FormLabel>{tSchema("nutrientUnitId.label")}</FormLabel>
                   <div className="flex gap-x-2">
                     <FormControl>
-                      <UnitsSelectWithQueryClient
+                      <UnitsSelect
                         onChange={field.onChange}
                         placeholder={tSchema("nutrientUnitId.placeholder")}
                         unitType={UnitType.NUTRIENT}

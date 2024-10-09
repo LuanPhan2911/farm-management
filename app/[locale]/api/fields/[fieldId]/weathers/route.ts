@@ -63,7 +63,7 @@ export const GET = async (
   }
 ) => {
   try {
-    const weathers = await getWeathersForExport(params.fieldId);
+    const weathers = await getWeathersForExport(params!.fieldId);
     return NextResponse.json(weathers);
   } catch (error) {
     return NextResponse.json("Internal error", { status: 500 });

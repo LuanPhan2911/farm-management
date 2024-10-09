@@ -1,84 +1,70 @@
 import { LIMIT } from "@/configs/paginationConfig";
 import { db } from "@/lib/db";
-import { clerkClient, currentUser } from "@clerk/nextjs/server";
+import { clerkClient, currentUser, getAuth } from "@clerk/nextjs/server";
 import { StaffRole } from "@prisma/client";
 import { UserOrderBy } from "./users";
+import { NextApiRequest } from "next";
 
 type StaffParams = {
   email: string;
   name: string;
   role: StaffRole;
-  imageUrl: string | null;
+  imageUrl?: string | null;
 };
 export const createStaff = async (externalId: string, params: StaffParams) => {
-  try {
-    const staff = await db.staff.create({
-      data: {
-        ...params,
-        externalId,
-      },
-    });
-    return staff;
-  } catch (error) {
-    return null;
-  }
+  const staff = await db.staff.create({
+    data: {
+      ...params,
+      externalId,
+    },
+  });
+  return staff;
 };
 export const getStaffByEmail = async (email: string) => {
-  try {
-    return await db.staff.findUnique({
-      where: { email },
-    });
-  } catch (error) {
-    return null;
-  }
+  return await db.staff.findUnique({
+    where: { email },
+  });
 };
 export const getStaffByExternalId = async (externalId: string) => {
-  try {
-    return await db.staff.findUnique({
-      where: { externalId },
-    });
-  } catch (error) {
-    return null;
-  }
+  return await db.staff.findUnique({
+    where: { externalId },
+  });
 };
-export const updateStaffRole = async (externalId: string, role: StaffRole) => {
-  try {
-    return await db.staff.update({
-      where: { externalId },
-      data: {
-        role,
-      },
-    });
-  } catch (error) {
-    return null;
-  }
+export const upsertStaff = async (externalId: string, params: StaffParams) => {
+  return await db.staff.upsert({
+    where: { externalId },
+    update: {
+      ...params,
+    },
+    create: {
+      ...params,
+      externalId,
+    },
+  });
 };
 export const updateStaff = async (
   externalId: string,
-  params: { imageUrl: string; name: string }
-) => {
-  try {
-    return await db.staff.update({
-      where: { externalId },
-      data: {
-        ...params,
-      },
-    });
-  } catch (error) {
-    return null;
+  params: {
+    name: string;
+    imageUrl?: string | null;
   }
+) => {
+  return await db.staff.update({
+    where: {
+      externalId,
+    },
+    data: {
+      ...params,
+    },
+  });
 };
 export const deleteStaff = async (externalId: string) => {
-  try {
-    const staff = await db.staff.delete({
-      where: {
-        externalId,
-      },
-    });
-    return staff;
-  } catch (error) {
-    return null;
-  }
+  const staff = await db.staff.delete({
+    where: {
+      externalId,
+    },
+  });
+  return staff;
 };
 
 export const getStaffExternalIds = async (): Promise<string[]> => {
@@ -159,19 +145,34 @@ export const getStaffsSelect = async () => {
   }
 };
 
-export const currentStaff = async () => {
-  try {
-    const user = await currentUser();
-    if (!user) {
-      return null;
-    }
-    const staff = await db.staff.findUnique({
-      where: {
-        externalId: user.id,
-      },
-    });
-    return staff;
-  } catch (error) {
+export const getStaffById = async (id: string) => {
+  return await db.staff.findUnique({ where: { id } });
+};
+export const getCurrentStaff = async () => {
+  const user = await currentUser();
+
+  if (!user) {
     return null;
   }
+
+  const staff = await db.staff.findUnique({
+    where: {
+      externalId: user.id,
+    },
+  });
+
+  return staff;
+};
+export const getCurrentStaffPages = async (req: NextApiRequest) => {
+  const { userId } = getAuth(req);
+  if (!userId) {
+    return null;
+  }
+  const staff = await db.staff.findUnique({
+    where: {
+      externalId: userId,
+    },
+  });
+
+  return staff;
 };

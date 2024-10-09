@@ -71,7 +71,7 @@ export const SoilDeleteManyUnConfirmedButton = () => {
   const t = useTranslations("soils");
   const onConfirm = async () => {
     setPending(true);
-    destroyManyUnConfirmed(params.fieldId)
+    destroyManyUnConfirmed(params!.fieldId)
       .then(({ message, ok }) => {
         if (ok) {
           toast.success(message);

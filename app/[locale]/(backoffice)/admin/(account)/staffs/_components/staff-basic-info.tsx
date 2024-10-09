@@ -68,11 +68,7 @@ export const StaffBasicInfo = ({ data }: StaffBasicInfoProps) => {
           <FormItem>
             <FormLabel>{tSchema("id.label")}</FormLabel>
             <div className="flex gap-x-2">
-              <Input
-                placeholder={tSchema("id.placeholder")}
-                value={data.id}
-                disabled={true}
-              />
+              <Input value={data.id} disabled={true} />
               <ClipboardButton value={data.id} />
             </div>
           </FormItem>

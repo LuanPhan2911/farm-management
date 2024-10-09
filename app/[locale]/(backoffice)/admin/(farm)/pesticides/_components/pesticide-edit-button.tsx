@@ -25,7 +25,7 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { SelectOptions } from "@/components/form/select-options";
 import { PesticideTable } from "@/types";
-import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
+import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { edit } from "@/actions/pesticide";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -203,7 +203,7 @@ export const PesticideEditDialog = () => {
                     {tSchema("recommendedDosage.unitId.label")}
                   </FormLabel>
                   <FormControl>
-                    <UnitsSelectWithQueryClient
+                    <UnitsSelect
                       onChange={field.onChange}
                       placeholder={tSchema(
                         "recommendedDosage.unitId.placeholder"
@@ -253,7 +253,7 @@ export const PesticideEditDialog = () => {
                     {tSchema("withdrawalPeriod.unitId.label")}
                   </FormLabel>
                   <FormControl>
-                    <UnitsSelectWithQueryClient
+                    <UnitsSelect
                       onChange={field.onChange}
                       placeholder={tSchema(
                         "withdrawalPeriod.unitId.placeholder"

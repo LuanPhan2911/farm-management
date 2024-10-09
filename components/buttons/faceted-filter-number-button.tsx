@@ -24,9 +24,8 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "../ui/button";
 import { CheckIcon, LucideIcon, PlusCircleIcon } from "lucide-react";
 import { Badge } from "../ui/badge";
-import { usePathname, useRouter } from "@/navigation";
-import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { useUpdateSearchParam } from "@/hooks/use-update-search-param";
 interface FacetedFilterNumberButtonProps {
   title?: string;
   options: {
@@ -41,26 +40,19 @@ export const FacetedFilterNumberButton = ({
   title,
   column,
 }: FacetedFilterNumberButtonProps) => {
-  const pathname = usePathname();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const selectedValues = new Set(
-    getArrayFilterNumber(searchParams.get("filterNumber") || "")
-  );
+  const { initialParam, updateSearchParam } =
+    useUpdateSearchParam("filterNumber");
+  const selectedValues = new Set(getArrayFilterNumber(initialParam));
 
   const [value, setValue] = useState(() => {
-    return (
-      getPostfixValueFilterNumber(
-        searchParams.get("filterNumber") || "",
-        column
-      ) || ""
-    );
+    return getPostfixValueFilterNumber(initialParam || "", column);
   });
 
   const handlePushUrl = (value: string | undefined) => {
-    const params = new URLSearchParams(searchParams);
-    const filterNumber = params.get("filterNumber") || "";
-    const postfixValue = getPostfixValueFilterNumber(filterNumber, column);
+    const postfixValue = getPostfixValueFilterNumber(
+      initialParam || "",
+      column
+    );
     if (postfixValue) {
       selectedValues.delete(`${column}_${postfixValue}`);
     }
@@ -69,17 +61,14 @@ export const FacetedFilterNumberButton = ({
       selectedValues.add(`${column}_${value}`);
     } else {
       setValue("");
-
       selectedValues.clear();
     }
     //no value: clear set
     if (selectedValues.size === 0) {
-      params.delete("filterNumber");
+      updateSearchParam(undefined);
     } else {
-      params.set("filterNumber", Array.from(selectedValues).join(","));
+      updateSearchParam(Array.from(selectedValues).join(","));
     }
-
-    router.replace(`${pathname}?${params}`);
   };
 
   return (

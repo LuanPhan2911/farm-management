@@ -22,7 +22,11 @@ const intlMiddleware = createMiddleware({
 export default clerkMiddleware((auth, req, event) => {
   req.headers.set("x-current-path", removeLanguagePrefix(req.nextUrl.pathname));
   if (isProtectedRoute(req)) auth().protect();
-
+  // check if connect to socket io then not return int middleware;
+  const { pathname } = req.nextUrl;
+  if (pathname.startsWith("/api/socket")) {
+    return;
+  }
   return intlMiddleware(req);
 });
 
