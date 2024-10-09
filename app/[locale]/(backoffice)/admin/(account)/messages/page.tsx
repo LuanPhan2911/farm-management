@@ -29,7 +29,7 @@ const MessagesPage = async () => {
             {t("title")} <SocketIndicator />
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex-1 flex flex-col gap-4">
+        <CardContent className="flex-1 flex flex-col gap-4 mb-4">
           <div className="flex justify-start">
             <Link href={"/admin/messages/files"}>
               <Button variant={"blue"} size={"sm"}>
@@ -42,8 +42,6 @@ const MessagesPage = async () => {
             chatId={"all"}
             apiUrl="/api/messages"
             currentStaff={currentStaff}
-            paramKey="orgId"
-            paramValue={"all"}
             socketUrl="/api/socket/messages"
             socketQuery={{
               orgId: "all",

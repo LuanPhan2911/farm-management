@@ -76,6 +76,23 @@ export const PlantCreateForm = () => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4 max-w-4xl"
       >
+        <FormField
+          control={form.control}
+          name="imageUrl"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{tSchema("imageUrl.label")}</FormLabel>
+              <FormControl>
+                <UploadImage
+                  onChange={field.onChange}
+                  defaultValue={field.value}
+                  disabled={isPending}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <div className="grid lg:grid-cols-2 gap-2">
           <FormField
             control={form.control}
@@ -341,24 +358,6 @@ export const PlantCreateForm = () => {
             </div>
           </div>
         </div>
-
-        <FormField
-          control={form.control}
-          name="imageUrl"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{tSchema("imageUrl.label")}</FormLabel>
-              <FormControl>
-                <UploadImage
-                  onChange={field.onChange}
-                  defaultValue={field.value}
-                  disabled={isPending}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
         <DynamicDialogFooter disabled={isPending} closeButton={false} />
       </form>

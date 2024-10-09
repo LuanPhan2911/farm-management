@@ -540,7 +540,7 @@ model File {
   id       String  @id @default(uuid())
   name     String
   type     String
-  url      String
+  url      String  @unique
   key      String  @unique
   isPublic Boolean @default(false)
   orgId    String?

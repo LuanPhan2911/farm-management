@@ -69,7 +69,7 @@ const SoilsFacetedNutrientPotassium = () => {
 };
 export const SoilsTableFaceted = () => {
   return (
-    <div className="flex gap-2 my-2 lg:flex-row flex-col">
+    <div className="flex gap-2 lg:flex-row flex-col">
       <SoilsFacetedNutrientNitrogen />
       <SoilsFacetedNutrientPhosphorus />
       <SoilsFacetedNutrientPotassium />

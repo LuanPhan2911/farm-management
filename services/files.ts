@@ -25,7 +25,7 @@ export const createFile = async (params: FileParams) => {
   });
 };
 type FileUrlParams = {
-  name: string;
+  name?: string;
   url: string;
   ownerId: string;
   isPublic?: boolean;
@@ -36,8 +36,8 @@ export const createFileFromUrl = async (params: FileUrlParams) => {
   if (uploadedFile.error) {
     throw new Error("Fail create file uploadthing");
   }
-  const { ownerId, isPublic, orgId, name } = params;
-  const { key, type, url } = uploadedFile.data;
+  const { ownerId, isPublic, orgId, name: initialName } = params;
+  const { key, type, url, name: defaultName } = uploadedFile.data;
   return await createFile({
     ownerId,
     isPublic,
@@ -45,7 +45,7 @@ export const createFileFromUrl = async (params: FileUrlParams) => {
     key,
     type,
     url,
-    name,
+    name: initialName ? initialName : defaultName,
   });
 };
 export const updateFileDeleted = async (
@@ -77,6 +77,30 @@ export const deleteFile = async (id: string) => {
   const file = await db.file.delete({ where: { id } });
   await utapi.deleteFiles(file.key);
   return file;
+};
+export const deleteManyFileDeleted = async () => {
+  const fileKeys = await db.file.findMany({
+    where: {
+      deleted: true,
+    },
+    select: {
+      key: true,
+    },
+  });
+  const deletedFiles = await utapi.deleteFiles(
+    fileKeys.map((item) => item.key)
+  );
+  if (!deletedFiles.success) {
+    throw new Error("Delete uploaded files error");
+  }
+  await db.file.deleteMany({
+    where: {
+      key: {
+        in: fileKeys.map((item) => item.key),
+      },
+    },
+  });
+  return fileKeys.map((item) => item.key);
 };
 type FileQuery = {
   page?: number;
@@ -396,5 +420,15 @@ export const getFilesByOwnerIdSelect = async ({
     return files;
   } catch (error) {
     return [];
+  }
+};
+
+export const getFileByUrl = async (url: string) => {
+  try {
+    return await db.file.findUnique({
+      where: { url },
+    });
+  } catch (error) {
+    return null;
   }
 };

@@ -23,10 +23,7 @@ export const FileCopyButton = ({
   const t = useTranslations("files.form");
   const onConfirm = async () => {
     setPending(true);
-    copy({
-      ...data,
-      name: `${data.name}(copy)`,
-    })
+    copy(data)
       .then(({ message, ok }) => {
         if (ok) {
           toast.success(message);

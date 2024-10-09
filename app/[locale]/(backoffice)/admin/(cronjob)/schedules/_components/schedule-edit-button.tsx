@@ -33,6 +33,35 @@ import {
 } from "vanilla-jsoneditor";
 import { ScheduleSelectCron } from "./schedule-select-cron";
 import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { ScheduleResponse } from "@/types";
+import { Edit } from "lucide-react";
+interface ScheduleEditButtonProps {
+  data: ScheduleResponse;
+  label: string;
+}
+export const ScheduleEditButton = ({
+  data,
+  label,
+}: ScheduleEditButtonProps) => {
+  const { onOpen } = useSheet();
+  return (
+    <Button
+      className="w-full"
+      onClick={(e) => {
+        e.stopPropagation();
+        onOpen("schedule.edit", {
+          schedule: data,
+        });
+      }}
+      size={"sm"}
+      variant={"edit"}
+    >
+      <Edit className="w-4 h-4 mr-2" />
+      {label}
+    </Button>
+  );
+};
 
 export const ScheduleEditSheet = () => {
   const { data, isOpen, onClose, type } = useSheet();

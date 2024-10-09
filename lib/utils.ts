@@ -137,10 +137,13 @@ export function getObjectSortOrder(input: string): Record<string, any> {
   return nestedObject;
 }
 export function getPostfixSortOrder(
-  input: string,
+  input: string | undefined,
   defaultValue: "asc" | "desc" = "asc"
 ) {
   // Split the input by the underscore
+  if (!input) {
+    return defaultValue;
+  }
   const parts = input.split("_");
 
   // If the format isn't correct, return an empty array
@@ -281,7 +284,10 @@ export function getPostfixValueFilterNumber(
   // Return undefined if the key is not found
   return undefined;
 }
-export const getArrayFilterNumber = (input: string) => {
+export const getArrayFilterNumber = (input: string | undefined) => {
+  if (!input) {
+    return [];
+  }
   return input
     .split(",")
     .map((value) => value.trim())
@@ -494,4 +500,8 @@ export function isImage(type: string): boolean {
   ];
 
   return imageMimeTypes.includes(type);
+}
+
+export function dateToString(date: Date | undefined): string | undefined {
+  return date ? `${format(date, "yyy-MM-dd")}` : undefined;
 }

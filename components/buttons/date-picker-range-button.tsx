@@ -1,49 +1,53 @@
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
 import { DatePickerWithRange } from "../form/date-picker-with-range";
-import { useSearchParams } from "next/navigation";
-import { usePathname, useRouter } from "@/navigation";
 import { format } from "date-fns";
+import { useUpdateSearchParams } from "@/hooks/use-update-search-param";
+import { cn, dateToString, parseToDate } from "@/lib/utils";
 
 interface DatePickerWithRangeButtonProps {
-  from: Date | undefined;
-  to?: Date | undefined;
+  className?: string;
+  placeholder?: string;
+  begin?: Date | undefined;
+  end?: Date | undefined;
 }
 export const DatePickerWithRangeButton = ({
-  from,
-  to,
+  className,
+  placeholder,
+  begin,
+  end,
 }: DatePickerWithRangeButtonProps) => {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const router = useRouter();
-  const [dateRange, setDateRange] = useState<DateRange | undefined>({
-    from,
-    to,
+  const { updateSearchParams, initialParams } = useUpdateSearchParams({
+    begin: dateToString(begin),
+    end: dateToString(end),
   });
+
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    from: parseToDate(initialParams.begin),
+    to: parseToDate(initialParams.end),
+  });
+
   const handelChangeDate = (date: DateRange | undefined) => {
-    const params = new URLSearchParams(searchParams!);
     if (!date) {
       setDateRange(undefined);
-      params!.delete("begin");
-      params!.delete("end");
+      updateSearchParams({
+        begin: undefined,
+        end: undefined,
+      });
     } else {
       setDateRange(date);
-
-      if (date.from) {
-        params!.set("begin", `${format(date.from, "yyyy-MM-dd")}`);
-      }
-      if (date.to) {
-        params!.set("end", `${format(date.to, "yyyy-MM-dd")}`);
-      }
+      updateSearchParams({
+        begin: dateToString(date.from),
+        end: dateToString(date.to),
+      });
     }
-
-    router.replace(`${pathname}?${params}`);
   };
   return (
     <DatePickerWithRange
       date={dateRange}
       handleChange={handelChangeDate}
-      className="my-2 "
+      className={cn("my-2 lg:w-[250px] w-full", className)}
+      placeholder={placeholder}
     />
   );
 };

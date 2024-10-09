@@ -1,5 +1,6 @@
 import { errorResponse, successResponse } from "@/lib/utils";
 import { MessageSchema } from "@/schemas";
+import { createFileFromUrl } from "@/services/files";
 import { createMessage } from "@/services/messages";
 import { getOrganizationById } from "@/services/organizations";
 import { getCurrentStaffPages } from "@/services/staffs";
@@ -26,25 +27,42 @@ export default async function handler(
     }
     // check all chat message orgIg= all
     let message;
-    if (orgId != "all") {
+    const isPublic = orgId === "all";
+    let { content, fileIds, fileUrl } = validatedFields.data;
+    if (fileUrl) {
+      //check file exist
+
+      const copiedFile = await createFileFromUrl({
+        url: fileUrl,
+        ownerId: staff.id,
+        isPublic,
+      });
+
+      if (copiedFile) {
+        fileIds = [copiedFile.id];
+      }
+    }
+
+    if (!isPublic) {
       const org = await getOrganizationById(orgId as string);
       if (!org) {
         return res.status(400).json(errorResponse("Org is not exist"));
       }
       message = await createMessage({
-        ...validatedFields.data,
+        content,
+        fileIds,
         orgId: org.id,
         staffId: staff.id,
       });
     } else {
       message = await createMessage({
-        ...validatedFields.data,
-        orgId: "all",
+        content,
+        fileIds,
         staffId: staff.id,
       });
     }
 
-    const key = `chat:${message.orgId}:messages`;
+    const key = `chat:${orgId as string}:messages`;
 
     res?.socket?.server?.io?.emit(key, message);
 

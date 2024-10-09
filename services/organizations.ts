@@ -1,6 +1,6 @@
 import { LIMIT } from "@/configs/paginationConfig";
 import { OrgRole } from "@/types";
-import { clerkClient } from "@clerk/nextjs/server";
+import { clerkClient, Organization } from "@clerk/nextjs/server";
 export const getOrganizationBySlug = async (slug: string) => {
   try {
     const org = await clerkClient().organizations.getOrganization({
@@ -25,6 +25,69 @@ export const createOrganization = async (params: {
 export const deleteOrganization = async (orgId: string) => {
   const org = await clerkClient().organizations.deleteOrganization(orgId);
   return org;
+};
+export const updateOrganizationLogo = async (
+  orgId: string,
+
+  userId: string,
+  file: File
+) => {
+  const org = await clerkClient().organizations.updateOrganizationLogo(orgId, {
+    file,
+    uploaderUserId: userId,
+  });
+  return org;
+};
+export const updateOrganization = async (
+  orgId: string,
+  name: string,
+  slug: string
+) => {
+  const org = await clerkClient().organizations.updateOrganization(orgId, {
+    name,
+    slug,
+  });
+  return org;
+};
+
+export const createMemberOrganization = async (
+  orgId: string,
+  userId: string,
+  role: string
+) => {
+  const member = await clerkClient().organizations.createOrganizationMembership(
+    {
+      organizationId: orgId,
+      userId,
+      role,
+    }
+  );
+  return member;
+};
+
+export const deleteMemberOrganization = async (
+  userId: string,
+  orgId: string
+) => {
+  const orgMember =
+    await clerkClient().organizations.deleteOrganizationMembership({
+      organizationId: orgId,
+      userId,
+    });
+  return orgMember;
+};
+export const updateMemberRoleOrganization = async (
+  userId: string,
+  orgId: string,
+  role: OrgRole
+) => {
+  const orgMember =
+    await clerkClient().organizations.updateOrganizationMembership({
+      organizationId: orgId,
+      role,
+      userId,
+    });
+  return orgMember;
 };
 
 export type OrganizationMemberShipSortBy =
@@ -103,6 +166,17 @@ export const getOrganizations = async ({
     };
   }
 };
+export const getOrganizationsSelect = async (): Promise<Organization[]> => {
+  try {
+    const { data } = await clerkClient().organizations.getOrganizationList({
+      includeMembersCount: true,
+      limit: 100,
+    });
+    return data;
+  } catch (error) {
+    return [];
+  }
+};
 export const getOrganizationById = async (id: string) => {
   try {
     return await clerkClient().organizations.getOrganization({
@@ -111,68 +185,4 @@ export const getOrganizationById = async (id: string) => {
   } catch (error) {
     return null;
   }
-};
-
-export const updateOrganizationLogo = async (
-  orgId: string,
-
-  userId: string,
-  file: File
-) => {
-  const org = await clerkClient().organizations.updateOrganizationLogo(orgId, {
-    file,
-    uploaderUserId: userId,
-  });
-  return org;
-};
-export const updateOrganization = async (
-  orgId: string,
-  name: string,
-  slug: string
-) => {
-  const org = await clerkClient().organizations.updateOrganization(orgId, {
-    name,
-    slug,
-  });
-  return org;
-};
-
-export const createMemberOrganization = async (
-  orgId: string,
-  userId: string,
-  role: string
-) => {
-  const member = await clerkClient().organizations.createOrganizationMembership(
-    {
-      organizationId: orgId,
-      userId,
-      role,
-    }
-  );
-  return member;
-};
-
-export const deleteMemberOrganization = async (
-  userId: string,
-  orgId: string
-) => {
-  const orgMember =
-    await clerkClient().organizations.deleteOrganizationMembership({
-      organizationId: orgId,
-      userId,
-    });
-  return orgMember;
-};
-export const updateMemberRoleOrganization = async (
-  userId: string,
-  orgId: string,
-  role: OrgRole
-) => {
-  const orgMember =
-    await clerkClient().organizations.updateOrganizationMembership({
-      organizationId: orgId,
-      role,
-      userId,
-    });
-  return orgMember;
 };

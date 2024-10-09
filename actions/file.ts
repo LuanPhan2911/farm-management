@@ -33,7 +33,11 @@ export const copy = async (
     if (!validatedFields.success) {
       return errorResponse(tSchema("errors.parse"));
     }
-    const file = await createFileFromUrl(validatedFields.data);
+    const { name } = validatedFields.data;
+    const file = await createFileFromUrl({
+      ...validatedFields.data,
+      name: `Copy of ${name}`,
+    });
     revalidatePath("/admin/my-files");
     revalidatePath("/admin/public-files");
     revalidatePath("/admin/messages/files");

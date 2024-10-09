@@ -7,8 +7,8 @@ export type ChatParamKey = "orgId";
 interface ChatQueryProps {
   queryKey: string;
   apiUrl: string;
-  paramKey: ChatParamKey;
-  paramValue: string;
+  paramKey?: ChatParamKey;
+  paramValue?: string;
 }
 
 export const useChatQuery = ({
@@ -29,7 +29,10 @@ export const useChatQuery = ({
         url: apiUrl,
         query: {
           cursor: pageParam,
-          [paramKey]: paramValue,
+          ...(paramKey &&
+            paramValue && {
+              [paramKey]: paramValue,
+            }),
         },
       },
       {

@@ -31,7 +31,7 @@ export const OrgMessages = ({ org, currentStaff }: OrgMessages) => {
         </CardTitle>
         <CardDescription>{t("messages.description")}</CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col gap-4">
+      <CardContent className="flex flex-col gap-4 mb-4">
         <div className="flex justify-start">
           <Link href={`/admin/organizations/detail/${org.id}/files`}>
             <Button variant={"blue"} size={"sm"}>

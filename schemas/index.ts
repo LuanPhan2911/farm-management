@@ -826,6 +826,7 @@ export const MessageSchema = () => {
       .min(1, "Min content length is 1 character")
       .max(5000, "Max content length is 5000 characters"),
     fileIds: z.array(z.string()).nullish(),
+    fileUrl: z.string().nullish(),
   });
 };
 export const FileNameSchema = (
@@ -839,7 +840,7 @@ export const FileCopySchema = (
   t: (arg: string, obj?: Record<string, any>) => string
 ) => {
   return z.object({
-    name: stringSchema(t, "name", { min: 1, max: 265 }),
+    name: z.string(),
     url: z.string().url(t("url.invalid")),
     ownerId: z.string(),
     isPublic: z.boolean().optional(),

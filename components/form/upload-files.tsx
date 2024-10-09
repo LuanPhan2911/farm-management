@@ -66,6 +66,8 @@ export const UploadFiles = ({
           })
           .filter((item) => item != null);
         onUploadCompleted(uploadedFiles);
+        setUploading(false);
+        toast.success("Files uploaded");
         setFiles((prev) => {
           return prev.map((item) =>
             Object.assign(item, {
@@ -73,20 +75,16 @@ export const UploadFiles = ({
             })
           );
         });
-        setUploading(false);
-        toast.success("Files uploaded");
       },
       onUploadError: () => {
         setUploading(false);
         toast.error("Fail upload files");
       },
-      onUploadBegin: (file: string) => {
-        setUploading(true);
-      },
     }
   );
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
+      setUploading(true);
       setFiles(
         acceptedFiles.map((file) =>
           Object.assign(file, {
@@ -100,7 +98,7 @@ export const UploadFiles = ({
         startUpload(acceptedFiles, input || {});
       }
     },
-    [input, startUpload, mode]
+    [input, startUpload, mode, setUploading]
   );
 
   useEffect(() => {

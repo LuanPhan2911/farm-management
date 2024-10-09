@@ -1,25 +1,21 @@
 import { ErrorButton } from "@/components/buttons/error-button";
-import { SelectItemContent } from "@/components/form/select-item";
 import {
-  Select,
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-  SelectItem,
-} from "@/components/ui/select";
+  ComboBoxCustom,
+  ComboBoxCustomAppearance,
+} from "@/components/form/combo-box";
+import { SelectItemContent } from "@/components/form/select-item";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PlantSelect } from "@/types";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 
 interface PlantsSelectProps {
-  onChange: (value: string) => void;
+  onChange: (value: string | undefined) => void;
   defaultValue?: string;
   disabled?: boolean;
   label: string;
   notFound: string;
   errorLabel: string;
-  className?: string;
+  appearance?: ComboBoxCustomAppearance;
 }
 export const PlantsSelect = ({
   defaultValue,
@@ -28,8 +24,8 @@ export const PlantsSelect = ({
   notFound,
   onChange,
   disabled,
+  appearance,
 }: PlantsSelectProps) => {
-  const [key, setKey] = useState(+new Date());
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["plants"],
     queryFn: async () => {
@@ -37,11 +33,6 @@ export const PlantsSelect = ({
       return (await res.json()) as PlantSelect[];
     },
   });
-  useEffect(() => {
-    if (!defaultValue) {
-      setKey(+new Date());
-    }
-  }, [defaultValue]);
   if (isPending) {
     return <Skeleton className="w-full h-12"></Skeleton>;
   }
@@ -50,25 +41,19 @@ export const PlantsSelect = ({
   }
 
   return (
-    <Select
-      onValueChange={onChange}
-      value={defaultValue}
+    <ComboBoxCustom
+      label={label}
+      notFound={notFound}
+      onChange={onChange}
+      defaultValue={defaultValue}
       disabled={disabled}
-      key={key}
-    >
-      <SelectTrigger>
-        <SelectValue placeholder={label} />
-      </SelectTrigger>
-
-      <SelectContent>
-        {data.map(({ id, imageUrl, name }) => {
-          return (
-            <SelectItem key={id} value={id}>
-              <SelectItemContent imageUrl={imageUrl} title={name} />
-            </SelectItem>
-          );
-        })}
-      </SelectContent>
-    </Select>
+      options={data}
+      appearance={appearance}
+      valueKey="id"
+      labelKey="name"
+      renderItem={(item) => (
+        <SelectItemContent imageUrl={item.imageUrl} title={item.name} />
+      )}
+    />
   );
 };

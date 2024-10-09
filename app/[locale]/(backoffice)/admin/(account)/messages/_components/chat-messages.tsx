@@ -32,8 +32,8 @@ interface ChatMessagesProps {
   chatId: string;
   currentStaff: Staff;
   apiUrl: string;
-  paramKey: ChatParamKey;
-  paramValue: string;
+  paramKey?: ChatParamKey;
+  paramValue?: string;
   socketUrl: string;
   socketQuery: Record<string, any>;
 }

@@ -70,7 +70,7 @@ export const updateMessageDeleted = async (id: string) => {
 };
 type MessageQuery = {
   cursor?: string | null;
-  orgId: string;
+  orgId: string | null;
 };
 export const getMessagesByOrg = async ({
   orgId,

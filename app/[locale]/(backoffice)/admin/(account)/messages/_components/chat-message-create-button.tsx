@@ -128,7 +128,7 @@ export const ChatMessageCreateForm = ({
                       />
                     </>
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="absolute -bottom-5" />
                 </FormItem>
               );
             }}

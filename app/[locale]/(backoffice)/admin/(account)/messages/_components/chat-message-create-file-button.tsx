@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { MessageSchema } from "@/schemas";
-import { ActionResponse, FileSelect } from "@/types";
+import { ActionResponse } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Cloud, FilePlus, Send } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -31,8 +31,6 @@ import {
 import { InputUploadFile, UploadFiles } from "@/components/form/upload-files";
 import { useState } from "react";
 import { FilesSelect } from "../../../_components/files-select";
-import { copy } from "@/actions/file";
-import { File } from "@prisma/client";
 interface ChatMessageCreateFileProps {
   socketUrl: string;
   socketQuery: Record<string, any>;
@@ -54,6 +52,8 @@ export const ChatMessageCreateFileFromComputer = ({
       fileIds: [],
     },
   });
+
+  const [isOpen, setOpen] = useState(false);
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const url = queryString.stringifyUrl({
       url: socketUrl,
@@ -70,6 +70,7 @@ export const ChatMessageCreateFileFromComputer = ({
       if (data.ok) {
         form.reset();
         toast.success(data.message);
+        setOpen(false);
       } else {
         toast.error(data.message);
       }
@@ -86,7 +87,7 @@ export const ChatMessageCreateFileFromComputer = ({
   };
   const isPending = form.formState.isSubmitting || isUploading;
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
           variant={"outline"}
@@ -183,50 +184,31 @@ export const ChatMessageCreateFileFromCLoud = ({
 
   const tSchema = useTranslations("messages.schema");
   const formSchema = MessageSchema();
+  const [isOpen, setOpen] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       content: "",
+      fileUrl: undefined,
     },
   });
-  const [selectedFile, setSelectedFile] = useState<FileSelect | undefined>(
-    undefined
-  );
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const url = queryString.stringifyUrl({
       url: socketUrl,
       query: socketQuery,
     });
-    let copiedFile = undefined;
-
-    if (selectedFile) {
-      const { name, url, ownerId } = selectedFile;
-
-      const { ok, data } = await copy({
-        name,
-        ownerId,
-        url,
-        ...fileQuery,
-      });
-      if (ok) {
-        copiedFile = data as File;
-      }
-    }
 
     try {
       const res = await fetch(url, {
         method: "POST",
-        body: JSON.stringify({
-          ...values,
-          fileIds: copiedFile ? [copiedFile.id] : [],
-        }),
+        body: JSON.stringify(values),
       });
-
       const data = (await res.json()) as ActionResponse;
       if (data.ok) {
         form.reset();
-        setSelectedFile(undefined);
         toast.success(data.message);
+        setOpen(false);
       } else {
         toast.error(data.message);
       }
@@ -244,7 +226,7 @@ export const ChatMessageCreateFileFromCLoud = ({
   const isPending = form.formState.isSubmitting;
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant={"blue"} size={"sm"} className="w-full justify-start">
           <Cloud className="h-4 w-4 mr-2" />
@@ -258,18 +240,26 @@ export const ChatMessageCreateFileFromCLoud = ({
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <FormItem>
-              <FormControl>
-                <FilesSelect
-                  errorLabel={tSchema("fileUrl.error")}
-                  placeholder={tSchema("fileUrl.placeholder")}
-                  notFound={tSchema("fileUrl.notFound")}
-                  onChange={(value) => setSelectedFile(value)}
-                  disabled={isPending}
-                  defaultValue={selectedFile?.url}
-                />
-              </FormControl>
-            </FormItem>
+            <FormField
+              control={form.control}
+              name="fileUrl"
+              render={({ field }) => {
+                return (
+                  <FormItem>
+                    <FormControl>
+                      <FilesSelect
+                        errorLabel={tSchema("fileUrl.error")}
+                        placeholder={tSchema("fileUrl.placeholder")}
+                        notFound={tSchema("fileUrl.notFound")}
+                        onChange={field.onChange}
+                        disabled={isPending}
+                        defaultValue={field.value || undefined}
+                      />
+                    </FormControl>
+                  </FormItem>
+                );
+              }}
+            />
             <FormField
               control={form.control}
               name="content"
