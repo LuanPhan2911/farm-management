@@ -137,10 +137,13 @@ export function getObjectSortOrder(input: string): Record<string, any> {
   return nestedObject;
 }
 export function getPostfixSortOrder(
-  input: string,
+  input: string | undefined,
   defaultValue: "asc" | "desc" = "asc"
 ) {
   // Split the input by the underscore
+  if (!input) {
+    return defaultValue;
+  }
   const parts = input.split("_");
 
   // If the format isn't correct, return an empty array
@@ -281,7 +284,10 @@ export function getPostfixValueFilterNumber(
   // Return undefined if the key is not found
   return undefined;
 }
-export const getArrayFilterNumber = (input: string) => {
+export const getArrayFilterNumber = (input: string | undefined) => {
+  if (!input) {
+    return [];
+  }
   return input
     .split(",")
     .map((value) => value.trim())
@@ -331,6 +337,13 @@ export function parseToNumber(
   }
 
   return parsedNumber;
+}
+export function parseToBoolean(value: string) {
+  if (value === JSON.stringify(true)) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 export function isActive(pathname: string, currentPath: string) {
@@ -470,4 +483,25 @@ export function generateCronExplanation(
     // If the cron string is invalid, return an error message
     return "Invalid cron format";
   }
+}
+export function isImage(type: string): boolean {
+  const imageMimeTypes = [
+    "image",
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+    "image/bmp",
+    "image/webp",
+    "image/svg+xml",
+    "image/tiff",
+    "image/x-icon",
+    "image/heif",
+    "image/heic",
+  ];
+
+  return imageMimeTypes.includes(type);
+}
+
+export function dateToString(date: Date | undefined): string | undefined {
+  return date ? `${format(date, "yyy-MM-dd")}` : undefined;
 }

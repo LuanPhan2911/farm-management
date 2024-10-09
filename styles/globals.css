@@ -117,3 +117,6 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+.pre-wrap {
+  white-space: pre-wrap;
+}

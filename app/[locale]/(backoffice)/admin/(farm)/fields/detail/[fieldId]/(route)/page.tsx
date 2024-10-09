@@ -22,7 +22,7 @@ export const generateStaticParams = async () => {
   });
 };
 const FieldDetailPage = async ({ params }: FieldDetailPageProps) => {
-  const field = await getFieldById(params.fieldId);
+  const field = await getFieldById(params!.fieldId);
 
   if (!field) {
     notFound();

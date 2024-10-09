@@ -4,7 +4,6 @@ import { ErrorButton } from "@/components/buttons/error-button";
 import { LargeCard } from "@/components/cards/large-card";
 import { DatePickerInRange } from "@/components/form/date-picker-in-range";
 import { Hint } from "@/components/hint";
-import { QueryProvider } from "@/components/providers/query-provider";
 import { Button } from "@/components/ui/button";
 import {
   ChartConfig,
@@ -60,7 +59,7 @@ export const WeathersBarChart = ({}: WeathersBarChartProps) => {
         </Hint>
       </div>
       {isShown ? (
-        <WeathersBarChartContentWithQueryClient dateRange={dateRange} />
+        <WeathersBarChartContent dateRange={dateRange} />
       ) : (
         <LargeCard
           title={t("hidden.title")}
@@ -87,7 +86,7 @@ const WeathersBarChartContent = ({
       const { from: begin, to: end } = dateRange;
       const url = queryString.stringifyUrl(
         {
-          url: `/api/fields/${params.fieldId}/weathers/chart`,
+          url: `/api/fields/${params!.fieldId}/weathers/chart`,
           query: {
             begin: begin?.toISOString(),
             end: end?.toISOString(),
@@ -180,14 +179,5 @@ const WeathersBarChartContent = ({
         <Bar dataKey="rainfall" fill="var(--color-rainfall)" radius={4} />
       </BarChart>
     </ChartContainer>
-  );
-};
-export const WeathersBarChartContentWithQueryClient = (
-  props: WeathersBarChartContentProps
-) => {
-  return (
-    <QueryProvider>
-      <WeathersBarChartContent {...props} />
-    </QueryProvider>
   );
 };

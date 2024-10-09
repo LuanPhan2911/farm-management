@@ -21,7 +21,7 @@ export async function generateMetadata() {
 }
 
 const StaffsPage = async ({ searchParams }: StaffsPageProps) => {
-  const page = parseToNumber(searchParams.page, 1);
+  const page = parseToNumber(searchParams!.page, 1);
   const t = await getTranslations("staffs.page");
   const { orderBy, query } = searchParams;
   const { data: staffs, totalPage } = await getStaffsTable({

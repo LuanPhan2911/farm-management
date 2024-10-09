@@ -27,7 +27,7 @@ export const OrgMemberRoleEditButton = ({
       return;
     }
     setPending(true);
-    editMemberRole(userId, params.orgId, role)
+    editMemberRole(userId, params!.orgId, role)
       .then(({ message, ok }) => {
         if (ok) {
           onClose();

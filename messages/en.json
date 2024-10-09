@@ -826,7 +826,10 @@
     "page": {
       "title": "Manage Organizations",
       "detail": {
-        "title": "Organization detail"
+        "title": "Organization detail",
+        "files": {
+          "title": "Uploaded files"
+        }
       }
     },
     "tabs": {
@@ -838,9 +841,13 @@
         "title": "Member",
         "description": "Manage member organization"
       },
+      "messages": {
+        "title": "Message",
+        "description": "Chat with other members"
+      },
       "danger": {
-        "title": "Danger",
-        "description": "Danger area"
+        "title": "Danger zone",
+        "description": "Delete organization. This action cannot be undone!"
       }
     },
     "table": {
@@ -2438,7 +2445,7 @@
         "title": "Delete all selected tasks?",
         "description": "Are you absolutely sure? This action can not be undone!"
       },
-      "deleteUnusedUnit": {
+      "destroyUnusedUnit": {
         "label": "Delete unit task",
         "title": "Delete unused unit task",
         "description": "Delete all unit value which are unused"
@@ -2546,7 +2553,7 @@
         "title": "Delete schedule?",
         "description": "Are you absolutely sure? This action can not be undone!"
       },
-      "deleteUnusedUnit": {
+      "destroyUnusedUnit": {
         "label": "Delete unit schedule",
         "title": "Delete unused unit schedule",
         "description": "Delete all unit value which are unused"
@@ -2610,6 +2617,160 @@
       }
     }
   },
+  "messages": {
+    "page": {
+      "title": "Chat all",
+      "files": {
+        "title": "Uploaded files"
+      }
+    },
+    "schema": {
+      "content": {
+        "label": "Message",
+        "placeholder": "Enter new message...",
+        "required_error": "Message is required",
+        "min": "Min message length is {min} character",
+        "max": "Max message length is {max} character",
+        "keyDown": "Press escape to cancel, enter to save"
+      },
+      "fileUrl": {
+        "error": "Fail load files",
+        "notFound": "File not found",
+        "placeholder": "Select file..."
+      }
+    },
+    "fetch": {
+      "notFound": "Loading message ...",
+      "error": "Fail load message!",
+      "welcome": "Enter new message to start chat with other member!",
+      "loadPrevious": "Load previous message"
+    },
+    "form": {
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete message",
+        "description": "Delete this message"
+      },
+      "createFiles": {
+        "label": "Upload files",
+        "title": "Upload files",
+        "description": "Any other members in organizations read uploaded file",
+        "fileFromComputer": "Upload from this computer",
+        "fileFromCloud": "Upload from cloud"
+      }
+    },
+    "status": {
+      "success": {
+        "destroy": "Message deleted"
+      },
+      "failure": {
+        "destroy": "Something went wrong while deleting message!"
+      }
+    },
+    "notFound": {
+      "title": "Unauthenticated",
+      "description": "Current staff not found",
+      "backLabel": "Go to dashboard"
+    }
+  },
+  "files": {
+    "page": {
+      "my-files": {
+        "title": "My files"
+      },
+      "public-files": {
+        "title": "Public files",
+        "description": "Public storage of organization"
+      },
+      "my-trash": {
+        "title": "My trash",
+        "description": "After 30 days, files will be automatically removed"
+      }
+    },
+    "table": {
+      "thead": {
+        "url": "File",
+        "name": "Name",
+        "type": "Type",
+        "owner": "Owner",
+        "createdAt": "Created at",
+        "deletedAt": "Deleted at",
+        "messageId": "Belong to"
+      }
+    },
+    "search": {
+      "placeholder": "Search file name..."
+    },
+    "form": {
+      "create": {
+        "label": "New files",
+        "title": "Add new files",
+        "description": "Add new files"
+      },
+      "copy": {
+        "label": "Make copy",
+        "title": "Make copy",
+        "description": "Make a new copy from file"
+      },
+      "restore": {
+        "label": "Restore",
+        "title": "Restore file",
+        "description": "After restored, file will be move to my files page"
+      },
+      "editDeleted": {
+        "label": "Move to trash",
+        "title": "Move to trash?",
+        "description": "File will be moved to owner file trash page!"
+      },
+      "editName": {
+        "label": "Edit name",
+        "title": "Edit file name",
+        "description": "Change a new name for file"
+      },
+      "download": {
+        "label": "Download"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete file",
+        "description": "This action cannot be undone. File will be deleted from server!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid file"
+      },
+      "name": {
+        "label": "File name",
+        "placeholder": "New file name",
+        "required_error": "File name is required!",
+        "min": "File name is required!",
+        "max": "Max file name length is {max} characters"
+      },
+      "url": {
+        "invalid": "Url is invalid"
+      }
+    },
+    "status": {
+      "success": {
+        "copy": "File copied",
+        "editName": "File name edited",
+        "editDeleted": "File moved",
+        "destroy": "File deleted!"
+      },
+      "failure": {
+        "copy": "Something went wrong while copying file",
+        "editName": "Something went wrong while editing file",
+        "editDeleted": "Something went wrong while moving file",
+        "destroy": "Something went wrong while deleting file!"
+      }
+    },
+    "notFound": {
+      "title": "Unauthenticated",
+      "description": "Current staff not found",
+      "backLabel": "Go to dashboard"
+    }
+  },
   "errors": {
     "error": "Something went wrong!"
   },
@@ -2629,6 +2790,7 @@
     "/admin/staffs/detail": "Detail",
     "/admin/organizations": "Organization",
     "/admin/organizations/detail": "Detail",
+    "/admin/organizations/detail/files": "Uploaded files",
     "/admin/fields": "Field",
     "/admin/fields/create": "Create",
     "/admin/fields/detail": "Detail",
@@ -2646,6 +2808,11 @@
     "/admin/equipments/create": "Create",
     "/admin/equipments/edit": "Edit",
     "/admin/tasks": "Tasks",
-    "/admin/schedules": "Schedules"
+    "/admin/schedules": "Schedules",
+    "/admin/messages": "All messages",
+    "/admin/messages/files": "Uploaded files",
+    "/admin/my-files": "My files",
+    "/admin/public-files": "Public files",
+    "/admin/my-trash": "My trash"
   }
 }

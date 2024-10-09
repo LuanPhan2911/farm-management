@@ -14,10 +14,10 @@ export const GET = async (
   }
 ) => {
   try {
-    const fieldId = params.fieldId;
+    const fieldId = params!.fieldId;
     const searchParams = req.nextUrl.searchParams;
-    const begin = parseToDate(searchParams.get("begin"));
-    const end = parseToDate(searchParams.get("end"));
+    const begin = parseToDate(searchParams!.get("begin"));
+    const end = parseToDate(searchParams!.get("end"));
     const soils = await getSoilsForChart({
       fieldId,
       begin,

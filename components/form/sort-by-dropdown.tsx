@@ -30,26 +30,26 @@ export const SortByDropdown = ({
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const [value, setValue] = useState(() => {
-    return defaultValue || searchParams.get("orderBy");
+    return defaultValue || searchParams!.get("orderBy");
   });
 
   const handleSort = (option: SortByOption) => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams!);
     const isDesc = value === option.value;
     if (isDesc) {
       setValue(`-${option.value}`);
-      params.set("orderBy", `-${option.value}`);
+      params!.set("orderBy", `-${option.value}`);
     } else {
       setValue(option.value);
-      params.set("orderBy", option.value);
+      params!.set("orderBy", option.value);
     }
 
-    router.replace(`${pathname}?${params.toString()}`);
+    router.replace(`${pathname}?${params!.toString()}`);
   };
   const option = options.find(
     (item) => item.value === value || `-${item.value}` === value
   );
-  const isDesc = searchParams.get("orderBy")?.[0] === "-";
+  const isDesc = searchParams!.get("orderBy")?.[0] === "-";
 
   return (
     <DropdownMenu>

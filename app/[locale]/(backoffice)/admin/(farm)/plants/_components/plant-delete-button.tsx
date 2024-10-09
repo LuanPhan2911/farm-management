@@ -19,7 +19,7 @@ export const PlantDeleteButton = () => {
   }>();
   const onConfirm = async () => {
     setPending(true);
-    destroy(params.plantId)
+    destroy(params!.plantId)
       .then(({ message, ok }) => {
         if (ok) {
           onClose();

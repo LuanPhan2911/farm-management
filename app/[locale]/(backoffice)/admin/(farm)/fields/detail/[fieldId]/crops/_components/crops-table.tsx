@@ -18,11 +18,8 @@ import { CropsTableAction } from "./crops-table-action";
 import { OrderByButton } from "@/components/buttons/order-by-button";
 import { DatePickerWithRangeButton } from "@/components/buttons/date-picker-range-button";
 import { SearchBar } from "@/components/search-bar";
-import { useSearchParams } from "next/navigation";
-import { parseToDate } from "@/lib/utils";
-import { PlantsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/plants-select";
+import { PlantsSelect } from "@/app/[locale]/(backoffice)/admin/_components/plants-select";
 import { useUpdateSearchParam } from "@/hooks/use-update-search-param";
-import { Button } from "@/components/ui/button";
 import { useDialog } from "@/stores/use-dialog";
 
 interface CropsTableProps {
@@ -32,37 +29,31 @@ interface CropsTableProps {
 export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
   const t = useTranslations("crops");
   const { dateTime } = useFormatter();
-  const searchParams = useSearchParams();
-  const { updateSearchParam } = useUpdateSearchParam("plantId");
+  const { updateSearchParam, initialParam: plantId } =
+    useUpdateSearchParam("plantId");
   const { onOpen } = useDialog();
   const handleEdit = (row: CropTable) => {
     onOpen("crop.edit", {
       crop: row,
     });
   };
-  const startDate = parseToDate(searchParams.get("begin"));
-  const endDate = parseToDate(searchParams.get("end"));
-  const plantId = searchParams.get("plantId") || undefined;
 
   return (
     <>
-      <div className="py-4 flex gap-2 lg:flex-row flex-col items-start lg:items-center">
+      <div className="py-4 flex gap-2 lg:flex-row flex-col items-start lg:items-center ">
         <SearchBar isPagination placeholder={t("search.placeholder")} />
-        <DatePickerWithRangeButton from={startDate} to={endDate} />
-        <div className="lg:w-[300px] w-full flex gap-x-2 items-center">
-          <PlantsSelectWithQueryClient
-            errorLabel={t("schema.plantId.error")}
-            label={t("schema.plantId.placeholder")}
-            notFound={t("schema.plantId.notFound")}
-            onChange={updateSearchParam}
-            defaultValue={plantId}
-          />
-          {!!plantId && (
-            <Button size={"sm"} onClick={() => updateSearchParam(undefined)}>
-              Clear
-            </Button>
-          )}
-        </div>
+        <DatePickerWithRangeButton />
+        <PlantsSelect
+          errorLabel={t("schema.plantId.error")}
+          label={t("schema.plantId.placeholder")}
+          notFound={t("schema.plantId.notFound")}
+          onChange={updateSearchParam}
+          appearance={{
+            button: "lg:w-[250px] w-full",
+            content: "lg:w-[250px]",
+          }}
+          defaultValue={plantId}
+        />
       </div>
 
       <Table>

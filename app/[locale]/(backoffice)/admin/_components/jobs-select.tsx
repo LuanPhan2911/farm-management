@@ -1,38 +1,27 @@
 "use client";
 
 import { ErrorButton } from "@/components/buttons/error-button";
-import { ComboBox, ComboBoxData } from "@/components/form/combobox";
-import { QueryProvider } from "@/components/providers/query-provider";
+import { ComboBoxDefault, ComboBoxData } from "@/components/form/combo-box";
 import { Skeleton } from "@/components/ui/skeleton";
-import { usePathname, useRouter } from "@/navigation";
+import { useUpdateSearchParam } from "@/hooks/use-update-search-param";
 import { JobSelect } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
 
-interface JobsSelectProps {}
-const JobsSelect = ({}: JobsSelectProps) => {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const router = useRouter();
+interface JobsSelectProps {
+  defaultValue?: string;
+}
+export const JobsSelect = ({ defaultValue }: JobsSelectProps) => {
   const t = useTranslations("applicants.search.comboBox.job");
   const { data, isPending, isError, refetch } = useQuery({
-    queryKey: ["jobs"],
+    queryKey: ["jobs_select"],
     queryFn: async () => {
       const res = await fetch("/api/jobs/select");
       return (await res.json()) as JobSelect[];
     },
   });
-  const handleChange = (value: string) => {
-    const params = new URLSearchParams(searchParams);
-    if (!value) {
-      params.delete("jobId");
-    } else {
-      params.set("jobId", value);
-    }
+  const { updateSearchParam } = useUpdateSearchParam("jobId");
 
-    router.replace(`${pathname}?${params.toString()}`);
-  };
   if (isPending) {
     return <Skeleton className="h-10 w-60" />;
   }
@@ -45,23 +34,14 @@ const JobsSelect = ({}: JobsSelectProps) => {
       value: item.id,
     };
   });
-  const selectedOption = searchParams.get("jobId") || undefined;
+
   return (
-    <ComboBox
+    <ComboBoxDefault
       options={options}
       notFound={t("notFound")}
       label={t("label")}
-      onChange={handleChange}
-      isSearch={false}
-      defaultValue={selectedOption}
+      onChange={updateSearchParam}
+      defaultValue={defaultValue}
     />
-  );
-};
-
-export const JobSelectWithQueryClient = (props: JobsSelectProps) => {
-  return (
-    <QueryProvider>
-      <JobsSelect {...props} />
-    </QueryProvider>
   );
 };

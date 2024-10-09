@@ -46,8 +46,6 @@ export const edit = async (
     return errorResponse(tSchema("errors.parse"));
   }
   try {
-    console.log(JSON.stringify(validatedFields.data));
-
     await updateTask(id, JSON.stringify(validatedFields.data));
     revalidateTag("tasks");
     return successResponse(tStatus("success.edit"));

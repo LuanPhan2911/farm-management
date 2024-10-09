@@ -1,7 +1,6 @@
 "use client";
 
 import { ErrorButton } from "@/components/buttons/error-button";
-import { QueryProvider } from "@/components/providers/query-provider";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { CategorySelect } from "@/types";
@@ -20,7 +19,7 @@ interface CategoriesSelectProps {
   errorLabel: string;
   notFound: string;
 }
-const CategoriesSelect = ({
+export const CategoriesSelect = ({
   defaultValue,
   type,
   onChange,
@@ -82,14 +81,5 @@ const CategoriesSelect = ({
         return notFound;
       }}
     />
-  );
-};
-export const CategoriesSelectWithQueryClient = (
-  props: CategoriesSelectProps
-) => {
-  return (
-    <QueryProvider>
-      <CategoriesSelect {...props} />
-    </QueryProvider>
   );
 };

@@ -12,6 +12,7 @@ import { MoreHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { ScheduleResponse } from "@/types";
 import { ScheduleDeleteButton } from "./schedule-delete-button";
+import { ScheduleEditButton } from "./schedule-edit-button";
 interface SchedulesTableActionProps {
   data: ScheduleResponse;
 }
@@ -25,6 +26,9 @@ export const SchedulesTableAction = ({ data }: SchedulesTableActionProps) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-fit">
+        <DropdownMenuItem>
+          <ScheduleEditButton data={data} label={t("edit.label")} />
+        </DropdownMenuItem>
         <DropdownMenuItem>
           <ScheduleDeleteButton data={data} label={t("destroy.label")} />
         </DropdownMenuItem>

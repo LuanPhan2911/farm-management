@@ -7,7 +7,7 @@ export const WeathersExportButton = () => {
   const params = useParams<{
     fieldId: string;
   }>();
-  const apiEndpoint = `/api/fields/${params.fieldId}/weathers`;
+  const apiEndpoint = `/api/fields/${params!.fieldId}/weathers`;
   return (
     <DownloadButton
       apiEndpoint={apiEndpoint}

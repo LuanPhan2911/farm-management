@@ -17,7 +17,7 @@ export const PlantNavigationMenu = () => {
   }>();
   const pathname = usePathname();
   const t = useTranslations("plants.tabs");
-  const getHref = `/admin/plants/detail/${params.plantId}`;
+  const getHref = `/admin/plants/detail/${params!.plantId}`;
   const menu = [
     {
       href: `${getHref}`,

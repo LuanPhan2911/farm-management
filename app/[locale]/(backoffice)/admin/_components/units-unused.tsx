@@ -1,7 +1,6 @@
 "use client";
 
 import { ErrorButton } from "@/components/buttons/error-button";
-import { QueryProvider } from "@/components/providers/query-provider";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { UnusedUnitCount } from "@/types";
@@ -9,7 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 
 interface UnitsUnusedProps {}
-const UnitsUnused = ({}: UnitsUnusedProps) => {
+export const UnitsUnused = ({}: UnitsUnusedProps) => {
   const t = useTranslations("units.unused");
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["unused_units"],
@@ -34,13 +33,5 @@ const UnitsUnused = ({}: UnitsUnusedProps) => {
         {t("fields.intUnit")}: {data.intUnit}
       </Button>
     </div>
-  );
-};
-
-export const UnitsUnusedWithQueryClient = (props: UnitsUnusedProps) => {
-  return (
-    <QueryProvider>
-      <UnitsUnused {...props} />
-    </QueryProvider>
   );
 };

@@ -16,7 +16,8 @@ import { OrgMemberRoleEditButton } from "./org-member-role-edit-button";
 import { OrgRole } from "@/types";
 import { useFormatter, useTranslations } from "next-intl";
 import { OrganizationMembership } from "@clerk/nextjs/server";
-import { OrgMemberTableSortBy } from "./org-member-table-sort-by";
+import { useRouter } from "@/navigation";
+
 interface OrgMemberTableProps {
   data: OrganizationMembership[];
   totalPage: number;
@@ -24,6 +25,10 @@ interface OrgMemberTableProps {
 export const OrgMemberTable = ({ data, totalPage }: OrgMemberTableProps) => {
   const t = useTranslations("organizations");
   const { relativeTime } = useFormatter();
+  const router = useRouter();
+  const handleEdit = (row: OrganizationMembership) => {
+    router.push(`/admin/staffs/detail/${row.publicUserData?.userId}`);
+  };
   return (
     <>
       <div className="flex justify-end">
@@ -31,9 +36,7 @@ export const OrgMemberTable = ({ data, totalPage }: OrgMemberTableProps) => {
       </div>
       <div className="py-4 flex gap-2 lg:flex-row flex-col items-start lg:items-center">
         <SearchBar placeholder={t("search.placeholder")} isPagination />
-        {/* <OrgMemberTableSortBy /> */}
       </div>
-
       <Table>
         <TableHeader>
           <TableRow>
@@ -47,9 +50,14 @@ export const OrgMemberTable = ({ data, totalPage }: OrgMemberTableProps) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.map(({ publicUserData, role, createdAt }) => {
+          {data.map((item) => {
+            const { publicUserData, role, createdAt } = item;
             return (
-              <TableRow key={publicUserData?.userId} className="cursor-pointer">
+              <TableRow
+                key={publicUserData?.userId}
+                className="cursor-pointer"
+                onClick={() => handleEdit(item)}
+              >
                 <TableCell>
                   <UserAvatar
                     src={publicUserData?.imageUrl || undefined}

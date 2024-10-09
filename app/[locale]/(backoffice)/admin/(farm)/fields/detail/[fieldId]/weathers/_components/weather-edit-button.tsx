@@ -25,7 +25,7 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { SelectOptions } from "@/components/form/select-options";
 import { WeatherTable } from "@/types";
-import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
+import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { edit } from "@/actions/weather";
 import { convertNullToUndefined } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
@@ -163,7 +163,7 @@ export const WeatherEditDialog = () => {
                   <FormItem>
                     <FormLabel>{tSchema("temperature.unitId.label")}</FormLabel>
                     <FormControl>
-                      <UnitsSelectWithQueryClient
+                      <UnitsSelect
                         onChange={field.onChange}
                         placeholder={tSchema("temperature.unitId.placeholder")}
                         unitType={UnitType.TEMPERATURE}
@@ -209,7 +209,7 @@ export const WeatherEditDialog = () => {
                   <FormItem>
                     <FormLabel>{tSchema("humidity.unitId.label")}</FormLabel>
                     <FormControl>
-                      <UnitsSelectWithQueryClient
+                      <UnitsSelect
                         onChange={field.onChange}
                         placeholder={tSchema("humidity.unitId.placeholder")}
                         unitType={UnitType.PERCENT}
@@ -263,7 +263,7 @@ export const WeatherEditDialog = () => {
                       {tSchema("atmosphericPressure.unitId.label")}
                     </FormLabel>
                     <FormControl>
-                      <UnitsSelectWithQueryClient
+                      <UnitsSelect
                         onChange={field.onChange}
                         placeholder={tSchema(
                           "atmosphericPressure.unitId.placeholder"
@@ -313,7 +313,7 @@ export const WeatherEditDialog = () => {
                   <FormItem>
                     <FormLabel>{tSchema("rainfall.unitId.label")}</FormLabel>
                     <FormControl>
-                      <UnitsSelectWithQueryClient
+                      <UnitsSelect
                         onChange={field.onChange}
                         placeholder={tSchema("rainfall.unitId.placeholder")}
                         unitType={UnitType.RAINFALL}

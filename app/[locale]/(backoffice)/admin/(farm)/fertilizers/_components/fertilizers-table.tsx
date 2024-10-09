@@ -30,7 +30,7 @@ export const FertilizersTable = ({
   totalPage,
 }: FertilizersTableProps) => {
   const searchParams = useSearchParams();
-  const query = searchParams.get("query");
+  const query = searchParams!.get("query");
   const { onOpen } = useDialog();
   const handleEdit = (row: FertilizerTable) => {
     onOpen("fertilizer.edit", {

@@ -19,7 +19,7 @@ export const FieldDeleteButton = () => {
   }>();
   const onConfirm = async () => {
     setPending(true);
-    destroy(params.fieldId)
+    destroy(params!.fieldId)
       .then(({ message, ok }) => {
         if (ok) {
           onClose();

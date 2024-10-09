@@ -1,19 +1,33 @@
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { StaffRole } from "@prisma/client";
 
 interface StaffMetadataRoleProps {
   metadata: UserPublicMetadata;
+  isShort?: boolean;
 }
-export const StaffMetadataRole = ({ metadata }: StaffMetadataRoleProps) => {
-  const role = metadata?.role;
+export const StaffMetadataRole = ({
+  metadata,
+  isShort,
+}: StaffMetadataRoleProps) => {
+  const role = metadata?.role as StaffRole;
+  const data = {
+    [StaffRole.superadmin]: (
+      <Badge variant={"cyanToBlue"}>
+        {isShort ? StaffRole.superadmin[0] : StaffRole.superadmin}
+      </Badge>
+    ),
+    [StaffRole.admin]: (
+      <Badge variant={"success"}>
+        {isShort ? StaffRole.admin[0] : StaffRole.admin}
+      </Badge>
+    ),
+    [StaffRole.farmer]: (
+      <Badge variant={"default"}>
+        {isShort ? StaffRole.farmer[0] : StaffRole.farmer}
+      </Badge>
+    ),
+  };
 
-  if (role === "superadmin") {
-    return <Badge variant={"cyanToBlue"}>Superadmin</Badge>;
-  }
-  if (role === "admin") {
-    return <Badge variant={"success"}>Admin</Badge>;
-  }
-  if (role === "farmer") {
-    return <Badge variant={"info"}>Farmer</Badge>;
-  }
-  return <Badge variant={"default"}>Null</Badge>;
+  return data[role];
 };

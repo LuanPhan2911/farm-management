@@ -12,17 +12,15 @@ export const OrgMemberViewProfileButton = ({
   label,
 }: OrgMemberViewProfileButtonProps) => {
   const router = useRouter();
-  const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
 
-    router.push(`/admin/staffs/detail/${data.userId}`);
-  };
   return (
     <Button
       variant={"edit"}
       size={"sm"}
-      onClick={handleClick}
+      onClick={(e) => {
+        e.stopPropagation();
+        router.push(`/admin/staffs/detail/${data.userId}`);
+      }}
       className="w-full"
     >
       {label}

@@ -19,9 +19,9 @@ interface OrgMemberProps {
   totalPage: number;
 }
 export const OrgMember = ({ data, totalPage }: OrgMemberProps) => {
-  const t = useTranslations("organizations");
+  const t = useTranslations("organizations.tabs");
   const searchParams = useSearchParams();
-  const query = searchParams.get("query");
+  const query = searchParams!.get("query");
   if (query) {
     data = data.filter((item) => {
       if (!item.publicUserData?.identifier) {
@@ -35,8 +35,8 @@ export const OrgMember = ({ data, totalPage }: OrgMemberProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("tabs.member.title")}</CardTitle>
-        <CardDescription>{t("tabs.member.description")}</CardDescription>
+        <CardTitle>{t("member.title")}</CardTitle>
+        <CardDescription>{t("member.description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <OrgMemberTable data={data} totalPage={totalPage} />

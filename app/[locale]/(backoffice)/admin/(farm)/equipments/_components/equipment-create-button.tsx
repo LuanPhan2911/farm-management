@@ -1,7 +1,7 @@
 "use client";
 
 import { create } from "@/actions/equipment";
-import { UnitsSelectWithQueryClient } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
+import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 import { DatePicker } from "@/components/form/date-picker";
 import { SelectOptions } from "@/components/form/select-options";
@@ -200,7 +200,7 @@ export const EquipmentCreateForm = () => {
               <FormItem>
                 <FormLabel>{tSchema("purchasePrice.unitId.label")}</FormLabel>
                 <FormControl>
-                  <UnitsSelectWithQueryClient
+                  <UnitsSelect
                     onChange={field.onChange}
                     placeholder={tSchema("purchasePrice.unitId.placeholder")}
                     unitType={UnitType.MONEY}

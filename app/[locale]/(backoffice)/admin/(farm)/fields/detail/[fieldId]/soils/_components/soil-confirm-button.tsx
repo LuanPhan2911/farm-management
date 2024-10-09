@@ -84,7 +84,7 @@ export const SoilsConfirmedAllButton = () => {
   }>();
   const onClick = () => {
     setPending(true);
-    editManyConfirmed(params.fieldId)
+    editManyConfirmed(params!.fieldId)
       .then(({ message, ok }) => {
         if (ok) {
           toast.success(message);

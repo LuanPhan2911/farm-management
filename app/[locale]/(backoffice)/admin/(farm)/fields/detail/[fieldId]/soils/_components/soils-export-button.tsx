@@ -7,7 +7,7 @@ export const SoilsExportButton = () => {
   const params = useParams<{
     fieldId: string;
   }>();
-  const apiEndpoint = `/api/fields/${params.fieldId}/soils`;
+  const apiEndpoint = `/api/fields/${params!.fieldId}/soils`;
   return (
     <DownloadButton
       apiEndpoint={apiEndpoint}

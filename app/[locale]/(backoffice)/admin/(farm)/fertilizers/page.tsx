@@ -22,7 +22,7 @@ export async function generateMetadata() {
 }
 
 const FertilizersPage = async ({ searchParams }: FertilizerPageProps) => {
-  const page = parseToNumber(searchParams.page, 1);
+  const page = parseToNumber(searchParams!.page, 1);
   const { orderBy, filterNumber, filterString } = searchParams;
   const t = await getTranslations("fertilizers.page");
   const { data, totalPage } = await getFertilizers({

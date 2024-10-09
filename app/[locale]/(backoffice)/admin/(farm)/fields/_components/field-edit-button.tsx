@@ -15,8 +15,8 @@ import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { OrgsSelectWithQueryClient } from "../../../_components/orgs-select";
-import { UnitsSelectWithQueryClient } from "../../../_components/units-select";
+import { OrgsSelect } from "../../../_components/orgs-select";
+import { UnitsSelect } from "../../../_components/units-select";
 import { toast } from "sonner";
 import { edit } from "@/actions/field";
 import { useParams } from "next/navigation";
@@ -47,7 +47,7 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
-      edit(values, params.fieldId)
+      edit(values, params!.fieldId)
         .then(({ message, ok }) => {
           if (ok) {
             toast.success(message);
@@ -113,7 +113,7 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
               <FormItem>
                 <FormLabel>{tSchema("orgId.label")}</FormLabel>
                 <FormControl>
-                  <OrgsSelectWithQueryClient
+                  <OrgsSelect
                     defaultValue={field.value}
                     onChange={field.onChange}
                     errorLabel={tSchema("orgId.error")}
@@ -134,7 +134,7 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
               <FormItem>
                 <FormLabel>{tSchema("unitId.label")}</FormLabel>
                 <FormControl>
-                  <UnitsSelectWithQueryClient
+                  <UnitsSelect
                     defaultValue={field.value}
                     unitType={UnitType.LENGTH}
                     onChange={field.onChange}

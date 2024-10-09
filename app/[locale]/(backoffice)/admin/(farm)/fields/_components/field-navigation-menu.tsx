@@ -17,7 +17,7 @@ export const FieldNavigationMenu = () => {
   }>();
   const pathname = usePathname();
   const t = useTranslations("fields.tabs");
-  const getHref = `/admin/fields/detail/${params.fieldId}`;
+  const getHref = `/admin/fields/detail/${params?.fieldId}`;
   const menu = [
     {
       href: `${getHref}`,

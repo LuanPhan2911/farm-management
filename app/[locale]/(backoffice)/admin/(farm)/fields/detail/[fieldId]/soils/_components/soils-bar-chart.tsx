@@ -4,7 +4,7 @@ import { ErrorButton } from "@/components/buttons/error-button";
 import { LargeCard } from "@/components/cards/large-card";
 import { DatePickerInRange } from "@/components/form/date-picker-in-range";
 import { Hint } from "@/components/hint";
-import { QueryProvider } from "@/components/providers/query-provider";
+
 import { Button } from "@/components/ui/button";
 import {
   ChartConfig,
@@ -61,7 +61,7 @@ export const SoilsBarChart = ({}: SoilsBarChartProps) => {
         </Hint>
       </div>
       {isShown ? (
-        <SoilsBarChartContentWithQueryClient dateRange={dateRange} />
+        <SoilsBarChartContent dateRange={dateRange} />
       ) : (
         <LargeCard
           title={t("hidden.title")}
@@ -86,7 +86,7 @@ const SoilsBarChartContent = ({ dateRange }: SoilsBarChartContentProps) => {
       const { from: begin, to: end } = dateRange;
       const url = queryString.stringifyUrl(
         {
-          url: `/api/fields/${params.fieldId}/soils/chart`,
+          url: `/api/fields/${params!.fieldId}/soils/chart`,
           query: {
             begin: begin?.toISOString(),
             end: end?.toISOString(),
@@ -203,14 +203,5 @@ const SoilsBarChartContent = ({ dateRange }: SoilsBarChartContentProps) => {
         />
       </BarChart>
     </ChartContainer>
-  );
-};
-export const SoilsBarChartContentWithQueryClient = (
-  props: SoilsBarChartContentProps
-) => {
-  return (
-    <QueryProvider>
-      <SoilsBarChartContent {...props} />
-    </QueryProvider>
   );
 };

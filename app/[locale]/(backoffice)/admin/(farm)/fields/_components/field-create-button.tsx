@@ -17,8 +17,8 @@ import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { OrgsSelectWithQueryClient } from "../../../_components/orgs-select";
-import { UnitsSelectWithQueryClient } from "../../../_components/units-select";
+import { OrgsSelect } from "../../../_components/orgs-select";
+import { UnitsSelect } from "../../../_components/units-select";
 import { Link, useRouter } from "@/navigation";
 import { toast } from "sonner";
 import { create } from "@/actions/field";
@@ -128,7 +128,7 @@ export const FieldCreateForm = () => {
                   <FormItem>
                     <FormLabel>{tSchema("orgId.label")}</FormLabel>
                     <FormControl>
-                      <OrgsSelectWithQueryClient
+                      <OrgsSelect
                         defaultValue={field.value}
                         onChange={field.onChange}
                         errorLabel={tSchema("orgId.error")}
@@ -149,7 +149,7 @@ export const FieldCreateForm = () => {
                   <FormItem>
                     <FormLabel>{tSchema("unitId.label")}</FormLabel>
                     <FormControl>
-                      <UnitsSelectWithQueryClient
+                      <UnitsSelect
                         defaultValue={field.value}
                         unitType={UnitType.LENGTH}
                         onChange={field.onChange}

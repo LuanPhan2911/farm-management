@@ -9,6 +9,7 @@ declare global {
       role?: StaffRole;
       address?: string;
       phone?: string;
+      isPublicFile?: boolean;
     };
   }
 }

@@ -30,7 +30,7 @@ export async function generateStaticParams() {
   }));
 }
 const JobEditPage = async ({ params }: JobEditPageProps) => {
-  const data = await getJobById(params.jobId);
+  const data = await getJobById(params!.jobId);
   const t = await getTranslations("jobs.form.edit");
   if (!data) {
     return notFound();

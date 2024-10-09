@@ -13,13 +13,7 @@ import {
   WeatherTable,
 } from "@/types";
 import { WeatherStatus } from "@prisma/client";
-import {
-  deleteManyFloatUnit,
-  deleteManyIntUnit,
-  UnitValue,
-  upsertFloatUnit,
-  upsertIntUnit,
-} from "./units";
+import { UnitValue, upsertFloatUnit, upsertIntUnit } from "./units";
 import { openai } from "@/lib/openai";
 
 type WeatherParams = {

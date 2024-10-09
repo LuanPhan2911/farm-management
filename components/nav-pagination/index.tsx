@@ -18,8 +18,8 @@ interface NavPaginationProps {
 const ITEMS_TO_DISPLAY = 5;
 export const NavPagination = ({ totalPage }: NavPaginationProps) => {
   const searchParams = useSearchParams();
-  const currentPage = searchParams.get("page")
-    ? Number(searchParams.get("page"))
+  const currentPage = searchParams!.get("page")
+    ? Number(searchParams!.get("page"))
     : 1;
   const router = useRouter();
   const pathname = usePathname();
@@ -28,19 +28,19 @@ export const NavPagination = ({ totalPage }: NavPaginationProps) => {
   const hasPrevious = currentPage > 1;
   const hasNext = currentPage < totalPage;
   const getPrevious = () => {
-    const params = new URLSearchParams(searchParams);
-    params.set("page", `${currentPage - 1}`);
-    router.replace(`${pathname}?${params.toString()}`);
+    const params = new URLSearchParams(searchParams!);
+    params!.set("page", `${currentPage - 1}`);
+    router.replace(`${pathname}?${params!.toString()}`);
   };
   const getNext = () => {
-    const params = new URLSearchParams(searchParams);
-    params.set("page", `${currentPage + 1}`);
-    router.replace(`${pathname}?${params.toString()}`);
+    const params = new URLSearchParams(searchParams!);
+    params!.set("page", `${currentPage + 1}`);
+    router.replace(`${pathname}?${params!.toString()}`);
   };
   const getPage = (page: number) => {
-    const params = new URLSearchParams(searchParams);
-    params.set("page", `${page}`);
-    router.replace(`${pathname}?${params.toString()}`);
+    const params = new URLSearchParams(searchParams!);
+    params!.set("page", `${page}`);
+    router.replace(`${pathname}?${params!.toString()}`);
   };
   if (totalPage <= 1) {
     return null;

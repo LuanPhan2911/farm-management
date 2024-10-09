@@ -8,7 +8,7 @@ export const GET = async (
   }
 ) => {
   try {
-    const orgId = params.orgId;
+    const orgId = params!.orgId;
 
     const data = await getOrganizationById(orgId);
     if (!data) {

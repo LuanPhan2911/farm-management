@@ -7,12 +7,14 @@ import {
   Fertilizer,
   FertilizerType,
   Field,
+  File,
   FloatUnit,
   Frequency,
   Gender,
   IntUnit,
   JobExperience,
   JobWorkingState,
+  Message,
   Pesticide,
   PesticideType,
   Plant,
@@ -24,8 +26,19 @@ import {
   Weather,
   WeatherStatus,
 } from "@prisma/client";
+import { Server as NetServer, Socket } from "net";
+import { NextApiResponse } from "next";
+import { Server as SocketIoServer } from "socket.io";
 
 export type OrgRole = "org:member" | "org:admin";
+
+export type NextApiResponseServerIo<T> = NextApiResponse<T> & {
+  socket: Socket & {
+    server: NetServer & {
+      io: SocketIoServer;
+    };
+  };
+};
 export type ActionResponse = {
   message: string;
   ok: boolean;
@@ -34,6 +47,10 @@ export type ActionResponse = {
 export type PaginatedResponse<T> = {
   data: T[];
   totalPage: number;
+};
+export type PaginatedWithCursorResponse<T> = {
+  items: T[];
+  nextCursor?: string | null | number;
 };
 export type Breadcrumb = {
   label: string;
@@ -344,4 +361,19 @@ export type ScheduleResponse = {
   paused: boolean;
   scheduled_for: string | null;
   created_at: string;
+};
+export type MessageWithStaff = Message & {
+  staff: Staff;
+  files: File[] | null;
+};
+export type FileWithOwner = File & {
+  owner: Staff;
+};
+export type FileSelect = {
+  name: string;
+  url: string;
+  ownerId: string;
+  isPublic: boolean;
+  orgId: string | null;
+  type: string;
 };
