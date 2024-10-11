@@ -19,8 +19,6 @@ export const useInfiniteScroll = ({
     if (!element || !hasNextPage || isFetchingNextPage) return;
 
     const handleScroll = () => {
-      console.log(handleScroll);
-
       if (element.scrollTop === 0) {
         fetchNextPage();
       }

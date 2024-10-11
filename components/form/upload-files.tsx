@@ -56,9 +56,9 @@ export const UploadFiles = ({
       ) => {
         const uploadedFiles = res
           .map((item) => {
-            const file = safeParseJSON(
+            const file = safeParseJSON<FilePrisma>(
               item.serverData.uploadedFile
-            ) as FilePrisma;
+            );
             if (!file) {
               return null;
             }

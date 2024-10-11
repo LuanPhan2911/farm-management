@@ -107,9 +107,7 @@ export const getPesticides = async ({
           ...(filterString && getObjectFilterString(filterString)),
           ...(filterNumber && getObjectFilterNumber(filterNumber)),
         },
-        orderBy: {
-          ...(orderBy && getObjectSortOrder(orderBy)),
-        },
+        orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
         take: LIMIT,
         skip: (page - 1) * LIMIT,
         include: {

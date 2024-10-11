@@ -130,9 +130,7 @@ export const getCropsOnField = async ({
             ...(filterNumber && getObjectFilterNumber(filterNumber)),
           }),
         },
-        orderBy: {
-          ...(orderBy && getObjectSortOrder(orderBy)),
-        },
+        orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
         take: LIMIT,
         skip: (page - 1) * LIMIT,
         include: {

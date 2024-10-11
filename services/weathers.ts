@@ -345,18 +345,18 @@ export const getWeathersOnField = async ({
             ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
             ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
           },
+
           ...(filterString && getObjectFilterString(filterString)),
           ...(filterNumber && getObjectFilterNumber(filterNumber)),
         },
         orderBy: [
+          ...(orderBy ? getObjectSortOrder(orderBy) : []),
+
           {
             pinned: "desc",
           },
           {
             confirmed: "asc",
-          },
-          {
-            ...(orderBy && getObjectSortOrder(orderBy)),
           },
         ],
         include: {

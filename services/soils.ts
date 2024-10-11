@@ -7,7 +7,7 @@ import {
   getObjectSortOrder,
 } from "@/lib/utils";
 import { PaginatedResponse, SoilChart, SoilTable } from "@/types";
-import { deleteIntUnit, UnitValue, upsertIntUnit } from "./units";
+import { UnitValue, upsertIntUnit } from "./units";
 
 type SoilParams = {
   fieldId: string;
@@ -174,14 +174,12 @@ export const getSoilsOnField = async ({
           ...(filterNumber && getObjectFilterNumber(filterNumber)),
         },
         orderBy: [
+          ...(orderBy ? getObjectSortOrder(orderBy) : []),
           {
             pinned: "desc",
           },
           {
             confirmed: "asc",
-          },
-          {
-            ...(orderBy && getObjectSortOrder(orderBy)),
           },
         ],
         include: {
