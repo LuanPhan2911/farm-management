@@ -20,10 +20,7 @@ export async function generateMetadata() {
   };
 }
 
-const EquipmentsPage = async ({
-  params,
-  searchParams,
-}: EquipmentsPageProps) => {
+const EquipmentsPage = async ({ searchParams }: EquipmentsPageProps) => {
   const page = parseToNumber(searchParams!.page, 1);
   const { orderBy, filterNumber, filterString } = searchParams;
   const t = await getTranslations("equipments.page");

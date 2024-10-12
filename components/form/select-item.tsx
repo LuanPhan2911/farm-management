@@ -20,12 +20,29 @@ export const SelectItemContent = ({
         className="rounded-full"
         size={"sm"}
       />
-      <div className="ml-4">
+      <div className="ml-4 w-full">
         <div className="text-sm font-medium leading-none text-start">
           {title}
         </div>
-        <p className="text-sm text-muted-foreground">{description}</p>
+        <p className="text-sm text-muted-foreground text-start">
+          {description}
+        </p>
       </div>
+    </div>
+  );
+};
+interface SelectItemContentWithoutImageProps {
+  title: string;
+  description?: string | null | undefined;
+}
+export const SelectItemContentWithoutImage = ({
+  title,
+  description,
+}: SelectItemContentWithoutImageProps) => {
+  return (
+    <div className="w-full">
+      <div className="text-sm font-medium leading-none text-start">{title}</div>
+      <p className="text-sm text-muted-foreground text-start">{description}</p>
     </div>
   );
 };

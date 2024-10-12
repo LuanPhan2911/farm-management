@@ -7,6 +7,7 @@ import {
 } from "@/lib/utils";
 import {
   PaginatedResponse,
+  PesticideSelect,
   PesticideTable,
   PesticideToxicityLevelCount,
   PesticideTypeCount,
@@ -82,11 +83,10 @@ export const updatePesticide = async (id: string, params: PesticideParams) => {
   });
 };
 export const deletePesticide = async (id: string) => {
-  return await db.$transaction(async (ctx) => {
-    const pesticide = await ctx.pesticide.delete({
-      where: { id },
-    });
+  const pesticide = await db.pesticide.delete({
+    where: { id },
   });
+  return pesticide;
 };
 type PesticideQuery = {
   page?: number;
@@ -192,3 +192,28 @@ export const getCountPesticideToxicityLevel =
       return [];
     }
   };
+
+export const getPesticidesSelect = async (): Promise<PesticideSelect[]> => {
+  try {
+    return await db.pesticide.findMany({
+      select: {
+        id: true,
+        name: true,
+        type: true,
+        toxicityLevel: true,
+        applicationMethod: true,
+        recommendedDosage: {
+          include: {
+            unit: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  } catch (error) {
+    return [];
+  }
+};

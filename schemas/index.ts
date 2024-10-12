@@ -1,5 +1,6 @@
 import {
   CategoryType,
+  EquipmentStatus,
   EquipmentType,
   FertilizerType,
   Frequency,
@@ -497,6 +498,42 @@ export const PlantSchema = (t: (arg: string) => string) => {
     }),
   });
 };
+export const PlantFertilizerSchema = (t: (arg: string) => string) => {
+  return z.object({
+    plantId: stringSchema(t, "plantId", { required: true }),
+    fertilizerId: stringSchema(t, "fertilizerId", { required: true }),
+    stage: stringSchema(t, "stage", {
+      min: 1,
+      max: 100,
+    }),
+    dosage: floatUnitSchema(t, "dosage", {
+      min: 0,
+      max: 100,
+    }).nullish(),
+    note: stringSchema(t, "note", {
+      max: 255,
+      required: false,
+    }).nullish(),
+  });
+};
+export const PlantPesticideSchema = (t: (arg: string) => string) => {
+  return z.object({
+    plantId: stringSchema(t, "plantId", { required: true }),
+    pesticideId: stringSchema(t, "pesticideId", { required: true }),
+    stage: stringSchema(t, "stage", {
+      min: 1,
+      max: 100,
+    }),
+    dosage: floatUnitSchema(t, "dosage", {
+      min: 0,
+      max: 100,
+    }).nullish(),
+    note: stringSchema(t, "note", {
+      max: 255,
+      required: false,
+    }).nullish(),
+  });
+};
 
 export const FertilizerSchema = (t: (arg: string) => string) => {
   return z.object({
@@ -534,6 +571,7 @@ export const FertilizerSchema = (t: (arg: string) => string) => {
     }),
   });
 };
+
 export const PesticideSchema = (t: (arg: string) => string) => {
   return z.object({
     name: stringSchema(t, "name", {
@@ -591,7 +629,7 @@ export const EquipmentSchema = (t: (arg: string) => string) => {
     purchasePrice: floatUnitSchema(t, "purchasePrice", {
       min: 0,
       max: 1_000_000_000,
-    }),
+    }).nullish(),
     status: stringSchema(t, "status", {
       max: 255,
       required: false,
@@ -630,6 +668,30 @@ export const EquipmentSchema = (t: (arg: string) => string) => {
   });
 };
 
+export const EquipmentDetailSchema = (t: (arg: string) => string) => {
+  return z.object({
+    equipmentId: stringSchema(t, "equipmentId", {
+      required: true,
+    }),
+    status: z.nativeEnum(EquipmentStatus, {
+      message: "status.enum",
+    }),
+    maintenanceSchedule: stringSchema(t, "maintenanceSchedule", {
+      max: 255,
+      required: false,
+    }).nullish(),
+    operatingHours: numberSchema(t, "operatingHours", {
+      min: 0,
+      max: 1_000_000,
+      int: true,
+      required: false,
+    }).nullish(),
+    location: stringSchema(t, "location", {
+      max: 255,
+      required: false,
+    }).nullish(),
+  });
+};
 export const CropSchema = (
   t: (arg: string, obj?: Record<string, any>) => string
 ) => {

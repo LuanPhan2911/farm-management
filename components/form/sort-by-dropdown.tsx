@@ -10,46 +10,36 @@ import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { SortAsc, SortDesc } from "lucide-react";
+import { useUpdateSearchParam } from "@/hooks/use-update-search-param";
 export type SortByOption = {
   label: string;
   value: string;
 };
 interface SortByDropdownProps {
   options: SortByOption[];
-  defaultValue?: string;
   label: string;
   placeholder: string;
 }
 export const SortByDropdown = ({
   options,
-  defaultValue,
   label,
   placeholder,
 }: SortByDropdownProps) => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
+  const { initialParam, updateSearchParam } = useUpdateSearchParam("orderBy");
   const [value, setValue] = useState(() => {
-    return defaultValue || searchParams!.get("orderBy");
+    return initialParam;
   });
 
   const handleSort = (option: SortByOption) => {
-    const params = new URLSearchParams(searchParams!);
     const isDesc = value === option.value;
-    if (isDesc) {
-      setValue(`-${option.value}`);
-      params!.set("orderBy", `-${option.value}`);
-    } else {
-      setValue(option.value);
-      params!.set("orderBy", option.value);
-    }
-
-    router.replace(`${pathname}?${params!.toString()}`);
+    const updatedValue = isDesc ? `-${option.value}` : option.value;
+    updateSearchParam(updatedValue);
+    setValue(updatedValue);
   };
   const option = options.find(
     (item) => item.value === value || `-${item.value}` === value
   );
-  const isDesc = searchParams!.get("orderBy")?.[0] === "-";
+  const isDesc = initialParam?.[0] === "-";
 
   return (
     <DropdownMenu>

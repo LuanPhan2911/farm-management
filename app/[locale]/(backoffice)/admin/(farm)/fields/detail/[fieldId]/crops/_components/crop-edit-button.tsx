@@ -156,6 +156,9 @@ export const CropEditDialog = () => {
                         onChange={field.onChange}
                         disabled={isPending}
                         defaultValue={field.value}
+                        appearance={{
+                          button: "lg:w-full",
+                        }}
                       />
                     </FormControl>
                   </div>
@@ -179,6 +182,7 @@ export const CropEditDialog = () => {
                           to: field.value.endDate || undefined,
                         }}
                         disabled={isPending}
+                        className="lg:w-full"
                       />
                     </FormControl>
                   </div>

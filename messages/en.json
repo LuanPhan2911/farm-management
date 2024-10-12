@@ -1871,6 +1871,9 @@
       "errors": {
         "parse": "Invalid fertilizers!"
       },
+      "fertilizerId": {
+        "itemDetail": "Please select item in popover to display fertilizer detail"
+      },
       "name": {
         "label": "Fertilizer name",
         "placeholder": "Fertilizer name",
@@ -1898,7 +1901,8 @@
       "composition": {
         "label": "Composition",
         "placeholder": "Other composition is such as Mn, Bo...",
-        "max": "Max composition length is {max} characters"
+        "max": "Max composition length is {max} characters",
+        "default": "No filled"
       },
       "manufacturer": {
         "label": "Manufacturer",
@@ -1908,13 +1912,15 @@
       "applicationMethod": {
         "label": "Method",
         "placeholder": "Eg: Root watering, spray on leaves",
-        "max": "Max method length is {max} characters"
+        "max": "Max method length is {max} characters",
+        "default": "No filled"
       },
       "frequencyOfUse": {
         "label": "Frequency of use",
         "placeholder": "Select frequency...",
         "enum": "Select frequency in list",
         "options": {
+          "default": "No selected",
           "WEEKLY": "Weekly",
           "MONTHLY": "Monthly",
           "YEARLY": "Yearly",
@@ -1928,13 +1934,15 @@
           "placeholder": "Unit",
           "error": "Fail load units",
           "notFound": "Units not found",
-          "label": "Unit"
+          "label": "Unit",
+          "default": "No selected"
         },
         "value": {
           "required_error": "Dosage value is required",
           "invalid_type_error": "Dosage value must be number",
           "min": "Min dosage value is {min}",
-          "max": "Max dosage value is {max}"
+          "max": "Max dosage value is {max}",
+          "default": "No filled"
         },
         "label": "Recommended dosage",
         "placeholder": "From 0 to 100"
@@ -2057,7 +2065,8 @@
         "options": {
           "LOW": "Low",
           "MID": "Medium",
-          "HIGH": "High"
+          "HIGH": "High",
+          "default": "No selected"
         }
       },
       "recommendedDosage": {
@@ -2066,13 +2075,15 @@
           "placeholder": "Unit",
           "error": "Fail load units",
           "notFound": "Units not found",
-          "label": "Unit"
+          "label": "Unit",
+          "default": "No selected"
         },
         "value": {
           "required_error": "Dosage value is required",
           "invalid_type_error": "Dosage value must be number",
           "min": "Min dosage value is {min}",
-          "max": "Max dosage value is {max}"
+          "max": "Max dosage value is {max}",
+          "default": "No filled"
         },
         "label": "Recommended dosage",
         "placeholder": "From 0 to 100"
@@ -2080,7 +2091,11 @@
       "applicationMethod": {
         "label": "Method",
         "placeholder": "Eg: Root watering, spray on leaves",
-        "max": "Max method length is {max} characters"
+        "max": "Max method length is {max} characters",
+        "default": "No filled"
+      },
+      "pesticideId": {
+        "itemDetail": "Please select item in popover to display pesticide detail"
       }
     },
     "status": {
@@ -2093,6 +2108,204 @@
         "create": "Something went wrong while creating pesticide!",
         "edit": "Something went wrong while editing pesticide!",
         "destroy": "Something went wrong while deleting pesticide!"
+      }
+    }
+  },
+  "plantFertilizers": {
+    "page": {
+      "title": "Recommended fertilizers for plant"
+    },
+    "table": {
+      "thead": {
+        "fertilizer": {
+          "name": "Fertilizer name",
+          "type": "Fertilizer type",
+          "recommendedDosage": "Recommended  dosage"
+        },
+        "stage": "Stage",
+        "dosage": "Plant dosage",
+        "note": "Note"
+      },
+      "trow": {
+        "dosage": "...",
+        "fertilizer": {
+          "recommendedDosage": "..."
+        },
+        "note": "..."
+      }
+    },
+    "search": {},
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add plant fertilizer",
+        "description": "Add plant fertilizer"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit plant fertilizer",
+        "description": "Edit plant fertilizer"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete plant fertilizer?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid plants!"
+      },
+      "stage": {
+        "label": "Plant stage",
+        "placeholder": "Eg: Newly planted...",
+        "required_error": "Plant stage is required",
+        "min": "Min stage length is {min} characters",
+        "max": "Stage's length must be less than {max} characters"
+      },
+      "fertilizerId": {
+        "label": "Fertilizer for plants",
+        "placeholder": "Select fertilizer...",
+        "required_error": "Fertilizer is required",
+        "notFound": "Fertilizer not found",
+        "error": "Fail load fertilizer!"
+      },
+      "plantId": {
+        "required_error": "Plant id is required!"
+      },
+
+      "dosage": {
+        "unitId": {
+          "required_error": "Required unit",
+          "placeholder": "Unit",
+          "label": "Unit",
+          "error": "Fail load units",
+          "notFound": "Units not found"
+        },
+        "value": {
+          "required_error": "Dosage value is required",
+          "invalid_type_error": "Dosage  value must be number",
+          "min": "Min dosage  value is {min}",
+          "max": "Max dosage requirement  value is {max}"
+        },
+        "label": "Dosage",
+        "placeholder": "From 0 to 100"
+      },
+      "note": {
+        "label": "Note",
+        "placeholder": "Note something",
+        "max": "Max note length is {max} character"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Fertilizer for plant created!",
+        "edit": "Fertilizer for plant edited!",
+        "destroy": "Fertilizer for plant deleted!"
+      },
+      "failure": {
+        "create": "Something went wrong while creating fertilizer for plant!",
+        "edit": "Something went wrong while editing fertilizer for plant!",
+        "destroy": "Something went wrong while deleting fertilizer for plant!"
+      }
+    }
+  },
+  "plantPesticides": {
+    "page": {
+      "title": "Recommended pesticides for plant"
+    },
+    "table": {
+      "thead": {
+        "pesticide": {
+          "name": "Pesticide name",
+          "type": "Pesticide type",
+          "recommendedDosage": "Recommended  dosage"
+        },
+        "stage": "Stage",
+        "dosage": "Plant dosage",
+        "note": "Note"
+      },
+      "trow": {
+        "dosage": "...",
+        "pesticide": {
+          "recommendedDosage": "..."
+        },
+        "note": "..."
+      }
+    },
+    "search": {},
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add plant pesticide",
+        "description": "Add plant pesticide"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit plant pesticide",
+        "description": "Edit plant pesticide"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete plant pesticide?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid plants!"
+      },
+      "stage": {
+        "label": "Plant stage",
+        "placeholder": "Eg: Newly planted...",
+        "required_error": "Plant stage is required",
+        "min": "Min stage length is {min} characters",
+        "max": "Stage's length must be less than {max} characters"
+      },
+      "pesticideId": {
+        "label": "Pesticide for plants",
+        "placeholder": "Select pesticide...",
+        "required_error": "Pesticide is required",
+        "notFound": "Pesticide not found",
+        "error": "Fail load pesticide!"
+      },
+      "plantId": {
+        "required_error": "Plant id is required!"
+      },
+
+      "dosage": {
+        "unitId": {
+          "required_error": "Required unit",
+          "placeholder": "Unit",
+          "label": "Unit",
+          "error": "Fail load units",
+          "notFound": "Units not found"
+        },
+        "value": {
+          "required_error": "Dosage value is required",
+          "invalid_type_error": "Dosage  value must be number",
+          "min": "Min dosage  value is {min}",
+          "max": "Max dosage requirement  value is {max}"
+        },
+        "label": "Dosage",
+        "placeholder": "From 0 to 100"
+      },
+      "note": {
+        "label": "Note",
+        "placeholder": "Note something",
+        "max": "Max note length is {max} character"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Pesticide for plant created!",
+        "edit": "Pesticide for plant edited!",
+        "destroy": "Pesticide for plant deleted!"
+      },
+      "failure": {
+        "create": "Something went wrong while creating pesticide for plant!",
+        "edit": "Something went wrong while editing pesticide for plant!",
+        "destroy": "Something went wrong while deleting pesticide for plant!"
       }
     }
   },
@@ -2259,6 +2472,100 @@
       "title": "Equipment not found",
       "description": "Sorry, we couldn’t find the equipment you’re looking for.",
       "backLabel": "Go to equipments page"
+    }
+  },
+  "equipmentDetails": {
+    "page": {
+      "title": "Manage equipment details"
+    },
+    "table": {
+      "thead": {
+        "imageUrl": "Image",
+        "name": "Name",
+        "type": "Type",
+        "status": "Status",
+        "location": "Location"
+      },
+      "trow": {
+        "location": "..."
+      }
+    },
+    "search": {
+      "faceted": {
+        "status": {
+          "placeholder": "Equipment status",
+          "error": "Fail load equipment count"
+        }
+      }
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add equipment detail",
+        "description": "Add equipment detail"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit equipment detail",
+        "description": "Update of equipment detail"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete equipment detail?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid equipment details!"
+      },
+      "equipmentId": {},
+      "status": {
+        "label": "Equipment status",
+        "placeholder": "Update equipment status...",
+        "enum": "Select status in list",
+        "options": {
+          "MAINTENANCE": "Maintenance",
+          "WORKING": "Working",
+          "DAMAGED": "damaged",
+          "AVAILABLE": "Available"
+        }
+      },
+      "maintenanceSchedule": {
+        "label": "Equipment maintenance Schedule",
+        "placeholder": "Eg: monthly, weekly... ",
+        "max": "Maintenance Schedule's length must be less than {max} characters"
+      },
+      "operatingHours": {
+        "label": "Equipment operating hour",
+        "placeholder": "Eg: 300 hours",
+        "invalid_type_error": "Operating hour value must be number",
+        "int": "Operating hour must be integer",
+        "min": "Operating hour  value is {min}",
+        "max": "Operating hour  value is {max}"
+      },
+      "location": {
+        "label": "Equipment location",
+        "placeholder": "Equipment location",
+        "max": "Location's length must be less than {max} characters"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Equipment detail created!",
+        "edit": "Equipment detail edited!",
+        "destroy": "Equipment detail deleted!"
+      },
+      "failure": {
+        "create": "Something went wrong while creating equipment detail!",
+        "edit": "Something went wrong while editing equipment detail!",
+        "destroy": "Something went wrong while deleting equipment detail!"
+      }
+    },
+    "notFound": {
+      "title": "Equipment detail not found",
+      "description": "Sorry, we couldn’t find the equipment detail you’re looking for.",
+      "backLabel": "Go to equipment details page"
     }
   },
   "crops": {
@@ -2802,6 +3109,8 @@
     "/admin/plants/create": "Create",
     "/admin/plants/detail": "Detail",
     "/admin/plants/detail/danger": "Danger",
+    "/admin/plants/detail/fertilizers": "Plant Fertilizers",
+    "/admin/plants/detail/pesticides": "Plant Pesticides",
     "/admin/fertilizers": "Fertilizer",
     "/admin/pesticides": "Pesticide",
     "/admin/equipments": "Equipment",

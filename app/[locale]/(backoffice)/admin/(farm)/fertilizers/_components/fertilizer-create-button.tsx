@@ -29,7 +29,7 @@ import { FertilizerType, Frequency, UnitType } from "@prisma/client";
 
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -39,7 +39,7 @@ export const FertilizerCreateButton = () => {
   const t = useTranslations("fertilizers");
   const formSchema = FertilizerSchema(tSchema);
   const [isPending, startTransition] = useTransition();
-
+  const [isOpen, setOpen] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -53,7 +53,7 @@ export const FertilizerCreateButton = () => {
         .then(({ message, ok }) => {
           if (ok) {
             form.reset();
-
+            setOpen(false);
             toast.success(message);
           } else {
             toast.error(message);
@@ -65,7 +65,7 @@ export const FertilizerCreateButton = () => {
     });
   };
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size={"sm"} variant={"success"}>
           <Plus className="h-4 w-4 mr-2" />{" "}

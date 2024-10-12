@@ -96,7 +96,7 @@ export const StaffsSelect = ({
   });
 
   if (isPending) {
-    return <Skeleton className="w-full h-12"></Skeleton>;
+    return <Skeleton className="lg:w-[250px] w-full h-12"></Skeleton>;
   }
   if (isError) {
     return <ErrorButton title={errorLabel} refresh={refetch} />;
@@ -151,7 +151,7 @@ export const StaffsSelectMultiple = ({
     onChange(result);
   };
   if (isPending) {
-    return <Skeleton className="w-full h-12"></Skeleton>;
+    return <Skeleton className="lg:w-[250px] w-full h-12"></Skeleton>;
   }
   if (isError) {
     return <ErrorButton title={errorLabel} refresh={refetch} />;

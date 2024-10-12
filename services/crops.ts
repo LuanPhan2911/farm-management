@@ -76,10 +76,8 @@ export const updateCrop = async (id: string, params: CropParams) => {
   });
 };
 export const deleteCrop = async (id: string) => {
-  return await db.$transaction(async (ctx) => {
-    const crop = await ctx.crop.delete({ where: { id } });
-    return crop;
-  });
+  const crop = await db.crop.delete({ where: { id } });
+  return crop;
 };
 type CropQuery = {
   fieldId: string;

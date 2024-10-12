@@ -221,15 +221,13 @@ export const updateManyWeatherConfirmed = async (params: WeatherConfirm) => {
 };
 
 export const deleteWeather = async (id: string) => {
-  return await db.$transaction(async (ctx) => {
-    const weather = await ctx.weather.delete({
-      where: {
-        id,
-        confirmed: false,
-      },
-    });
-    return weather;
+  const weather = await db.weather.delete({
+    where: {
+      id,
+      confirmed: false,
+    },
   });
+  return weather;
 };
 export const deleteManyWeatherUnConfirmed = async () => {
   const { count } = await db.weather.deleteMany({

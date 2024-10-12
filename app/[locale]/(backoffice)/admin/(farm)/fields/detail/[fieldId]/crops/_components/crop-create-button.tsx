@@ -135,6 +135,9 @@ export const CropCreateButton = () => {
                           notFound={tSchema("plantId.notFound")}
                           onChange={field.onChange}
                           disabled={isPending}
+                          appearance={{
+                            button: "lg:w-full",
+                          }}
                         />
                       </FormControl>
                     </div>
@@ -160,6 +163,7 @@ export const CropCreateButton = () => {
                             to: field.value.endDate || undefined,
                           }}
                           disabled={isPending}
+                          className="lg:w-full"
                         />
                       </FormControl>
                     </div>

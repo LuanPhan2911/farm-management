@@ -12,17 +12,14 @@ import {
   EquipmentSelect,
 } from "@/types";
 import { EquipmentType } from "@prisma/client";
-import { deleteFloatUnit, upsertFloatUnit } from "./units";
+import { UnitValue, upsertFloatUnit } from "./units";
 
 type EquipmentParams = {
   name: string;
   type: EquipmentType;
   brand: string;
   purchaseDate: Date;
-  purchasePrice: {
-    unitId: string;
-    value: number;
-  };
+  purchasePrice?: Partial<UnitValue> | null;
   status?: string | null;
   maintenanceSchedule?: string | null;
   operatingHours?: number | null;
@@ -35,16 +32,15 @@ type EquipmentParams = {
 export const createEquipment = async (params: EquipmentParams) => {
   const { purchasePrice: purchasePriceParam, ...otherParams } = params;
   return await db.$transaction(async (ctx) => {
-    const purchasePrice = await ctx.floatUnit.create({
-      data: {
-        ...purchasePriceParam,
-      },
+    const purchasePrice = await upsertFloatUnit({
+      ctx,
+      data: purchasePriceParam,
     });
 
     const equipment = await ctx.equipment.create({
       data: {
         ...otherParams,
-        purchasePriceId: purchasePrice.id,
+        purchasePriceId: purchasePrice?.id,
       },
     });
     return equipment;
@@ -70,11 +66,10 @@ export const updateEquipment = async (id: string, params: EquipmentParams) => {
   });
 };
 export const deleteEquipment = async (id: string) => {
-  return await db.$transaction(async (ctx) => {
-    const equipment = await ctx.equipment.delete({
-      where: { id },
-    });
+  const equipment = await db.equipment.delete({
+    where: { id },
   });
+  return equipment;
 };
 type EquipmentQuery = {
   page?: number;

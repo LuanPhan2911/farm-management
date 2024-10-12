@@ -116,6 +116,8 @@ interface ComboBoxCustomProps<T extends Record<string, any>> {
   defaultValue?: string;
   renderItem: (item: T) => React.ReactNode;
   appearance?: ComboBoxCustomAppearance;
+  renderItemDetail?: (item: T) => React.ReactNode;
+  noItemDetailMessage?: string;
 }
 export const ComboBoxCustom = <T extends Record<string, any>>({
   options,
@@ -126,8 +128,10 @@ export const ComboBoxCustom = <T extends Record<string, any>>({
   disabled,
   appearance,
   defaultValue,
+  noItemDetailMessage,
   onChange,
   renderItem,
+  renderItemDetail,
 }: ComboBoxCustomProps<T>) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(defaultValue);
@@ -147,52 +151,60 @@ export const ComboBoxCustom = <T extends Record<string, any>>({
   const selectedItem = options.find((item) => item[valueKey] === value);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className={cn(
-            "lg:w-[260px] w-full justify-between",
-            appearance?.button
-          )}
-          disabled={disabled}
-        >
-          {selectedItem ? renderItem(selectedItem) : label}
+    <div className="flex flex-col gap-y-2">
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className={cn(
+              "lg:w-[260px] w-full justify-between",
+              appearance?.button
+            )}
+            disabled={disabled}
+          >
+            {selectedItem ? renderItem(selectedItem) : label}
 
-          <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className={cn("lg:w-[260px] p-0", appearance?.content)}>
-        <Command
-          filter={(value, search) => {
-            return searchData[value]?.includes(search.toLowerCase()) ? 1 : 0;
-          }}
-        >
-          <CommandInput placeholder={label} />
-          <CommandList>
-            <CommandEmpty>{notFound}</CommandEmpty>
-            <CommandGroup>
-              {options.map((item) => (
-                <CommandItem
-                  key={item[valueKey]}
-                  value={item[valueKey]}
-                  onSelect={handleSelect}
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      value === item[valueKey] ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  {renderItem(item)}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+            <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className={cn("lg:w-[260px] p-0", appearance?.content)}>
+          <Command
+            filter={(value, search) => {
+              return searchData[value]?.includes(search.toLowerCase()) ? 1 : 0;
+            }}
+          >
+            <CommandInput placeholder={label} />
+            <CommandList>
+              <CommandEmpty>{notFound}</CommandEmpty>
+              <CommandGroup>
+                {options.map((item) => (
+                  <CommandItem
+                    key={item[valueKey]}
+                    value={item[valueKey]}
+                    onSelect={handleSelect}
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        value === item[valueKey] ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+                    {renderItem(item)}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+      {!selectedItem && renderItemDetail && (
+        <div className="text-sm text-muted-foreground h-40 w-full flex justify-center items-center border  rounded-md">
+          {noItemDetailMessage || "Please select item is popover"}
+        </div>
+      )}
+      {selectedItem && renderItemDetail && renderItemDetail(selectedItem)}
+    </div>
   );
 };

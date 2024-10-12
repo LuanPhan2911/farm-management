@@ -58,6 +58,9 @@ model FloatUnit {
 
   estimatedYields Crop[] @relation("estimatedYield")
   actualYields    Crop[] @relation("actualYield")
+
+  plantFertilizerDosages PlantFertilizer[]
+  plantPesticideDosages  PlantPesticide[]
 }
 
 model IntUnit {
@@ -308,8 +311,6 @@ model Crop {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  farmingdiaries FarmingDairy[]
 }
 
 model Plant {
@@ -335,10 +336,9 @@ model Plant {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  crops          Crop[]
-  farmingdiaries FarmingDairy[]
-  fertilizers    PlantFertilizer[]
-  pesticides     PlantPesticide[]
+  crops            Crop[]
+  plantFertilizers PlantFertilizer[]
+  plantPesticides  PlantPesticide[]
 }
 
 enum FertilizerType {
@@ -369,10 +369,11 @@ model Fertilizer {
   composition         String? // Thành phần chi tiết
   frequencyOfUse      Frequency? // Tần suất sử dụng
 
-  activities Activity[] @relation(name: "fertilizer")
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  activities       Activity[]        @relation(name: "fertilizer")
+  plantFertilizers PlantFertilizer[]
 }
 
 enum PesticideType {
@@ -403,8 +404,8 @@ model Pesticide {
   recommendedDosage   FloatUnit? @relation(name: "pesticideDosage", fields: [recommendedDosageId], references: [id], onDelete: SetNull)
   applicationMethod   String? // Phương pháp sử dụng
 
-  activities      Activity[]        @relation(name: "pesticide")
-  plantFetilizers PlantFertilizer[]
+  activities Activity[] @relation(name: "pesticide")
+
   plantPesticides PlantPesticide[]
 
   createdAt DateTime @default(now())
@@ -412,29 +413,32 @@ model Pesticide {
 }
 
 model PlantFertilizer {
-  id          String @id @default(uuid())
-  plantId     String
-  pesticideId String
-  stage       String // Giai đoạn cây trồng (ví dụ: Gieo trồng, Phát triển, Thu hoạch)
-  dosage      Float? // Liều lượng thuốc bảo vệ thực vật cho giai đoạn này
-
+  id           String     @id @default(uuid())
+  plantId      String
+  fertilizerId String
+  stage        String // Giai đoạn cây trồng (ví dụ: Gieo trồng, Phát triển, Thu hoạch)
+  dosageId     String? // Liều lượng thuốc bảo vệ thực vật cho giai đoạn này
+  dosage       FloatUnit? @relation(fields: [dosageId], references: [id], onDelete: SetNull)
+  note         String?
   // Liên kết với bảng Plant và Pesticide
-  plants     Plant     @relation(fields: [plantId], references: [id])
-  pesticides Pesticide @relation(fields: [pesticideId], references: [id])
+  plant        Plant      @relation(fields: [plantId], references: [id])
+  fertilizer   Fertilizer @relation(fields: [fertilizerId], references: [id])
 
-  @@unique([plantId, pesticideId, stage])
+  @@unique([plantId, fertilizerId, stage])
 }
 
 model PlantPesticide {
-  id          String @id @default(uuid())
+  id          String     @id @default(uuid())
   plantId     String
   pesticideId String
   stage       String // Giai đoạn cây trồng (ví dụ: Gieo trồng, Phát triển, Thu hoạch)
-  dosage      Float? // Liều lượng thuốc bảo vệ thực vật cho giai đoạn này
+  dosageId    String? // Liều lượng thuốc bảo vệ thực vật cho giai đoạn này
+  dosage      FloatUnit? @relation(fields: [dosageId], references: [id], onDelete: SetNull)
+  note        String?
 
   // Liên kết với bảng Plant và Pesticide
-  plants     Plant     @relation(fields: [plantId], references: [id])
-  pesticides Pesticide @relation(fields: [pesticideId], references: [id])
+  plant     Plant     @relation(fields: [plantId], references: [id])
+  pesticide Pesticide @relation(fields: [pesticideId], references: [id])
 
   @@unique([plantId, pesticideId, stage])
 }
@@ -443,38 +447,23 @@ enum ActivityType {
   FERTILIZER
   PESTICIDE
   EQUIPMENT
+  WATERING
+  OTHER
 }
 
 model Activity {
-  id          String @id @default(uuid())
+  id          String  @id @default(uuid())
   name        String
-  description String
-  farmerId    String
+  description String?
 
   note String?
 
   activitableId   String
-  activiatbleType ActivityType
+  activiatbleType ActivityType?
 
   fertilizer Fertilizer? @relation(name: "fertilizer", fields: [activitableId], references: [id], map: "fertilizerActivitableId")
   pesticide  Pesticide?  @relation(name: "pesticide", fields: [activitableId], references: [id], map: "pesicideActivirableId")
   equiment   Equipment?  @relation(name: "equipment", fields: [activitableId], references: [id], map: "equipmentActivitableId")
-
-  farmingDiaryId String
-  farmingDiary   FarmingDairy @relation(fields: [farmingDiaryId], references: [id])
-}
-
-model FarmingDairy {
-  id String @id @default(uuid())
-
-  createdDate DateTime
-  cropId      String
-  crops       Crop     @relation(fields: [cropId], references: [id])
-
-  plantId String
-  plant   Plant  @relation(fields: [plantId], references: [id])
-
-  activities Activity[]
 }
 
 enum EquipmentType {
@@ -503,6 +492,33 @@ model Equipment {
   imageUrl            String?
 
   activities Activity[] @relation(name: "equipment")
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  equipmentdetails EquipmentDetail[]
+}
+
+enum EquipmentStatus {
+  MAINTENANCE
+  WORKING
+  DAMAGED
+  AVAILABLE
+}
+
+model EquipmentDetail {
+  id     String          @id @default(uuid())
+  status EquipmentStatus @default(AVAILABLE)
+
+  lastMaintenanceDate DateTime?
+  maintenanceSchedule String?
+  operatingHours      Int? // Số giờ hoạt động
+  location            String?
+
+  equipmentId String
+  equipment   Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Inventory {

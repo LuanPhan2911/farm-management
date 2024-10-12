@@ -3,6 +3,7 @@ import {
   Category,
   Crop,
   Equipment,
+  EquipmentDetail,
   EquipmentType,
   Fertilizer,
   FertilizerType,
@@ -18,6 +19,8 @@ import {
   Pesticide,
   PesticideType,
   Plant,
+  PlantFertilizer,
+  PlantPesticide,
   Soil,
   SoilType,
   Staff,
@@ -239,6 +242,47 @@ export type PlantSelect = {
   name: string;
   imageUrl: string | null;
 };
+export type PlantFertilizerTable = PlantFertilizer & {
+  fertilizer: {
+    name: string;
+    type: FertilizerType;
+    recommendedDosage:
+      | (FloatUnit & {
+          unit: {
+            name: string;
+          } | null;
+        })
+      | null;
+  };
+  dosage:
+    | (FloatUnit & {
+        unit: {
+          name: string;
+        } | null;
+      })
+    | null;
+};
+export type PlantPesticideTable = PlantPesticide & {
+  pesticide: {
+    name: string;
+    type: PesticideType;
+    toxicityLevel: ToxicityLevel | null;
+    recommendedDosage:
+      | (FloatUnit & {
+          unit: {
+            name: string;
+          } | null;
+        })
+      | null;
+  };
+  dosage:
+    | (FloatUnit & {
+        unit: {
+          name: string;
+        } | null;
+      })
+    | null;
+};
 export type FertilizerTable = Fertilizer & {
   recommendedDosage:
     | (FloatUnit & {
@@ -256,7 +300,20 @@ export type FertilizerFrequencyCount = {
   frequencyOfUse: Frequency;
   _count: number;
 };
-
+export type FertilizerSelect = {
+  id: string;
+  name: string;
+  type: FertilizerType;
+  frequencyOfUse: Frequency | null;
+  applicationMethod: string | null;
+  recommendedDosage:
+    | (FloatUnit & {
+        unit: {
+          name: string;
+        } | null;
+      })
+    | null;
+};
 export type PesticideTable = Pesticide & {
   recommendedDosage:
     | (FloatUnit & {
@@ -282,7 +339,20 @@ export type PesticideToxicityLevelCount = {
   toxicityLevel: ToxicityLevel;
   _count: number;
 };
-
+export type PesticideSelect = {
+  id: string;
+  name: string;
+  type: PesticideType;
+  toxicityLevel: ToxicityLevel | null;
+  applicationMethod: string | null;
+  recommendedDosage:
+    | (FloatUnit & {
+        unit: {
+          name: string;
+        } | null;
+      })
+    | null;
+};
 export type EquipmentTable = Equipment & {
   purchasePrice:
     | (FloatUnit & {
@@ -296,6 +366,13 @@ export type EquipmentSelect = {
   id: string;
   name: string;
   imageUrl: string | null;
+};
+export type EquipmentDetailTable = EquipmentDetail & {
+  equipment: {
+    name: string;
+    type: EquipmentType;
+    imageUrl: string | null;
+  };
 };
 
 export type EquipmentTypeCount = {

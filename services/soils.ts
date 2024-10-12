@@ -126,12 +126,10 @@ export const updateSoilPinned = async (id: string, pinned: boolean) => {
   });
 };
 export const deleteSoil = async (id: string) => {
-  return await db.$transaction(async (ctx) => {
-    const soil = await ctx.soil.delete({
-      where: { id },
-    });
-    return soil;
+  const soil = await db.soil.delete({
+    where: { id },
   });
+  return soil;
 };
 export const deleteManySoilUnconfirmed = async () => {
   const { count } = await db.soil.deleteMany({
