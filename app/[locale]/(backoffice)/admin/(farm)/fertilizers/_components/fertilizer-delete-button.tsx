@@ -7,7 +7,6 @@ import { FertilizerTable } from "@/types";
 
 import { Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useTransition } from "react";
 import { toast } from "sonner";
 
 interface FertilizerDeleteButtonProps {
@@ -20,8 +19,8 @@ export const FertilizerDeleteButton = ({
 }: FertilizerDeleteButtonProps) => {
   const { id } = data;
   const { onOpen, onClose, setPending } = useAlertDialog();
-  const [isPending, startTransition] = useTransition();
-  const t = useTranslations("fertilizers");
+
+  const t = useTranslations("fertilizers.form");
   const onConfirm = async () => {
     setPending(true);
     destroy(id)
@@ -33,7 +32,7 @@ export const FertilizerDeleteButton = ({
         }
       })
       .catch((error: Error) => {
-        toast.error(t("status.failure.destroy"));
+        toast.error("Internal error");
       })
       .finally(() => {
         onClose();
@@ -45,8 +44,8 @@ export const FertilizerDeleteButton = ({
       onClick={(e) => {
         e.stopPropagation();
         onOpen({
-          title: t("form.destroy.title"),
-          description: t("form.destroy.description"),
+          title: t("destroy.title"),
+          description: t("destroy.description"),
           onConfirm,
         });
       }}

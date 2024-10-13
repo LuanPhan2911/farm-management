@@ -1,24 +1,25 @@
 "use client";
-import { destroy } from "@/actions/schedule";
+import { destroy } from "@/actions/equipment-detail";
 import { Button } from "@/components/ui/button";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
-import { ScheduleResponse } from "@/types";
+import { EquipmentDetail } from "@prisma/client";
 import { Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
-interface ScheduleDeleteButtonProps {
-  data: ScheduleResponse;
+interface EquipmentDetailDeleteButtonProps {
+  data: EquipmentDetail;
   label: string;
 }
-export const ScheduleDeleteButton = ({
+export const EquipmentDetailDeleteButton = ({
   data,
   label,
-}: ScheduleDeleteButtonProps) => {
+}: EquipmentDetailDeleteButtonProps) => {
   const { id } = data;
   const { onOpen, onClose, setPending } = useAlertDialog();
-  const t = useTranslations("schedules.form");
-  const onConfirm = () => {
+
+  const t = useTranslations("equipmentDetails.form");
+  const onConfirm = async () => {
     setPending(true);
     destroy(id)
       .then(({ message, ok }) => {
@@ -35,7 +36,6 @@ export const ScheduleDeleteButton = ({
         onClose();
       });
   };
-
   return (
     <Button
       className="w-full"

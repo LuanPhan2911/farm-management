@@ -1099,7 +1099,8 @@
     },
     "schema": {
       "errors": {
-        "parse": "Invalid fields!"
+        "parse": "Invalid fields!",
+        "orgExist": "A field just belong to one organization."
       },
       "name": {
         "label": "Name",
@@ -2324,13 +2325,10 @@
         "imageUrl": "Image",
         "name": "Name",
         "type": "Type",
-        "status": "Status",
-        "location": "Location",
-        "brand": "Brand"
+        "brand": "Brand",
+        "countDetail": "Number of detail"
       },
-      "trow": {
-        "location": "..."
-      }
+      "trow": {}
     },
     "search": {
       "placeholder": "Search by name...",
@@ -2391,7 +2389,7 @@
         "label": "Purchase date",
         "placeholder": "Select purchase date",
         "required_error": "Purchase date is required",
-        "invalid_type_error_error": "Invalid date type"
+        "invalid_type_error": "Invalid date type"
       },
       "purchasePrice": {
         "unitId": {
@@ -2409,29 +2407,6 @@
         },
         "label": "Purchase price",
         "placeholder": "Purchase price"
-      },
-      "status": {
-        "label": "Equipment status",
-        "placeholder": "Eg: operating, maintenance, damaged",
-        "max": "Status's length must be less than {max} characters"
-      },
-      "maintenanceSchedule": {
-        "label": "Equipment maintenance Schedule",
-        "placeholder": "Eg: monthly, weekly... ",
-        "max": "Maintenance Schedule's length must be less than {max} characters"
-      },
-      "operatingHours": {
-        "label": "Equipment operating hour",
-        "placeholder": "Eg: 300 hours",
-        "invalid_type_error": "Operating hour value must be number",
-        "int": "Operating hour must be integer",
-        "min": "Operating hour  value is {min}",
-        "max": "Operating hour  value is {max}"
-      },
-      "location": {
-        "label": "Equipment location",
-        "placeholder": "Equipment location",
-        "max": "Location's length must be less than {max} characters"
       },
       "fuelConsumption": {
         "label": "Equipment fuel Consumption",
@@ -2480,14 +2455,21 @@
     },
     "table": {
       "thead": {
-        "imageUrl": "Image",
         "name": "Name",
-        "type": "Type",
         "status": "Status",
-        "location": "Location"
+        "location": "Location",
+        "lastMaintenanceDate": "Last maintenance date",
+        "maintenanceSchedule": "Maintenance schedule",
+        "operatingHours": "Operating hours",
+        "equipment": {
+          "imageUrl": "Image"
+        }
       },
       "trow": {
-        "location": "..."
+        "location": "Unknown",
+        "lastMaintenanceDate": "Never",
+        "maintenanceSchedule": "Never",
+        "operatingHours": "Never"
       }
     },
     "search": {
@@ -2519,7 +2501,15 @@
       "errors": {
         "parse": "Invalid equipment details!"
       },
-      "equipmentId": {},
+      "equipmentId": {
+        "required_error": "Equipment id is required!"
+      },
+      "name": {
+        "label": "Equipment name",
+        "placeholder": "Equipment name",
+        "min": "Name must be at least {min} characters long",
+        "max": "Name must be at most {max} characters long."
+      },
       "status": {
         "label": "Equipment status",
         "placeholder": "Update equipment status...",
@@ -3116,6 +3106,7 @@
     "/admin/equipments": "Equipment",
     "/admin/equipments/create": "Create",
     "/admin/equipments/edit": "Edit",
+    "/admin/equipments/detail": "Equipment details",
     "/admin/tasks": "Tasks",
     "/admin/schedules": "Schedules",
     "/admin/messages": "All messages",

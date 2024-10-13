@@ -20,10 +20,6 @@ type EquipmentParams = {
   brand: string;
   purchaseDate: Date;
   purchasePrice?: Partial<UnitValue> | null;
-  status?: string | null;
-  maintenanceSchedule?: string | null;
-  operatingHours?: number | null;
-  location?: string | null;
   fuelConsumption?: number | null;
   energyType?: string | null;
   description?: string | null;
@@ -101,6 +97,11 @@ export const getEquipments = async ({
                   name: true,
                 },
               },
+            },
+          },
+          _count: {
+            select: {
+              equipmentDetails: true,
             },
           },
         },

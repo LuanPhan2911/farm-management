@@ -15,6 +15,7 @@ import { CropEditDialog } from "@/app/[locale]/(backoffice)/admin/(farm)/fields/
 import { FileEditNameDialog } from "@/app/[locale]/(backoffice)/admin/(files)/_components/file-edit-name-button";
 import { PlantFertilizerEditDialog } from "@/app/[locale]/(backoffice)/admin/(farm)/plants/detail/[plantId]/fertilizers/_components/plant-fertilizers-edit-button";
 import { PlantPesticideEditDialog } from "@/app/[locale]/(backoffice)/admin/(farm)/plants/detail/[plantId]/pesticides/_components/plant-pesticides-edit-button";
+import { EquipmentDetailEditDialog } from "@/app/[locale]/(backoffice)/admin/(farm)/equipments/detail/[equipmentId]/_components/equipment-detail-edit-button";
 
 export const DialogProvider = () => {
   return (
@@ -34,6 +35,7 @@ export const DialogProvider = () => {
       <FileEditNameDialog />
       <PlantFertilizerEditDialog />
       <PlantPesticideEditDialog />
+      <EquipmentDetailEditDialog />
     </>
   );
 };

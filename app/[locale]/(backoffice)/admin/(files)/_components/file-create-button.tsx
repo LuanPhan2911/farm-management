@@ -23,15 +23,17 @@ export const FileCreateButton = ({ input }: FileCreateButtonProps) => {
   const t = useTranslations("files.form");
 
   const [isPending, setPending] = useState(false);
+  const [isOpen, setOpen] = useState(false);
   const onCreateCompleted = (files: File[]) => {
     if (!files.length) {
       return;
     }
     const [file] = files;
     create(file);
+    setOpen(false);
   };
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size={"sm"} variant={"success"}>
           <Upload className="h-4 w-4 mr-2" /> {t("create.label")}

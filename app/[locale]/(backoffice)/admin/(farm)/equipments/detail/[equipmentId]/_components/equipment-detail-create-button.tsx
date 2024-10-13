@@ -1,4 +1,11 @@
-import { useForm } from "react-hook-form";
+"use client";
+
+import { create } from "@/actions/equipment-detail";
+import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
+import { SelectOptions } from "@/components/form/select-options";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+
 import {
   Form,
   FormControl,
@@ -7,80 +14,63 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { useTranslations } from "next-intl";
-import { ApplicantSchema } from "@/schemas";
-import { useEffect, useState, useTransition } from "react";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { create } from "@/actions/applicant";
-import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { useUser } from "@clerk/nextjs";
-import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
+import { EquipmentDetailSchema } from "@/schemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { EquipmentStatus } from "@prisma/client";
 
-interface JobApplyButtonProps {
-  jobId: string;
-}
-export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
-  const tSchema = useTranslations("applicants.schema");
-  const t = useTranslations("applicants");
-  const formSchema = ApplicantSchema(tSchema);
+import { Plus } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
+import { useState, useTransition } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
+
+export const EquipmentDetailCreateButton = () => {
+  const tSchema = useTranslations("equipmentDetails.schema");
+  const formSchema = EquipmentDetailSchema(tSchema);
+  const t = useTranslations("equipmentDetails.form");
   const [isPending, startTransition] = useTransition();
 
-  const { user } = useUser();
+  const params = useParams<{
+    equipmentId: string;
+  }>()!;
+  const [isOpen, setOpen] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      address: "",
-      email: "",
-      phone: "",
+      equipmentId: params.equipmentId,
     },
   });
-  const [isOpen, setOpen] = useState(false);
-  useEffect(() => {
-    if (user?.fullName) {
-      form.setValue("name", user.fullName);
-    }
-    if (user?.emailAddresses.length) {
-      form.setValue("email", user.emailAddresses[0].toString());
-    }
-  }, [user, form]);
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
-      create(values, jobId)
-        .then(({ message }) => {
-          form.reset();
-          setOpen(false);
-          toast.success(message);
+      create(values)
+        .then(({ message, ok }) => {
+          if (ok) {
+            toast.success(message);
+            setOpen(false);
+          } else {
+            toast.error(message);
+          }
         })
-        .catch((error: Error) => {
-          toast.error(error.message);
-        });
+        .catch((error) => {});
     });
   };
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={"gradient"}>{t("form.apply.label")}</Button>
+        <Button variant={"success"} size={"sm"}>
+          <Plus className="mr-2" />
+          {t("create.label")}
+        </Button>
       </DialogTrigger>
-      <DialogContent className="overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{t("form.apply.title")}</DialogTitle>
-          <DialogDescription>{t("form.apply.description")}</DialogDescription>
-        </DialogHeader>
+      <DialogContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4 max-w-4xl"
+          >
             <FormField
               control={form.control}
               name="name"
@@ -100,15 +90,40 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
-              name="email"
+              name="status"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{tSchema("email.label")}</FormLabel>
+                  <FormLabel>{tSchema("status.label")}</FormLabel>
+                  <FormControl>
+                    <SelectOptions
+                      label={tSchema("status.placeholder")}
+                      onChange={field.onChange}
+                      options={Object.values(EquipmentStatus).map((item) => {
+                        return {
+                          label: tSchema(`status.options.${item}`),
+                          value: item,
+                        };
+                      })}
+                      disabled={isPending}
+                    />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="location"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("location.label")}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder={tSchema("email.placeholder")}
+                      placeholder={tSchema("location.placeholder")}
                       value={field.value || undefined}
                       onChange={field.onChange}
                       disabled={isPending}
@@ -121,13 +136,13 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
             />
             <FormField
               control={form.control}
-              name="phone"
+              name="maintenanceSchedule"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{tSchema("phone.label")}</FormLabel>
+                  <FormLabel>{tSchema("maintenanceSchedule.label")}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder={tSchema("phone.placeholder")}
+                      placeholder={tSchema("maintenanceSchedule.placeholder")}
                       value={field.value || undefined}
                       onChange={field.onChange}
                       disabled={isPending}
@@ -138,46 +153,28 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
-              name="address"
+              name="operatingHours"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{tSchema("address.label")}</FormLabel>
+                  <FormLabel>{tSchema("operatingHours.label")}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder={tSchema("address.placeholder")}
+                      placeholder={tSchema("operatingHours.placeholder")}
                       value={field.value || undefined}
                       onChange={field.onChange}
                       disabled={isPending}
+                      type="number"
                     />
                   </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="note"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("note.label")}</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder={tSchema("note.placeholder")}
-                      value={field.value || undefined}
-                      onChange={field.onChange}
-                      disabled={isPending}
-                    />
-                  </FormControl>
-
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <DynamicDialogFooter disabled={isPending} />
+            <DynamicDialogFooter disabled={isPending} closeButton={false} />
           </form>
         </Form>
       </DialogContent>

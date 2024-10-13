@@ -23,7 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import slugify from "slugify";
 import { toast } from "sonner";
@@ -42,6 +42,7 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+  const [isOpen, setOpen] = useState(false);
   const orgName = form.watch("name");
   useEffect(() => {
     if (!orgName) {
@@ -62,7 +63,7 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
         .then(({ message, ok }) => {
           if (ok) {
             form.reset();
-
+            setOpen(false);
             toast.success(message);
           } else {
             toast.error(message);
@@ -78,7 +79,7 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
     return await res.json();
   };
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant={"success"} size={"sm"}>
           <Plus className="h-4 w-4 mr-2" />{" "}

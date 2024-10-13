@@ -365,11 +365,11 @@ export const FieldSchema = (
 ) => {
   return z.object({
     name: stringSchema(t, "name", {
-      min: 5,
+      min: 3,
       max: 100,
     }),
     location: stringSchema(t, "location", {
-      min: 5,
+      min: 3,
       max: 100,
     }),
     orgId: z.string({
@@ -630,24 +630,6 @@ export const EquipmentSchema = (t: (arg: string) => string) => {
       min: 0,
       max: 1_000_000_000,
     }).nullish(),
-    status: stringSchema(t, "status", {
-      max: 255,
-      required: false,
-    }).nullish(),
-    maintenanceSchedule: stringSchema(t, "maintenanceSchedule", {
-      max: 255,
-      required: false,
-    }).nullish(),
-    operatingHours: numberSchema(t, "operatingHours", {
-      min: 0,
-      max: 1_000_000,
-      int: true,
-      required: false,
-    }).nullish(),
-    location: stringSchema(t, "location", {
-      max: 255,
-      required: false,
-    }).nullish(),
     fuelConsumption: numberSchema(t, "fuelConsumption", {
       min: 0,
       max: 100_000,
@@ -673,6 +655,11 @@ export const EquipmentDetailSchema = (t: (arg: string) => string) => {
     equipmentId: stringSchema(t, "equipmentId", {
       required: true,
     }),
+    name: stringSchema(t, "name", {
+      min: 1,
+      max: 100,
+      required: false,
+    }).nullish(),
     status: z.nativeEnum(EquipmentStatus, {
       message: "status.enum",
     }),

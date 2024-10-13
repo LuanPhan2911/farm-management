@@ -37,7 +37,7 @@ export const CategoriesTable = ({ data }: CategoriesTableProps) => {
         }
       })
       .catch((error) => {
-        toast.error(t("status.failure.destroy"));
+        toast.error("Internal error");
       })
       .finally(() => {
         onClose();

@@ -65,10 +65,6 @@ export const getUnitsByType = async (type: UnitType) => {
         id: true,
         name: true,
       },
-      cacheStrategy: {
-        ttl: 60,
-        swr: 60,
-      },
     });
     return units;
   } catch (error) {

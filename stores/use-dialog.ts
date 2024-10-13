@@ -1,6 +1,7 @@
 import {
   ApplicantTable,
   CropTable,
+  EquipmentDetailTable,
   FertilizerTable,
   PesticideTable,
   PlantFertilizerTable,
@@ -32,7 +33,8 @@ export type DialogType =
   | "file.createMany"
   | "file.editName"
   | "plantFertilizer.edit"
-  | "plantPesticide.edit";
+  | "plantPesticide.edit"
+  | "equipmentDetail.edit";
 
 export interface DialogData {
   category?: Category;
@@ -47,6 +49,7 @@ export interface DialogData {
   file?: File;
   plantFertilizer?: PlantFertilizerTable;
   plantPesticide?: PlantPesticideTable;
+  equipmentDetail?: EquipmentDetailTable;
 }
 interface DialogStore {
   type: DialogType | null;

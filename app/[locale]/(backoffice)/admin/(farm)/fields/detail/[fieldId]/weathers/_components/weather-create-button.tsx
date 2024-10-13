@@ -49,13 +49,14 @@ export const WeatherCreateButton = () => {
       note: null,
     },
   });
+  const [isOpen, setOpen] = useState(false);
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       create(values)
         .then(({ message, ok }) => {
           if (ok) {
             form.reset();
-
+            setOpen(false);
             toast.success(message);
           } else {
             toast.error(message);
@@ -67,7 +68,7 @@ export const WeatherCreateButton = () => {
     });
   };
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size={"sm"} variant={"success"}>
           <Plus className="h-4 w-4 mr-2" />{" "}
@@ -435,6 +436,7 @@ export const WeatherCreateManyButton = () => {
     []
   );
   const [isPending, startTransition] = useTransition();
+  const [isOpen, setOpen] = useState(false);
   const onSubmit = () => {
     startTransition(() => {
       const data = (jsonContent as JSONContent).json;
@@ -442,6 +444,7 @@ export const WeatherCreateManyButton = () => {
         .then(({ message, ok }) => {
           if (ok) {
             toast.success(message);
+            setOpen(false);
             setJsonContent({
               json: initialContent,
             });
@@ -456,7 +459,7 @@ export const WeatherCreateManyButton = () => {
   };
   const t = useTranslations("weathers");
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size={"sm"} variant={"purple"}>
           <Upload className="h-4 w-4 mr-2" /> {t("form.createMany.label")}
@@ -478,7 +481,14 @@ export const WeatherCreateManyButton = () => {
           clearHandler={() => setJsonContent({ json: [] })}
           generateSample={() => setJsonContent({ json: initialContent })}
         />
-        <DynamicDialogFooter disabled={isPending} />
+        <Button
+          type="submit"
+          disabled={isPending}
+          variant={"blue"}
+          onClick={onSubmit}
+        >
+          Submit
+        </Button>
       </DialogContent>
     </Dialog>
   );

@@ -31,7 +31,7 @@ import { PesticideType, UnitType, ToxicityLevel } from "@prisma/client";
 
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useRef, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -48,13 +48,14 @@ export const PesticideCreateButton = () => {
       name: "",
     },
   });
+  const [isOpen, setOpen] = useState(false);
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       create(values)
         .then(({ message, ok }) => {
           if (ok) {
             form.reset();
-
+            setOpen(false);
             toast.success(message);
           } else {
             toast.error(message);
@@ -66,7 +67,7 @@ export const PesticideCreateButton = () => {
     });
   };
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size={"sm"} variant={"success"}>
           <Plus className="h-4 w-4 mr-2" />{" "}

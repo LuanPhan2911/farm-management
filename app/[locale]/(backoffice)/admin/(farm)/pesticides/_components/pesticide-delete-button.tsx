@@ -20,7 +20,7 @@ export const PesticideDeleteButton = ({
   const { id } = data;
   const { onOpen, onClose, setPending } = useAlertDialog();
 
-  const t = useTranslations("pesticides");
+  const t = useTranslations("pesticides.form");
   const onConfirm = async () => {
     setPending(true);
     destroy(id)
@@ -32,7 +32,7 @@ export const PesticideDeleteButton = ({
         }
       })
       .catch((error: Error) => {
-        toast.error(t("status.failure.destroy"));
+        toast.error("Internal error");
       })
       .finally(() => {
         onClose();
@@ -44,8 +44,8 @@ export const PesticideDeleteButton = ({
       onClick={(e) => {
         e.stopPropagation();
         onOpen({
-          title: t("form.destroy.title"),
-          description: t("form.destroy.description"),
+          title: t("destroy.title"),
+          description: t("destroy.description"),
           onConfirm,
         });
       }}

@@ -22,7 +22,7 @@ export const StaffDeleteButton = ({ data, label }: StaffDeleteButtonProps) => {
   const { id } = data;
   const { onOpen, onClose, setPending } = useAlertDialog();
 
-  const t = useTranslations("staffs");
+  const t = useTranslations("staffs.form");
   const { isSuperAdmin } = useRole(data.publicMetadata.role as StaffRole);
 
   const router = useRouter();
@@ -40,7 +40,7 @@ export const StaffDeleteButton = ({ data, label }: StaffDeleteButtonProps) => {
         }
       })
       .catch((error) => {
-        toast.error(t("status.failure.destroy"));
+        toast.error("Internal error");
       })
       .finally(() => {
         onClose();
@@ -54,8 +54,8 @@ export const StaffDeleteButton = ({ data, label }: StaffDeleteButtonProps) => {
       onClick={(e) => {
         e.stopPropagation();
         onOpen({
-          title: t("form.destroy.title"),
-          description: t("form.destroy.description"),
+          title: t("destroy.title"),
+          description: t("destroy.description"),
           onConfirm,
         });
       }}

@@ -32,7 +32,7 @@ export const UnitsTable = ({ data }: UnitsTableProps) => {
         }
       })
       .catch((error: Error) => {
-        toast.error(t("status.failure.destroy"));
+        toast.error("Internal error");
       })
       .finally(() => {
         onClose();

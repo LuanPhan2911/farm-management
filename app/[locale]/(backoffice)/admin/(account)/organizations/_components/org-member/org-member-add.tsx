@@ -20,7 +20,7 @@ import { OrganizationMemberSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useTranslations } from "next-intl";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { createMember } from "@/actions/organization";
@@ -49,6 +49,7 @@ export const OrgMemberAdd = ({}: OrgMemberAddProps) => {
       role: "org:member",
     },
   });
+  const [isOpen, setOpen] = useState(false);
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     const orgId = params?.orgId;
     if (!orgId) {
@@ -59,7 +60,7 @@ export const OrgMemberAdd = ({}: OrgMemberAddProps) => {
         .then(({ message, ok }) => {
           if (ok) {
             form.reset();
-
+            setOpen(false);
             toast.success(message);
           } else {
             toast.error(message);
@@ -75,7 +76,7 @@ export const OrgMemberAdd = ({}: OrgMemberAddProps) => {
     return await res.json();
   };
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant={"success"} size={"sm"}>
           <Plus className="mr-2" /> {t("form.createMember.label")}

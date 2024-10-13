@@ -19,7 +19,7 @@ export const ApplicantDeleteButton = ({
   const { id } = data;
   const { onOpen, onClose, setPending } = useAlertDialog();
 
-  const t = useTranslations("applicants");
+  const t = useTranslations("applicants.form");
   const onConfirm = async () => {
     setPending(true);
     destroy(id)
@@ -31,7 +31,7 @@ export const ApplicantDeleteButton = ({
         }
       })
       .catch((error: Error) => {
-        toast.error(t("status.failure.destroy"));
+        toast.error("Internal error");
       })
       .finally(() => {
         onClose();
@@ -43,8 +43,8 @@ export const ApplicantDeleteButton = ({
       onClick={(e) => {
         e.stopPropagation();
         onOpen({
-          title: t("form.destroy.title"),
-          description: t("form.destroy.description"),
+          title: t("destroy.title"),
+          description: t("destroy.description"),
           onConfirm,
         });
       }}

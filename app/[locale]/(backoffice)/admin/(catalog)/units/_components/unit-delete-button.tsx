@@ -15,7 +15,7 @@ export const UnitDeleteButton = ({ data, label }: UnitDeleteButtonProps) => {
   const { id } = data;
   const { onOpen, onClose, setPending } = useAlertDialog();
 
-  const t = useTranslations("units");
+  const t = useTranslations("units.form");
   const onConfirm = async () => {
     setPending(true);
     destroy(id)
@@ -27,7 +27,7 @@ export const UnitDeleteButton = ({ data, label }: UnitDeleteButtonProps) => {
         }
       })
       .catch((error: Error) => {
-        toast.error(t("status.failure.destroy"));
+        toast.error("Internal error");
       })
       .finally(() => {
         onClose();
@@ -39,8 +39,8 @@ export const UnitDeleteButton = ({ data, label }: UnitDeleteButtonProps) => {
       onClick={(e) => {
         e.stopPropagation();
         onOpen({
-          title: t("form.destroy.title"),
-          description: t("form.destroy.description"),
+          title: t("destroy.title"),
+          description: t("destroy.description"),
           onConfirm,
         });
       }}

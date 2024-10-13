@@ -81,7 +81,11 @@ export const EquipmentCreateForm = () => {
             <FormItem>
               <FormLabel>{tSchema("imageUrl.label")}</FormLabel>
               <FormControl>
-                <UploadImage onChange={field.onChange} disabled={isPending} />
+                <UploadImage
+                  onChange={field.onChange}
+                  disabled={isPending}
+                  defaultValue={field.value}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -235,44 +239,7 @@ export const EquipmentCreateForm = () => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="status"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{tSchema("status.label")}</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder={tSchema("status.placeholder")}
-                  value={field.value || undefined}
-                  onChange={field.onChange}
-                  disabled={isPending}
-                />
-              </FormControl>
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="maintenanceSchedule"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{tSchema("maintenanceSchedule.label")}</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder={tSchema("maintenanceSchedule.placeholder")}
-                  value={field.value || undefined}
-                  onChange={field.onChange}
-                  disabled={isPending}
-                />
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <div className="grid lg:grid-cols-2 gap-2">
           <FormField
             control={form.control}
@@ -313,26 +280,6 @@ export const EquipmentCreateForm = () => {
             )}
           />
         </div>
-
-        <FormField
-          control={form.control}
-          name="operatingHours"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{tSchema("operatingHours.label")}</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder={tSchema("operatingHours.placeholder")}
-                  value={field.value || undefined}
-                  onChange={field.onChange}
-                  disabled={isPending}
-                  type="number"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
         <DynamicDialogFooter disabled={isPending} closeButton={false} />
       </form>

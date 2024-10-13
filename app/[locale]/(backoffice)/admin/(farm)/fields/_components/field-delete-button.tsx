@@ -11,7 +11,7 @@ import { toast } from "sonner";
 
 export const FieldDeleteButton = () => {
   const { onOpen, onClose, setPending } = useAlertDialog();
-  const t = useTranslations("fields");
+  const t = useTranslations("fields.form");
 
   const router = useRouter();
   const params = useParams<{
@@ -30,7 +30,7 @@ export const FieldDeleteButton = () => {
         }
       })
       .catch((error) => {
-        toast.error(t("status.failure.destroy"));
+        toast.error("Internal error");
       })
       .finally(() => {
         onClose();

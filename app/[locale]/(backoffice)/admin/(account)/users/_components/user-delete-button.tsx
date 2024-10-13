@@ -18,7 +18,7 @@ export const UserDeleteButton = ({ data, label }: UserDeleteButtonProps) => {
   const { id } = data;
   const { onOpen, onClose, setPending } = useAlertDialog();
 
-  const t = useTranslations("users");
+  const t = useTranslations("users.form");
 
   const router = useRouter();
 
@@ -35,7 +35,7 @@ export const UserDeleteButton = ({ data, label }: UserDeleteButtonProps) => {
         }
       })
       .catch((error) => {
-        toast.error(t("status.failure.destroy"));
+        toast.error("Internal error");
       })
       .finally(() => {
         onClose();
@@ -49,8 +49,8 @@ export const UserDeleteButton = ({ data, label }: UserDeleteButtonProps) => {
       onClick={(e) => {
         e.stopPropagation();
         onOpen({
-          title: t("form.destroy.title"),
-          description: t("form.destroy.description"),
+          title: t("destroy.title"),
+          description: t("destroy.description"),
           onConfirm,
         });
       }}

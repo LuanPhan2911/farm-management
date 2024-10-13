@@ -25,7 +25,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useEffect, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { create } from "@/actions/category";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
@@ -55,12 +55,14 @@ export const CategoryCreateButton = () => {
       })
     );
   }, [name, form]);
+  const [isOpen, setOpen] = useState(false);
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       create(values)
         .then(({ message, ok }) => {
           if (ok) {
             toast.success(message);
+            setOpen(false);
           } else {
             toast.error(message);
           }
@@ -71,7 +73,7 @@ export const CategoryCreateButton = () => {
     });
   };
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant={"success"}>
           <Plus className="h-4 w-4 mr-2" />{" "}

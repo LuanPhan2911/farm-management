@@ -29,7 +29,7 @@ import { UnitType } from "@prisma/client";
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { DateRange } from "react-day-picker";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -55,13 +55,14 @@ export const CropCreateButton = () => {
       },
     },
   });
+  const [isOpen, setOpen] = useState(false);
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       create(values)
         .then(({ message, ok }) => {
           if (ok) {
             form.reset();
-
+            setOpen(false);
             toast.success(message);
           } else {
             toast.error(message);
@@ -83,7 +84,7 @@ export const CropCreateButton = () => {
     });
   };
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size={"sm"} variant={"success"}>
           <Plus className="h-4 w-4 mr-2" />{" "}

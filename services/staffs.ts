@@ -121,10 +121,6 @@ export const getStaffsSelectContainAdmin = async () => {
           in: [StaffRole.admin, StaffRole.superadmin],
         },
       },
-      cacheStrategy: {
-        ttl: 60,
-        swr: 60,
-      },
     });
     return staffs;
   } catch (error) {
@@ -133,12 +129,7 @@ export const getStaffsSelectContainAdmin = async () => {
 };
 export const getStaffsSelect = async () => {
   try {
-    const staffs = await db.staff.findMany({
-      cacheStrategy: {
-        ttl: 60,
-        swr: 60,
-      },
-    });
+    const staffs = await db.staff.findMany({});
     return staffs;
   } catch (error) {
     return [];

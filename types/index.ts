@@ -361,6 +361,9 @@ export type EquipmentTable = Equipment & {
         } | null;
       })
     | null;
+  _count: {
+    equipmentDetails: number;
+  };
 };
 export type EquipmentSelect = {
   id: string;

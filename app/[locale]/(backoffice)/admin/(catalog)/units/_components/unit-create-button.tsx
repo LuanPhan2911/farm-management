@@ -25,7 +25,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { create } from "@/actions/unit";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
@@ -39,7 +39,7 @@ export const UnitCreateButton = () => {
 
   const formSchema = UnitSchema(tSchema);
   const [isPending, startTransition] = useTransition();
-
+  const [isOpen, setOpen] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -52,7 +52,7 @@ export const UnitCreateButton = () => {
         .then(({ message, ok }) => {
           if (ok) {
             form.reset();
-
+            setOpen(false);
             toast.success(message);
           } else {
             toast.error(message);
@@ -64,7 +64,7 @@ export const UnitCreateButton = () => {
     });
   };
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size={"sm"} variant={"success"}>
           <Plus className="h-4 w-4 mr-2" />{" "}

@@ -5,8 +5,9 @@ import { EquipmentStatus } from "@prisma/client";
 type EquipmentDetailParams = {
   equipmentId: string;
   status: EquipmentStatus;
-
   lastMaintenanceDate?: Date | null;
+  name?: string | null;
+  maintenanceSchedule?: string | null;
   operatingHours?: number | null;
   location?: string | null;
 };
@@ -29,6 +30,18 @@ export const updateEquipmentDetail = async (
     },
   });
 };
+export const updateEquipmentDetailStatus = async (
+  id: string,
+  status: EquipmentStatus
+) => {
+  return await db.equipmentDetail.update({
+    where: { id },
+    data: {
+      status,
+    },
+  });
+};
+
 export const deleteEquipmentDetail = async (id: string) => {
   return await db.equipmentDetail.delete({ where: { id } });
 };

@@ -474,28 +474,23 @@ enum EquipmentType {
 }
 
 model Equipment {
-  id                  String        @id @default(uuid())
-  name                String
-  type                EquipmentType
-  brand               String
-  purchaseDate        DateTime
-  purchasePriceId     String?
-  purchasePrice       FloatUnit?    @relation(name: "purchasePrice", fields: [purchasePriceId], references: [id], onDelete: SetNull)
-  status              String? // Hoạt động, Bảo trì, Hỏng
-  lastMaintenanceDate DateTime?
-  maintenanceSchedule String?
-  operatingHours      Int? // Số giờ hoạt động
-  location            String?
-  fuelConsumption     Float? // Lượng nhiên liệu tiêu thụ
-  energyType          String? // Loại năng lượng sử dụng
-  description         String?
-  imageUrl            String?
+  id              String        @id @default(uuid())
+  name            String
+  type            EquipmentType
+  brand           String
+  purchaseDate    DateTime
+  purchasePriceId String?
+  purchasePrice   FloatUnit?    @relation(name: "purchasePrice", fields: [purchasePriceId], references: [id], onDelete: SetNull)
+  fuelConsumption Float? // Lượng nhiên liệu tiêu thụ
+  energyType      String? // Loại năng lượng sử dụng
+  description     String?
+  imageUrl        String?
 
   activities Activity[] @relation(name: "equipment")
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
 
-  equipmentdetails EquipmentDetail[]
+  equipmentDetails EquipmentDetail[]
 }
 
 enum EquipmentStatus {
@@ -507,6 +502,7 @@ enum EquipmentStatus {
 
 model EquipmentDetail {
   id     String          @id @default(uuid())
+  name   String?
   status EquipmentStatus @default(AVAILABLE)
 
   lastMaintenanceDate DateTime?

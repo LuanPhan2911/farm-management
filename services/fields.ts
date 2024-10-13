@@ -44,10 +44,6 @@ export const getFields = async () => {
       include: {
         unit: true,
       },
-      cacheStrategy: {
-        swr: 60,
-        ttl: 60,
-      },
     });
     return fields;
   } catch (error) {
@@ -85,6 +81,7 @@ export const getFieldByOrgId = async (orgId: string) => {
     const field = await db.field.findUnique({
       where: { orgId },
     });
+    return field;
   } catch (error) {
     return null;
   }

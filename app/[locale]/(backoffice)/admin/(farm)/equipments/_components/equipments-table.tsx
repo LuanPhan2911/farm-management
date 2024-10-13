@@ -35,8 +35,8 @@ export const EquipmentsTable = ({ data, totalPage }: EquipmentsTableProps) => {
     data = data.filter((item) => includeString(item.name, query));
   }
   const t = useTranslations("equipments");
-  const handleEdit = (row: EquipmentTable) => {
-    router.push(`/admin/equipments/edit/${row.id}`);
+  const handleViewDetail = (row: EquipmentTable) => {
+    router.push(`/admin/equipments/detail/${row.id}`);
   };
 
   return (
@@ -57,17 +57,9 @@ export const EquipmentsTable = ({ data, totalPage }: EquipmentsTableProps) => {
               <OrderByButton column="type" label={t("table.thead.type")} />
             </TableHead>
             <TableHead>
-              <OrderByButton column="status" label={t("table.thead.status")} />
-            </TableHead>
-            <TableHead>
-              <OrderByButton
-                column="location"
-                label={t("table.thead.location")}
-              />
-            </TableHead>
-            <TableHead>
               <OrderByButton column="brand" label={t("table.thead.brand")} />
             </TableHead>
+            <TableHead>{t("table.thead.countDetail")}</TableHead>
 
             <TableHead></TableHead>
           </TableRow>
@@ -78,17 +70,16 @@ export const EquipmentsTable = ({ data, totalPage }: EquipmentsTableProps) => {
               <TableRow
                 key={item.id}
                 className="cursor-pointer"
-                onClick={() => handleEdit(item)}
+                onClick={() => handleViewDetail(item)}
               >
                 <TableCell>
                   <UserAvatar src={item.imageUrl || undefined} size={"lg"} />
                 </TableCell>
                 <TableCell>{item.name}</TableCell>
                 <TableCell>{t(`schema.type.options.${item.type}`)}</TableCell>
-                <TableCell>{item.status}</TableCell>
-                <TableCell>{item.location}</TableCell>
-                <TableCell>{item.brand}</TableCell>
 
+                <TableCell>{item.brand}</TableCell>
+                <TableCell>{item._count.equipmentDetails}</TableCell>
                 <TableCell>
                   <EquipmentsTableAction data={item} />
                 </TableCell>
@@ -97,6 +88,11 @@ export const EquipmentsTable = ({ data, totalPage }: EquipmentsTableProps) => {
           })}
         </TableBody>
       </Table>
+      {!data.length && (
+        <div className="my-4 text-muted-foreground flex justify-center">
+          No results.
+        </div>
+      )}
       <div className="py-4">
         <NavPagination totalPage={totalPage} />
       </div>

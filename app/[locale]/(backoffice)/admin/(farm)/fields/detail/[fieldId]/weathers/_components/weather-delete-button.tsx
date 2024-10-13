@@ -23,7 +23,7 @@ export const WeatherDeleteButton = ({
   const { id } = data;
   const { onOpen, onClose, setPending } = useAlertDialog();
 
-  const t = useTranslations("weathers");
+  const t = useTranslations("weathers.form");
 
   const { isFarmer } = useCurrentStaffRole();
 
@@ -39,7 +39,7 @@ export const WeatherDeleteButton = ({
         }
       })
       .catch((error: Error) => {
-        toast.error(t("status.failure.destroy"));
+        toast.error("Internal error");
       })
       .finally(() => {
         onClose();
@@ -51,8 +51,8 @@ export const WeatherDeleteButton = ({
       onClick={(e) => {
         e.stopPropagation();
         onOpen({
-          title: t("form.destroy.title"),
-          description: t("form.destroy.description"),
+          title: t("destroy.title"),
+          description: t("destroy.description"),
           onConfirm,
         });
       }}
