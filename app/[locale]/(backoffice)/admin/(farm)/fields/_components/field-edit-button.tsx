@@ -56,7 +56,7 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
           }
         })
         .catch((error) => {
-          toast.error(t("status.failure.edit"));
+          toast.error("Internal error");
         });
     });
   };

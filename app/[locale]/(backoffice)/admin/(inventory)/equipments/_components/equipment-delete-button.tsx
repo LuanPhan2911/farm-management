@@ -7,7 +7,6 @@ import { EquipmentTable } from "@/types";
 
 import { Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useTransition } from "react";
 import { toast } from "sonner";
 
 interface EquipmentDeleteButtonProps {

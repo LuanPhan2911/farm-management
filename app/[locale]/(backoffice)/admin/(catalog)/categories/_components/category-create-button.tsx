@@ -37,7 +37,7 @@ import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 export const CategoryCreateButton = () => {
   const tSchema = useTranslations("categories.schema");
   const formSchema = CategorySchema(tSchema);
-  const t = useTranslations("categories");
+  const t = useTranslations("categories.form");
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -68,7 +68,7 @@ export const CategoryCreateButton = () => {
           }
         })
         .catch((error) => {
-          toast.error(t("status.failure.create"));
+          toast.error("Internal error");
         });
     });
   };
@@ -77,15 +77,13 @@ export const CategoryCreateButton = () => {
       <DialogTrigger asChild>
         <Button variant={"success"}>
           <Plus className="h-4 w-4 mr-2" />{" "}
-          <span className="text-sm font-semibold">
-            {t("form.create.label")}
-          </span>
+          <span className="text-sm font-semibold">{t("create.label")}</span>
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t("form.create.title")}</DialogTitle>
-          <DialogDescription>{t("form.create.description")}</DialogDescription>
+          <DialogTitle>{t("create.title")}</DialogTitle>
+          <DialogDescription>{t("create.description")}</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>

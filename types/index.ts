@@ -15,6 +15,9 @@ import {
   IntUnit,
   JobExperience,
   JobWorkingState,
+  Material,
+  MaterialType,
+  MaterialUsage,
   Message,
   Pesticide,
   PesticideType,
@@ -59,6 +62,16 @@ export type Breadcrumb = {
   label: string;
   href?: string;
 };
+export type UnitTable = Unit & {};
+export type UnitSelect = {
+  id: string;
+  name: string;
+};
+export type CategoryTable = Category & {};
+export type CategorySelect = {
+  id: string;
+  name: string;
+};
 export type JobTable = {
   id: string;
   name: string;
@@ -84,17 +97,9 @@ export type JobSelect = {
   name: string;
 };
 
-export type UnitSelect = {
-  id: string;
-  name: string;
-};
 export type UnusedUnitCount = {
   floatUnit: number;
   intUnit: number;
-};
-export type CategorySelect = {
-  id: string;
-  name: string;
 };
 
 export type ApplicantTable = {
@@ -456,4 +461,29 @@ export type FileSelect = {
   isPublic: boolean;
   orgId: string | null;
   type: string;
+};
+export type MaterialTable = Material & {
+  unit: {
+    name: string;
+  };
+  _count: {
+    materialUsages: number;
+  };
+};
+export type MaterialSelect = {
+  id: string;
+  name: string;
+  imageUrl: string | null;
+  quantityInStock: number;
+  unitId: string;
+  unit: {
+    name: string;
+  };
+};
+export type MaterialUsageTable = MaterialUsage & {
+  material: Material;
+};
+export type MaterialTypeCount = {
+  type: MaterialType;
+  _count: number;
 };

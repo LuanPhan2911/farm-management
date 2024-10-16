@@ -8,15 +8,16 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 
 import { DataTableColumnHeader } from "@/components/datatable/datatable-column-header";
-import { Category, CategoryType } from "@prisma/client";
+import { CategoryType } from "@prisma/client";
 import { CategoriesTableAction } from "./categories-table-action";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
 import { destroyMany } from "@/actions/category";
 import { toast } from "sonner";
 import { useDialog } from "@/stores/use-dialog";
+import { CategoryTable } from "@/types";
 
 interface CategoriesTableProps {
-  data: Category[];
+  data: CategoryTable[];
 }
 export const CategoriesTable = ({ data }: CategoriesTableProps) => {
   const t = useTranslations("categories");
@@ -24,7 +25,7 @@ export const CategoriesTable = ({ data }: CategoriesTableProps) => {
   const { onOpen, onClose, setPending } = useAlertDialog();
   const { onOpen: onOpenEdit } = useDialog();
 
-  const handleConfirm = (rows: Category[]) => {
+  const handleConfirm = (rows: CategoryTable[]) => {
     const ids = rows.map((row) => row.id);
     setPending(true);
     destroyMany(ids)
@@ -43,12 +44,12 @@ export const CategoriesTable = ({ data }: CategoriesTableProps) => {
         onClose();
       });
   };
-  const handleEdit = (data: Category) => {
+  const handleEdit = (data: CategoryTable) => {
     onOpenEdit("category.edit", {
       category: data,
     });
   };
-  const columns: ColumnDef<Category>[] = [
+  const columns: ColumnDef<CategoryTable>[] = [
     {
       id: "select",
       header: ({ table }) => (
@@ -137,7 +138,7 @@ export const CategoriesTable = ({ data }: CategoriesTableProps) => {
   const bulkActions = [
     {
       label: t("form.destroyMany.label"),
-      action: (rows: Category[]) => {
+      action: (rows: CategoryTable[]) => {
         onOpen({
           title: t("form.destroyMany.title"),
           description: t("form.destroyMany.description"),

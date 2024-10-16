@@ -71,7 +71,7 @@ export const WeatherDeleteManyUnConfirmedButton = () => {
   const params = useParams<{
     fieldId: string;
   }>();
-  const t = useTranslations("weathers");
+  const t = useTranslations("weathers.form");
   const onConfirm = async () => {
     setPending(true);
     destroyManyUnConfirmed(params!.fieldId)
@@ -83,7 +83,7 @@ export const WeatherDeleteManyUnConfirmedButton = () => {
         }
       })
       .catch((error: Error) => {
-        toast.error(t("status.failure.destroyManyConfirmed"));
+        toast.error("Internal error");
       })
       .finally(() => {
         onClose();
@@ -93,8 +93,8 @@ export const WeatherDeleteManyUnConfirmedButton = () => {
     <Button
       onClick={() =>
         onOpen({
-          title: t("form.destroyManyConfirmed.title"),
-          description: t("form.destroyManyConfirmed.description"),
+          title: t("destroyManyConfirmed.title"),
+          description: t("destroyManyConfirmed.description"),
           onConfirm,
         })
       }
@@ -102,7 +102,7 @@ export const WeatherDeleteManyUnConfirmedButton = () => {
       variant={"destroy"}
     >
       <Trash className="h-4 w-4 mr-2" />
-      {t("form.destroyManyConfirmed.label")}
+      {t("destroyManyConfirmed.label")}
     </Button>
   );
 };

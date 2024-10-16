@@ -64,7 +64,7 @@ export const PlantPesticideCreateButton = () => {
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.create"));
+          toast.error("Internal error");
         });
     });
   };

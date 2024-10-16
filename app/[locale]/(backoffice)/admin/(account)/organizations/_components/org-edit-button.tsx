@@ -2,7 +2,6 @@
 import { edit, editLogo } from "@/actions/organization";
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 import { InputClipboard } from "@/components/form/input-clipboard";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -29,7 +28,7 @@ interface OrgEditFormProps {
 }
 export const OrgEditForm = ({ data }: OrgEditFormProps) => {
   const { relativeTime } = useFormatter();
-  const t = useTranslations("organizations");
+
   const tSchema = useTranslations("organizations.schema");
   const formSchema = OrganizationSchema(tSchema);
 
@@ -66,7 +65,7 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.edit"));
+          toast.error("Internal error");
         });
     });
   };
@@ -85,7 +84,7 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
               }
             })
             .catch((error: Error) => {
-              toast.error(t("status.failure.editLogo"));
+              toast.error("Internal error");
             });
         });
       });

@@ -522,7 +522,7 @@
       },
       "workingTime": {
         "label": "Working Time",
-        "placeholder": "Working time eg: Monday to Friday 8:30am to 5pm",
+        "placeholder": "Eg: Monday to Friday 8:30am to 5pm",
         "required_error": "Working time is required!",
         "min": "Working time is required!",
         "max": "Job working time is maximum {max} characters"
@@ -2517,7 +2517,7 @@
         "options": {
           "MAINTENANCE": "Maintenance",
           "WORKING": "Working",
-          "DAMAGED": "damaged",
+          "DECOMMISSION": "Decommission",
           "AVAILABLE": "Available"
         }
       },
@@ -2556,6 +2556,120 @@
       "title": "Equipment detail not found",
       "description": "Sorry, we couldn’t find the equipment detail you’re looking for.",
       "backLabel": "Go to equipment details page"
+    }
+  },
+  "materials": {
+    "page": {
+      "title": "Manage materials",
+      "create": {
+        "title": "New material"
+      },
+      "edit": {
+        "title": "Edit material"
+      }
+    },
+    "table": {
+      "thead": {
+        "imageUrl": "Image",
+        "name": "Name",
+        "type": "Type",
+        "quantityInStock": "Quantity in stock",
+        "unitId": "Unit",
+        "countUsages": "Count usages"
+      },
+      "trow": {}
+    },
+    "search": {
+      "placeholder": "Search by name...",
+      "faceted": {
+        "type": {
+          "placeholder": "Material type",
+          "error": "Fail load material count"
+        }
+      }
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add material",
+        "description": "Add material"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit material",
+        "description": "Update of material"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete material?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid materials!"
+      },
+      "name": {
+        "label": "Material name",
+        "placeholder": "Material name",
+        "required_error": "Material name is required!",
+        "min": "Min name length is {min} characters",
+        "max": "Name's length must be less than {max} characters"
+      },
+      "type": {
+        "label": "Material type",
+        "placeholder": "Select material type...",
+        "enum": "Select material in list",
+        "options": {
+          "FERTILIZER": "Fertilizer",
+          "PESTICIDE": "Pesticide",
+          "SEED": "Seed",
+          "OTHER": "Other"
+        }
+      },
+
+      "unitId": {
+        "required_error": "Required unit",
+        "placeholder": "Unit",
+        "error": "Fail load units",
+        "notFound": "Units not found",
+        "label": "Unit"
+      },
+      "quantityInStock": {
+        "required_error": "Quantity value is required",
+        "invalid_type_error": "Quantity value must be number",
+        "min": "Min Quantity value is {min}",
+        "max": "Max Quantity value is {max}",
+        "label": "Quantity in stock",
+        "placeholder": "Quantity in stock"
+      },
+      "description": {
+        "label": "Material description",
+        "placeholder": "Material description",
+        "max": "Description's length must be less than {max} characters"
+      },
+      "imageUrl": {
+        "label": "Image of material",
+        "placeholder": "Upload image of material",
+        "max": "Image url's length must be less than {max} characters"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Material created!",
+        "edit": "Material edited!",
+        "destroy": "Material deleted!"
+      },
+      "failure": {
+        "create": "Something went wrong while creating material!",
+        "edit": "Something went wrong while editing material!",
+        "destroy": "Something went wrong while deleting material!"
+      }
+    },
+    "notFound": {
+      "title": "Material not found",
+      "description": "Sorry, we couldn’t find the material you’re looking for.",
+      "backLabel": "Go to materials page"
     }
   },
   "crops": {
@@ -3107,6 +3221,10 @@
     "/admin/equipments/create": "Create",
     "/admin/equipments/edit": "Edit",
     "/admin/equipments/detail": "Equipment details",
+    "/admin/materials": "Material",
+    "/admin/materials/edit": "Edit",
+    "/admin/materials/create": "Create",
+    "/admin/materials/usages": "Material usages",
     "/admin/tasks": "Tasks",
     "/admin/schedules": "Schedules",
     "/admin/messages": "All messages",

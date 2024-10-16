@@ -30,7 +30,7 @@ interface StaffBasicInfoProps {
 }
 export const StaffBasicInfo = ({ data }: StaffBasicInfoProps) => {
   const tSchema = useTranslations("users.schema");
-  const t = useTranslations("staffs");
+
   const formSchema = UserSchema(tSchema);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -55,7 +55,7 @@ export const StaffBasicInfo = ({ data }: StaffBasicInfoProps) => {
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.edit"));
+          toast.error("Internal error");
         });
     });
   };

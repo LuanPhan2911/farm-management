@@ -139,7 +139,9 @@ export const getEquipmentsSelect = async (): Promise<EquipmentSelect[]> => {
     return [];
   }
 };
-export const getEquipmentById = async (id: string) => {
+export const getEquipmentById = async (
+  id: string
+): Promise<EquipmentTable | null> => {
   try {
     return await db.equipment.findUnique({
       where: {
@@ -155,13 +157,18 @@ export const getEquipmentById = async (id: string) => {
             },
           },
         },
+        _count: {
+          select: {
+            equipmentDetails: true,
+          },
+        },
       },
     });
   } catch (error) {
     return null;
   }
 };
-export const getCountEquipmentType = async ({}: EquipmentQuery): Promise<
+export const getCountEquipmentType = async (): Promise<
   EquipmentTypeCount[]
 > => {
   try {

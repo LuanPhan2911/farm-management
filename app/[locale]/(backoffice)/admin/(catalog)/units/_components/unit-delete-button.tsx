@@ -2,13 +2,14 @@
 import { destroy } from "@/actions/unit";
 import { Button } from "@/components/ui/button";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
-import { Unit } from "@prisma/client";
+import { UnitTable } from "@/types";
+
 import { Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 interface UnitDeleteButtonProps {
-  data: Unit;
+  data: UnitTable;
   label: string;
 }
 export const UnitDeleteButton = ({ data, label }: UnitDeleteButtonProps) => {

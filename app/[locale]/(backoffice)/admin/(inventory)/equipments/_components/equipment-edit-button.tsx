@@ -62,7 +62,6 @@ interface EquipmentEditFormProps {
 export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
   const tSchema = useTranslations("equipments.schema");
   const formSchema = EquipmentSchema(tSchema);
-  const t = useTranslations("equipments");
   const [isPending, startTransition] = useTransition();
 
   const params = useParams<{
@@ -85,7 +84,7 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
           }
         })
         .catch((error) => {
-          toast.error(t("status.failure.edit"));
+          toast.error("Internal error");
         });
     });
   };

@@ -10,10 +10,13 @@ import {
   Clipboard,
   Clock,
   Compass,
+  Database,
+  DatabaseZap,
   Flower,
   Flower2,
   Folder,
   FolderLock,
+  Gavel,
   Grid2X2,
   Hammer,
   House,
@@ -23,7 +26,9 @@ import {
   MountainSnow,
   ScrollText,
   Section,
+  Sprout,
   SquareUserRound,
+  Store,
   Trash,
   User,
   Users,
@@ -119,6 +124,14 @@ export const AdminSidebar = () => {
             active={isActive(pathname, "/admin/pesticides")}
             icon={BugOff}
             title="Pesticides"
+          />
+        </SidebarAccordionItem>
+        <SidebarAccordionItem title="Inventory" icon={Store}>
+          <SidebarItem
+            href="/admin/materials"
+            active={isActive(pathname, "/admin/materials")}
+            icon={Database}
+            title="Materials"
           />
           <SidebarItem
             href="/admin/equipments"

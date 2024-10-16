@@ -35,7 +35,7 @@ import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 
 export const UnitCreateButton = () => {
   const tSchema = useTranslations("units.schema");
-  const t = useTranslations("units");
+  const t = useTranslations("units.form");
 
   const formSchema = UnitSchema(tSchema);
   const [isPending, startTransition] = useTransition();
@@ -59,7 +59,7 @@ export const UnitCreateButton = () => {
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.create"));
+          toast.error("Internal error");
         });
     });
   };
@@ -68,15 +68,13 @@ export const UnitCreateButton = () => {
       <DialogTrigger asChild>
         <Button size={"sm"} variant={"success"}>
           <Plus className="h-4 w-4 mr-2" />{" "}
-          <span className="text-sm font-semibold">
-            {t("form.create.label")}
-          </span>
+          <span className="text-sm font-semibold">{t("create.label")}</span>
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t("form.create.title")}</DialogTitle>
-          <DialogDescription>{t("form.create.description")}</DialogDescription>
+          <DialogTitle>{t("create.title")}</DialogTitle>
+          <DialogDescription>{t("create.description")}</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>

@@ -63,7 +63,7 @@ export const WeatherCreateButton = () => {
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.create"));
+          toast.error("Internal error");
         });
     });
   };

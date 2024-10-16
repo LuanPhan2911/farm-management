@@ -63,7 +63,7 @@ export const EquipmentCreateForm = () => {
           }
         })
         .catch((error) => {
-          toast.error(t("status.failure.create"));
+          toast.error("Internal error");
         });
     });
   };

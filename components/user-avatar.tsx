@@ -28,11 +28,7 @@ export const UserAvatar = ({
 }: UserAvatarProps) => {
   return (
     <Avatar>
-      <AvatarImage
-        src={src}
-        className={cn(avatarSizes({ size, className }))}
-        {...props}
-      />
+      <AvatarImage src={src} className={cn(avatarSizes({ size }))} {...props} />
       <AvatarFallback className="bg-blue-300">CN</AvatarFallback>
     </Avatar>
   );

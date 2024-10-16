@@ -1,6 +1,6 @@
 import { db, PrismaTransactionalClient } from "@/lib/db";
-import { UnusedUnitCount } from "@/types";
-import { FloatUnit, IntUnit, Prisma, UnitType } from "@prisma/client";
+import { UnitSelect, UnitTable, UnusedUnitCount } from "@/types";
+import { FloatUnit, IntUnit, UnitType } from "@prisma/client";
 
 type UnitParams = {
   name: string;
@@ -26,7 +26,7 @@ export const updateUnit = async (id: string, params: UnitParams) => {
     },
   });
 };
-export const getUnitsTable = async () => {
+export const getUnitsTable = async (): Promise<UnitTable[]> => {
   try {
     const units = await db.unit.findMany({
       orderBy: {
@@ -55,7 +55,7 @@ export const deleteManyUnit = async (ids: string[]) => {
   return count;
 };
 
-export const getUnitsByType = async (type: UnitType) => {
+export const getUnitsByType = async (type: UnitType): Promise<UnitSelect[]> => {
   try {
     const units = await db.unit.findMany({
       where: {

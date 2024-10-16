@@ -5,22 +5,23 @@ import { useTranslations } from "next-intl";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/datatable/datatable-column-header";
-import { Unit, UnitType } from "@prisma/client";
+import { UnitType } from "@prisma/client";
 import { UnitsTableAction } from "./units-table-action";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
 import { destroyMany } from "@/actions/unit";
 import { toast } from "sonner";
 import { UnitSuperscript } from "../../../_components/unit-with-value";
 import { useDialog } from "@/stores/use-dialog";
+import { UnitTable } from "@/types";
 
 interface UnitsTableProps {
-  data: Unit[];
+  data: UnitTable[];
 }
 export const UnitsTable = ({ data }: UnitsTableProps) => {
   const t = useTranslations("units");
   const { onOpen, onClose, setPending } = useAlertDialog();
   const { onOpen: onOpenEdit } = useDialog();
-  const handleConfirm = (rows: Unit[]) => {
+  const handleConfirm = (rows: UnitTable[]) => {
     setPending(true);
     const ids = rows.map((row) => row.id);
     destroyMany(ids)
@@ -38,11 +39,11 @@ export const UnitsTable = ({ data }: UnitsTableProps) => {
         onClose();
       });
   };
-  const handleEdit = (data: Unit) => {
+  const handleEdit = (data: UnitTable) => {
     onOpenEdit("unit.edit", { unit: data });
   };
 
-  const columns: ColumnDef<Unit>[] = [
+  const columns: ColumnDef<UnitTable>[] = [
     {
       id: "select",
       header: ({ table }) => (
@@ -114,7 +115,7 @@ export const UnitsTable = ({ data }: UnitsTableProps) => {
   const bulkActions = [
     {
       label: t("form.destroyMany.label"),
-      action: (rows: Unit[]) => {
+      action: (rows: UnitTable[]) => {
         onOpen({
           title: t("form.destroyMany.title"),
           description: t("form.destroyMany.description"),

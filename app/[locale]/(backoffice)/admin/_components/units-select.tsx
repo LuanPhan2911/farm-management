@@ -33,8 +33,6 @@ export const UnitsSelect = ({
   errorLabel,
   notFound,
 }: UnitsSelectProps) => {
-  const [isCreating, startTransition] = useTransition();
-  const t = useTranslations("units.status");
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["units_select", type],
     queryFn: async () => {
@@ -54,26 +52,17 @@ export const UnitsSelect = ({
       return (await res.json()) as UnitSelect[];
     },
   });
-  const handleCreate = (inputValue: string) => {
-    startTransition(() => {
-      create({
-        name: inputValue,
-        type,
-      })
-        .then(({ message, ok, data }) => {
-          if (ok) {
-            toast.success(message);
-            const unit = data as Unit;
-            refetch();
-            onChange(unit.id);
-          } else {
-            toast.error(message);
-          }
-        })
-        .catch(() => {
-          toast.error(t("failure.create"));
-        });
-    });
+  const handleCreate = async (inputValue: string) => {
+    try {
+      const { message, ok, data } = await create({ name: inputValue, type });
+      if (ok) {
+        toast.success(message);
+
+        refetch();
+      } else {
+        toast.error(message);
+      }
+    } catch (error) {}
   };
   if (isPending) {
     return <Skeleton className="w-full h-12" />;
@@ -101,9 +90,10 @@ export const UnitsSelect = ({
       }}
       onCreateOption={handleCreate}
       value={option}
-      isDisabled={disabled || isCreating}
+      isDisabled={disabled}
       className={cn("my-react-select-container", className)}
       classNamePrefix="my-react-select"
+      noOptionsMessage={() => notFound}
     />
   );
 };

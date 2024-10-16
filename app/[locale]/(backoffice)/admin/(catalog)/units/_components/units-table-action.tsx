@@ -8,10 +8,11 @@ import { Button } from "@/components/ui/button";
 import { UnitEditButton } from "./unit-edit-button";
 import { UnitDeleteButton } from "./unit-delete-button";
 import { MoreHorizontal } from "lucide-react";
-import { Unit } from "@prisma/client";
+
 import { useTranslations } from "next-intl";
+import { UnitTable } from "@/types";
 interface UnitsTableActionProps {
-  data: Unit;
+  data: UnitTable;
 }
 export const UnitsTableAction = ({ data }: UnitsTableActionProps) => {
   const t = useTranslations("units.form");

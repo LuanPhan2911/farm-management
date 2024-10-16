@@ -40,14 +40,14 @@ export const FieldDeleteButton = () => {
     e.preventDefault();
     e.stopPropagation();
     onOpen({
-      title: t("form.destroy.title"),
-      description: t("form.destroy.description"),
+      title: t("destroy.title"),
+      description: t("destroy.description"),
       onConfirm,
     });
   };
   return (
     <Button variant={"destroy"} size={"sm"} onClick={handleClick}>
-      <Trash className="mr-2" /> {t("form.destroy.label")}
+      <Trash className="mr-2" /> {t("destroy.label")}
     </Button>
   );
 };

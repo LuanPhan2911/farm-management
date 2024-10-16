@@ -1,5 +1,6 @@
 import {
   ApplicantTable,
+  CategoryTable,
   CropTable,
   EquipmentDetailTable,
   FertilizerTable,
@@ -7,16 +8,11 @@ import {
   PlantFertilizerTable,
   PlantPesticideTable,
   SoilTable,
+  UnitTable,
   WeatherTable,
 } from "@/types";
 import { User } from "@clerk/nextjs/server";
-import {
-  Category,
-  File,
-  PlantFertilizer,
-  PlantPesticide,
-  Unit,
-} from "@prisma/client";
+import { File } from "@prisma/client";
 import { create } from "zustand";
 
 export type DialogType =
@@ -37,8 +33,8 @@ export type DialogType =
   | "equipmentDetail.edit";
 
 export interface DialogData {
-  category?: Category;
-  unit?: Unit;
+  category?: CategoryTable;
+  unit?: UnitTable;
   applicant?: ApplicantTable;
   user?: User;
   weather?: WeatherTable;

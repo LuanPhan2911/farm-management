@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { CategorySchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Category, CategoryType } from "@prisma/client";
+import { CategoryType } from "@prisma/client";
 import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
@@ -27,9 +27,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import slugify from "slugify";
 import { SelectOptions } from "@/components/form/select-options";
+import { CategoryTable } from "@/types";
 
 interface CategoryEditButtonProps {
-  data: Category;
+  data: CategoryTable;
   label: string;
 }
 

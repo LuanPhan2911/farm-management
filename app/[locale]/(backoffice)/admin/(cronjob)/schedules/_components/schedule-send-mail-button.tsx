@@ -51,7 +51,7 @@ const initialBody = {
 export const ScheduleSendMailButton = () => {
   const tSchema = useTranslations("schedules.schema");
 
-  const t = useTranslations("schedules");
+  const t = useTranslations("schedules.form");
 
   const formSchema = ScheduleSchema(tSchema);
 
@@ -87,7 +87,7 @@ export const ScheduleSendMailButton = () => {
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.create"));
+          toast.error("Internal error");
         });
     });
   };
@@ -101,7 +101,7 @@ export const ScheduleSendMailButton = () => {
           size={"sm"}
           className="w-full justify-start font-bold"
         >
-          {t("form.sendMail.label")}
+          {t("sendMail.label")}
         </Button>
       </SheetTrigger>
       <SheetContent
@@ -109,8 +109,8 @@ export const ScheduleSendMailButton = () => {
         className="lg:max-w-6xl w-full overflow-y-auto"
       >
         <SheetHeader>
-          <SheetTitle>{t("form.sendMail.title")}</SheetTitle>
-          <SheetDescription>{t("form.sendMail.description")}</SheetDescription>
+          <SheetTitle>{t("sendMail.title")}</SheetTitle>
+          <SheetDescription>{t("sendMail.description")}</SheetDescription>
         </SheetHeader>
 
         <div className="flex gap-x-4 items-end">

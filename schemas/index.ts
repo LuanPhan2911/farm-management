@@ -7,6 +7,7 @@ import {
   Gender,
   JobExperience,
   JobWorkingState,
+  MaterialType,
   PesticideType,
   Season,
   SoilType,
@@ -460,7 +461,9 @@ export const SoilSchema = (
   });
 };
 
-export const PlantSchema = (t: (arg: string) => string) => {
+export const PlantSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
   return z.object({
     name: stringSchema(t, "name", {
       min: 3,
@@ -498,7 +501,9 @@ export const PlantSchema = (t: (arg: string) => string) => {
     }),
   });
 };
-export const PlantFertilizerSchema = (t: (arg: string) => string) => {
+export const PlantFertilizerSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
   return z.object({
     plantId: stringSchema(t, "plantId", { required: true }),
     fertilizerId: stringSchema(t, "fertilizerId", { required: true }),
@@ -516,7 +521,9 @@ export const PlantFertilizerSchema = (t: (arg: string) => string) => {
     }).nullish(),
   });
 };
-export const PlantPesticideSchema = (t: (arg: string) => string) => {
+export const PlantPesticideSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
   return z.object({
     plantId: stringSchema(t, "plantId", { required: true }),
     pesticideId: stringSchema(t, "pesticideId", { required: true }),
@@ -535,7 +542,9 @@ export const PlantPesticideSchema = (t: (arg: string) => string) => {
   });
 };
 
-export const FertilizerSchema = (t: (arg: string) => string) => {
+export const FertilizerSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
   return z.object({
     name: stringSchema(t, "name", {
       min: 5,
@@ -572,7 +581,9 @@ export const FertilizerSchema = (t: (arg: string) => string) => {
   });
 };
 
-export const PesticideSchema = (t: (arg: string) => string) => {
+export const PesticideSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
   return z.object({
     name: stringSchema(t, "name", {
       min: 3,
@@ -609,7 +620,9 @@ export const PesticideSchema = (t: (arg: string) => string) => {
     }).nullish(),
   });
 };
-export const EquipmentSchema = (t: (arg: string) => string) => {
+export const EquipmentSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
   return z.object({
     name: stringSchema(t, "name", {
       min: 3,
@@ -650,7 +663,9 @@ export const EquipmentSchema = (t: (arg: string) => string) => {
   });
 };
 
-export const EquipmentDetailSchema = (t: (arg: string) => string) => {
+export const EquipmentDetailSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
   return z.object({
     equipmentId: stringSchema(t, "equipmentId", {
       required: true,
@@ -661,7 +676,7 @@ export const EquipmentDetailSchema = (t: (arg: string) => string) => {
       required: false,
     }).nullish(),
     status: z.nativeEnum(EquipmentStatus, {
-      message: "status.enum",
+      message: t("status.enum"),
     }),
     maintenanceSchedule: stringSchema(t, "maintenanceSchedule", {
       max: 255,
@@ -674,6 +689,33 @@ export const EquipmentDetailSchema = (t: (arg: string) => string) => {
       required: false,
     }).nullish(),
     location: stringSchema(t, "location", {
+      max: 255,
+      required: false,
+    }).nullish(),
+  });
+};
+export const MaterialSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    name: stringSchema(t, "name", {
+      min: 3,
+      max: 100,
+    }),
+    quantityInStock: numberSchema(t, "quantityInStock", {
+      min: 0,
+      max: 1_000_000_000,
+      required: true,
+    }),
+    unitId: stringSchema(t, "unitId", { required: true }),
+    type: z.nativeEnum(MaterialType, {
+      message: t("type.enum"),
+    }),
+    description: stringSchema(t, "description", {
+      max: 255,
+      required: false,
+    }).nullish(),
+    imageUrl: stringSchema(t, "imageUrl", {
       max: 255,
       required: false,
     }).nullish(),

@@ -33,7 +33,7 @@ import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 interface OrgCreateButtonProps {}
 
 export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
-  const t = useTranslations("organizations");
+  const t = useTranslations("organizations.form");
   const tSchema = useTranslations("organizations.schema");
   const formSchema = OrganizationSchema(tSchema);
 
@@ -70,7 +70,7 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.create"));
+          toast.error("Internal error");
         });
     });
   };
@@ -83,15 +83,13 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
       <DialogTrigger asChild>
         <Button variant={"success"} size={"sm"}>
           <Plus className="h-4 w-4 mr-2" />{" "}
-          <span className="text-sm font-semibold">
-            {t("form.create.label")}
-          </span>
+          <span className="text-sm font-semibold">{t("create.label")}</span>
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t("form.create.title")}</DialogTitle>
-          <DialogDescription>{t("form.create.description")}</DialogDescription>
+          <DialogTitle>{t("create.title")}</DialogTitle>
+          <DialogDescription>{t("create.description")}</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form

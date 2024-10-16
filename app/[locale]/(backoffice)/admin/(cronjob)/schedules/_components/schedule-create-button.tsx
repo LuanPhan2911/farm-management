@@ -41,7 +41,7 @@ import { ScheduleSelectCron } from "./schedule-select-cron";
 
 export const ScheduleCreateButton = () => {
   const tSchema = useTranslations("schedules.schema");
-  const t = useTranslations("schedules");
+  const t = useTranslations("schedules.form");
 
   const formSchema = ScheduleSchema(tSchema);
   const [isPending, startTransition] = useTransition();
@@ -73,7 +73,7 @@ export const ScheduleCreateButton = () => {
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.create"));
+          toast.error("Internal error");
         });
     });
   };
@@ -82,9 +82,7 @@ export const ScheduleCreateButton = () => {
       <SheetTrigger asChild>
         <Button size={"sm"} variant={"success"}>
           <Plus className="h-4 w-4 mr-2" />{" "}
-          <span className="text-sm font-semibold">
-            {t("form.create.label")}
-          </span>
+          <span className="text-sm font-semibold">{t("create.label")}</span>
         </Button>
       </SheetTrigger>
       <SheetContent
@@ -92,8 +90,8 @@ export const ScheduleCreateButton = () => {
         className="lg:max-w-[600px] w-full overflow-y-auto"
       >
         <SheetHeader>
-          <SheetTitle>{t("form.create.title")}</SheetTitle>
-          <SheetDescription>{t("form.create.description")}</SheetDescription>
+          <SheetTitle>{t("create.title")}</SheetTitle>
+          <SheetDescription>{t("create.description")}</SheetDescription>
         </SheetHeader>
 
         <Form {...form}>

@@ -15,14 +15,16 @@ datasource db {
 }
 
 model Unit {
-  id          String      @id @default(uuid())
-  name        String      @unique
-  description String?
-  type        UnitType?
-  floatUnits  FloatUnit[]
-  intUnits    IntUnit[]
-  fields      Field[]
-  soils       Soil[]
+  id             String          @id @default(uuid())
+  name           String          @unique
+  description    String?
+  type           UnitType?
+  floatUnits     FloatUnit[]
+  intUnits       IntUnit[]
+  fields         Field[]
+  soils          Soil[]
+  materials      Material[]
+  materialUsages MaterialUsage[]
 }
 
 enum UnitType {
@@ -61,6 +63,9 @@ model FloatUnit {
 
   plantFertilizerDosages PlantFertilizer[]
   plantPesticideDosages  PlantPesticide[]
+
+  estimatedDurations Activity[] @relation(name: "estimatedDuration")
+  actualDurations    Activity[] @relation(name: "actualDuration")
 }
 
 model IntUnit {
@@ -159,6 +164,9 @@ model Staff {
   soilConfirmations    Soil[]
   messages             Message[]
   files                File[]
+  activityCreatedBy    Activity[]       @relation(name: "createdBy")
+  activityAssignedTo   Activity[]       @relation(name: "assignedTo")
+  equipmentUsages      EquipmentUsage[]
 }
 
 model Applicant {
@@ -276,9 +284,10 @@ model Field {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  crops    Crop[]
-  weathers Weather[]
-  soils    Soil[]
+  crops      Crop[]
+  weathers   Weather[]
+  soils      Soil[]
+  activities Activity[]
 }
 
 enum Season {
@@ -372,7 +381,6 @@ model Fertilizer {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  activities       Activity[]        @relation(name: "fertilizer")
   plantFertilizers PlantFertilizer[]
 }
 
@@ -403,8 +411,6 @@ model Pesticide {
   recommendedDosageId String? // Liều lượng khuyến nghị
   recommendedDosage   FloatUnit? @relation(name: "pesticideDosage", fields: [recommendedDosageId], references: [id], onDelete: SetNull)
   applicationMethod   String? // Phương pháp sử dụng
-
-  activities Activity[] @relation(name: "pesticide")
 
   plantPesticides PlantPesticide[]
 
@@ -443,29 +449,6 @@ model PlantPesticide {
   @@unique([plantId, pesticideId, stage])
 }
 
-enum ActivityType {
-  FERTILIZER
-  PESTICIDE
-  EQUIPMENT
-  WATERING
-  OTHER
-}
-
-model Activity {
-  id          String  @id @default(uuid())
-  name        String
-  description String?
-
-  note String?
-
-  activitableId   String
-  activiatbleType ActivityType?
-
-  fertilizer Fertilizer? @relation(name: "fertilizer", fields: [activitableId], references: [id], map: "fertilizerActivitableId")
-  pesticide  Pesticide?  @relation(name: "pesticide", fields: [activitableId], references: [id], map: "pesicideActivirableId")
-  equiment   Equipment?  @relation(name: "equipment", fields: [activitableId], references: [id], map: "equipmentActivitableId")
-}
-
 enum EquipmentType {
   AgriculturalMachine // Máy nông nghiệp
   ManualTool // Công cụ thủ công
@@ -486,9 +469,8 @@ model Equipment {
   description     String?
   imageUrl        String?
 
-  activities Activity[] @relation(name: "equipment")
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   equipmentDetails EquipmentDetail[]
 }
@@ -496,7 +478,7 @@ model Equipment {
 enum EquipmentStatus {
   MAINTENANCE
   WORKING
-  DAMAGED
+  DECOMMISSION
   AVAILABLE
 }
 
@@ -513,22 +495,9 @@ model EquipmentDetail {
   equipmentId String
   equipment   Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Inventory {
-  id String @id @default(uuid())
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Mission {
-  id String @id @default(uuid())
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  equipmentUsages EquipmentUsage[]
 }
 
 model Message {
@@ -565,4 +534,107 @@ model File {
   updatedAt DateTime  @updatedAt
   deleted   Boolean   @default(false)
   deletedAt DateTime?
+}
+
+model EquipmentUsage {
+  id                String   @id @default(uuid())
+  activityId        String
+  equipmentDetailId String
+  usageStartTime    DateTime // Start time of equipment usage
+  usageEndTime      DateTime // End time
+  staffId           String?
+  note              String? // Additional notes
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  equipmentDetail EquipmentDetail @relation(fields: [equipmentDetailId], references: [id])
+  activity        Activity        @relation(fields: [activityId], references: [id])
+  staff           Staff?          @relation(fields: [staffId], references: [id]) // Operator
+}
+
+enum ActivityType {
+  FERTILIZER
+  PESTICIDE
+  EQUIPMENT
+  WATERING
+  OTHER
+}
+
+enum ActivityStatus {
+  NEW
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum ActivityPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model Activity {
+  id                  String           @id @default(uuid())
+  name                String
+  description         String?
+  fieldId             String
+  activityDate        DateTime // Scheduled or actual date of the activity
+  status              ActivityStatus   @default(NEW)
+  priority            ActivityPriority @default(LOW) // Enum: "Low", "Medium", "High", "Urgent"
+  estimatedDurationId String? // Estimated duration in hours
+  actualDurationId    String? // Actual duration in hours
+  note                String?
+  createdById         String
+  assignedToId        String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  equipmentUseds    EquipmentUsage[] // Relation to equipment used
+  materialUseds     MaterialUsage[]
+  estimatedDuration FloatUnit?       @relation(name: "estimatedDuration", fields: [estimatedDurationId], references: [id], onDelete: SetNull)
+  actualDuration    FloatUnit?       @relation(name: "actualDuration", fields: [actualDurationId], references: [id], onDelete: SetNull)
+  createdBy         Staff            @relation(name: "createdBy", fields: [createdById], references: [id])
+  assignedTo        Staff            @relation(name: "assignedTo", fields: [assignedToId], references: [id])
+  field             Field            @relation(fields: [fieldId], references: [id])
+}
+
+enum MaterialType {
+  FERTILIZER
+  PESTICIDE
+  SEED
+  OTHER
+}
+
+model Material {
+  id              String       @id @default(uuid())
+  name            String // Name of the material (e.g., "Fertilizer Type A")
+  description     String?
+  imageUrl        String?
+  quantityInStock Float // Current stock quantity
+  type            MaterialType
+  unitId          String
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  materialUsages MaterialUsage[] // Relation to usage records
+  unit           Unit            @relation(fields: [unitId], references: [id])
+}
+
+model MaterialUsage {
+  id           String @id @default(uuid())
+  activityId   String
+  materialId   String
+  quantityUsed Float // Quantity used in the activity
+  unitId       String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  activity Activity @relation(fields: [activityId], references: [id])
+  material Material @relation(fields: [materialId], references: [id])
+  unit     Unit     @relation(fields: [unitId], references: [id])
 }

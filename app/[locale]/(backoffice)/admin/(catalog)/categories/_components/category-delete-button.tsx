@@ -2,13 +2,14 @@
 import { destroy } from "@/actions/category";
 import { Button } from "@/components/ui/button";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
-import { Category } from "@prisma/client";
+import { CategoryTable } from "@/types";
+
 import { Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 interface CategoryDeleteButtonProps {
-  data: Category;
+  data: CategoryTable;
   label: string;
 }
 export const CategoryDeleteButton = ({

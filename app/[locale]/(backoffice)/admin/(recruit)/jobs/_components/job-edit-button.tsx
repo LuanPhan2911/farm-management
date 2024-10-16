@@ -84,7 +84,7 @@ export const JobEditForm = ({ job }: JobEditFormProps) => {
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.edit"));
+          toast.error("Internal error");
         });
     });
   };

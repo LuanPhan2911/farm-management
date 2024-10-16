@@ -19,7 +19,7 @@ export const OrgMemberRemoveButton = ({
 }: OrgMemberRemoveButtonProps) => {
   const { onOpen, onClose, setPending } = useAlertDialog();
 
-  const t = useTranslations("organizations");
+  const t = useTranslations("organizations.form");
   const params = useParams<{
     orgId: string;
   }>();
@@ -37,7 +37,7 @@ export const OrgMemberRemoveButton = ({
         }
       })
       .catch((error) => {
-        toast.error(t("status.failure.destroyMember"));
+        toast.error("Internal error");
       })
       .finally(() => {
         onClose();
@@ -52,8 +52,8 @@ export const OrgMemberRemoveButton = ({
       onClick={(e) => {
         e.stopPropagation();
         onOpen({
-          title: t("form.destroyMember.title"),
-          description: t("form.destroyMember.description"),
+          title: t("destroyMember.title"),
+          description: t("destroyMember.description"),
           onConfirm,
         });
       }}
