@@ -46,7 +46,7 @@ export const PesticidesSelect = ({
 
   return (
     <ComboBoxCustom
-      label={placeholder}
+      placeholder={placeholder}
       notFound={notFound}
       onChange={onChange}
       defaultValue={defaultValue}

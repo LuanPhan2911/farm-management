@@ -10,6 +10,7 @@ import { useDialog } from "@/stores/use-dialog";
 import { EquipmentDetailTable } from "@/types";
 import { UserAvatar } from "@/components/user-avatar";
 import { EquipmentDetailStatusValue } from "./equipment-detail-status-value";
+import { useRouter } from "@/navigation";
 
 interface EquipmentDetailsTableProps {
   data: EquipmentDetailTable[];
@@ -17,10 +18,12 @@ interface EquipmentDetailsTableProps {
 export const EquipmentDetailsTable = ({ data }: EquipmentDetailsTableProps) => {
   const t = useTranslations("equipmentDetails");
 
-  const { onOpen } = useDialog();
+  const router = useRouter();
   const { dateTime } = useFormatter();
-  const handleEdit = (data: EquipmentDetailTable) => {
-    onOpen("equipmentDetail.edit", { equipmentDetail: data });
+  const handleViewUsage = (data: EquipmentDetailTable) => {
+    router.push(
+      `/admin/equipments/detail/${data.equipmentId}/details/${data.id}/usages`
+    );
   };
 
   const columns: ColumnDef<EquipmentDetailTable>[] = [
@@ -50,6 +53,21 @@ export const EquipmentDetailsTable = ({ data }: EquipmentDetailsTableProps) => {
             title={t("table.thead.name")}
           />
         );
+      },
+    },
+    {
+      accessorKey: "status",
+      header: ({ column }) => {
+        return (
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.thead.status")}
+          />
+        );
+      },
+      cell: ({ row }) => {
+        const data = row.original;
+        return <EquipmentDetailStatusValue status={data.status} />;
       },
     },
 
@@ -125,21 +143,7 @@ export const EquipmentDetailsTable = ({ data }: EquipmentDetailsTableProps) => {
         return data.operatingHours;
       },
     },
-    {
-      accessorKey: "status",
-      header: ({ column }) => {
-        return (
-          <DataTableColumnHeader
-            column={column}
-            title={t("table.thead.status")}
-          />
-        );
-      },
-      cell: ({ row }) => {
-        const data = row.original;
-        return <EquipmentDetailStatusValue status={data.status} />;
-      },
-    },
+
     {
       id: "actions",
       cell: ({ row }) => {
@@ -149,5 +153,7 @@ export const EquipmentDetailsTable = ({ data }: EquipmentDetailsTableProps) => {
     },
   ];
 
-  return <DataTable columns={columns} data={data} onViewDetail={handleEdit} />;
+  return (
+    <DataTable columns={columns} data={data} onViewDetail={handleViewUsage} />
+  );
 };

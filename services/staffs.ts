@@ -113,23 +113,20 @@ export const getStaffsTable = async ({
   }
 };
 
-export const getStaffsSelectContainAdmin = async () => {
+type StaffSelectQuery = {
+  adminOnly?: boolean;
+};
+export const getStaffsSelect = async (params?: StaffSelectQuery) => {
   try {
     const staffs = await db.staff.findMany({
       where: {
-        role: {
-          in: [StaffRole.admin, StaffRole.superadmin],
-        },
+        ...(params?.adminOnly && {
+          role: {
+            in: ["superadmin", "admin"],
+          },
+        }),
       },
     });
-    return staffs;
-  } catch (error) {
-    return [];
-  }
-};
-export const getStaffsSelect = async () => {
-  try {
-    const staffs = await db.staff.findMany({});
     return staffs;
   } catch (error) {
     return [];

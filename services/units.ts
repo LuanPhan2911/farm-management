@@ -1,5 +1,5 @@
 import { db, PrismaTransactionalClient } from "@/lib/db";
-import { UnitSelect, UnitTable, UnusedUnitCount } from "@/types";
+import { UnitSelect, UnitTable, UnitUnusedCount } from "@/types";
 import { FloatUnit, IntUnit, UnitType } from "@prisma/client";
 
 type UnitParams = {
@@ -231,7 +231,7 @@ export const deleteUnusedIntegerUnits = async () => {
   await Promise.all(deletePromises);
 };
 
-export const getCountUnusedUnit = async (): Promise<UnusedUnitCount> => {
+export const getCountUnusedUnit = async (): Promise<UnitUnusedCount> => {
   try {
     const floatUnitCount = await db.floatUnit.count({
       where: {

@@ -3,17 +3,17 @@ import { StaffRole } from "@prisma/client";
 import { useTranslations } from "next-intl";
 
 interface StaffSelectRoleProps {
-  label: string;
-  value: string;
+  placeholder: string;
+  defaultValue?: string;
   onChange: (value: string) => void;
   disabled?: boolean;
   hidden?: StaffRole[];
 }
 
 export const StaffSelectRole = ({
-  label,
+  placeholder,
   onChange,
-  value,
+  defaultValue,
   disabled,
   hidden,
 }: StaffSelectRoleProps) => {
@@ -28,10 +28,10 @@ export const StaffSelectRole = ({
     .filter((item) => !hidden?.includes(item.value));
   return (
     <SelectOptions
-      label={label}
+      label={placeholder}
       options={options}
       onChange={onChange}
-      defaultValue={value}
+      defaultValue={defaultValue}
       disabled={disabled}
     />
   );

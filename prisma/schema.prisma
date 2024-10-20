@@ -449,6 +449,42 @@ model PlantPesticide {
   @@unique([plantId, pesticideId, stage])
 }
 
+model Message {
+  id      String @id @default(uuid())
+  content String
+
+  staffId String
+  staff   Staff  @relation(fields: [staffId], references: [id], onDelete: Cascade)
+
+  orgId String?
+  files File[]
+
+  deleted   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([staffId, orgId])
+}
+
+model File {
+  id       String  @id @default(uuid())
+  name     String
+  type     String
+  url      String  @unique
+  key      String  @unique
+  isPublic Boolean @default(false)
+  orgId    String?
+  ownerId  String
+  owner    Staff   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  messageId String?
+  message   Message?  @relation(fields: [messageId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deleted   Boolean   @default(false)
+  deletedAt DateTime?
+}
+
 enum EquipmentType {
   AgriculturalMachine // Máy nông nghiệp
   ManualTool // Công cụ thủ công
@@ -500,49 +536,13 @@ model EquipmentDetail {
   equipmentUsages EquipmentUsage[]
 }
 
-model Message {
-  id      String @id @default(uuid())
-  content String
-
-  staffId String
-  staff   Staff  @relation(fields: [staffId], references: [id], onDelete: Cascade)
-
-  orgId String?
-  files File[]
-
-  deleted   Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([staffId, orgId])
-}
-
-model File {
-  id       String  @id @default(uuid())
-  name     String
-  type     String
-  url      String  @unique
-  key      String  @unique
-  isPublic Boolean @default(false)
-  orgId    String?
-  ownerId  String
-  owner    Staff   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-
-  messageId String?
-  message   Message?  @relation(fields: [messageId], references: [id])
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deleted   Boolean   @default(false)
-  deletedAt DateTime?
-}
-
 model EquipmentUsage {
   id                String   @id @default(uuid())
   activityId        String
   equipmentDetailId String
   usageStartTime    DateTime // Start time of equipment usage
-  usageEndTime      DateTime // End time
-  staffId           String?
+  duration          String
+  operatorId        String?
   note              String? // Additional notes
 
   createdAt DateTime @default(now())
@@ -550,7 +550,7 @@ model EquipmentUsage {
 
   equipmentDetail EquipmentDetail @relation(fields: [equipmentDetailId], references: [id])
   activity        Activity        @relation(fields: [activityId], references: [id])
-  staff           Staff?          @relation(fields: [staffId], references: [id]) // Operator
+  operator        Staff?          @relation(fields: [operatorId], references: [id]) // Operator
 }
 
 enum ActivityType {

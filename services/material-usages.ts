@@ -1,54 +1,60 @@
 import { LIMIT } from "@/configs/paginationConfig";
+import {
+  ActivityExistError,
+  ActivityUpdateUsageError,
+  MaterialExistError,
+  MaterialUpdateQuantityError,
+  MaterialUsageExistError,
+  MaterialUsageUpdateQuantityError,
+} from "@/errors";
+import { canUpdateActivityUsage } from "@/lib/permission";
 import { db } from "@/lib/db";
+import { getObjectSortOrder } from "@/lib/utils";
 import { MaterialUsageTable, PaginatedResponse } from "@/types";
+import { revalidatePath } from "next/cache";
 
+type RevalidatePathParam = {
+  materialId: string;
+};
+export const revalidatePathMaterialUsage = ({
+  materialId,
+}: RevalidatePathParam) => {
+  revalidatePath(`/admin/materials/`);
+  revalidatePath(`/admin/materials/detail/${materialId}`);
+  revalidatePath(`/admin/materials/detail/${materialId}/usages`);
+};
 type MaterialUsageParam = {
   materialId: string;
   quantityUsed: number;
   activityId: string;
   unitId: string;
 };
+
 export const createMaterialUsage = async (params: MaterialUsageParam) => {
-  const { materialId, quantityUsed } = params;
-
-  // Begin a transaction
-  const [materialUsage, updatedMaterial] = await db.$transaction([
-    // Step 1: Create the MaterialUsage record
-    db.materialUsage.create({
-      data: {
-        ...params,
-      },
-    }),
-
-    // Step 2: Update the quantityInStock in Material
-    db.material.update({
-      where: { id: materialId },
-      data: {
-        quantityInStock: {
-          decrement: quantityUsed, // Decrement stock by quantity used
-        },
-      },
-    }),
-  ]);
-
-  return { materialUsage, updatedMaterial };
-};
-export const createMaterialUsageWithValidation = async (
-  params: MaterialUsageParam
-) => {
-  const { materialId, quantityUsed } = params;
+  const { materialId, quantityUsed, activityId } = params;
   const material = await db.material.findUnique({
     where: { id: materialId },
-    select: { quantityInStock: true },
+    select: {
+      quantityInStock: true,
+    },
   });
-
   if (!material) {
-    throw new Error("Material not found");
+    throw new MaterialExistError();
   }
-
-  // Validate if there's enough stock
   if (material.quantityInStock < quantityUsed) {
-    throw new Error("Not enough stock available");
+    throw new MaterialUpdateQuantityError(material);
+  }
+  const activity = await db.activity.findUnique({
+    where: { id: activityId },
+    select: {
+      status: true,
+    },
+  });
+  if (!activity) {
+    throw new ActivityExistError();
+  }
+  if (!canUpdateActivityUsage(activity.status)) {
+    throw new ActivityUpdateUsageError();
   }
 
   // If stock is sufficient, proceed with the transaction
@@ -70,21 +76,46 @@ export const createMaterialUsageWithValidation = async (
 
   return { materialUsage, updatedMaterial };
 };
+type MaterialUsageUpdateParams = {
+  quantityUsed: number;
+};
 export const updateMaterialUsage = async (
   id: string,
-  newQuantityUsed: number
+  { quantityUsed: newQuantityUsed }: MaterialUsageUpdateParams
 ) => {
   const materialUsage = await db.materialUsage.findUnique({
     where: { id },
-    include: { material: true },
+    select: {
+      quantityUsed: true,
+      material: {
+        select: {
+          quantityInStock: true,
+        },
+      },
+      activity: {
+        select: {
+          status: true,
+        },
+      },
+    },
   });
 
   if (!materialUsage) {
-    throw new Error("Material usage record not found");
+    throw new MaterialUsageExistError();
+  }
+
+  if (!canUpdateActivityUsage(materialUsage.activity.status)) {
+    throw new ActivityUpdateUsageError();
   }
 
   // Calculate the quantity difference
   const quantityDifference = newQuantityUsed - materialUsage.quantityUsed;
+  if (
+    quantityDifference > 0 &&
+    materialUsage.material.quantityInStock < quantityDifference
+  ) {
+    throw new MaterialUsageUpdateQuantityError(materialUsage);
+  }
 
   const [updatedUsage, updatedMaterial] = await db.$transaction([
     db.materialUsage.update({
@@ -92,11 +123,15 @@ export const updateMaterialUsage = async (
       data: { quantityUsed: newQuantityUsed },
     }),
     db.material.update({
-      where: { id: materialUsage.materialId },
+      where: { id },
       data: {
         quantityInStock: {
-          decrement: quantityDifference > 0 ? quantityDifference : 0,
-          increment: quantityDifference < 0 ? Math.abs(quantityDifference) : 0,
+          ...(quantityDifference > 0 && {
+            decrement: quantityDifference,
+          }),
+          ...(quantityDifference < 0 && {
+            increment: Math.abs(quantityDifference),
+          }),
         },
       },
     }),
@@ -107,16 +142,26 @@ export const updateMaterialUsage = async (
 export const deleteMaterialUsage = async (id: string) => {
   const materialUsage = await db.materialUsage.findUnique({
     where: { id },
-    include: { material: true },
+    select: {
+      quantityUsed: true,
+      activity: {
+        select: {
+          status: true,
+        },
+      },
+    },
   });
 
   if (!materialUsage) {
-    throw new Error("Material usage record not found");
+    throw new MaterialUsageExistError();
+  }
+  if (!canUpdateActivityUsage(materialUsage.activity.status)) {
+    throw new ActivityUpdateUsageError();
   }
   // delete material usage
 
   // restock restock material
-  const [deletedMaterial, updatedMaterial] = await db.$transaction([
+  const [deletedUsage, updatedMaterial] = await db.$transaction([
     db.materialUsage.delete({
       where: {
         id,
@@ -131,18 +176,20 @@ export const deleteMaterialUsage = async (id: string) => {
       },
     }),
   ]);
-  return { deletedMaterial, updatedMaterial };
+  return { deletedUsage, updatedMaterial };
 };
 
 type MaterialUsageQuery = {
+  materialId: string;
   page?: number;
   query?: string;
-  materialId: string;
+  orderBy?: string;
 };
 export const getMaterialUsages = async ({
   page = 1,
   query,
   materialId,
+  orderBy,
 }: MaterialUsageQuery): Promise<PaginatedResponse<MaterialUsageTable>> => {
   try {
     const [data, count] = await db.$transaction([
@@ -158,9 +205,28 @@ export const getMaterialUsages = async ({
             },
           },
         },
+
         include: {
           material: true,
+          unit: {
+            select: {
+              name: true,
+            },
+          },
+          activity: {
+            select: {
+              id: true,
+              name: true,
+              status: true,
+              priority: true,
+              createdBy: true,
+              assignedTo: true,
+              activityDate: true,
+              note: true,
+            },
+          },
         },
+        orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
       }),
       db.materialUsage.count({
         where: {
@@ -185,5 +251,35 @@ export const getMaterialUsages = async ({
       data: [],
       totalPage: 0,
     };
+  }
+};
+
+export const getMaterialUsageById = async (id: string) => {
+  try {
+    return await db.materialUsage.findUnique({
+      where: { id },
+      include: {
+        material: true,
+        unit: {
+          select: {
+            name: true,
+          },
+        },
+        activity: {
+          select: {
+            id: true,
+            name: true,
+            status: true,
+            priority: true,
+            createdBy: true,
+            assignedTo: true,
+            activityDate: true,
+            note: true,
+          },
+        },
+      },
+    });
+  } catch (error) {
+    return null;
   }
 };

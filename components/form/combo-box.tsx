@@ -23,7 +23,7 @@ export interface ComboBoxData {
 interface ComboBoxProps {
   options: ComboBoxData[];
   notFound: string;
-  label: string;
+  placeholder: string;
   onChange: (value: string) => void;
   defaultValue?: string;
   className?: string;
@@ -31,7 +31,7 @@ interface ComboBoxProps {
 export const ComboBoxDefault = ({
   options,
   notFound,
-  label,
+  placeholder,
   onChange,
   defaultValue,
   className,
@@ -62,7 +62,7 @@ export const ComboBoxDefault = ({
           <p className="truncate text-start">
             {value
               ? options.find((item) => item.value === value)?.label
-              : label}
+              : placeholder}
           </p>
 
           <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
@@ -74,7 +74,7 @@ export const ComboBoxDefault = ({
             return searchData[value]?.includes(search.toLowerCase()) ? 1 : 0;
           }}
         >
-          <CommandInput placeholder={label} />
+          <CommandInput placeholder={placeholder} />
           <CommandList>
             <CommandEmpty>{notFound}</CommandEmpty>
 
@@ -110,7 +110,7 @@ interface ComboBoxCustomProps<T extends Record<string, any>> {
   labelKey: keyof T;
   valueKey: keyof T;
   notFound: string;
-  label: string;
+  placeholder: string;
   disabled?: boolean;
   onChange: (value: string | undefined) => void;
   defaultValue?: string;
@@ -123,7 +123,7 @@ export const ComboBoxCustom = <T extends Record<string, any>>({
   options,
   labelKey,
   valueKey,
-  label,
+  placeholder,
   notFound,
   disabled,
   appearance,
@@ -164,7 +164,7 @@ export const ComboBoxCustom = <T extends Record<string, any>>({
             )}
             disabled={disabled}
           >
-            {selectedItem ? renderItem(selectedItem) : label}
+            {selectedItem ? renderItem(selectedItem) : placeholder}
 
             <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
           </Button>
@@ -175,7 +175,7 @@ export const ComboBoxCustom = <T extends Record<string, any>>({
               return searchData[value]?.includes(search.toLowerCase()) ? 1 : 0;
             }}
           >
-            <CommandInput placeholder={label} />
+            <CommandInput placeholder={placeholder} />
             <CommandList>
               <CommandEmpty>{notFound}</CommandEmpty>
               <CommandGroup>

@@ -132,7 +132,7 @@ export const FieldCreateForm = () => {
                         defaultValue={field.value}
                         onChange={field.onChange}
                         errorLabel={tSchema("orgId.error")}
-                        label={tSchema("orgId.placeholder")}
+                        placeholder={tSchema("orgId.placeholder")}
                         notFound={tSchema("orgId.notFound")}
                         disabled={isPending}
                       />

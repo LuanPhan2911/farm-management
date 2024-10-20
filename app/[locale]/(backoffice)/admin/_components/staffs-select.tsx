@@ -1,23 +1,7 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { useState } from "react";
 
-import { QueryFunction, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Staff } from "@prisma/client";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -31,6 +15,7 @@ import {
   ComboBoxCustom,
   ComboBoxCustomAppearance,
 } from "@/components/form/combo-box";
+import queryString from "query-string";
 interface StaffSelectItemProps {
   imageUrl: string | undefined | null;
   name: string;
@@ -44,7 +29,7 @@ const StaffSelectItem = ({
   role,
 }: StaffSelectItemProps) => {
   return (
-    <div className="flex items-center p-1">
+    <div className="flex items-center">
       <UserAvatar
         src={imageUrl || undefined}
         size={"default"}
@@ -68,45 +53,52 @@ const StaffSelectItem = ({
 };
 
 interface StaffsSelectProps {
-  queryKey: string[];
-  queryFn: QueryFunction<Staff[]>;
+  adminOnly?: boolean;
   onChange: (value: string | undefined) => void;
-  defaultValue: string;
+  defaultValue?: string | null;
   disabled?: boolean;
-  label: string;
+  placeholder: string;
   notFound: string;
-  errorLabel: string;
+  error: string;
   appearance?: ComboBoxCustomAppearance;
 }
 
 export const StaffsSelect = ({
-  queryKey,
+  adminOnly = false,
   defaultValue,
   disabled,
-  label,
+  placeholder,
   notFound,
-  errorLabel,
-  queryFn,
+  error,
   onChange,
   appearance,
 }: StaffsSelectProps) => {
   const { data, isPending, isError, refetch } = useQuery({
-    queryKey,
-    queryFn,
+    queryKey: ["staffs_select"],
+    queryFn: async () => {
+      const url = queryString.stringifyUrl({
+        url: "/api/staffs/select",
+        query: {
+          adminOnly,
+        },
+      });
+      const res = await fetch(url);
+      return (await res.json()) as Staff[];
+    },
   });
 
   if (isPending) {
     return <Skeleton className="lg:w-[250px] w-full h-12"></Skeleton>;
   }
   if (isError) {
-    return <ErrorButton title={errorLabel} refresh={refetch} />;
+    return <ErrorButton title={error} refresh={refetch} />;
   }
 
   return (
     <ComboBoxCustom
-      label={label}
+      placeholder={placeholder}
       notFound={notFound}
-      defaultValue={defaultValue}
+      defaultValue={defaultValue || undefined}
       options={data}
       valueKey="id"
       labelKey="name"

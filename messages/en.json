@@ -2316,8 +2316,25 @@
       "create": {
         "title": "New equipment"
       },
-      "edit": {
-        "title": "Edit equipment"
+      "detail": {
+        "title": "Edit equipment info",
+        "details": {
+          "title": "Equipment details"
+        },
+        "danger": {
+          "title": "Equipment danger"
+        }
+      }
+    },
+    "tabs": {
+      "info": {
+        "label": "Info"
+      },
+      "details": {
+        "label": "Equipment details"
+      },
+      "danger": {
+        "label": "Danger"
       }
     },
     "table": {
@@ -2349,6 +2366,9 @@
         "label": "Edit",
         "title": "Edit equipment",
         "description": "Update of equipment"
+      },
+      "detail": {
+        "label": "View detail"
       },
       "destroy": {
         "label": "Delete",
@@ -2495,6 +2515,9 @@
         "label": "Delete",
         "title": "Delete equipment detail?",
         "description": "Are you absolutely sure? This action can not be undone!"
+      },
+      "viewUsage": {
+        "label": "View usages"
       }
     },
     "schema": {
@@ -2558,14 +2581,136 @@
       "backLabel": "Go to equipment details page"
     }
   },
+  "equipmentUsages": {
+    "page": {
+      "title": "Manage equipment usages"
+    },
+    "table": {
+      "thead": {
+        "activity": {
+          "name": "Activity name",
+          "status": "Activity Status",
+          "priority": "Activity Priority"
+        },
+        "usageStartTime": "Start usage",
+        "duration": "Duration",
+        "operator": "Operator",
+        "note": "Note"
+      },
+      "trow": {
+        "operator": "No operator"
+      }
+    },
+    "search": {
+      "placeholder": "Search by name..."
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add equipment usage",
+        "description": "Add equipment usage"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit equipment usage",
+        "description": "Update of equipment usage"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete equipment usage?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      },
+      "detailActivity": {
+        "label": "Detail activity"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid equipment usages!",
+        "existEquipmentDetail": "Equipment detail is not exist",
+        "existStaff": "Operator is not exist",
+        "existActivity": "Activity is not exist",
+        "existEquipmentUsage": "Equipment usage is not exist",
+        "canUpdateUsage": "Activity status is in progress or new is possible to update usage"
+      },
+      "activityId": {
+        "required_error": "Required activity id",
+        "placeholder": "Select activity",
+        "error": "Fail load activities",
+        "notFound": "Activities not found",
+        "label": "Activity"
+      },
+      "equipmentDetailId": {
+        "required_error": "Required equipment detail id"
+      },
+      "operatorId": {
+        "placeholder": "Select operator",
+        "error": "Fail load operator",
+        "notFound": "Operator not found",
+        "label": "Operator"
+      },
+      "usageStartTime": {
+        "label": "Start usage",
+        "placeholder": "Start usage time",
+        "invalid_type_error": "Invalid date type",
+        "required_error": "Start usage time is required!"
+      },
+      "duration": {
+        "label": "Duration",
+        "placeholder": "Duration usage",
+        "min": "Duration must be at least {min} characters long",
+        "max": "Duration must be at most {max} characters long.",
+        "required_error": "Duration is required"
+      },
+      "note": {
+        "label": "Note",
+        "placeholder": "Usage note",
+        "max": "Note length must be at most {max} characters long."
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Equipment usage created!",
+        "edit": "Equipment usage edited!",
+        "destroy": "Equipment usage deleted!"
+      },
+      "failure": {
+        "create": "Something went wrong while creating equipment usage!",
+        "edit": "Something went wrong while editing equipment usage!",
+        "destroy": "Something went wrong while deleting equipment usage!"
+      }
+    },
+    "notFound": {
+      "title": "Equipment usage not found",
+      "description": "Sorry, we couldn’t find the equipment usage you’re looking for.",
+      "backLabel": "Go to equipment usages page"
+    }
+  },
   "materials": {
     "page": {
       "title": "Manage materials",
       "create": {
         "title": "New material"
       },
-      "edit": {
-        "title": "Edit material"
+      "detail": {
+        "title": "Material info",
+        "danger": {
+          "title": "Delete material"
+        },
+        "usages": {
+          "title": "Material usages"
+        }
+      }
+    },
+    "tabs": {
+      "info": {
+        "label": "Info"
+      },
+      "usages": {
+        "label": "Material usages"
+      },
+      "danger": {
+        "label": "Danger"
       }
     },
     "table": {
@@ -2670,6 +2815,118 @@
       "title": "Material not found",
       "description": "Sorry, we couldn’t find the material you’re looking for.",
       "backLabel": "Go to materials page"
+    }
+  },
+  "materialUsages": {
+    "page": {
+      "title": "Manage material usages"
+    },
+    "table": {
+      "thead": {
+        "activity": {
+          "name": "Activity name",
+          "status": "Activity Status",
+          "priority": "Activity Priority"
+        },
+        "quantityUsed": "Quantity used",
+        "unitId": "Unit"
+      },
+      "trow": {}
+    },
+    "search": {
+      "placeholder": "Search by name..."
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add material usage",
+        "description": "Add material usage"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit material usage",
+        "description": "Update of material usage"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete material usage?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      },
+      "detailActivity": {
+        "label": "Detail activity"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid material usages!",
+        "existMaterial": "Material is not exist",
+        "noEnoughQuantity": "Quantity in stock is {value}, not enough to use!",
+        "existActivity": "Activity is not exist",
+        "canUpdateUsage": "Activity status is in progress or new is possible to update usage"
+      },
+      "unitId": {
+        "required_error": "Required unit",
+        "placeholder": "Unit",
+        "error": "Fail load units",
+        "notFound": "Units not found",
+        "label": "Unit"
+      },
+      "activityId": {
+        "required_error": "Required activity id",
+        "placeholder": "Select activity",
+        "error": "Fail load activities",
+        "notFound": "Activities not found",
+        "label": "Activity"
+      },
+      "materialId": {
+        "required_error": "Required material id"
+      },
+      "quantityUsed": {
+        "required_error": "Quantity value is required",
+        "invalid_type_error": "Quantity value must be number",
+        "min": "Min Quantity value is {min}",
+        "max": "Max Quantity value is {max}",
+        "label": "Quantity used",
+        "placeholder": "Quantity used"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Material usage created!",
+        "edit": "Material usage edited!",
+        "destroy": "Material usage deleted!"
+      },
+      "failure": {
+        "create": "Something went wrong while creating material usage!",
+        "edit": "Something went wrong while editing material usage!",
+        "destroy": "Something went wrong while deleting material usage!"
+      }
+    },
+    "notFound": {
+      "title": "Material usage not found",
+      "description": "Sorry, we couldn’t find the material usage you’re looking for.",
+      "backLabel": "Go to material usages page"
+    }
+  },
+  "activities": {
+    "schema": {
+      "status": {
+        "options": {
+          "NEW": "New",
+          "PENDING": "Pending",
+          "IN_PROGRESS": "In progress",
+          "COMPLETED": "Completed",
+          "CANCELLED": "Cancelled"
+        }
+      },
+      "priority": {
+        "options": {
+          "LOW": "Low",
+          "MEDIUM": "Medium",
+          "HIGH": "High",
+          "URGENT": "Urgent"
+        }
+      }
     }
   },
   "crops": {
@@ -3219,12 +3476,15 @@
     "/admin/pesticides": "Pesticide",
     "/admin/equipments": "Equipment",
     "/admin/equipments/create": "Create",
-    "/admin/equipments/edit": "Edit",
-    "/admin/equipments/detail": "Equipment details",
+    "/admin/equipments/detail": "Info",
+    "/admin/equipments/detail/details": "Details",
+    "/admin/equipments/detail/details/usages": "Usages",
+    "/admin/equipments/detail/danger": "Danger",
     "/admin/materials": "Material",
-    "/admin/materials/edit": "Edit",
     "/admin/materials/create": "Create",
-    "/admin/materials/usages": "Material usages",
+    "/admin/materials/detail": "Info",
+    "/admin/materials/detail/danger": "Danger",
+    "/admin/materials/detail/usages": "Usages",
     "/admin/tasks": "Tasks",
     "/admin/schedules": "Schedules",
     "/admin/messages": "All messages",

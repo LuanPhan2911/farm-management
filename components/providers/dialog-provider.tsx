@@ -16,6 +16,8 @@ import { FileEditNameDialog } from "@/app/[locale]/(backoffice)/admin/(files)/_c
 import { PlantFertilizerEditDialog } from "@/app/[locale]/(backoffice)/admin/(farm)/plants/detail/[plantId]/fertilizers/_components/plant-fertilizers-edit-button";
 import { PlantPesticideEditDialog } from "@/app/[locale]/(backoffice)/admin/(farm)/plants/detail/[plantId]/pesticides/_components/plant-pesticides-edit-button";
 import { EquipmentDetailEditDialog } from "@/app/[locale]/(backoffice)/admin/(inventory)/equipments/detail/[equipmentId]/_components/equipment-detail-edit-button";
+import { MaterialUsageEditDialog } from "@/app/[locale]/(backoffice)/admin/(inventory)/materials/detail/[materialId]/usages/_components/material-usages-edit-button";
+import { EquipmentUsageEditDialog } from "@/app/[locale]/(backoffice)/admin/(inventory)/equipments/detail/[equipmentId]/details/[equipmentDetailId]/usages/_components/equipment-usage-edit-button";
 
 export const DialogProvider = () => {
   return (
@@ -36,6 +38,8 @@ export const DialogProvider = () => {
       <PlantFertilizerEditDialog />
       <PlantPesticideEditDialog />
       <EquipmentDetailEditDialog />
+      <MaterialUsageEditDialog />
+      <EquipmentUsageEditDialog />
     </>
   );
 };

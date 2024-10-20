@@ -13,7 +13,7 @@ interface OrgsSelectProps {
   defaultValue?: string;
   onChange: (value: string | undefined) => void;
   disabled?: boolean;
-  label: string;
+  placeholder: string;
   errorLabel: string;
   notFound: string;
 }
@@ -21,7 +21,7 @@ export const OrgsSelect = ({
   onChange,
   defaultValue,
   disabled,
-  label,
+  placeholder,
   errorLabel,
   notFound,
 }: OrgsSelectProps) => {
@@ -52,7 +52,7 @@ export const OrgsSelect = ({
       options={data}
       labelKey="name"
       valueKey="id"
-      label={label}
+      placeholder={placeholder}
       notFound={notFound}
       onChange={onChange}
       defaultValue={defaultValue}

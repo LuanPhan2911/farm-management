@@ -40,9 +40,9 @@ export const SelectItemContentWithoutImage = ({
   description,
 }: SelectItemContentWithoutImageProps) => {
   return (
-    <div className="w-full">
+    <div className="w-full flex flex-col gap-y-1">
       <div className="text-sm font-medium leading-none text-start">{title}</div>
-      <p className="text-sm text-muted-foreground text-start">{description}</p>
+      <p className="text-xs text-muted-foreground text-start">{description}</p>
     </div>
   );
 };

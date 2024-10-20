@@ -1,10 +1,15 @@
 import {
+  Activity,
+  ActivityPriority,
+  ActivityStatus,
   ApplicantStatus,
   Category,
   Crop,
   Equipment,
   EquipmentDetail,
+  EquipmentStatus,
   EquipmentType,
+  EquipmentUsage,
   Fertilizer,
   FertilizerType,
   Field,
@@ -27,6 +32,7 @@ import {
   Soil,
   SoilType,
   Staff,
+  StaffRole,
   ToxicityLevel,
   Unit,
   Weather,
@@ -67,6 +73,16 @@ export type UnitSelect = {
   id: string;
   name: string;
 };
+export type FloatUnitTable = FloatUnit & {
+  unit: {
+    name: string;
+  } | null;
+};
+export type IntUnitTable = IntUnit & {
+  unit: {
+    name: string;
+  } | null;
+};
 export type CategoryTable = Category & {};
 export type CategorySelect = {
   id: string;
@@ -97,7 +113,7 @@ export type JobSelect = {
   name: string;
 };
 
-export type UnusedUnitCount = {
+export type UnitUnusedCount = {
   floatUnit: number;
   intUnit: number;
 };
@@ -117,34 +133,10 @@ export type FieldTable = Field & {
 
 export type WeatherTable = Weather & {
   confirmedBy: Staff | null;
-  temperature:
-    | (FloatUnit & {
-        unit: {
-          name: string;
-        } | null;
-      })
-    | null;
-  humidity:
-    | (IntUnit & {
-        unit: {
-          name: string;
-        } | null;
-      })
-    | null;
-  atmosphericPressure:
-    | (FloatUnit & {
-        unit: {
-          name: string;
-        } | null;
-      })
-    | null;
-  rainfall:
-    | (IntUnit & {
-        unit: {
-          name: string;
-        } | null;
-      })
-    | null;
+  temperature: FloatUnitTable | null;
+  humidity: IntUnitTable | null;
+  atmosphericPressure: FloatUnitTable | null;
+  rainfall: IntUnitTable | null;
 };
 export type WeatherStatusCount = {
   status: WeatherStatus;
@@ -155,34 +147,10 @@ export type WeatherChart = {
   confirmedAt: Date | null;
   createdAt: Date;
   status: WeatherStatus;
-  temperature:
-    | (FloatUnit & {
-        unit: {
-          name: string;
-        } | null;
-      })
-    | null;
-  humidity:
-    | (IntUnit & {
-        unit: {
-          name: string;
-        } | null;
-      })
-    | null;
-  atmosphericPressure:
-    | (FloatUnit & {
-        unit: {
-          name: string;
-        } | null;
-      })
-    | null;
-  rainfall:
-    | (IntUnit & {
-        unit: {
-          name: string;
-        } | null;
-      })
-    | null;
+  temperature: FloatUnitTable | null;
+  humidity: IntUnitTable | null;
+  atmosphericPressure: FloatUnitTable | null;
+  rainfall: IntUnitTable | null;
 };
 export type SoilTypeCount = {
   type: SoilType;
@@ -190,13 +158,7 @@ export type SoilTypeCount = {
 };
 export type SoilTable = Soil & {
   confirmedBy: Staff | null;
-  moisture:
-    | (IntUnit & {
-        unit: {
-          name: string;
-        } | null;
-      })
-    | null;
+  moisture: IntUnitTable | null;
   nutrientUnit: {
     name: string;
   } | null;
@@ -210,37 +172,13 @@ export type SoilChart = {
   nutrientNitrogen: number | null;
   nutrientPhosphorus: number | null;
   nutrientPotassium: number | null;
-  moisture:
-    | (IntUnit & {
-        unit: {
-          name: string;
-        } | null;
-      })
-    | null;
+  moisture: IntUnitTable | null;
 };
 export type PlantTable = Plant & {
   category: Category;
-  idealTemperature:
-    | (FloatUnit & {
-        unit: {
-          name: string;
-        } | null;
-      })
-    | null;
-  idealHumidity:
-    | (IntUnit & {
-        unit: {
-          name: string;
-        } | null;
-      })
-    | null;
-  waterRequirement:
-    | (FloatUnit & {
-        unit: {
-          name: string;
-        } | null;
-      })
-    | null;
+  idealTemperature: FloatUnitTable | null;
+  idealHumidity: IntUnitTable | null;
+  waterRequirement: FloatUnitTable | null;
 };
 export type PlantSelect = {
   id: string;
@@ -251,51 +189,21 @@ export type PlantFertilizerTable = PlantFertilizer & {
   fertilizer: {
     name: string;
     type: FertilizerType;
-    recommendedDosage:
-      | (FloatUnit & {
-          unit: {
-            name: string;
-          } | null;
-        })
-      | null;
+    recommendedDosage: FloatUnitTable | null;
   };
-  dosage:
-    | (FloatUnit & {
-        unit: {
-          name: string;
-        } | null;
-      })
-    | null;
+  dosage: FloatUnitTable | null;
 };
 export type PlantPesticideTable = PlantPesticide & {
   pesticide: {
     name: string;
     type: PesticideType;
     toxicityLevel: ToxicityLevel | null;
-    recommendedDosage:
-      | (FloatUnit & {
-          unit: {
-            name: string;
-          } | null;
-        })
-      | null;
+    recommendedDosage: FloatUnitTable | null;
   };
-  dosage:
-    | (FloatUnit & {
-        unit: {
-          name: string;
-        } | null;
-      })
-    | null;
+  dosage: IntUnitTable | null;
 };
 export type FertilizerTable = Fertilizer & {
-  recommendedDosage:
-    | (FloatUnit & {
-        unit: {
-          name: string;
-        } | null;
-      })
-    | null;
+  recommendedDosage: FloatUnitTable | null;
 };
 export type FertilizerTypeCount = {
   type: FertilizerType;
@@ -311,29 +219,11 @@ export type FertilizerSelect = {
   type: FertilizerType;
   frequencyOfUse: Frequency | null;
   applicationMethod: string | null;
-  recommendedDosage:
-    | (FloatUnit & {
-        unit: {
-          name: string;
-        } | null;
-      })
-    | null;
+  recommendedDosage: FloatUnitTable | null;
 };
 export type PesticideTable = Pesticide & {
-  recommendedDosage:
-    | (FloatUnit & {
-        unit: {
-          name: string;
-        } | null;
-      })
-    | null;
-  withdrawalPeriod:
-    | (IntUnit & {
-        unit: {
-          name: string;
-        } | null;
-      })
-    | null;
+  recommendedDosage: FloatUnitTable | null;
+  withdrawalPeriod: IntUnitTable | null;
 };
 
 export type PesticideTypeCount = {
@@ -350,59 +240,12 @@ export type PesticideSelect = {
   type: PesticideType;
   toxicityLevel: ToxicityLevel | null;
   applicationMethod: string | null;
-  recommendedDosage:
-    | (FloatUnit & {
-        unit: {
-          name: string;
-        } | null;
-      })
-    | null;
-};
-export type EquipmentTable = Equipment & {
-  purchasePrice:
-    | (FloatUnit & {
-        unit: {
-          name: string;
-        } | null;
-      })
-    | null;
-  _count: {
-    equipmentDetails: number;
-  };
-};
-export type EquipmentSelect = {
-  id: string;
-  name: string;
-  imageUrl: string | null;
-};
-export type EquipmentDetailTable = EquipmentDetail & {
-  equipment: {
-    name: string;
-    type: EquipmentType;
-    imageUrl: string | null;
-  };
-};
-
-export type EquipmentTypeCount = {
-  type: EquipmentType;
-  _count: number;
+  recommendedDosage: FloatUnitTable | null;
 };
 
 export type CropTable = Crop & {
-  actualYield:
-    | (FloatUnit & {
-        unit: {
-          name: string;
-        } | null;
-      })
-    | null;
-  estimatedYield:
-    | (FloatUnit & {
-        unit: {
-          name: string;
-        } | null;
-      })
-    | null;
+  actualYield: FloatUnitTable | null;
+  estimatedYield: FloatUnitTable | null;
   plant: {
     id: string;
     name: string;
@@ -482,8 +325,63 @@ export type MaterialSelect = {
 };
 export type MaterialUsageTable = MaterialUsage & {
   material: Material;
+  unit: {
+    name: string;
+  };
+  activity: ActivitySelect;
 };
+
 export type MaterialTypeCount = {
   type: MaterialType;
   _count: number;
+};
+export type EquipmentTable = Equipment & {
+  purchasePrice: FloatUnitTable | null;
+  _count: {
+    equipmentDetails: number;
+  };
+};
+export type EquipmentSelect = {
+  id: string;
+  name: string;
+  imageUrl: string | null;
+};
+export type EquipmentDetailTable = EquipmentDetail & {
+  equipment: {
+    name: string;
+    type: EquipmentType;
+    imageUrl: string | null;
+  };
+};
+export type EquipmentDetailSelect = {
+  id: string;
+  name: string | null;
+  equipmentId: string;
+  status: EquipmentStatus;
+  equipment: {
+    name: string;
+    type: EquipmentType;
+    imageUrl: string | null;
+  };
+};
+
+export type EquipmentTypeCount = {
+  type: EquipmentType;
+  _count: number;
+};
+
+export type EquipmentUsageTable = EquipmentUsage & {
+  equipmentDetail: EquipmentDetail;
+  activity: ActivitySelect;
+  operator: Staff | null;
+};
+export type ActivitySelect = {
+  id: string;
+  name: string;
+  status: ActivityStatus;
+  priority: ActivityPriority;
+  createdBy: Staff;
+  assignedTo: Staff;
+  activityDate: Date;
+  note: string | null;
 };

@@ -42,7 +42,7 @@ export const EquipmentEditButton = ({
 }: EquipmentEditButtonProps) => {
   return (
     <Link
-      href={`/admin/equipments/edit/${data.id}`}
+      href={`/admin/equipments/detail/${data.id}`}
       className="w-full"
       onClick={(e) => {
         e.stopPropagation();

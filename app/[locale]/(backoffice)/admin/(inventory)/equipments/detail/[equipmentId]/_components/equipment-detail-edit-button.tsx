@@ -3,12 +3,10 @@ import {
   DynamicDialog,
   DynamicDialogFooter,
 } from "@/components/dialog/dynamic-dialog";
-import { Button } from "@/components/ui/button";
 import { EquipmentDetailSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EquipmentStatus } from "@prisma/client";
-import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -25,35 +23,7 @@ import { toast } from "sonner";
 import { edit } from "@/actions/equipment-detail";
 import { Input } from "@/components/ui/input";
 import { SelectOptions } from "@/components/form/select-options";
-import { EquipmentDetailTable } from "@/types";
 
-interface EquipmentDetailEditButtonProps {
-  data: EquipmentDetailTable;
-  label: string;
-}
-
-export const EquipmentDetailEditButton = ({
-  data,
-  label,
-}: EquipmentDetailEditButtonProps) => {
-  const { onOpen } = useDialog();
-  return (
-    <Button
-      className="w-full"
-      onClick={(e) => {
-        e.stopPropagation();
-        onOpen("equipmentDetail.edit", {
-          equipmentDetail: data,
-        });
-      }}
-      size={"sm"}
-      variant={"edit"}
-    >
-      <Edit className="w-4 h-4 mr-2" />
-      {label}
-    </Button>
-  );
-};
 export const EquipmentDetailEditDialog = () => {
   const { isOpen, type, data, onClose } = useDialog();
   const isOpenDialog = isOpen && type === "equipmentDetail.edit";

@@ -15,7 +15,7 @@ export const EquipmentDetailStatusValue = ({
   if (status === "AVAILABLE") {
     return <Badge variant={"success"}>{t(`options.${status}`)}</Badge>;
   }
-  if (status === "DAMAGED") {
+  if (status === "DECOMMISSION") {
     return <Badge variant={"destructive"}>{t(`options.${status}`)}</Badge>;
   }
   if (status === "MAINTENANCE") {

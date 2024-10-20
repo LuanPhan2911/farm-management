@@ -3,7 +3,9 @@ import {
   CategoryTable,
   CropTable,
   EquipmentDetailTable,
+  EquipmentUsageTable,
   FertilizerTable,
+  MaterialUsageTable,
   PesticideTable,
   PlantFertilizerTable,
   PlantPesticideTable,
@@ -30,7 +32,9 @@ export type DialogType =
   | "file.editName"
   | "plantFertilizer.edit"
   | "plantPesticide.edit"
-  | "equipmentDetail.edit";
+  | "equipmentDetail.edit"
+  | "materialUsage.edit"
+  | "equipmentUsage.edit";
 
 export interface DialogData {
   category?: CategoryTable;
@@ -46,6 +50,8 @@ export interface DialogData {
   plantFertilizer?: PlantFertilizerTable;
   plantPesticide?: PlantPesticideTable;
   equipmentDetail?: EquipmentDetailTable;
+  materialUsage?: MaterialUsageTable;
+  equipmentUsage?: EquipmentUsageTable;
 }
 interface DialogStore {
   type: DialogType | null;

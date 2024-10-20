@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { EquipmentDetailTable } from "@/types";
+import { EquipmentDetailSelect, EquipmentDetailTable } from "@/types";
 import { EquipmentStatus } from "@prisma/client";
 
 type EquipmentDetailParams = {
@@ -69,5 +69,53 @@ export const getEquipmentDetails = async ({
     });
   } catch (error) {
     return [];
+  }
+};
+export const getEquipmentDetailsSelect = async (
+  equipmentId: string
+): Promise<EquipmentDetailSelect[]> => {
+  try {
+    return await db.equipmentDetail.findMany({
+      where: {
+        equipmentId,
+      },
+      select: {
+        id: true,
+        name: true,
+        equipmentId: true,
+        status: true,
+        equipment: {
+          select: {
+            name: true,
+            type: true,
+            imageUrl: true,
+          },
+        },
+      },
+    });
+  } catch (error) {
+    return [];
+  }
+};
+export const getEquipmentDetailById = async (
+  id: string
+): Promise<EquipmentDetailTable | null> => {
+  try {
+    return await db.equipmentDetail.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        equipment: {
+          select: {
+            name: true,
+            type: true,
+            imageUrl: true,
+          },
+        },
+      },
+    });
+  } catch (error) {
+    return null;
   }
 };

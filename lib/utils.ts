@@ -23,7 +23,10 @@ export function errorResponse(message: string): ActionResponse {
     ok: false,
   };
 }
-export function successResponse(message: string, data?: any): ActionResponse {
+export function successResponse(
+  message: string,
+  data?: unknown
+): ActionResponse {
   return {
     message,
     ok: true,
@@ -207,13 +210,6 @@ export function parseToNumber(
   }
 
   return parsedNumber;
-}
-export function parseToBoolean(value: string) {
-  if (value === JSON.stringify(true)) {
-    return true;
-  } else {
-    return false;
-  }
 }
 
 export function isActive(pathname: string, currentPath: string) {

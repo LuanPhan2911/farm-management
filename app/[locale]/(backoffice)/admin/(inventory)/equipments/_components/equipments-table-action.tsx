@@ -10,8 +10,7 @@ import {
 import { EquipmentTable } from "@/types";
 import { MoreHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { EquipmentEditButton } from "./equipment-edit-button";
-import { EquipmentDeleteButton } from "./equipment-delete-button";
+import { DetailButton } from "@/components/buttons/detail-button";
 interface EquipmentsTableActionProps {
   data: EquipmentTable;
 }
@@ -26,10 +25,11 @@ export const EquipmentsTableAction = ({ data }: EquipmentsTableActionProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-fit">
         <DropdownMenuItem>
-          <EquipmentEditButton data={data} label={t("edit.label")} />
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <EquipmentDeleteButton data={data} label={t("destroy.label")} />
+          <DetailButton
+            href={`/admin/equipments/detail/${data.id}`}
+            label={t("detail.label")}
+            className="w-full"
+          />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

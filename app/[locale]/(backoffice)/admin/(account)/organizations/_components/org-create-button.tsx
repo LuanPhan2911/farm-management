@@ -74,10 +74,7 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
         });
     });
   };
-  const fetchCreatedByOrg = async () => {
-    const res = await fetch("/api/staffs/contain_admin");
-    return await res.json();
-  };
+
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -143,14 +140,13 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
                   <FormControl>
                     <div className="block">
                       <StaffsSelect
-                        queryKey={["staffs_contain_admin"]}
-                        queryFn={fetchCreatedByOrg}
                         defaultValue={field.value}
                         onChange={field.onChange}
-                        errorLabel={tSchema("createdBy.error")}
-                        label={tSchema("createdBy.placeholder")}
+                        error={tSchema("createdBy.error")}
+                        placeholder={tSchema("createdBy.placeholder")}
                         notFound={tSchema("createdBy.notFound")}
                         disabled={isPending}
+                        adminOnly
                       />
                     </div>
                   </FormControl>

@@ -41,7 +41,7 @@ export const MaterialEditButton = ({
 }: MaterialEditButtonProps) => {
   return (
     <Link
-      href={`/admin/materials/edit/${data.id}`}
+      href={`/admin/materials/detail/${data.id}`}
       className="w-full"
       onClick={(e) => {
         e.stopPropagation();
@@ -150,6 +150,7 @@ export const MaterialEditForm = ({ data }: MaterialEditFormProps) => {
                       };
                     })}
                     disabled={isPending}
+                    defaultValue={field.value}
                   />
                 </FormControl>
 

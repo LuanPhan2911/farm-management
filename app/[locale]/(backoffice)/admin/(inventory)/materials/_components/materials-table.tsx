@@ -15,10 +15,9 @@ import { MaterialTable } from "@/types";
 import { MaterialsTableAction } from "./materials-table-action";
 
 import { OrderByButton } from "@/components/buttons/order-by-button";
-// import { MaterialsTableFaceted } from "./materials-table-faceted";
+
 import { SearchBar } from "@/components/search-bar";
 import { useSearchParams } from "next/navigation";
-import { includeString } from "@/lib/utils";
 import { UserAvatar } from "@/components/user-avatar";
 import { useRouter } from "@/navigation";
 import { MaterialsTableFaceted } from "./materials-table-facted";
@@ -28,16 +27,11 @@ interface MaterialsTableProps {
   totalPage: number;
 }
 export const MaterialsTable = ({ data, totalPage }: MaterialsTableProps) => {
-  const searchParams = useSearchParams();
   const router = useRouter();
-  const query = searchParams!.get("query");
 
-  if (query) {
-    data = data.filter((item) => includeString(item.name, query));
-  }
   const t = useTranslations("materials");
   const handleViewDetail = (row: MaterialTable) => {
-    router.push(`/admin/materials/usages/${row.id}`);
+    router.push(`/admin/materials/detail/${row.id}`);
   };
 
   return (
@@ -51,7 +45,7 @@ export const MaterialsTable = ({ data, totalPage }: MaterialsTableProps) => {
         <TableHeader>
           <TableRow>
             <TableHead>{t("table.thead.imageUrl")}</TableHead>
-            <TableHead>
+            <TableHead className="lg:w-[350px]">
               <OrderByButton column="name" label={t("table.thead.name")} />
             </TableHead>
             <TableHead>
@@ -84,11 +78,17 @@ export const MaterialsTable = ({ data, totalPage }: MaterialsTableProps) => {
                   />
                 </TableCell>
                 <TableCell>{item.name}</TableCell>
-                <TableCell>{t(`schema.type.options.${item.type}`)}</TableCell>
+                <TableCell className="text-center">
+                  {t(`schema.type.options.${item.type}`)}
+                </TableCell>
 
-                <TableCell>{item.quantityInStock}</TableCell>
+                <TableCell className="text-center">
+                  {item.quantityInStock}
+                </TableCell>
                 <TableCell>{item.unit.name}</TableCell>
-                <TableCell>{item._count.materialUsages}</TableCell>
+                <TableCell className="text-center">
+                  {item._count.materialUsages}
+                </TableCell>
                 <TableCell>
                   <MaterialsTableAction data={item} />
                 </TableCell>

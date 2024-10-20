@@ -620,6 +620,36 @@ export const PesticideSchema = (
     }).nullish(),
   });
 };
+export const CropSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    name: stringSchema(t, "name", {
+      min: 5,
+      max: 100,
+    }),
+    dateRange: z.object({
+      startDate: z.date({
+        invalid_type_error: t("dateRange.startDate.invalid_type_error"),
+        required_error: t("dateRange.startDate.required_error"),
+      }),
+      endDate: z.date().nullable(),
+    }),
+    fieldId: z.string(),
+    plantId: z.string({
+      required_error: t("plantId.required_error"),
+    }),
+    estimatedYield: floatUnitSchema(t, "estimatedYield", {
+      min: 0,
+      max: 1_000_000_000,
+    }),
+    actualYield: floatUnitSchema(t, "actualYield", {
+      min: 0,
+      max: 1_000_000_000,
+    }),
+    status: stringSchema(t, "status", { max: 255, required: false }).nullish(),
+  });
+};
 export const EquipmentSchema = (
   t: (arg: string, obj?: Record<string, any>) => string
 ) => {
@@ -694,6 +724,31 @@ export const EquipmentDetailSchema = (
     }).nullish(),
   });
 };
+export const EquipmentUsageSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    equipmentDetailId: stringSchema(t, "equipmentDetailId", { required: true }),
+    activityId: stringSchema(t, "activityId", { required: true }),
+    usageStartTime: z.date({
+      invalid_type_error: t("usageStartTime.invalid_type_error"),
+      required_error: t("usageStartTime.required_error"),
+    }),
+    duration: stringSchema(t, "duration", {
+      min: 1,
+      max: 100,
+      required: true,
+    }),
+    note: stringSchema(t, "note", {
+      max: 255,
+      required: false,
+    }).nullish(),
+    operatorId: stringSchema(t, "operatorId", {
+      required: false,
+    }).nullish(),
+  });
+};
+
 export const MaterialSchema = (
   t: (arg: string, obj?: Record<string, any>) => string
 ) => {
@@ -721,34 +776,18 @@ export const MaterialSchema = (
     }).nullish(),
   });
 };
-export const CropSchema = (
+export const MaterialUsageSchema = (
   t: (arg: string, obj?: Record<string, any>) => string
 ) => {
   return z.object({
-    name: stringSchema(t, "name", {
-      min: 5,
-      max: 100,
-    }),
-    dateRange: z.object({
-      startDate: z.date({
-        invalid_type_error: t("dateRange.startDate.invalid_type_error"),
-        required_error: t("dateRange.startDate.required_error"),
-      }),
-      endDate: z.date().nullable(),
-    }),
-    fieldId: z.string(),
-    plantId: z.string({
-      required_error: t("plantId.required_error"),
-    }),
-    estimatedYield: floatUnitSchema(t, "estimatedYield", {
+    unitId: stringSchema(t, "unitId", { required: true }),
+    materialId: stringSchema(t, "materialId", { required: true }),
+    activityId: stringSchema(t, "activityId", { required: true }),
+    quantityUsed: numberSchema(t, "quantityUsed", {
       min: 0,
       max: 1_000_000_000,
+      required: true,
     }),
-    actualYield: floatUnitSchema(t, "actualYield", {
-      min: 0,
-      max: 1_000_000_000,
-    }),
-    status: stringSchema(t, "status", { max: 255, required: false }).nullish(),
   });
 };
 

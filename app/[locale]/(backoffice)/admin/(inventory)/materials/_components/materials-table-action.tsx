@@ -11,7 +11,6 @@ import { MaterialTable } from "@/types";
 import { MoreHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { MaterialEditButton } from "./material-edit-button";
-import { MaterialDeleteButton } from "./material-delete-button";
 interface MaterialsTableActionProps {
   data: MaterialTable;
 }
@@ -27,9 +26,6 @@ export const MaterialsTableAction = ({ data }: MaterialsTableActionProps) => {
       <DropdownMenuContent align="start" className="w-fit">
         <DropdownMenuItem>
           <MaterialEditButton data={data} label={t("edit.label")} />
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <MaterialDeleteButton data={data} label={t("destroy.label")} />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

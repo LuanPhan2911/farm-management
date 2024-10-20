@@ -39,7 +39,7 @@ export const JobsSelect = ({ defaultValue }: JobsSelectProps) => {
     <ComboBoxDefault
       options={options}
       notFound={t("notFound")}
-      label={t("label")}
+      placeholder={t("label")}
       onChange={updateSearchParam}
       defaultValue={defaultValue}
     />

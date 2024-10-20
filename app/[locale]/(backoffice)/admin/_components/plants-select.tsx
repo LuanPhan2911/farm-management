@@ -12,7 +12,7 @@ interface PlantsSelectProps {
   onChange: (value: string | undefined) => void;
   defaultValue?: string;
   disabled?: boolean;
-  label: string;
+  placeholder: string;
   notFound: string;
   errorLabel: string;
   appearance?: ComboBoxCustomAppearance;
@@ -20,7 +20,7 @@ interface PlantsSelectProps {
 export const PlantsSelect = ({
   defaultValue,
   errorLabel,
-  label,
+  placeholder,
   notFound,
   onChange,
   disabled,
@@ -42,7 +42,7 @@ export const PlantsSelect = ({
 
   return (
     <ComboBoxCustom
-      label={label}
+      placeholder={placeholder}
       notFound={notFound}
       onChange={onChange}
       defaultValue={defaultValue}

@@ -151,7 +151,7 @@ export const CropEditDialog = () => {
                     <FormControl>
                       <PlantsSelect
                         errorLabel={tSchema("plantId.error")}
-                        label={tSchema("plantId.placeholder")}
+                        placeholder={tSchema("plantId.placeholder")}
                         notFound={tSchema("plantId.notFound")}
                         onChange={field.onChange}
                         disabled={isPending}

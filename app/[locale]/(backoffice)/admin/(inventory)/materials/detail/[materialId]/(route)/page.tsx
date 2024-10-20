@@ -1,17 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getMaterialById, getMaterialsSelect } from "@/services/materials";
-
-import { notFound } from "next/navigation";
-import { MaterialEditForm } from "../../_components/material-edit-button";
 import { getTranslations } from "next-intl/server";
+import { notFound } from "next/navigation";
+import { MaterialEditForm } from "../../../_components/material-edit-button";
 
-interface MaterialEditPageProps {
-  params: {
-    materialId: string;
-  };
-}
 export async function generateMetadata() {
-  const t = await getTranslations("materials.page.edit");
+  const t = await getTranslations("materials.page.detail");
   return {
     title: t("title"),
   };
@@ -25,15 +19,19 @@ export async function generateStaticParams() {
     };
   });
 }
-
-const MaterialEditPage = async ({ params }: MaterialEditPageProps) => {
+interface MaterialDetailPageProps {
+  params: {
+    materialId: string;
+  };
+}
+const MaterialDetailPage = async ({ params }: MaterialDetailPageProps) => {
   const data = await getMaterialById(params!.materialId);
-  const t = await getTranslations("materials.page.edit");
+  const t = await getTranslations("materials.page.detail");
   if (!data) {
     notFound();
   }
   return (
-    <div className="flex flex-col gap-4 py-4 h-full">
+    <div className="flex flex-col gap-y-4 py-4 h-full">
       <Card>
         <CardHeader>
           <CardTitle>{t("title")}</CardTitle>
@@ -46,4 +44,4 @@ const MaterialEditPage = async ({ params }: MaterialEditPageProps) => {
   );
 };
 
-export default MaterialEditPage;
+export default MaterialDetailPage;

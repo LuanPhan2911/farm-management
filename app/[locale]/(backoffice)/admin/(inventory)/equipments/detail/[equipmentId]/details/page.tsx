@@ -2,10 +2,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { getTranslations } from "next-intl/server";
 import { getEquipmentDetails } from "@/services/equipment-details";
-import { EquipmentDetailCreateButton } from "./_components/equipment-detail-create-button";
-import { EquipmentDetailsTable } from "./_components/equipment-details-data-table";
+import { EquipmentDetailCreateButton } from "../_components/equipment-detail-create-button";
+import { EquipmentDetailsTable } from "../_components/equipment-details-data-table";
+import { getEquipmentById } from "@/services/equipments";
+import { notFound } from "next/navigation";
 
-interface EquipmentDetailPageProps {
+interface EquipmentDetailsPageProps {
   params: {
     equipmentId: string;
   };
@@ -17,12 +19,15 @@ export async function generateMetadata() {
   };
 }
 
-const EquipmentDetailPage = async ({ params }: EquipmentDetailPageProps) => {
+const EquipmentDetailsPage = async ({ params }: EquipmentDetailsPageProps) => {
   const data = await getEquipmentDetails({
     equipmentId: params.equipmentId,
   });
+  const equipment = await getEquipmentById(params.equipmentId);
   const t = await getTranslations("equipmentDetails.page");
-
+  if (!equipment) {
+    notFound();
+  }
   return (
     <div className="flex flex-col gap-4 py-4 h-full">
       <Card>
@@ -31,7 +36,7 @@ const EquipmentDetailPage = async ({ params }: EquipmentDetailPageProps) => {
         </CardHeader>
         <CardContent>
           <div className="flex justify-end">
-            <EquipmentDetailCreateButton />
+            <EquipmentDetailCreateButton data={equipment} />
           </div>
           <EquipmentDetailsTable data={data} />
         </CardContent>
@@ -40,4 +45,4 @@ const EquipmentDetailPage = async ({ params }: EquipmentDetailPageProps) => {
   );
 };
 
-export default EquipmentDetailPage;
+export default EquipmentDetailsPage;

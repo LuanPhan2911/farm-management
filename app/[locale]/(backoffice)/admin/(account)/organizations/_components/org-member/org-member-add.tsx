@@ -71,10 +71,7 @@ export const OrgMemberAdd = ({}: OrgMemberAddProps) => {
         });
     });
   };
-  const fetchMembers = async () => {
-    const res = await fetch("/api/staffs/select");
-    return await res.json();
-  };
+
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -101,12 +98,10 @@ export const OrgMemberAdd = ({}: OrgMemberAddProps) => {
                   <FormControl>
                     <div className="block">
                       <StaffsSelect
-                        queryKey={["staffs_select"]}
-                        queryFn={fetchMembers}
                         defaultValue={field.value}
                         onChange={field.onChange}
-                        errorLabel={tSchema("memberId.error")}
-                        label={tSchema("memberId.placeholder")}
+                        error={tSchema("memberId.error")}
+                        placeholder={tSchema("memberId.placeholder")}
                         notFound={tSchema("memberId.notFound")}
                         disabled={isPending}
                       />
