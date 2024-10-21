@@ -134,7 +134,7 @@ export const CategoryCreateButton = () => {
                   <FormLabel>{tSchema("type.label")}</FormLabel>
                   <FormControl>
                     <SelectOptions
-                      label={tSchema("type.placeholder")}
+                      placeholder={tSchema("type.placeholder")}
                       onChange={field.onChange}
                       disabled={isPending}
                       options={Object.values(CategoryType).map((item) => {

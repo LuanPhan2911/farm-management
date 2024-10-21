@@ -1,3 +1,10 @@
+export class UnAuthorizedError extends Error {
+  data?: any;
+  constructor(data?: any, message = "Unauthorized") {
+    super(message);
+    this.data = data;
+  }
+}
 export class StaffExistError extends Error {
   data?: any;
   constructor(data?: any, message = "Staff does not exist") {
@@ -43,6 +50,14 @@ export class EquipmentDetailExistError extends Error {
     this.data = data;
   }
 }
+export class EquipmentUsageExistError extends Error {
+  data?: any;
+  constructor(data?: any, message = "Equipment usage not exist") {
+    super(message);
+    this.data = data;
+  }
+}
+
 export class ActivityExistError extends Error {
   data?: any;
   constructor(data?: any, message = "Activity does not exist") {
@@ -50,8 +65,15 @@ export class ActivityExistError extends Error {
     this.data = data;
   }
 }
+export class ActivityCreatePermissionError extends Error {
+  data?: any;
+  constructor(data?: any, message = "No have permission to create activity") {
+    super(message);
+    this.data = data;
+  }
+}
 
-export class ActivityUpdateUsageError extends Error {
+export class ActivityUpdateStatusError extends Error {
   data?: any;
   constructor(
     data?: any,
@@ -61,10 +83,9 @@ export class ActivityUpdateUsageError extends Error {
     this.data = data;
   }
 }
-
-export class EquipmentUsageExistError extends Error {
+export class ActivityUpdatePermissionError extends Error {
   data?: any;
-  constructor(data?: any, message = "Equipment usage not exist") {
+  constructor(data?: any, message = "No have permission to update activity") {
     super(message);
     this.data = data;
   }

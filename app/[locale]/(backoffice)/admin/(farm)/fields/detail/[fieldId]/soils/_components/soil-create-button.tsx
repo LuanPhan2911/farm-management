@@ -169,7 +169,7 @@ export const SoilCreateButton = () => {
                           unitType={UnitType.PERCENT}
                           disabled={isPending}
                           className="w-full"
-                          errorLabel={tSchema("moisture.unitId.error")}
+                          error={tSchema("moisture.unitId.error")}
                           notFound={tSchema("moisture.unitId.notFound")}
                         />
                       </FormControl>
@@ -193,7 +193,7 @@ export const SoilCreateButton = () => {
                           unitType={UnitType.NUTRIENT}
                           disabled={isPending}
                           className="w-full"
-                          errorLabel={tSchema("nutrientUnitId.error")}
+                          error={tSchema("nutrientUnitId.error")}
                           notFound={tSchema("nutrientUnitId.notFound")}
                         />
                       </FormControl>

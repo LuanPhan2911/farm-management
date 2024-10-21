@@ -17,10 +17,9 @@ import { MaterialsTableAction } from "./materials-table-action";
 import { OrderByButton } from "@/components/buttons/order-by-button";
 
 import { SearchBar } from "@/components/search-bar";
-import { useSearchParams } from "next/navigation";
 import { UserAvatar } from "@/components/user-avatar";
 import { useRouter } from "@/navigation";
-import { MaterialsTableFaceted } from "./materials-table-facted";
+import { MaterialsTableFaceted } from "./materials-table-faceted";
 
 interface MaterialsTableProps {
   data: MaterialTable[];

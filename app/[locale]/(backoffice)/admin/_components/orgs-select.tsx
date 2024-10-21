@@ -14,7 +14,7 @@ interface OrgsSelectProps {
   onChange: (value: string | undefined) => void;
   disabled?: boolean;
   placeholder: string;
-  errorLabel: string;
+  error: string;
   notFound: string;
 }
 export const OrgsSelect = ({
@@ -22,7 +22,7 @@ export const OrgsSelect = ({
   defaultValue,
   disabled,
   placeholder,
-  errorLabel,
+  error,
   notFound,
 }: OrgsSelectProps) => {
   const { data, isPending, isError, refetch } = useQuery({
@@ -45,7 +45,7 @@ export const OrgsSelect = ({
     return <Skeleton className="lg:w-[250px] w-full h-12"></Skeleton>;
   }
   if (isError) {
-    return <ErrorButton title={errorLabel} refresh={refetch} />;
+    return <ErrorButton title={error} refresh={refetch} />;
   }
   return (
     <ComboBoxCustom

@@ -28,7 +28,7 @@ export const StaffSelectRole = ({
     .filter((item) => !hidden?.includes(item.value));
   return (
     <SelectOptions
-      label={placeholder}
+      placeholder={placeholder}
       options={options}
       onChange={onChange}
       defaultValue={defaultValue}

@@ -14,7 +14,7 @@ import { destroy } from "@/actions/equipment-usage";
 import { EquipmentUsageTable } from "@/types";
 import { useTranslations } from "next-intl";
 import {
-  canUpdateActivityUsage,
+  canUpdateActivityStatus,
   canUpdateEquipmentUsage,
 } from "@/lib/permission";
 
@@ -26,7 +26,7 @@ export const EquipmentUsagesTableAction = ({
 }: EquipmentUsagesTableActionProps) => {
   const t = useTranslations("equipmentUsages.form");
   const canUpdate =
-    canUpdateActivityUsage(data.activity.status) &&
+    canUpdateActivityStatus(data.activity.status) &&
     canUpdateEquipmentUsage(data.equipmentDetail.status);
   return (
     <DropdownMenu>

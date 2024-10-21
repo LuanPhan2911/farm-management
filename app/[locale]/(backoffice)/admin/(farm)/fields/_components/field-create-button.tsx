@@ -131,7 +131,7 @@ export const FieldCreateForm = () => {
                       <OrgsSelect
                         defaultValue={field.value}
                         onChange={field.onChange}
-                        errorLabel={tSchema("orgId.error")}
+                        error={tSchema("orgId.error")}
                         placeholder={tSchema("orgId.placeholder")}
                         notFound={tSchema("orgId.notFound")}
                         disabled={isPending}
@@ -154,7 +154,7 @@ export const FieldCreateForm = () => {
                         unitType={UnitType.LENGTH}
                         onChange={field.onChange}
                         placeholder={tSchema("unitId.placeholder")}
-                        errorLabel={tSchema("unitId.error")}
+                        error={tSchema("unitId.error")}
                         notFound={tSchema("unitId.notFound")}
                         disabled={isPending}
                       />
@@ -254,7 +254,7 @@ export const FieldCreateForm = () => {
                   <FormLabel>{tSchema("soilType.label")}</FormLabel>
                   <FormControl>
                     <SelectOptions
-                      label={tSchema("soilType.placeholder")}
+                      placeholder={tSchema("soilType.placeholder")}
                       onChange={field.onChange}
                       options={Object.values(SoilType).map((item) => {
                         return {

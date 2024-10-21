@@ -20,7 +20,7 @@ import { SearchBar } from "@/components/search-bar";
 import { ActivityStatusValue } from "@/app/[locale]/(backoffice)/admin/activities/_components/activity-status-value";
 import { ActivityPriorityValue } from "@/app/[locale]/(backoffice)/admin/activities/_components/activity-priority-value";
 import { useDialog } from "@/stores/use-dialog";
-import { canUpdateActivityUsage } from "@/lib/permission";
+import { canUpdateActivityStatus } from "@/lib/permission";
 import { SelectItemContent } from "@/components/form/select-item";
 import { EquipmentUsagesTableAction } from "./equipment-usages-table-action";
 
@@ -36,7 +36,7 @@ export const EquipmentUsagesTable = ({
   const t = useTranslations("equipmentUsages");
   const { dateTime } = useFormatter();
   const handleEdit = (row: EquipmentUsageTable) => {
-    if (!canUpdateActivityUsage(row.activity.status)) {
+    if (!canUpdateActivityStatus(row.activity.status)) {
       return;
     }
     onOpen("equipmentUsage.edit", { equipmentUsage: row });

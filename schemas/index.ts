@@ -1,4 +1,6 @@
 import {
+  ActivityPriority,
+  ActivityStatus,
   CategoryType,
   EquipmentStatus,
   EquipmentType,
@@ -17,7 +19,7 @@ import {
   WeatherStatus,
 } from "@prisma/client";
 import { addDays } from "date-fns";
-import { nullable, z } from "zod";
+import { z } from "zod";
 import validator from "validator";
 
 // Custom Zod schema for date parsing
@@ -791,6 +793,52 @@ export const MaterialUsageSchema = (
   });
 };
 
+export const ActivitySchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    name: stringSchema(t, "name", {
+      min: 1,
+      max: 100,
+      required: true,
+    }),
+    description: stringSchema(t, "description", {
+      max: 255,
+      required: false,
+    }).nullish(),
+    fieldId: stringSchema(t, "fieldId", {
+      required: true,
+    }),
+    activityDate: z.date({
+      invalid_type_error: t("activityDate.invalid_type_error"),
+      required_error: t("activityDate.required_error"),
+    }),
+    status: z.nativeEnum(ActivityStatus, {
+      message: t("priority.enum"),
+    }),
+    priority: z.nativeEnum(ActivityPriority, {
+      message: t("priority.enum"),
+    }),
+    estimatedDuration: stringSchema(t, "estimatedDuration", {
+      max: 100,
+      required: false,
+    }).nullish(),
+    actualDuration: stringSchema(t, "actualDuration", {
+      max: 100,
+      required: false,
+    }).nullish(),
+    note: stringSchema(t, "note", {
+      max: 255,
+      required: false,
+    }).nullish(),
+    createdById: stringSchema(t, "createdById", {
+      required: true,
+    }),
+    assignedToId: stringSchema(t, "assignedToId", {
+      required: true,
+    }),
+  });
+};
 export const TaskSchema = (
   t: (arg: string, obj?: Record<string, any>) => string
 ) => {

@@ -16,7 +16,7 @@ interface CategoriesSelectProps {
   placeholder: string;
   disabled?: boolean;
   className?: string;
-  errorLabel: string;
+  error: string;
   notFound: string;
 }
 export const CategoriesSelect = ({
@@ -26,7 +26,7 @@ export const CategoriesSelect = ({
   placeholder,
   disabled,
   className,
-  errorLabel,
+  error,
   notFound,
 }: CategoriesSelectProps) => {
   const { data, isPending, isError, refetch } = useQuery({
@@ -53,7 +53,7 @@ export const CategoriesSelect = ({
     return <Skeleton className="w-full h-12" />;
   }
   if (isError) {
-    return <ErrorButton title={errorLabel} refresh={refetch} />;
+    return <ErrorButton title={error} refresh={refetch} />;
   }
 
   const options = data.map((item) => {

@@ -101,7 +101,7 @@ export const EquipmentDetailEditDialog = () => {
                 <FormLabel>{tSchema("status.label")}</FormLabel>
                 <FormControl>
                   <SelectOptions
-                    label={tSchema("status.placeholder")}
+                    placeholder={tSchema("status.placeholder")}
                     onChange={field.onChange}
                     options={Object.values(EquipmentStatus).map((item) => {
                       return {

@@ -134,7 +134,13 @@ export const getStaffsSelect = async (params?: StaffSelectQuery) => {
 };
 
 export const getStaffById = async (id: string) => {
-  return await db.staff.findUnique({ where: { id } });
+  return await db.staff.findUnique({
+    where: { id },
+    cacheStrategy: {
+      swr: 60,
+      ttl: 60,
+    },
+  });
 };
 export const getCurrentStaff = async () => {
   const user = await currentUser();
@@ -146,6 +152,10 @@ export const getCurrentStaff = async () => {
   const staff = await db.staff.findUnique({
     where: {
       externalId: user.id,
+    },
+    cacheStrategy: {
+      swr: 60,
+      ttl: 60,
     },
   });
 
@@ -159,6 +169,10 @@ export const getCurrentStaffPages = async (req: NextApiRequest) => {
   const staff = await db.staff.findUnique({
     where: {
       externalId: userId,
+    },
+    cacheStrategy: {
+      swr: 60,
+      ttl: 60,
     },
   });
 

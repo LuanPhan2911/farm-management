@@ -160,7 +160,7 @@ export const MaterialUsageEditDialog = () => {
                       unitType={UnitType.QUANTITY}
                       disabled={true}
                       className="w-full"
-                      errorLabel={tSchema("unitId.error")}
+                      error={tSchema("unitId.error")}
                       notFound={tSchema("unitId.notFound")}
                       defaultValue={field.value}
                     />

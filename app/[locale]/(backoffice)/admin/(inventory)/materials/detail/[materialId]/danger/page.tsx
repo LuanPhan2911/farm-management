@@ -45,7 +45,12 @@ const MaterialDangerPage = async ({ params }: MaterialDangerPageProps) => {
         <CardDescription>{t("destroy.description")}</CardDescription>
       </CardHeader>
       <CardContent>
-        <DestroyButton destroyFn={destroy} id={data.id} inltKey="materials" />
+        <DestroyButton
+          destroyFn={destroy}
+          id={data.id}
+          inltKey="materials"
+          redirectHref="/admin/materials"
+        />
       </CardContent>
     </Card>
   );

@@ -160,7 +160,7 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
                 <FormLabel>{tSchema("type.label")}</FormLabel>
                 <FormControl>
                   <SelectOptions
-                    label={tSchema("type.placeholder")}
+                    placeholder={tSchema("type.placeholder")}
                     onChange={field.onChange}
                     options={Object.values(EquipmentType).map((item) => {
                       return {
@@ -232,7 +232,7 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
                     unitType={UnitType.MONEY}
                     disabled={isPending}
                     className="w-full"
-                    errorLabel={tSchema("purchasePrice.unitId.error")}
+                    error={tSchema("purchasePrice.unitId.error")}
                     notFound={tSchema("purchasePrice.unitId.notFound")}
                     defaultValue={field.value}
                   />

@@ -131,7 +131,7 @@ export const CropCreateButton = () => {
                     <div className="flex gap-x-2">
                       <FormControl>
                         <PlantsSelect
-                          errorLabel={tSchema("plantId.error")}
+                          error={tSchema("plantId.error")}
                           placeholder={tSchema("plantId.placeholder")}
                           notFound={tSchema("plantId.notFound")}
                           onChange={field.onChange}
@@ -213,7 +213,7 @@ export const CropCreateButton = () => {
                           unitType={UnitType.WEIGHT}
                           disabled={isPending}
                           className="w-full"
-                          errorLabel={tSchema("estimatedYield.unitId.error")}
+                          error={tSchema("estimatedYield.unitId.error")}
                           notFound={tSchema("estimatedYield.unitId.notFound")}
                         />
                       </FormControl>
@@ -262,7 +262,7 @@ export const CropCreateButton = () => {
                           unitType={UnitType.WEIGHT}
                           disabled={isPending}
                           className="w-full"
-                          errorLabel={tSchema("actualYield.unitId.error")}
+                          error={tSchema("actualYield.unitId.error")}
                           notFound={tSchema("actualYield.unitId.notFound")}
                         />
                       </FormControl>

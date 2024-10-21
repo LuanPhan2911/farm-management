@@ -125,7 +125,7 @@ export const UnitEditDialog = () => {
                 <FormLabel>{tSchema("type.label")}</FormLabel>
                 <FormControl>
                   <SelectOptions
-                    label={tSchema("type.label")}
+                    placeholder={tSchema("type.label")}
                     onChange={field.onChange}
                     options={Object.values(UnitType).map((item) => {
                       return {

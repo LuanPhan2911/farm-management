@@ -17,12 +17,12 @@ interface FertilizersSelectProps {
   disabled?: boolean;
   placeholder: string;
   notFound: string;
-  errorLabel: string;
+  error: string;
   appearance?: ComboBoxCustomAppearance;
 }
 export const FertilizersSelect = ({
   defaultValue,
-  errorLabel,
+  error,
   placeholder,
   notFound,
   onChange,
@@ -41,7 +41,7 @@ export const FertilizersSelect = ({
     return <Skeleton className="lg:w-[250px] w-full h-12"></Skeleton>;
   }
   if (isError) {
-    return <ErrorButton title={errorLabel} refresh={refetch} />;
+    return <ErrorButton title={error} refresh={refetch} />;
   }
 
   return (

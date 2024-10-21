@@ -41,6 +41,7 @@ import {
 import { Server as NetServer, Socket } from "net";
 import { NextApiResponse } from "next";
 import { Server as SocketIoServer } from "socket.io";
+import { z } from "zod";
 
 export type OrgRole = "org:member" | "org:admin";
 
@@ -129,6 +130,11 @@ export type ApplicantTable = {
 };
 export type FieldTable = Field & {
   unit: Unit | null;
+};
+export type FieldSelect = {
+  id: string;
+  name: string;
+  location: string;
 };
 
 export type WeatherTable = Weather & {
@@ -375,6 +381,19 @@ export type EquipmentUsageTable = EquipmentUsage & {
   activity: ActivitySelect;
   operator: Staff | null;
 };
+
+export type ActivityTable = Activity & {
+  assignedTo: Staff;
+  createdBy: Staff;
+  field: {
+    name: string;
+    location: string;
+  };
+  _count: {
+    equipmentUseds: number;
+    materialUseds: number;
+  };
+};
 export type ActivitySelect = {
   id: string;
   name: string;
@@ -385,3 +404,4 @@ export type ActivitySelect = {
   activityDate: Date;
   note: string | null;
 };
+export const activityUpdateStatus = ["NEW", "PENDING", "IN_PROGRESS"] as const;

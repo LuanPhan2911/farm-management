@@ -248,7 +248,7 @@ export const ChatMessageCreateFileFromCLoud = ({
                   <FormItem>
                     <FormControl>
                       <FilesSelect
-                        errorLabel={tSchema("fileUrl.error")}
+                        error={tSchema("fileUrl.error")}
                         placeholder={tSchema("fileUrl.placeholder")}
                         notFound={tSchema("fileUrl.notFound")}
                         onChange={field.onChange}

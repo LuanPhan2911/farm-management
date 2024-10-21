@@ -122,7 +122,7 @@ export const PlantCreateForm = () => {
                 <FormLabel>{tSchema("categoryId.label")}</FormLabel>
                 <FormControl>
                   <CategoriesSelect
-                    errorLabel={tSchema("categoryId.error")}
+                    error={tSchema("categoryId.error")}
                     notFound={tSchema("categoryId.notFound")}
                     onChange={field.onChange}
                     type={CategoryType.PLANT}
@@ -162,7 +162,7 @@ export const PlantCreateForm = () => {
                 <FormLabel>{tSchema("fertilizerType.label")}</FormLabel>
                 <FormControl>
                   <SelectOptions
-                    label={tSchema("fertilizerType.placeholder")}
+                    placeholder={tSchema("fertilizerType.placeholder")}
                     onChange={field.onChange}
                     disabled={isPending}
                     options={Object.values(FertilizerType).map((item) => {
@@ -186,7 +186,7 @@ export const PlantCreateForm = () => {
                 <FormLabel>{tSchema("season.label")}</FormLabel>
                 <FormControl>
                   <SelectOptions
-                    label={tSchema("season.placeholder")}
+                    placeholder={tSchema("season.placeholder")}
                     onChange={field.onChange}
                     disabled={isPending}
                     options={Object.values(Season).map((item) => {
@@ -244,7 +244,7 @@ export const PlantCreateForm = () => {
                         unitType={UnitType.TEMPERATURE}
                         disabled={isPending}
                         className="w-full"
-                        errorLabel={tSchema("idealTemperature.unitId.error")}
+                        error={tSchema("idealTemperature.unitId.error")}
                         notFound={tSchema("idealTemperature.unitId.notFound")}
                       />
                     </FormControl>
@@ -295,7 +295,7 @@ export const PlantCreateForm = () => {
                         unitType={UnitType.PERCENT}
                         disabled={isPending}
                         className="w-full"
-                        errorLabel={tSchema("idealHumidity.unitId.error")}
+                        error={tSchema("idealHumidity.unitId.error")}
                         notFound={tSchema("idealHumidity.unitId.notFound")}
                       />
                     </FormControl>
@@ -346,7 +346,7 @@ export const PlantCreateForm = () => {
                         unitType={UnitType.RAINFALL}
                         disabled={isPending}
                         className="w-full"
-                        errorLabel={tSchema("waterRequirement.unitId.error")}
+                        error={tSchema("waterRequirement.unitId.error")}
                         notFound={tSchema("waterRequirement.unitId.notFound")}
                       />
                     </FormControl>

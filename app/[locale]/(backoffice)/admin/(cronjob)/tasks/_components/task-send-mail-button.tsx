@@ -288,7 +288,7 @@ const TaskEmailSelect = ({ disabled }: TaskEmailSelectProps) => {
       <Label>{t("label")} </Label>
       <div className="flex gap-x-2 items-center">
         <StaffsSelectMultiple
-          errorLabel={t("error")}
+          error={t("error")}
           label={t("placeholder")}
           notFound={t("notFound")}
           disabled={disabled}

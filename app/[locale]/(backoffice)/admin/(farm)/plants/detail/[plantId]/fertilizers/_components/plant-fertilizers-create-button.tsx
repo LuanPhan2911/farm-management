@@ -97,7 +97,7 @@ export const PlantFertilizerCreateButton = () => {
                       <FormControl>
                         <FertilizersSelect
                           placeholder={tSchema("fertilizerId.placeholder")}
-                          errorLabel={tSchema("fertilizerId.error")}
+                          error={tSchema("fertilizerId.error")}
                           notFound={tSchema("fertilizerId.notFound")}
                           disabled={isPending}
                           onChange={field.onChange}
@@ -166,7 +166,7 @@ export const PlantFertilizerCreateButton = () => {
                             unitType={UnitType.VOLUME}
                             disabled={isPending}
                             className="w-full"
-                            errorLabel={tSchema("dosage.unitId.error")}
+                            error={tSchema("dosage.unitId.error")}
                             notFound={tSchema("dosage.unitId.notFound")}
                           />
                         </FormControl>

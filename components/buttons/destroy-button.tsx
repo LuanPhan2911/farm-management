@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { Trash } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useRouter } from "@/navigation";
 
 interface DestroyButtonProps {
   destroyFn: (id: string) => Promise<ActionResponse>;
@@ -14,6 +15,7 @@ interface DestroyButtonProps {
   id: string;
   disabled?: boolean;
   className?: string;
+  redirectHref?: string;
 }
 export const DestroyButton = ({
   inltKey,
@@ -21,15 +23,20 @@ export const DestroyButton = ({
   disabled,
   destroyFn,
   className,
+  redirectHref,
 }: DestroyButtonProps) => {
   const { onOpen, onClose, setPending } = useAlertDialog();
   const t = useTranslations(`${inltKey}.form`);
+  const router = useRouter();
   const onConfirm = async () => {
     setPending(true);
     destroyFn(id)
       .then(({ message, ok }) => {
         if (ok) {
           toast.success(message);
+          if (redirectHref) {
+            router.replace(redirectHref);
+          }
         } else {
           toast.error(message);
         }

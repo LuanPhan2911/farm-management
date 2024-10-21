@@ -14,12 +14,12 @@ interface PlantsSelectProps {
   disabled?: boolean;
   placeholder: string;
   notFound: string;
-  errorLabel: string;
+  error: string;
   appearance?: ComboBoxCustomAppearance;
 }
 export const PlantsSelect = ({
   defaultValue,
-  errorLabel,
+  error,
   placeholder,
   notFound,
   onChange,
@@ -37,7 +37,7 @@ export const PlantsSelect = ({
     return <Skeleton className="lg:w-[250px] w-full h-12"></Skeleton>;
   }
   if (isError) {
-    return <ErrorButton title={errorLabel} refresh={refetch} />;
+    return <ErrorButton title={error} refresh={refetch} />;
   }
 
   return (

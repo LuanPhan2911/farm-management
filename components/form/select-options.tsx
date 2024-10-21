@@ -11,7 +11,7 @@ export type SelectData = {
   label: string;
 };
 interface SelectOptionsProps {
-  label: string;
+  placeholder: string;
   defaultValue?: string | null;
   options: SelectData[];
   onChange: (value: string) => void;
@@ -21,7 +21,7 @@ export const SelectOptions = ({
   onChange,
   defaultValue,
   options,
-  label,
+  placeholder,
   disabled,
 }: SelectOptionsProps) => {
   const handleChange = (currentValue: string) => {
@@ -30,11 +30,11 @@ export const SelectOptions = ({
   return (
     <Select
       onValueChange={handleChange}
-      defaultValue={defaultValue || undefined}
+      value={defaultValue || undefined}
       disabled={disabled}
     >
       <SelectTrigger>
-        <SelectValue placeholder={label} />
+        <SelectValue placeholder={placeholder} />
       </SelectTrigger>
 
       <SelectContent>

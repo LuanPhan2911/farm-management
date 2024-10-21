@@ -138,7 +138,7 @@ export const MaterialUsageCreateButton = () => {
                         unitType={UnitType.QUANTITY}
                         disabled={isPending}
                         className="w-full"
-                        errorLabel={tSchema("unitId.error")}
+                        error={tSchema("unitId.error")}
                         notFound={tSchema("unitId.notFound")}
                       />
                     </FormControl>

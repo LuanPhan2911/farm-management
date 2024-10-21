@@ -11,7 +11,7 @@ import { MaterialUsageTable } from "@/types";
 import { MoreHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { MaterialUsageEditButton } from "./material-usages-edit-button";
-import { canUpdateActivityUsage } from "@/lib/permission";
+import { canUpdateActivityStatus } from "@/lib/permission";
 import { DetailButton } from "@/components/buttons/detail-button";
 import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/material-usage";
@@ -23,7 +23,7 @@ export const MaterialUsagesTableAction = ({
   data,
 }: MaterialUsagesTableActionProps) => {
   const t = useTranslations("materialUsages.form");
-  const canUpdate = canUpdateActivityUsage(data.activity.status);
+  const canUpdate = canUpdateActivityStatus(data.activity.status);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

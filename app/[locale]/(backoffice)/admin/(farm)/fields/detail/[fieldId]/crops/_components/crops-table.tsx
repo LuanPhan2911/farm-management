@@ -44,7 +44,7 @@ export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
         <SearchBar isPagination placeholder={t("search.placeholder")} />
         <DatePickerWithRangeButton />
         <PlantsSelect
-          errorLabel={t("schema.plantId.error")}
+          error={t("schema.plantId.error")}
           placeholder={t("schema.plantId.placeholder")}
           notFound={t("schema.plantId.notFound")}
           onChange={updateSearchParam}

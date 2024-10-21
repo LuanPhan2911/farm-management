@@ -21,7 +21,7 @@ import { MaterialUsagesTableAction } from "./material-usages-table-action";
 import { ActivityStatusValue } from "@/app/[locale]/(backoffice)/admin/activities/_components/activity-status-value";
 import { ActivityPriorityValue } from "@/app/[locale]/(backoffice)/admin/activities/_components/activity-priority-value";
 import { useDialog } from "@/stores/use-dialog";
-import { canUpdateActivityUsage } from "@/lib/permission";
+import { canUpdateActivityStatus } from "@/lib/permission";
 
 interface MaterialUsagesTableProps {
   data: MaterialUsageTable[];
@@ -34,7 +34,7 @@ export const MaterialUsagesTable = ({
   const { onOpen } = useDialog();
   const t = useTranslations("materialUsages");
   const handleEdit = (row: MaterialUsageTable) => {
-    if (!canUpdateActivityUsage(row.activity.status)) {
+    if (!canUpdateActivityStatus(row.activity.status)) {
       return;
     }
     onOpen("materialUsage.edit", { materialUsage: row });

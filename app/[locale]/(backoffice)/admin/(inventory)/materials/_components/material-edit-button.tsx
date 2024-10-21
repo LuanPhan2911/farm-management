@@ -141,7 +141,7 @@ export const MaterialEditForm = ({ data }: MaterialEditFormProps) => {
                 <FormLabel>{tSchema("type.label")}</FormLabel>
                 <FormControl>
                   <SelectOptions
-                    label={tSchema("type.placeholder")}
+                    placeholder={tSchema("type.placeholder")}
                     onChange={field.onChange}
                     options={Object.values(MaterialType).map((item) => {
                       return {
@@ -194,7 +194,7 @@ export const MaterialEditForm = ({ data }: MaterialEditFormProps) => {
                     unitType={UnitType.QUANTITY}
                     disabled={isPending}
                     className="w-full"
-                    errorLabel={tSchema("unitId.error")}
+                    error={tSchema("unitId.error")}
                     notFound={tSchema("unitId.notFound")}
                     defaultValue={field.value}
                   />

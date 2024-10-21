@@ -95,7 +95,7 @@ export const WeatherCreateButton = () => {
                     <div className="flex gap-x-2">
                       <FormControl>
                         <SelectOptions
-                          label={tSchema("status.placeholder")}
+                          placeholder={tSchema("status.placeholder")}
                           onChange={field.onChange}
                           options={Object.keys(WeatherStatus).map((item) => {
                             return {
@@ -174,7 +174,7 @@ export const WeatherCreateButton = () => {
                           unitType={UnitType.TEMPERATURE}
                           disabled={isPending}
                           className="w-full"
-                          errorLabel={tSchema("temperature.unitId.error")}
+                          error={tSchema("temperature.unitId.error")}
                           notFound={tSchema("temperature.unitId.notFound")}
                         />
                       </FormControl>
@@ -219,7 +219,7 @@ export const WeatherCreateButton = () => {
                           unitType={UnitType.PERCENT}
                           disabled={isPending}
                           className="w-full"
-                          errorLabel={tSchema("humidity.unitId.error")}
+                          error={tSchema("humidity.unitId.error")}
                           notFound={tSchema("humidity.unitId.notFound")}
                         />
                       </FormControl>
@@ -274,9 +274,7 @@ export const WeatherCreateButton = () => {
                           unitType={UnitType.ATMOSPHERICPRESSURE}
                           disabled={isPending}
                           className="w-full"
-                          errorLabel={tSchema(
-                            "atmosphericPressure.unitId.error"
-                          )}
+                          error={tSchema("atmosphericPressure.unitId.error")}
                           notFound={tSchema(
                             "atmosphericPressure.unitId.notFound"
                           )}
@@ -323,7 +321,7 @@ export const WeatherCreateButton = () => {
                           unitType={UnitType.RAINFALL}
                           disabled={isPending}
                           className="w-full"
-                          errorLabel={tSchema("rainfall.unitId.error")}
+                          error={tSchema("rainfall.unitId.error")}
                           notFound={tSchema("rainfall.unitId.notFound")}
                         />
                       </FormControl>

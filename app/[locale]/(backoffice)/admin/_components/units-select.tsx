@@ -20,7 +20,7 @@ interface UnitsSelectProps {
   placeholder: string;
   disabled?: boolean;
   className?: string;
-  errorLabel: string;
+  error: string;
   notFound: string;
 }
 export const UnitsSelect = ({
@@ -30,7 +30,7 @@ export const UnitsSelect = ({
   placeholder,
   disabled,
   className,
-  errorLabel,
+  error,
   notFound,
 }: UnitsSelectProps) => {
   const { data, isPending, isError, refetch } = useQuery({
@@ -68,7 +68,7 @@ export const UnitsSelect = ({
     return <Skeleton className="w-full h-12" />;
   }
   if (isError) {
-    return <ErrorButton title={errorLabel} refresh={refetch} />;
+    return <ErrorButton title={error} refresh={refetch} />;
   }
 
   const options = data.map((item) => {

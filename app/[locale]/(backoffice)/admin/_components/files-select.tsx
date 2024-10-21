@@ -14,12 +14,12 @@ interface FilesSelectProps {
   onChange: (value: string | undefined) => void;
   placeholder: string;
   disabled?: boolean;
-  errorLabel: string;
+  error: string;
   notFound: string;
   defaultValue?: string;
 }
 export const FilesSelect = ({
-  errorLabel,
+  error,
   notFound,
   onChange,
   disabled,
@@ -47,7 +47,7 @@ export const FilesSelect = ({
     return <Skeleton className="lg:w-[250px] w-full h-12"></Skeleton>;
   }
   if (isError) {
-    return <ErrorButton title={errorLabel} refresh={refetch} />;
+    return <ErrorButton title={error} refresh={refetch} />;
   }
 
   return (

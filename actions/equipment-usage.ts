@@ -2,7 +2,7 @@
 
 import {
   ActivityExistError,
-  ActivityUpdateUsageError,
+  ActivityUpdateStatusError,
   EquipmentDetailExistError,
   EquipmentUsageExistError,
   StaffExistError,
@@ -47,8 +47,8 @@ export const create = async (
     if (error instanceof ActivityExistError) {
       return errorResponse(tSchema("errors.existActivity"));
     }
-    if (error instanceof ActivityUpdateUsageError) {
-      return errorResponse(tSchema("errors.canUpdateUsage"));
+    if (error instanceof ActivityUpdateStatusError) {
+      return errorResponse(tSchema("errors.invalidActivityStatus"));
     }
     return errorResponse(tStatus("failure.create"));
   }
@@ -81,8 +81,8 @@ export const edit = async (
     if (error instanceof EquipmentUsageExistError) {
       return errorResponse(tSchema("errors.existEquipmentUsage"));
     }
-    if (error instanceof ActivityUpdateUsageError) {
-      return errorResponse(tSchema("errors.canUpdateUsage"));
+    if (error instanceof ActivityUpdateStatusError) {
+      return errorResponse(tSchema("errors.invalidActivityStatus"));
     }
     return errorResponse(tStatus("failure.edit"));
   }
@@ -102,8 +102,8 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
     if (error instanceof EquipmentUsageExistError) {
       return errorResponse(tSchema("errors.existEquipmentUsage"));
     }
-    if (error instanceof ActivityUpdateUsageError) {
-      return errorResponse(tSchema("errors.canUpdateUsage"));
+    if (error instanceof ActivityUpdateStatusError) {
+      return errorResponse(tSchema("errors.invalidActivityStatus"));
     }
     return errorResponse(tStatus("failure.destroy"));
   }

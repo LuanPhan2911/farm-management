@@ -148,7 +148,7 @@ export const FertilizerEditDialog = () => {
                   <FormLabel>{tSchema("type.label")}</FormLabel>
                   <FormControl>
                     <SelectOptions
-                      label={tSchema("type.placeholder")}
+                      placeholder={tSchema("type.placeholder")}
                       onChange={field.onChange}
                       options={Object.keys(FertilizerType).map((item) => {
                         return {
@@ -205,7 +205,7 @@ export const FertilizerEditDialog = () => {
                         unitType={UnitType.VOLUME}
                         disabled={isPending}
                         className="w-full"
-                        errorLabel={tSchema("recommendedDosage.unitId.error")}
+                        error={tSchema("recommendedDosage.unitId.error")}
                         notFound={tSchema("recommendedDosage.unitId.notFound")}
                         defaultValue={field.value}
                       />
@@ -245,7 +245,7 @@ export const FertilizerEditDialog = () => {
                   <FormLabel>{tSchema("frequencyOfUse.label")}</FormLabel>
                   <FormControl>
                     <SelectOptions
-                      label={tSchema("frequencyOfUse.placeholder")}
+                      placeholder={tSchema("frequencyOfUse.placeholder")}
                       onChange={field.onChange}
                       defaultValue={field.value}
                       options={Object.keys(Frequency).map((item) => {

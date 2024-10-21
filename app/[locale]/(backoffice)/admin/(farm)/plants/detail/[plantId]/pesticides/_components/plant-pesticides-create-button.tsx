@@ -97,7 +97,7 @@ export const PlantPesticideCreateButton = () => {
                       <FormControl>
                         <PesticidesSelect
                           placeholder={tSchema("pesticideId.placeholder")}
-                          errorLabel={tSchema("pesticideId.error")}
+                          error={tSchema("pesticideId.error")}
                           notFound={tSchema("pesticideId.notFound")}
                           disabled={isPending}
                           onChange={field.onChange}
@@ -166,7 +166,7 @@ export const PlantPesticideCreateButton = () => {
                             unitType={UnitType.VOLUME}
                             disabled={isPending}
                             className="w-full"
-                            errorLabel={tSchema("dosage.unitId.error")}
+                            error={tSchema("dosage.unitId.error")}
                             notFound={tSchema("dosage.unitId.notFound")}
                           />
                         </FormControl>

@@ -2631,7 +2631,7 @@
         "existStaff": "Operator is not exist",
         "existActivity": "Activity is not exist",
         "existEquipmentUsage": "Equipment usage is not exist",
-        "canUpdateUsage": "Activity status is in progress or new is possible to update usage"
+        "invalidActivityStatus": "Activity status is in progress or new is possible to update usage"
       },
       "activityId": {
         "required_error": "Required activity id",
@@ -2862,7 +2862,7 @@
         "existMaterial": "Material is not exist",
         "noEnoughQuantity": "Quantity in stock is {value}, not enough to use!",
         "existActivity": "Activity is not exist",
-        "canUpdateUsage": "Activity status is in progress or new is possible to update usage"
+        "invalidActivityStatus": "Activity status is in progress or new is possible to update usage"
       },
       "unitId": {
         "required_error": "Required unit",
@@ -2909,7 +2909,106 @@
     }
   },
   "activities": {
+    "page": {
+      "title": "Manage activities",
+      "create": {
+        "title": "Create activity"
+      },
+      "detail": {
+        "title": "Activity info",
+        "equipment-usages": {
+          "title": "Equipment usages"
+        },
+        "material-usages": {
+          "title": "Material usages"
+        },
+        "danger": {
+          "title": "Danger"
+        }
+      }
+    },
+    "tabs": {
+      "info": {
+        "label": "Info"
+      },
+      "equipment-usages": {
+        "label": "Equipment usages"
+      },
+      "material-usages": {
+        "label": "Material usages"
+      },
+      "danger": {
+        "label": "Danger"
+      }
+    },
+    "table": {
+      "thead": {
+        "name": "Activity name",
+        "status": "Activity Status",
+        "priority": "Activity Priority",
+        "estimatedDuration": "Estimated duration",
+        "createdBy": "CreatedBy",
+        "assignedTo": "AssignedTo",
+        "countEquipmentUsage": "Count equipment",
+        "countMaterialUsage": "Count material"
+      },
+      "trow": {
+        "estimatedDuration": "No filled"
+      }
+    },
+    "search": {
+      "placeholder": "Search by name..."
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add activity",
+        "description": "Add activity"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit activity",
+        "description": "Update of activity"
+      },
+      "viewDetail": {
+        "label": "View detail"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete activity?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      }
+    },
     "schema": {
+      "errors": {
+        "parse": "Invalid activity"
+      },
+      "name": {
+        "label": "Activity name",
+        "placeholder": "Activity name",
+        "required_error": "Activity name is required!",
+        "min": "Min name length is {min} characters",
+        "max": "Name's length must be less than {max} characters"
+      },
+      "description": {
+        "label": "Activity description",
+        "placeholder": "Activity description",
+        "max": "Description's length must be less than {max} characters"
+      },
+      "fieldId": {
+        "label": "Field",
+        "placeholder": "Select field",
+        "required_error": "Required field id",
+        "error": "Fail load fields",
+        "notFound": "Fields not found"
+      },
+      "activityDate": {
+        "label": "Start date",
+        "placeholder": "Start date time",
+        "invalid_type_error": "Invalid date type",
+        "required_error": "Start usage time is required!"
+      },
+
       "status": {
         "options": {
           "NEW": "New",
@@ -2917,7 +3016,10 @@
           "IN_PROGRESS": "In progress",
           "COMPLETED": "Completed",
           "CANCELLED": "Cancelled"
-        }
+        },
+        "label": "Status",
+        "placeholder": "Select status...",
+        "enum": "Please select status in list"
       },
       "priority": {
         "options": {
@@ -2925,8 +3027,53 @@
           "MEDIUM": "Medium",
           "HIGH": "High",
           "URGENT": "Urgent"
-        }
+        },
+        "label": "Priority",
+        "placeholder": "Select priority...",
+        "enum": "Please select priority in list"
+      },
+      "estimatedDuration": {
+        "label": "Estimated duration",
+        "placeholder": "Estimated duration",
+        "max": "Estimated duration's length must be less than {max} characters"
+      },
+      "actualDuration": {
+        "label": "Actual duration",
+        "placeholder": "Actual duration",
+        "max": "Actual duration's length must be less than {max} characters"
+      },
+      "note": {
+        "label": "Note",
+        "placeholder": "Note",
+        "max": "Note's length must be less than {max} characters"
+      },
+      "createdById": {
+        "required_error": "Created by id required"
+      },
+      "assignedToId": {
+        "label": "Assigned to",
+        "placeholder": "Select assigned to",
+        "required_error": "Assigned to is required",
+        "error": "Fail load staffs",
+        "notFound": "Staffs not found"
       }
+    },
+    "status": {
+      "success": {
+        "create": "Activity created!",
+        "edit": "Activity edited!",
+        "destroy": "Activity deleted!"
+      },
+      "failure": {
+        "create": "Something went wrong while creating activity!",
+        "edit": "Something went wrong while editing activity!",
+        "destroy": "Something went wrong while deleting activity!"
+      }
+    },
+    "notFound": {
+      "title": "Activity not found",
+      "description": "Sorry, we couldn’t find the activity you’re looking for.",
+      "backLabel": "Go to activities page"
     }
   },
   "crops": {
@@ -3485,6 +3632,12 @@
     "/admin/materials/detail": "Info",
     "/admin/materials/detail/danger": "Danger",
     "/admin/materials/detail/usages": "Usages",
+    "/admin/activities": "Activities",
+    "/admin/activities/create": "Create",
+    "/admin/activities/detail": "Info",
+    "/admin/activities/detail/equipment-usages": "Equipment Usages",
+    "/admin/activities/detail/material-usages": "Material Usages",
+    "/admin/activities/detail/danger": "Danger",
     "/admin/tasks": "Tasks",
     "/admin/schedules": "Schedules",
     "/admin/messages": "All messages",

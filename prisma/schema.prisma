@@ -63,9 +63,6 @@ model FloatUnit {
 
   plantFertilizerDosages PlantFertilizer[]
   plantPesticideDosages  PlantPesticide[]
-
-  estimatedDurations Activity[] @relation(name: "estimatedDuration")
-  actualDurations    Activity[] @relation(name: "actualDuration")
 }
 
 model IntUnit {
@@ -553,55 +550,6 @@ model EquipmentUsage {
   operator        Staff?          @relation(fields: [operatorId], references: [id]) // Operator
 }
 
-enum ActivityType {
-  FERTILIZER
-  PESTICIDE
-  EQUIPMENT
-  WATERING
-  OTHER
-}
-
-enum ActivityStatus {
-  NEW
-  PENDING
-  IN_PROGRESS
-  COMPLETED
-  CANCELLED
-}
-
-enum ActivityPriority {
-  LOW
-  MEDIUM
-  HIGH
-  URGENT
-}
-
-model Activity {
-  id                  String           @id @default(uuid())
-  name                String
-  description         String?
-  fieldId             String
-  activityDate        DateTime // Scheduled or actual date of the activity
-  status              ActivityStatus   @default(NEW)
-  priority            ActivityPriority @default(LOW) // Enum: "Low", "Medium", "High", "Urgent"
-  estimatedDurationId String? // Estimated duration in hours
-  actualDurationId    String? // Actual duration in hours
-  note                String?
-  createdById         String
-  assignedToId        String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  equipmentUseds    EquipmentUsage[] // Relation to equipment used
-  materialUseds     MaterialUsage[]
-  estimatedDuration FloatUnit?       @relation(name: "estimatedDuration", fields: [estimatedDurationId], references: [id], onDelete: SetNull)
-  actualDuration    FloatUnit?       @relation(name: "actualDuration", fields: [actualDurationId], references: [id], onDelete: SetNull)
-  createdBy         Staff            @relation(name: "createdBy", fields: [createdById], references: [id])
-  assignedTo        Staff            @relation(name: "assignedTo", fields: [assignedToId], references: [id])
-  field             Field            @relation(fields: [fieldId], references: [id])
-}
-
 enum MaterialType {
   FERTILIZER
   PESTICIDE
@@ -637,4 +585,51 @@ model MaterialUsage {
   activity Activity @relation(fields: [activityId], references: [id])
   material Material @relation(fields: [materialId], references: [id])
   unit     Unit     @relation(fields: [unitId], references: [id])
+}
+
+enum ActivityType {
+  FERTILIZER
+  PESTICIDE
+  EQUIPMENT
+  WATERING
+  OTHER
+}
+
+enum ActivityStatus {
+  NEW
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum ActivityPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model Activity {
+  id                String           @id @default(uuid())
+  name              String
+  description       String?
+  fieldId           String
+  activityDate      DateTime // Scheduled or actual date of the activity
+  status            ActivityStatus   @default(NEW)
+  priority          ActivityPriority @default(LOW) // Enum: "Low", "Medium", "High", "Urgent"
+  estimatedDuration String? // Estimated duration in hours
+  actualDuration    String? // Actual duration in hours
+  note              String?
+  createdById       String
+  assignedToId      String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  equipmentUseds EquipmentUsage[] // Relation to equipment used
+  materialUseds  MaterialUsage[]
+  createdBy      Staff            @relation(name: "createdBy", fields: [createdById], references: [id])
+  assignedTo     Staff            @relation(name: "assignedTo", fields: [assignedToId], references: [id])
+  field          Field            @relation(fields: [fieldId], references: [id])
 }

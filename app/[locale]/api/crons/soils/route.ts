@@ -1,6 +1,6 @@
 import { generateSoil } from "@/lib/faker";
 import { SoilSchema } from "@/schemas";
-import { getFieldIds } from "@/services/fields";
+import { getFieldsSelect } from "@/services/fields";
 import { createManySoil, getSoilUnitForGenerateSoil } from "@/services/soils";
 import { getTranslations } from "next-intl/server";
 import { NextRequest, NextResponse } from "next/server";
@@ -21,10 +21,10 @@ export const POST = async (req: NextRequest) => {
       return NextResponse.json("Missing soil unit", { status: 401 });
     }
 
-    const fieldIds = await getFieldIds();
-    const soils = fieldIds.map((fieldId) => {
+    const fieldIds = await getFieldsSelect();
+    const soils = fieldIds.map(({ id }) => {
       const soil = generateSoil({
-        fieldId,
+        fieldId: id,
         moistureUnitId,
         nutrientUnitId,
       });

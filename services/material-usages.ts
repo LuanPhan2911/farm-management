@@ -1,13 +1,13 @@
 import { LIMIT } from "@/configs/paginationConfig";
 import {
   ActivityExistError,
-  ActivityUpdateUsageError,
+  ActivityUpdateStatusError,
   MaterialExistError,
   MaterialUpdateQuantityError,
   MaterialUsageExistError,
   MaterialUsageUpdateQuantityError,
 } from "@/errors";
-import { canUpdateActivityUsage } from "@/lib/permission";
+import { canUpdateActivityStatus } from "@/lib/permission";
 import { db } from "@/lib/db";
 import { getObjectSortOrder } from "@/lib/utils";
 import { MaterialUsageTable, PaginatedResponse } from "@/types";
@@ -53,8 +53,8 @@ export const createMaterialUsage = async (params: MaterialUsageParam) => {
   if (!activity) {
     throw new ActivityExistError();
   }
-  if (!canUpdateActivityUsage(activity.status)) {
-    throw new ActivityUpdateUsageError();
+  if (!canUpdateActivityStatus(activity.status)) {
+    throw new ActivityUpdateStatusError();
   }
 
   // If stock is sufficient, proceed with the transaction
@@ -104,8 +104,8 @@ export const updateMaterialUsage = async (
     throw new MaterialUsageExistError();
   }
 
-  if (!canUpdateActivityUsage(materialUsage.activity.status)) {
-    throw new ActivityUpdateUsageError();
+  if (!canUpdateActivityStatus(materialUsage.activity.status)) {
+    throw new ActivityUpdateStatusError();
   }
 
   // Calculate the quantity difference
@@ -155,8 +155,8 @@ export const deleteMaterialUsage = async (id: string) => {
   if (!materialUsage) {
     throw new MaterialUsageExistError();
   }
-  if (!canUpdateActivityUsage(materialUsage.activity.status)) {
-    throw new ActivityUpdateUsageError();
+  if (!canUpdateActivityStatus(materialUsage.activity.status)) {
+    throw new ActivityUpdateStatusError();
   }
   // delete material usage
 

@@ -114,7 +114,7 @@ interface StaffsSelectMultipleProps {
   disabled?: boolean;
   label: string;
   notFound: string;
-  errorLabel: string;
+  error: string;
   defaultValue?: string;
   className?: string;
 }
@@ -122,7 +122,7 @@ export const StaffsSelectMultiple = ({
   disabled,
   label,
   notFound,
-  errorLabel,
+  error,
   onChange,
   className,
 }: StaffsSelectMultipleProps) => {
@@ -146,7 +146,7 @@ export const StaffsSelectMultiple = ({
     return <Skeleton className="lg:w-[250px] w-full h-12"></Skeleton>;
   }
   if (isError) {
-    return <ErrorButton title={errorLabel} refresh={refetch} />;
+    return <ErrorButton title={error} refresh={refetch} />;
   }
   const options = data.map((item) => {
     return {

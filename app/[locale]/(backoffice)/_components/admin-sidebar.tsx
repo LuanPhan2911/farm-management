@@ -17,6 +17,7 @@ import {
   Folder,
   FolderLock,
   Gavel,
+  Goal,
   Grid2X2,
   Hammer,
   House,
@@ -71,6 +72,12 @@ export const AdminSidebar = () => {
           active={isActive(pathname, "/admin/dashboard")}
           icon={LayoutGrid}
           title="Dashboard"
+        />
+        <SidebarItem
+          href="/admin/activities"
+          active={isActive(pathname, "/admin/activities")}
+          icon={Goal}
+          title="Activities"
         />
         <SidebarAccordionItem title="Account" icon={Users}>
           <SidebarItem

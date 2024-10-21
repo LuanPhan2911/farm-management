@@ -133,7 +133,7 @@ export const JobCreateForm = () => {
                     <FormLabel>{tSchema("experience.label")}</FormLabel>
                     <FormControl>
                       <SelectOptions
-                        label={tSchema("experience.placeholder")}
+                        placeholder={tSchema("experience.placeholder")}
                         onChange={field.onChange}
                         disabled={isPending}
                         defaultValue={field.value}

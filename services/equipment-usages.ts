@@ -1,11 +1,11 @@
 import {
   ActivityExistError,
-  ActivityUpdateUsageError,
+  ActivityUpdateStatusError,
   EquipmentDetailExistError,
   EquipmentUsageExistError,
   StaffExistError,
 } from "@/errors";
-import { canUpdateActivityUsage } from "@/lib/permission";
+import { canUpdateActivityStatus } from "@/lib/permission";
 import { db } from "@/lib/db";
 import { getStaffById } from "./staffs";
 import { LIMIT } from "@/configs/paginationConfig";
@@ -57,8 +57,8 @@ export const createEquipmentUsage = async (params: EquipmentUsageParams) => {
   if (!activity) {
     throw new ActivityExistError();
   }
-  if (!canUpdateActivityUsage(activity.status)) {
-    throw new ActivityUpdateUsageError();
+  if (!canUpdateActivityStatus(activity.status)) {
+    throw new ActivityUpdateStatusError();
   }
   const [updatedEquipmentDetail, equipmentUsage] = await db.$transaction([
     db.equipmentDetail.update({
@@ -96,8 +96,8 @@ export const updateEquipmentUsage = async (
   if (!equipmentUsage) {
     throw new EquipmentUsageExistError();
   }
-  if (!canUpdateActivityUsage(equipmentUsage.activity.status)) {
-    throw new ActivityUpdateUsageError();
+  if (!canUpdateActivityStatus(equipmentUsage.activity.status)) {
+    throw new ActivityUpdateStatusError();
   }
   const updatedEquipmentUsage = await db.equipmentUsage.update({
     where: {
@@ -124,8 +124,8 @@ export const deleteEquipmentUsage = async (id: string) => {
   if (!equipmentUsage) {
     throw new EquipmentUsageExistError();
   }
-  if (!canUpdateActivityUsage(equipmentUsage.activity.status)) {
-    throw new ActivityUpdateUsageError();
+  if (!canUpdateActivityStatus(equipmentUsage.activity.status)) {
+    throw new ActivityUpdateStatusError();
   }
   //1: update equipment detail status to available
   //2: delete equipment usage
