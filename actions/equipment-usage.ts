@@ -10,9 +10,11 @@ import {
 import { errorResponse, successResponse } from "@/lib/utils";
 import { EquipmentUsageSchema } from "@/schemas";
 import {
+  assignEquipmentUsage,
   createEquipmentUsage,
   deleteEquipmentUsage,
   revalidatePathEquipmentUsage,
+  revokeEquipmentUsage,
   updateEquipmentUsage,
 } from "@/services/equipment-usages";
 import { ActionResponse } from "@/types";
@@ -66,10 +68,11 @@ export const edit = async (
     return errorResponse(tSchema("errors.parse"));
   }
   try {
-    const { duration, note } = validatedFields.data;
+    const { duration, note, usageStartTime } = validatedFields.data;
     const equipmentUsage = await updateEquipmentUsage(id, {
       duration,
       note,
+      usageStartTime,
     });
 
     revalidatePathEquipmentUsage({
@@ -106,5 +109,62 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
       return errorResponse(tSchema("errors.invalidActivityStatus"));
     }
     return errorResponse(tStatus("failure.destroy"));
+  }
+};
+
+export const assign = async (
+  id: string,
+  activityId: string
+): Promise<ActionResponse> => {
+  const tStatus = await getTranslations("equipmentUsages.status");
+  const tSchema = await getTranslations("equipmentUsages.schema");
+  try {
+    const equipmentUsage = await assignEquipmentUsage(id, {
+      activityId,
+    });
+
+    revalidatePathEquipmentUsage({
+      equipmentDetailId: equipmentUsage.equipmentDetailId,
+    });
+    return successResponse(tStatus("success.assign"));
+  } catch (error) {
+    if (error instanceof EquipmentUsageExistError) {
+      return errorResponse(tSchema("errors.existEquipment"));
+    }
+    if (error instanceof ActivityExistError) {
+      return errorResponse(tSchema("errors.existActivity"));
+    }
+    if (error instanceof ActivityUpdateStatusError) {
+      return errorResponse(tSchema("errors.invalidActivityStatus"));
+    }
+    return errorResponse(tStatus("failure.assign"));
+  }
+};
+export const revoke = async (
+  id: string,
+  activityId: string
+): Promise<ActionResponse> => {
+  const tStatus = await getTranslations("equipmentUsages.status");
+  const tSchema = await getTranslations("equipmentUsages.schema");
+  try {
+    const equipmentUsage = await revokeEquipmentUsage(id, {
+      activityId,
+    });
+
+    revalidatePathEquipmentUsage({
+      equipmentDetailId: equipmentUsage.equipmentDetailId,
+    });
+    return successResponse(tStatus("success.revoke"));
+  } catch (error) {
+    if (error instanceof EquipmentUsageExistError) {
+      return errorResponse(tSchema("errors.existEquipment"));
+    }
+    if (error instanceof ActivityExistError) {
+      return errorResponse(tSchema("errors.existActivity"));
+    }
+    if (error instanceof ActivityUpdateStatusError) {
+      return errorResponse(tSchema("errors.invalidActivityStatus"));
+    }
+    return errorResponse(tStatus("failure.revoke"));
   }
 };

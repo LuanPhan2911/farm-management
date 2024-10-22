@@ -148,54 +148,6 @@ export const EquipmentUsageEditDialog = () => {
               )}
             />
           </div>
-          <div className="grid lg:grid-cols-2 gap-2">
-            <FormField
-              control={form.control}
-              name="activityId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("activityId.label")}</FormLabel>
-                  <FormControl>
-                    <ActivitiesSelect
-                      onChange={field.onChange}
-                      placeholder={tSchema("activityId.placeholder")}
-                      disabled={true}
-                      error={tSchema("activityId.error")}
-                      notFound={tSchema("activityId.notFound")}
-                      defaultValue={field.value}
-                    />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="operatorId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("operatorId.label")}</FormLabel>
-                  <FormControl>
-                    <StaffsSelect
-                      onChange={field.onChange}
-                      defaultValue={field.value}
-                      placeholder={tSchema("operatorId.placeholder")}
-                      disabled={true}
-                      error={tSchema("operatorId.error")}
-                      notFound={tSchema("operatorId.notFound")}
-                      appearance={{
-                        button: "lg:w-full h-15",
-                        content: "lg:w-[400px]",
-                      }}
-                    />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
 
           <FormField
             control={form.control}

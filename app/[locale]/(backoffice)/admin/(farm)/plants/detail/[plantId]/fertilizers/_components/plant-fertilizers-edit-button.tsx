@@ -119,7 +119,7 @@ export const PlantFertilizerEditDialog = () => {
                         disabled={isPending}
                         onChange={field.onChange}
                         appearance={{
-                          button: "lg:w-full h-14",
+                          button: "lg:w-full 2",
                           content: "lg:w-[380px]",
                         }}
                         defaultValue={field.value}

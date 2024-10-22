@@ -535,7 +535,7 @@ model EquipmentDetail {
 
 model EquipmentUsage {
   id                String   @id @default(uuid())
-  activityId        String
+  activityId        String?
   equipmentDetailId String
   usageStartTime    DateTime // Start time of equipment usage
   duration          String
@@ -546,7 +546,7 @@ model EquipmentUsage {
   updatedAt DateTime @updatedAt
 
   equipmentDetail EquipmentDetail @relation(fields: [equipmentDetailId], references: [id])
-  activity        Activity        @relation(fields: [activityId], references: [id])
+  activity        Activity?       @relation(fields: [activityId], references: [id], onDelete: SetNull)
   operator        Staff?          @relation(fields: [operatorId], references: [id]) // Operator
 }
 
@@ -573,8 +573,8 @@ model Material {
 }
 
 model MaterialUsage {
-  id           String @id @default(uuid())
-  activityId   String
+  id           String  @id @default(uuid())
+  activityId   String?
   materialId   String
   quantityUsed Float // Quantity used in the activity
   unitId       String
@@ -582,9 +582,9 @@ model MaterialUsage {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  activity Activity @relation(fields: [activityId], references: [id])
-  material Material @relation(fields: [materialId], references: [id])
-  unit     Unit     @relation(fields: [unitId], references: [id])
+  activity Activity? @relation(fields: [activityId], references: [id], onDelete: SetNull)
+  material Material  @relation(fields: [materialId], references: [id])
+  unit     Unit      @relation(fields: [unitId], references: [id])
 }
 
 enum ActivityType {

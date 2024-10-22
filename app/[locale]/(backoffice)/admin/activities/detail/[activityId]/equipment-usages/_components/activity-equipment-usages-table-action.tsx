@@ -7,24 +7,28 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
-import { EquipmentUsageEditButton } from "./equipment-usage-edit-button";
+
 import { DetailButton } from "@/components/buttons/detail-button";
 import { DestroyButton } from "@/components/buttons/destroy-button";
-import { destroy } from "@/actions/equipment-usage";
+import { assign, destroy, revoke } from "@/actions/equipment-usage";
 import { EquipmentUsageTable } from "@/types";
 import { useTranslations } from "next-intl";
 import {
   canUpdateActivityStatus,
   canUpdateEquipmentUsage,
 } from "@/lib/permission";
+import { EquipmentUsageEditButton } from "@/app/[locale]/(backoffice)/admin/(inventory)/equipments/detail/[equipmentId]/details/[equipmentDetailId]/usages/_components/equipment-usage-edit-button";
+import { ActionButton } from "@/components/buttons/action-button";
+import { useParams } from "next/navigation";
 
-interface EquipmentUsagesTableActionProps {
+interface ActivityEquipmentUsagesTableActionProps {
   data: EquipmentUsageTable;
 }
-export const EquipmentUsagesTableAction = ({
+export const ActivityEquipmentUsagesTableAction = ({
   data,
-}: EquipmentUsagesTableActionProps) => {
+}: ActivityEquipmentUsagesTableActionProps) => {
   const t = useTranslations("equipmentUsages.form");
+  const params = useParams<{ activityId: string }>()!;
   const canUpdate =
     !data.activity ||
     canUpdateActivityStatus(data.activity.status) ||
@@ -37,6 +41,31 @@ export const EquipmentUsagesTableAction = ({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-fit">
+        <DropdownMenuItem>
+          {!data.activity ? (
+            <ActionButton
+              actionFn={() => {
+                return assign(data.id, params.activityId);
+              }}
+              disabled={!canUpdate}
+              label={t("assign.label")}
+              description={t("assign.description")}
+              title={t("assign.title")}
+              className="w-full"
+            />
+          ) : (
+            <ActionButton
+              actionFn={() => {
+                return revoke(data.id, params.activityId);
+              }}
+              disabled={!canUpdate}
+              label={t("revoke.label")}
+              description={t("revoke.description")}
+              title={t("revoke.title")}
+              className="w-full"
+            />
+          )}
+        </DropdownMenuItem>
         <DropdownMenuItem>
           <EquipmentUsageEditButton
             data={data}
@@ -53,14 +82,6 @@ export const EquipmentUsagesTableAction = ({
             className="w-full"
           />
         </DropdownMenuItem>
-        {data.activity && (
-          <DropdownMenuItem>
-            <DetailButton
-              href={`/admin/activities/detail/${data.activity.id}`}
-              label={t("detailActivity.label")}
-            />
-          </DropdownMenuItem>
-        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

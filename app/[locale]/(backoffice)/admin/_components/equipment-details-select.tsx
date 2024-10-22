@@ -3,12 +3,12 @@ import {
   ComboBoxCustom,
   ComboBoxCustomAppearance,
 } from "@/components/form/combo-box";
-import { SelectItemContentWithoutImage } from "@/components/form/select-item";
+import { SelectItemContent } from "@/components/form/select-item";
 import { Skeleton } from "@/components/ui/skeleton";
-import { FieldSelect } from "@/types";
+import { EquipmentDetailSelect } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 
-interface FieldsSelectProps {
+interface EquipmentDetailsSelectProps {
   onChange: (value: string | undefined) => void;
   defaultValue?: string;
   disabled?: boolean;
@@ -17,7 +17,7 @@ interface FieldsSelectProps {
   error: string;
   appearance?: ComboBoxCustomAppearance;
 }
-export const FieldsSelect = ({
+export const EquipmentDetailsSelect = ({
   defaultValue,
   error,
   placeholder,
@@ -25,12 +25,12 @@ export const FieldsSelect = ({
   onChange,
   disabled,
   appearance,
-}: FieldsSelectProps) => {
+}: EquipmentDetailsSelectProps) => {
   const { data, isPending, isError, refetch } = useQuery({
-    queryKey: ["fields"],
+    queryKey: ["equipment-details-select"],
     queryFn: async () => {
-      const res = await fetch("/api/fields/select");
-      return (await res.json()) as FieldSelect[];
+      const res = await fetch("/api/equipment-details/select");
+      return (await res.json()) as EquipmentDetailSelect[];
     },
   });
   if (isPending) {
@@ -52,9 +52,9 @@ export const FieldsSelect = ({
       valueKey="id"
       labelKey="name"
       renderItem={(item) => (
-        <SelectItemContentWithoutImage
-          title={item.name}
-          description={item.location}
+        <SelectItemContent
+          imageUrl={item.equipment.imageUrl}
+          title={item.name || item.equipment.name}
         />
       )}
     />

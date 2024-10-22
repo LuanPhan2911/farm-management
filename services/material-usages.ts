@@ -26,8 +26,8 @@ export const revalidatePathMaterialUsage = ({
 type MaterialUsageParam = {
   materialId: string;
   quantityUsed: number;
-  activityId: string;
   unitId: string;
+  activityId?: string | null;
 };
 
 export const createMaterialUsage = async (params: MaterialUsageParam) => {
@@ -44,17 +44,19 @@ export const createMaterialUsage = async (params: MaterialUsageParam) => {
   if (material.quantityInStock < quantityUsed) {
     throw new MaterialUpdateQuantityError(material);
   }
-  const activity = await db.activity.findUnique({
-    where: { id: activityId },
-    select: {
-      status: true,
-    },
-  });
-  if (!activity) {
-    throw new ActivityExistError();
-  }
-  if (!canUpdateActivityStatus(activity.status)) {
-    throw new ActivityUpdateStatusError();
+  if (activityId) {
+    const activity = await db.activity.findUnique({
+      where: { id: activityId },
+      select: {
+        status: true,
+      },
+    });
+    if (!activity) {
+      throw new ActivityExistError();
+    }
+    if (!canUpdateActivityStatus(activity.status)) {
+      throw new ActivityUpdateStatusError();
+    }
   }
 
   // If stock is sufficient, proceed with the transaction
@@ -104,8 +106,10 @@ export const updateMaterialUsage = async (
     throw new MaterialUsageExistError();
   }
 
-  if (!canUpdateActivityStatus(materialUsage.activity.status)) {
-    throw new ActivityUpdateStatusError();
+  if (materialUsage.activity?.status) {
+    if (!canUpdateActivityStatus(materialUsage.activity.status)) {
+      throw new ActivityUpdateStatusError();
+    }
   }
 
   // Calculate the quantity difference
@@ -139,11 +143,78 @@ export const updateMaterialUsage = async (
 
   return { updatedUsage, updatedMaterial };
 };
+
+export const assignMaterialUsage = async (
+  id: string,
+  {
+    activityId,
+  }: {
+    activityId: string;
+  }
+) => {
+  const materialUsage = await db.materialUsage.findUnique({
+    where: { id, activityId: null },
+  });
+  if (!materialUsage) {
+    throw new MaterialUsageExistError();
+  }
+  const activity = await db.activity.findUnique({
+    where: { id: activityId },
+  });
+  if (!activity) {
+    throw new ActivityExistError();
+  }
+  if (!canUpdateActivityStatus(activity.status)) {
+    throw new ActivityUpdateStatusError();
+  }
+  const updateMaterialUsage = await db.materialUsage.update({
+    where: {
+      id,
+    },
+    data: {
+      activityId,
+    },
+  });
+  return updateMaterialUsage;
+};
+export const revokeMaterialUsage = async (
+  id: string,
+  {
+    activityId,
+  }: {
+    activityId: string;
+  }
+) => {
+  const materialUsage = await db.materialUsage.findUnique({
+    where: { id, activityId },
+  });
+  if (!materialUsage) {
+    throw new MaterialUsageExistError();
+  }
+  const activity = await db.activity.findUnique({ where: { id: activityId } });
+  if (!activity) {
+    throw new ActivityExistError();
+  }
+  if (!canUpdateActivityStatus(activity.status)) {
+    throw new ActivityUpdateStatusError();
+  }
+
+  const updateMaterialUsage = await db.materialUsage.update({
+    where: {
+      id,
+    },
+    data: {
+      activityId: null,
+    },
+  });
+  return updateMaterialUsage;
+};
 export const deleteMaterialUsage = async (id: string) => {
   const materialUsage = await db.materialUsage.findUnique({
     where: { id },
     select: {
       quantityUsed: true,
+      materialId: true,
       activity: {
         select: {
           status: true,
@@ -155,8 +226,10 @@ export const deleteMaterialUsage = async (id: string) => {
   if (!materialUsage) {
     throw new MaterialUsageExistError();
   }
-  if (!canUpdateActivityStatus(materialUsage.activity.status)) {
-    throw new ActivityUpdateStatusError();
+  if (materialUsage.activity?.status) {
+    if (!canUpdateActivityStatus(materialUsage.activity.status)) {
+      throw new ActivityUpdateStatusError();
+    }
   }
   // delete material usage
 
@@ -168,7 +241,7 @@ export const deleteMaterialUsage = async (id: string) => {
       },
     }),
     db.material.update({
-      where: { id },
+      where: { id: materialUsage.materialId },
       data: {
         quantityInStock: {
           increment: materialUsage.quantityUsed, // Add more stock
@@ -207,7 +280,21 @@ export const getMaterialUsages = async ({
         },
 
         include: {
-          material: true,
+          material: {
+            select: {
+              id: true,
+              unitId: true,
+              name: true,
+              imageUrl: true,
+              type: true,
+              quantityInStock: true,
+              unit: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
           unit: {
             select: {
               name: true,
@@ -281,5 +368,74 @@ export const getMaterialUsageById = async (id: string) => {
     });
   } catch (error) {
     return null;
+  }
+};
+
+type MaterialUsageActivityQuery = {
+  activityId: string;
+  query?: string;
+  orderBy?: string;
+};
+export const getMaterialUsagesByActivityId = async ({
+  activityId,
+  orderBy,
+  query,
+}: MaterialUsageActivityQuery): Promise<MaterialUsageTable[]> => {
+  try {
+    return await db.materialUsage.findMany({
+      where: {
+        OR: [
+          {
+            activityId: null,
+          },
+          {
+            activityId,
+          },
+        ],
+        material: {
+          name: {
+            contains: query,
+            mode: "insensitive",
+          },
+        },
+      },
+      orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
+      include: {
+        material: {
+          select: {
+            id: true,
+            unitId: true,
+            name: true,
+            imageUrl: true,
+            type: true,
+            quantityInStock: true,
+            unit: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+        unit: {
+          select: {
+            name: true,
+          },
+        },
+        activity: {
+          select: {
+            id: true,
+            name: true,
+            status: true,
+            priority: true,
+            createdBy: true,
+            assignedTo: true,
+            activityDate: true,
+            note: true,
+          },
+        },
+      },
+    });
+  } catch (error) {
+    return [];
   }
 };

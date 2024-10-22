@@ -2587,17 +2587,24 @@
     },
     "table": {
       "thead": {
+        "equipmentDetail": {
+          "name": "Equipment name",
+          "status": "Equipment status",
+          "imageUrl": "Equipment image"
+        },
         "activity": {
           "name": "Activity name",
-          "status": "Activity Status",
-          "priority": "Activity Priority"
+          "status": "Activity Status"
         },
         "usageStartTime": "Start usage",
         "duration": "Duration",
-        "operator": "Operator",
-        "note": "Note"
+        "operator": "Operator"
       },
       "trow": {
+        "activity": {
+          "name": "No used",
+          "status": "No used"
+        },
         "operator": "No operator"
       }
     },
@@ -2622,6 +2629,16 @@
       },
       "detailActivity": {
         "label": "Detail activity"
+      },
+      "assign": {
+        "label": "Assign",
+        "title": "Assign equipment",
+        "description": "Assign equipment for activity"
+      },
+      "revoke": {
+        "label": "Revoke",
+        "title": "Revoke equipment",
+        "description": "Revoke equipment for activity"
       }
     },
     "schema": {
@@ -2641,7 +2658,11 @@
         "label": "Activity"
       },
       "equipmentDetailId": {
-        "required_error": "Required equipment detail id"
+        "required_error": "Required equipment detail id",
+        "placeholder": "Select equipment",
+        "error": "Fail load equipments",
+        "notFound": "Equipments not found",
+        "label": "Equipment"
       },
       "operatorId": {
         "placeholder": "Select operator",
@@ -2672,12 +2693,16 @@
       "success": {
         "create": "Equipment usage created!",
         "edit": "Equipment usage edited!",
-        "destroy": "Equipment usage deleted!"
+        "destroy": "Equipment usage deleted!",
+        "assign": "Equipment usage assigned",
+        "revoke": "Equipment usage revoked"
       },
       "failure": {
         "create": "Something went wrong while creating equipment usage!",
         "edit": "Something went wrong while editing equipment usage!",
-        "destroy": "Something went wrong while deleting equipment usage!"
+        "destroy": "Something went wrong while deleting equipment usage!",
+        "assign": "Fail assigned equipment usage",
+        "revoke": "Fail revoked equipment usage"
       }
     },
     "notFound": {
@@ -2826,12 +2851,25 @@
         "activity": {
           "name": "Activity name",
           "status": "Activity Status",
-          "priority": "Activity Priority"
+          "usage": "Usage"
+        },
+        "material": {
+          "imageUrl": "Material image",
+          "name": "Material name",
+          "type": "Material type",
+          "quantityInStock": "Quantity in stock"
         },
         "quantityUsed": "Quantity used",
         "unitId": "Unit"
       },
-      "trow": {}
+      "trow": {
+        "activity": {
+          "name": "No used",
+          "status": "No used",
+          "usage": "Usage",
+          "unused": "Unused"
+        }
+      }
     },
     "search": {
       "placeholder": "Search by name..."
@@ -2854,6 +2892,16 @@
       },
       "detailActivity": {
         "label": "Detail activity"
+      },
+      "assign": {
+        "label": "Assign",
+        "title": "Assign material",
+        "description": "Assign material for activity"
+      },
+      "revoke": {
+        "label": "Revoke",
+        "title": "Revoke material",
+        "description": "Revoke material for activity"
       }
     },
     "schema": {
@@ -2879,7 +2927,11 @@
         "label": "Activity"
       },
       "materialId": {
-        "required_error": "Required material id"
+        "required_error": "Required material id",
+        "placeholder": "Select material",
+        "error": "Fail load materials",
+        "notFound": "Materials not found",
+        "label": "Material"
       },
       "quantityUsed": {
         "required_error": "Quantity value is required",
@@ -2894,12 +2946,16 @@
       "success": {
         "create": "Material usage created!",
         "edit": "Material usage edited!",
-        "destroy": "Material usage deleted!"
+        "destroy": "Material usage deleted!",
+        "assign": "Assigned material usage!",
+        "revoke": "Revoked material usage"
       },
       "failure": {
         "create": "Something went wrong while creating material usage!",
         "edit": "Something went wrong while editing material usage!",
-        "destroy": "Something went wrong while deleting material usage!"
+        "destroy": "Something went wrong while deleting material usage!",
+        "assign": "Fail assigned material usage",
+        "revoke": "Fail revoked material usage"
       }
     },
     "notFound": {

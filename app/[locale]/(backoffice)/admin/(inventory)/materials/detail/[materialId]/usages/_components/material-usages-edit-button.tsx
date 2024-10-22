@@ -26,7 +26,6 @@ import { edit } from "@/actions/material-usage";
 import { Input } from "@/components/ui/input";
 import { MaterialUsageTable } from "@/types";
 import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
-import { ActivitiesSelect } from "@/app/[locale]/(backoffice)/admin/_components/activities-select";
 
 interface MaterialUsageEditButtonProps {
   data: MaterialUsageTable;
@@ -104,27 +103,6 @@ export const MaterialUsageEditDialog = () => {
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <FormField
-            control={form.control}
-            name="activityId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("activityId.label")}</FormLabel>
-                <FormControl>
-                  <ActivitiesSelect
-                    onChange={field.onChange}
-                    placeholder={tSchema("activityId.placeholder")}
-                    disabled={true}
-                    error={tSchema("activityId.error")}
-                    notFound={tSchema("activityId.notFound")}
-                    defaultValue={field.value}
-                  />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <div className="grid grid-cols-4 gap-2">
             <div className="col-span-3">
               <FormField

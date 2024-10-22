@@ -1,7 +1,5 @@
 "use client";
 
-import { NavPagination } from "@/components/nav-pagination";
-
 import {
   Table,
   TableBody,
@@ -16,20 +14,20 @@ import { MaterialUsageTable } from "@/types";
 import { OrderByButton } from "@/components/buttons/order-by-button";
 
 import { SearchBar } from "@/components/search-bar";
-import { MaterialUsagesTableAction } from "./material-usages-table-action";
+
 import { useDialog } from "@/stores/use-dialog";
 import { UserAvatar } from "@/components/user-avatar";
-import { MaterialTypeValue } from "../../../../_components/material-type-value";
-import { ActivityStatusValue } from "@/app/[locale]/(backoffice)/admin/activities/_components/activity-status-value";
 
-interface MaterialUsagesTableProps {
+import { ActivityStatusValue } from "@/app/[locale]/(backoffice)/admin/activities/_components/activity-status-value";
+import { MaterialTypeValue } from "@/app/[locale]/(backoffice)/admin/(inventory)/materials/_components/material-type-value";
+import { ActivityMaterialUsagesTableAction } from "./activity-material-usages-table-action";
+
+interface ActivityMaterialUsagesTableProps {
   data: MaterialUsageTable[];
-  totalPage: number;
 }
-export const MaterialUsagesTable = ({
+export const ActivityMaterialUsagesTable = ({
   data,
-  totalPage,
-}: MaterialUsagesTableProps) => {
+}: ActivityMaterialUsagesTableProps) => {
   const { onOpen } = useDialog();
   const t = useTranslations("materialUsages");
   const handleEdit = (row: MaterialUsageTable) => {
@@ -45,6 +43,7 @@ export const MaterialUsagesTable = ({
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>{t("table.thead.activity.usage")}</TableHead>
             <TableHead>{t("table.thead.material.imageUrl")}</TableHead>
             <TableHead className="lg:w-[200px]">
               <OrderByButton
@@ -53,10 +52,6 @@ export const MaterialUsagesTable = ({
               />
             </TableHead>
             <TableHead>{t("table.thead.material.type")}</TableHead>
-            <TableHead className="lg:w-[200px]">
-              {t("table.thead.activity.name")}
-            </TableHead>
-            <TableHead>{t("table.thead.activity.status")}</TableHead>
 
             <TableHead className="lg:w-[200px]">
               {t("table.thead.material.quantityInStock")}
@@ -79,22 +74,22 @@ export const MaterialUsagesTable = ({
                 className="cursor-pointer"
                 onClick={() => handleEdit(item)}
               >
+                <TableCell className="font-semibold">
+                  {item.activity ? (
+                    <span className="text-green-400">
+                      {t("table.trow.activity.usage")}
+                    </span>
+                  ) : (
+                    t("table.trow.activity.unused")
+                  )}
+                </TableCell>
+
                 <TableCell>
                   <UserAvatar src={item.material.imageUrl || undefined} />
                 </TableCell>
                 <TableCell>{item.material.name}</TableCell>
                 <TableCell>
                   <MaterialTypeValue value={item.material.type} />
-                </TableCell>
-                <TableCell>
-                  {item.activity?.name || t("table.trow.activity.name")}
-                </TableCell>
-                <TableCell>
-                  {item.activity?.status ? (
-                    <ActivityStatusValue value={item.activity.status} />
-                  ) : (
-                    t("table.trow.activity.status")
-                  )}
                 </TableCell>
 
                 <TableCell className="text-center">
@@ -105,7 +100,7 @@ export const MaterialUsagesTable = ({
                 </TableCell>
                 <TableCell>{item.unit.name}</TableCell>
                 <TableCell>
-                  <MaterialUsagesTableAction data={item} />
+                  <ActivityMaterialUsagesTableAction data={item} />
                 </TableCell>
               </TableRow>
             );
@@ -117,9 +112,6 @@ export const MaterialUsagesTable = ({
           No results.
         </div>
       )}
-      <div className="py-4">
-        <NavPagination totalPage={totalPage} />
-      </div>
     </>
   );
 };

@@ -119,3 +119,33 @@ export const getEquipmentDetailById = async (
     return null;
   }
 };
+
+export const getEquipmentDetailsSelectForActivity = async (): Promise<
+  EquipmentDetailSelect[]
+> => {
+  try {
+    return await db.equipmentDetail.findMany({
+      where: {
+        status: "AVAILABLE",
+      },
+      select: {
+        id: true,
+        name: true,
+        equipmentId: true,
+        status: true,
+        equipment: {
+          select: {
+            name: true,
+            type: true,
+            imageUrl: true,
+          },
+        },
+      },
+      orderBy: {
+        name: "asc",
+      },
+    });
+  } catch (error) {
+    return [];
+  }
+};

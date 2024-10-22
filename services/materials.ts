@@ -149,6 +149,7 @@ export const getMaterialsSelect = async (): Promise<MaterialSelect[]> => {
         imageUrl: true,
         quantityInStock: true,
         unitId: true,
+        type: true,
         unit: {
           select: {
             name: true,

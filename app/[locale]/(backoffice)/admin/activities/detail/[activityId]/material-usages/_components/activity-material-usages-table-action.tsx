@@ -10,20 +10,24 @@ import {
 import { MaterialUsageTable } from "@/types";
 import { MoreHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { MaterialUsageEditButton } from "./material-usages-edit-button";
-import { canUpdateActivityStatus } from "@/lib/permission";
-import { DetailButton } from "@/components/buttons/detail-button";
-import { DestroyButton } from "@/components/buttons/destroy-button";
-import { destroy } from "@/actions/material-usage";
 
-interface MaterialUsagesTableActionProps {
+import { canUpdateActivityStatus } from "@/lib/permission";
+import { DestroyButton } from "@/components/buttons/destroy-button";
+import { assign, destroy, revoke } from "@/actions/material-usage";
+import { MaterialUsageEditButton } from "@/app/[locale]/(backoffice)/admin/(inventory)/materials/detail/[materialId]/usages/_components/material-usages-edit-button";
+import { ActionButton } from "@/components/buttons/action-button";
+import { useParams } from "next/navigation";
+
+interface ActivityMaterialUsagesTableActionProps {
   data: MaterialUsageTable;
 }
-export const MaterialUsagesTableAction = ({
+export const ActivityMaterialUsagesTableAction = ({
   data,
-}: MaterialUsagesTableActionProps) => {
+}: ActivityMaterialUsagesTableActionProps) => {
   const t = useTranslations("materialUsages.form");
-
+  const params = useParams<{
+    activityId: string;
+  }>()!;
   const canUpdate =
     !data.activity || canUpdateActivityStatus(data.activity.status);
   return (
@@ -35,12 +39,38 @@ export const MaterialUsagesTableAction = ({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-fit">
         <DropdownMenuItem>
+          {!data.activity ? (
+            <ActionButton
+              actionFn={() => {
+                return assign(data.id, params.activityId);
+              }}
+              disabled={!canUpdate}
+              label={t("assign.label")}
+              description={t("assign.description")}
+              title={t("assign.title")}
+              className="w-full"
+            />
+          ) : (
+            <ActionButton
+              actionFn={() => {
+                return revoke(data.id, params.activityId);
+              }}
+              disabled={!canUpdate}
+              label={t("revoke.label")}
+              description={t("revoke.description")}
+              title={t("revoke.title")}
+              className="w-full"
+            />
+          )}
+        </DropdownMenuItem>
+        <DropdownMenuItem>
           <MaterialUsageEditButton
             data={data}
             label={t("edit.label")}
             disabled={!canUpdate}
           />
         </DropdownMenuItem>
+
         <DropdownMenuItem>
           <DestroyButton
             destroyFn={destroy}
@@ -50,14 +80,6 @@ export const MaterialUsagesTableAction = ({
             className="w-full"
           />
         </DropdownMenuItem>
-        {data.activity && (
-          <DropdownMenuItem>
-            <DetailButton
-              href={`/admin/activities/detail/${data.activity.id}`}
-              label={t("detailActivity.label")}
-            />
-          </DropdownMenuItem>
-        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

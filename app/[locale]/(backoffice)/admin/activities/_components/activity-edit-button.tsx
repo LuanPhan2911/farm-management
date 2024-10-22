@@ -185,7 +185,7 @@ export const ActivityEditForm = ({ data }: ActivityEditFormProps) => {
                     notFound={tSchema("assignedToId.notFound")}
                     disabled={true}
                     appearance={{
-                      button: "lg:w-full h-15",
+                      button: "lg:w-full h-12",
                       content: "lg:w-[450px]",
                     }}
                   />
@@ -210,7 +210,7 @@ export const ActivityEditForm = ({ data }: ActivityEditFormProps) => {
                     placeholder={tSchema("fieldId.placeholder")}
                     disabled={true}
                     appearance={{
-                      button: "lg:w-full h-15",
+                      button: "lg:w-full h-12",
                       content: "lg:w-[450px]",
                     }}
                   />
@@ -221,7 +221,7 @@ export const ActivityEditForm = ({ data }: ActivityEditFormProps) => {
             )}
           />
         </div>
-        <div className="grid lg:grid-cols-3 gap-2">
+        <div className="grid lg:grid-cols-2 gap-2">
           <FormField
             control={form.control}
             name="status"

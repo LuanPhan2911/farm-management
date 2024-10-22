@@ -102,7 +102,7 @@ export const PlantFertilizerCreateButton = () => {
                           disabled={isPending}
                           onChange={field.onChange}
                           appearance={{
-                            button: "lg:w-full h-14",
+                            button: "lg:w-full h-12",
                             content: "lg:w-[380px]",
                           }}
                         />

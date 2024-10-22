@@ -1,4 +1,4 @@
-import { isAdmin } from "@/lib/role";
+import { isAdmin } from "@/lib/permission";
 import { errorResponse, successResponse } from "@/lib/utils";
 import { MessageSchema } from "@/schemas";
 import {

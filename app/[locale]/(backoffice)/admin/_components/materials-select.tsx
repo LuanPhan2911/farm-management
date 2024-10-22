@@ -3,12 +3,12 @@ import {
   ComboBoxCustom,
   ComboBoxCustomAppearance,
 } from "@/components/form/combo-box";
-import { SelectItemContentWithoutImage } from "@/components/form/select-item";
+import { SelectItemContent } from "@/components/form/select-item";
 import { Skeleton } from "@/components/ui/skeleton";
-import { FieldSelect } from "@/types";
+import { MaterialSelect } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 
-interface FieldsSelectProps {
+interface MaterialsSelectProps {
   onChange: (value: string | undefined) => void;
   defaultValue?: string;
   disabled?: boolean;
@@ -17,7 +17,7 @@ interface FieldsSelectProps {
   error: string;
   appearance?: ComboBoxCustomAppearance;
 }
-export const FieldsSelect = ({
+export const MaterialsSelect = ({
   defaultValue,
   error,
   placeholder,
@@ -25,12 +25,12 @@ export const FieldsSelect = ({
   onChange,
   disabled,
   appearance,
-}: FieldsSelectProps) => {
+}: MaterialsSelectProps) => {
   const { data, isPending, isError, refetch } = useQuery({
-    queryKey: ["fields"],
+    queryKey: ["materials"],
     queryFn: async () => {
-      const res = await fetch("/api/fields/select");
-      return (await res.json()) as FieldSelect[];
+      const res = await fetch("/api/materials/select");
+      return (await res.json()) as MaterialSelect[];
     },
   });
   if (isPending) {
@@ -52,9 +52,10 @@ export const FieldsSelect = ({
       valueKey="id"
       labelKey="name"
       renderItem={(item) => (
-        <SelectItemContentWithoutImage
+        <SelectItemContent
+          imageUrl={item.imageUrl}
           title={item.name}
-          description={item.location}
+          description={`Quantity in stock: ${item.quantityInStock} ${item.unit.name}`}
         />
       )}
     />

@@ -24,7 +24,7 @@ export const revalidatePathEquipmentUsage = ({
   revalidatePath(`/admin/equipments/detail/${equipmentDetailId}/usages`);
 };
 type EquipmentUsageParams = {
-  activityId: string;
+  activityId?: string | null;
   equipmentDetailId: string;
   usageStartTime: Date;
   duration: string;
@@ -48,25 +48,28 @@ export const createEquipmentUsage = async (params: EquipmentUsageParams) => {
       throw new StaffExistError();
     }
   }
-  const activity = await db.activity.findUnique({
-    where: { id: activityId },
-    select: {
-      status: true,
-    },
-  });
-  if (!activity) {
-    throw new ActivityExistError();
+  if (activityId) {
+    const activity = await db.activity.findUnique({
+      where: { id: activityId },
+      select: {
+        status: true,
+      },
+    });
+    if (!activity) {
+      throw new ActivityExistError();
+    }
+    if (!canUpdateActivityStatus(activity.status)) {
+      throw new ActivityUpdateStatusError();
+    }
   }
-  if (!canUpdateActivityStatus(activity.status)) {
-    throw new ActivityUpdateStatusError();
-  }
+
   const [updatedEquipmentDetail, equipmentUsage] = await db.$transaction([
     db.equipmentDetail.update({
       where: {
         id: equipmentDetailId,
       },
       data: {
-        status: "WORKING",
+        status: activityId ? "WORKING" : "AVAILABLE",
       },
     }),
     db.equipmentUsage.create({
@@ -78,6 +81,7 @@ export const createEquipmentUsage = async (params: EquipmentUsageParams) => {
 type EquipmentUsageUpdateParams = {
   duration: string;
   note?: string | null;
+  usageStartTime: Date;
 };
 export const updateEquipmentUsage = async (
   id: string,
@@ -96,8 +100,10 @@ export const updateEquipmentUsage = async (
   if (!equipmentUsage) {
     throw new EquipmentUsageExistError();
   }
-  if (!canUpdateActivityStatus(equipmentUsage.activity.status)) {
-    throw new ActivityUpdateStatusError();
+  if (equipmentUsage.activity) {
+    if (!canUpdateActivityStatus(equipmentUsage.activity.status)) {
+      throw new ActivityUpdateStatusError();
+    }
   }
   const updatedEquipmentUsage = await db.equipmentUsage.update({
     where: {
@@ -105,6 +111,64 @@ export const updateEquipmentUsage = async (
     },
     data: {
       ...params,
+    },
+  });
+  return updatedEquipmentUsage;
+};
+
+export const assignEquipmentUsage = async (
+  id: string,
+  { activityId }: { activityId: string }
+) => {
+  const equipmentUsage = await db.equipmentUsage.findUnique({
+    where: {
+      id,
+      activityId: null,
+    },
+  });
+  if (!equipmentUsage) {
+    throw new EquipmentUsageExistError();
+  }
+  const activity = await db.activity.findUnique({
+    where: { id: activityId },
+  });
+  if (!activity) {
+    throw new ActivityExistError();
+  }
+  if (!canUpdateActivityStatus(activity.status)) {
+    throw new ActivityUpdateStatusError();
+  }
+  const updatedEquipmentUsage = await db.equipmentUsage.update({
+    where: {
+      id,
+    },
+    data: {
+      activityId,
+    },
+  });
+  return updatedEquipmentUsage;
+};
+export const revokeEquipmentUsage = async (
+  id: string,
+  { activityId }: { activityId: string }
+) => {
+  const equipmentUsage = await db.equipmentUsage.findUnique({
+    where: { id, activityId },
+  });
+  if (!equipmentUsage) {
+    throw new EquipmentUsageExistError();
+  }
+  const activity = await db.activity.findUnique({ where: { id: activityId } });
+  if (!activity) {
+    throw new ActivityExistError();
+  }
+  if (!canUpdateActivityStatus(activity.status)) {
+    throw new ActivityUpdateStatusError();
+  }
+  const updatedEquipmentUsage = await db.equipmentUsage.update({
+    where: { id },
+    data: {
+      activityId: null,
     },
   });
   return updatedEquipmentUsage;
@@ -124,9 +188,12 @@ export const deleteEquipmentUsage = async (id: string) => {
   if (!equipmentUsage) {
     throw new EquipmentUsageExistError();
   }
-  if (!canUpdateActivityStatus(equipmentUsage.activity.status)) {
-    throw new ActivityUpdateStatusError();
+  if (equipmentUsage.activity) {
+    if (!canUpdateActivityStatus(equipmentUsage.activity.status)) {
+      throw new ActivityUpdateStatusError();
+    }
   }
+
   //1: update equipment detail status to available
   //2: delete equipment usage
   const [updatedEquipmentDetail, deletedEquipmentUsage] = await db.$transaction(
@@ -176,7 +243,21 @@ export const getEquipmentUsages = async ({
         },
 
         include: {
-          equipmentDetail: true,
+          equipmentDetail: {
+            select: {
+              id: true,
+              name: true,
+              equipmentId: true,
+              status: true,
+              equipment: {
+                select: {
+                  name: true,
+                  type: true,
+                  imageUrl: true,
+                },
+              },
+            },
+          },
           activity: {
             select: {
               id: true,
@@ -216,5 +297,71 @@ export const getEquipmentUsages = async ({
       data: [],
       totalPage: 0,
     };
+  }
+};
+
+type ActivityEquipmentUsageQuery = {
+  activityId: string;
+  query?: string;
+  orderBy?: string;
+};
+export const getEquipmentUsagesByActivityId = async ({
+  activityId,
+  orderBy,
+  query,
+}: ActivityEquipmentUsageQuery): Promise<EquipmentUsageTable[]> => {
+  try {
+    return await db.equipmentUsage.findMany({
+      where: {
+        OR: [
+          {
+            activityId: null,
+          },
+          {
+            activityId,
+          },
+        ],
+        equipmentDetail: {
+          name: {
+            contains: query,
+            mode: "insensitive",
+          },
+        },
+      },
+
+      include: {
+        equipmentDetail: {
+          select: {
+            id: true,
+            name: true,
+            equipmentId: true,
+            status: true,
+            equipment: {
+              select: {
+                name: true,
+                type: true,
+                imageUrl: true,
+              },
+            },
+          },
+        },
+        activity: {
+          select: {
+            id: true,
+            name: true,
+            status: true,
+            priority: true,
+            createdBy: true,
+            assignedTo: true,
+            activityDate: true,
+            note: true,
+          },
+        },
+        operator: true,
+      },
+      orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
+    });
+  } catch (error) {
+    return [];
   }
 };

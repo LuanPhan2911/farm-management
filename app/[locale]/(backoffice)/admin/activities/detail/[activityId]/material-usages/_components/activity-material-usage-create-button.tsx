@@ -35,24 +35,19 @@ import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units
 import { UnitType } from "@prisma/client";
 import { ActivitiesSelect } from "@/app/[locale]/(backoffice)/admin/_components/activities-select";
 import { MaterialTable } from "@/types";
+import { MaterialsSelect } from "@/app/[locale]/(backoffice)/admin/_components/materials-select";
 
-interface MaterialUsageCreateButtonProps {
-  material?: MaterialTable;
-}
-export const MaterialUsageCreateButton = ({
-  material,
-}: MaterialUsageCreateButtonProps) => {
+export const ActivityMaterialUsageCreateButton = () => {
   const tSchema = useTranslations("materialUsages.schema");
   const t = useTranslations("materialUsages.form");
   const formSchema = MaterialUsageSchema(tSchema);
-  const params = useParams<{ materialId: string }>();
+  const params = useParams<{ activityId: string }>();
   const [isPending, startTransition] = useTransition();
   const [isOpen, setOpen] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      materialId: material?.id || params?.materialId,
-      unitId: material?.unitId,
+      activityId: params?.activityId,
       quantityUsed: 1,
     },
   });
@@ -91,17 +86,21 @@ export const MaterialUsageCreateButton = ({
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="activityId"
+              name="materialId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{tSchema("activityId.label")}</FormLabel>
+                  <FormLabel>{tSchema("materialId.label")}</FormLabel>
                   <FormControl>
-                    <ActivitiesSelect
+                    <MaterialsSelect
                       onChange={field.onChange}
-                      placeholder={tSchema("activityId.placeholder")}
+                      placeholder={tSchema("materialId.placeholder")}
                       disabled={isPending}
-                      error={tSchema("activityId.error")}
-                      notFound={tSchema("activityId.notFound")}
+                      error={tSchema("materialId.error")}
+                      notFound={tSchema("materialId.notFound")}
+                      appearance={{
+                        button: "lg:w-full h-12",
+                        content: "lg:w-[400px]",
+                      }}
                     />
                   </FormControl>
 

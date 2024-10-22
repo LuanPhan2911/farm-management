@@ -12,7 +12,7 @@ import { ActivityStatusValue } from "../activities/_components/activity-status-v
 import { ActivityPriorityValue } from "../activities/_components/activity-priority-value";
 
 interface ActivitiesSelectProps {
-  defaultValue?: string;
+  defaultValue?: string | null;
   onChange: (value: string | undefined) => void;
   disabled?: boolean;
   placeholder: string;
@@ -57,12 +57,12 @@ export const ActivitiesSelect = ({
       placeholder={placeholder}
       notFound={notFound}
       onChange={onChange}
-      defaultValue={defaultValue}
+      defaultValue={defaultValue || undefined}
       renderItem={(item) => {
         return <ActivitiesSelectItem {...item} />;
       }}
       appearance={{
-        button: "lg:w-full h-15",
+        button: "lg:w-full h-12",
         content: "lg:w-[400px]",
       }}
       disabled={disabled}
@@ -79,9 +79,9 @@ const ActivitiesSelectItem = ({
 }: ActivitiesSelectItemProps) => {
   const { relativeTime } = useFormatter();
   return (
-    <div className="w-full flex flex-col gap-y-2">
+    <div className="w-full flex flex-col gap-y-1">
       <div className="text-sm font-medium leading-none text-start">{name}</div>
-      <div className=" flex items-center gap-x-2">
+      <div className=" flex items-center gap-x-1">
         <ActivityStatusValue value={status} />
         <ActivityPriorityValue value={priority} />
         <p className="text-xs text-muted-foreground">

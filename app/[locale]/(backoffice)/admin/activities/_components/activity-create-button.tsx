@@ -200,7 +200,7 @@ export const ActivityCreateForm = ({
                     notFound={tSchema("assignedToId.notFound")}
                     disabled={isPending}
                     appearance={{
-                      button: "lg:w-full h-15",
+                      button: "lg:w-full h-12",
                       content: "lg:w-[450px]",
                     }}
                   />
@@ -225,7 +225,7 @@ export const ActivityCreateForm = ({
                     placeholder={tSchema("fieldId.placeholder")}
                     disabled={isPending}
                     appearance={{
-                      button: "lg:w-full h-15",
+                      button: "lg:w-full h-12",
                       content: "lg:w-[450px]",
                     }}
                   />

@@ -39,14 +39,14 @@ const MaterialUsagesPage = async ({
   const t = await getTranslations("materials.page.detail.usages");
   const { query, orderBy } = searchParams;
   const page = parseToNumber(searchParams!.page, 1);
-  const data = await getMaterialById(params.materialId);
+  const material = await getMaterialById(params.materialId);
   const { data: materialUsages, totalPage } = await getMaterialUsages({
     materialId: params.materialId,
     page,
     query,
     orderBy,
   });
-  if (!data) {
+  if (!material) {
     notFound();
   }
   return (
@@ -56,7 +56,7 @@ const MaterialUsagesPage = async ({
       </CardHeader>
       <CardContent>
         <div className="flex justify-end">
-          <MaterialUsageCreateButton />
+          <MaterialUsageCreateButton material={material} />
         </div>
         <MaterialUsagesTable data={materialUsages} totalPage={totalPage} />
       </CardContent>

@@ -731,7 +731,7 @@ export const EquipmentUsageSchema = (
 ) => {
   return z.object({
     equipmentDetailId: stringSchema(t, "equipmentDetailId", { required: true }),
-    activityId: stringSchema(t, "activityId", { required: true }),
+    activityId: stringSchema(t, "activityId", { required: false }).nullish(),
     usageStartTime: z.date({
       invalid_type_error: t("usageStartTime.invalid_type_error"),
       required_error: t("usageStartTime.required_error"),
@@ -784,7 +784,7 @@ export const MaterialUsageSchema = (
   return z.object({
     unitId: stringSchema(t, "unitId", { required: true }),
     materialId: stringSchema(t, "materialId", { required: true }),
-    activityId: stringSchema(t, "activityId", { required: true }),
+    activityId: stringSchema(t, "activityId", { required: false }).nullish(),
     quantityUsed: numberSchema(t, "quantityUsed", {
       min: 0,
       max: 1_000_000_000,

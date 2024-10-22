@@ -324,17 +324,18 @@ export type MaterialSelect = {
   name: string;
   imageUrl: string | null;
   quantityInStock: number;
+  type: MaterialType;
   unitId: string;
   unit: {
     name: string;
   };
 };
 export type MaterialUsageTable = MaterialUsage & {
-  material: Material;
+  material: MaterialSelect;
   unit: {
     name: string;
   };
-  activity: ActivitySelect;
+  activity: ActivitySelect | null;
 };
 
 export type MaterialTypeCount = {
@@ -377,8 +378,8 @@ export type EquipmentTypeCount = {
 };
 
 export type EquipmentUsageTable = EquipmentUsage & {
-  equipmentDetail: EquipmentDetail;
-  activity: ActivitySelect;
+  equipmentDetail: EquipmentDetailSelect;
+  activity: ActivitySelect | null;
   operator: Staff | null;
 };
 

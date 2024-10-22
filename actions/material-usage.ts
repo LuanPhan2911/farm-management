@@ -11,9 +11,11 @@ import {
 import { errorResponse, successResponse } from "@/lib/utils";
 import { MaterialUsageSchema } from "@/schemas";
 import {
+  assignMaterialUsage,
   createMaterialUsage,
   deleteMaterialUsage,
   revalidatePathMaterialUsage,
+  revokeMaterialUsage,
   updateMaterialUsage,
 } from "@/services/material-usages";
 import { ActionResponse } from "@/types";
@@ -130,5 +132,62 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
       return errorResponse(tSchema("errors.invalidActivityStatus"));
     }
     return errorResponse(tStatus("failure.destroy"));
+  }
+};
+
+export const assign = async (
+  id: string,
+  activityId: string
+): Promise<ActionResponse> => {
+  const tStatus = await getTranslations("materialUsages.status");
+  const tSchema = await getTranslations("materialUsages.schema");
+  try {
+    const materialUsage = await assignMaterialUsage(id, {
+      activityId,
+    });
+
+    revalidatePathMaterialUsage({
+      materialId: materialUsage.materialId,
+    });
+    return successResponse(tStatus("success.assign"));
+  } catch (error) {
+    if (error instanceof MaterialUsageExistError) {
+      return errorResponse(tSchema("errors.existMaterial"));
+    }
+    if (error instanceof ActivityExistError) {
+      return errorResponse(tSchema("errors.existActivity"));
+    }
+    if (error instanceof ActivityUpdateStatusError) {
+      return errorResponse(tSchema("errors.invalidActivityStatus"));
+    }
+    return errorResponse(tStatus("failure.assign"));
+  }
+};
+export const revoke = async (
+  id: string,
+  activityId: string
+): Promise<ActionResponse> => {
+  const tStatus = await getTranslations("materialUsages.status");
+  const tSchema = await getTranslations("materialUsages.schema");
+  try {
+    const materialUsage = await revokeMaterialUsage(id, {
+      activityId,
+    });
+
+    revalidatePathMaterialUsage({
+      materialId: materialUsage.materialId,
+    });
+    return successResponse(tStatus("success.revoke"));
+  } catch (error) {
+    if (error instanceof MaterialUsageExistError) {
+      return errorResponse(tSchema("errors.existMaterial"));
+    }
+    if (error instanceof ActivityExistError) {
+      return errorResponse(tSchema("errors.existActivity"));
+    }
+    if (error instanceof ActivityUpdateStatusError) {
+      return errorResponse(tSchema("errors.invalidActivityStatus"));
+    }
+    return errorResponse(tStatus("failure.revoke"));
   }
 };

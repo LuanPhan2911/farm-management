@@ -36,17 +36,18 @@ import { DatePickerWithTime } from "@/components/form/date-picker-with-time";
 import { StaffsSelect } from "@/app/[locale]/(backoffice)/admin/_components/staffs-select";
 import { Staff } from "@prisma/client";
 import { Textarea } from "@/components/ui/textarea";
+import { EquipmentDetailsSelect } from "@/app/[locale]/(backoffice)/admin/_components/equipment-details-select";
 
-interface EquipmentUsageCreateButtonProps {
+interface ActivityEquipmentUsageCreateButtonProps {
   currentOperator: Staff;
 }
-export const EquipmentUsageCreateButton = ({
+export const ActivityEquipmentUsageCreateButton = ({
   currentOperator,
-}: EquipmentUsageCreateButtonProps) => {
+}: ActivityEquipmentUsageCreateButtonProps) => {
   const tSchema = useTranslations("equipmentUsages.schema");
   const t = useTranslations("equipmentUsages.form");
   const params = useParams<{
-    equipmentDetailId: string;
+    activityId: string;
   }>();
   const formSchema = EquipmentUsageSchema(tSchema);
   const [isPending, startTransition] = useTransition();
@@ -54,7 +55,7 @@ export const EquipmentUsageCreateButton = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      equipmentDetailId: params?.equipmentDetailId,
+      activityId: params?.activityId,
       operatorId: currentOperator.id,
       usageStartTime: new Date(),
       duration: "1 day",
@@ -96,18 +97,22 @@ export const EquipmentUsageCreateButton = ({
             <div className="grid lg:grid-cols-2 gap-2">
               <FormField
                 control={form.control}
-                name="activityId"
+                name="equipmentDetailId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{tSchema("activityId.label")}</FormLabel>
+                    <FormLabel>{tSchema("equipmentDetailId.label")}</FormLabel>
                     <FormControl>
-                      <ActivitiesSelect
+                      <EquipmentDetailsSelect
                         onChange={field.onChange}
-                        placeholder={tSchema("activityId.placeholder")}
+                        placeholder={tSchema("equipmentDetailId.placeholder")}
                         disabled={isPending}
-                        error={tSchema("activityId.error")}
-                        notFound={tSchema("activityId.notFound")}
+                        error={tSchema("equipmentDetailId.error")}
+                        notFound={tSchema("equipmentDetailId.notFound")}
                         defaultValue={field.value}
+                        appearance={{
+                          button: "lg:w-full h-12",
+                          content: "lg:w-[400px]",
+                        }}
                       />
                     </FormControl>
 

@@ -20,18 +20,17 @@ import { SearchBar } from "@/components/search-bar";
 import { ActivityStatusValue } from "@/app/[locale]/(backoffice)/admin/activities/_components/activity-status-value";
 import { useDialog } from "@/stores/use-dialog";
 import { SelectItemContent } from "@/components/form/select-item";
-import { EquipmentUsagesTableAction } from "./equipment-usages-table-action";
-import { EquipmentDetailStatusValue } from "../../../../_components/equipment-detail-status-value";
-import { UserAvatar } from "@/components/user-avatar";
 
-interface EquipmentUsagesTableProps {
+import { UserAvatar } from "@/components/user-avatar";
+import { EquipmentDetailStatusValue } from "@/app/[locale]/(backoffice)/admin/(inventory)/equipments/detail/[equipmentId]/_components/equipment-detail-status-value";
+import { ActivityEquipmentUsagesTableAction } from "./activity-equipment-usages-table-action";
+
+interface ActivityEquipmentUsagesTableProps {
   data: EquipmentUsageTable[];
-  totalPage: number;
 }
-export const EquipmentUsagesTable = ({
+export const ActivityEquipmentUsagesTable = ({
   data,
-  totalPage,
-}: EquipmentUsagesTableProps) => {
+}: ActivityEquipmentUsagesTableProps) => {
   const { onOpen } = useDialog();
   const t = useTranslations("equipmentUsages");
   const { dateTime } = useFormatter();
@@ -48,11 +47,6 @@ export const EquipmentUsagesTable = ({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{t("table.thead.equipmentDetail.imageUrl")}</TableHead>
-            <TableHead className="lg:w-[200px]">
-              {t("table.thead.equipmentDetail.name")}
-            </TableHead>
-            <TableHead>{t("table.thead.equipmentDetail.status")}</TableHead>
             <TableHead className="lg:w-[200px]">
               <OrderByButton
                 column="activity.name"
@@ -60,6 +54,12 @@ export const EquipmentUsagesTable = ({
               />
             </TableHead>
             <TableHead>{t("table.thead.activity.status")}</TableHead>
+            <TableHead>{t("table.thead.equipmentDetail.imageUrl")}</TableHead>
+            <TableHead className="lg:w-[200px]">
+              {t("table.thead.equipmentDetail.name")}
+            </TableHead>
+            <TableHead>{t("table.thead.equipmentDetail.status")}</TableHead>
+
             <TableHead className="lg:w-[200px]">
               <OrderByButton
                 column="usageStartTime"
@@ -81,6 +81,16 @@ export const EquipmentUsagesTable = ({
                 onClick={() => handleEdit(item)}
               >
                 <TableCell>
+                  {item.activity?.name || t("table.trow.activity.name")}
+                </TableCell>
+                <TableCell>
+                  {item.activity ? (
+                    <ActivityStatusValue value={item.activity.status} />
+                  ) : (
+                    t("table.trow.activity.status")
+                  )}
+                </TableCell>
+                <TableCell>
                   <UserAvatar
                     src={item.equipmentDetail.equipment.imageUrl || undefined}
                   />
@@ -90,16 +100,6 @@ export const EquipmentUsagesTable = ({
                   <EquipmentDetailStatusValue
                     status={item.equipmentDetail.status}
                   />
-                </TableCell>
-                <TableCell>
-                  {item.activity?.name || t("table.trow.activity.name")}
-                </TableCell>
-                <TableCell>
-                  {item.activity ? (
-                    <ActivityStatusValue value={item.activity.status} />
-                  ) : (
-                    t("table.trow.activity.status")
-                  )}
                 </TableCell>
 
                 <TableCell className="text-center">
@@ -119,7 +119,7 @@ export const EquipmentUsagesTable = ({
                   />
                 </TableCell>
                 <TableCell>
-                  <EquipmentUsagesTableAction data={item} />
+                  <ActivityEquipmentUsagesTableAction data={item} />
                 </TableCell>
               </TableRow>
             );
@@ -131,9 +131,6 @@ export const EquipmentUsagesTable = ({
           No results.
         </div>
       )}
-      <div className="py-4">
-        <NavPagination totalPage={totalPage} />
-      </div>
     </>
   );
 };
