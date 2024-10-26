@@ -56,7 +56,7 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
           }
         })
         .catch((error) => {
-          toast.error(t("status.failure.edit"));
+          toast.error("Internal error");
         });
     });
   };
@@ -116,10 +116,14 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
                   <OrgsSelect
                     defaultValue={field.value}
                     onChange={field.onChange}
-                    errorLabel={tSchema("orgId.error")}
-                    label={tSchema("orgId.placeholder")}
+                    error={tSchema("orgId.error")}
+                    placeholder={tSchema("orgId.placeholder")}
                     notFound={tSchema("orgId.notFound")}
                     disabled={isPending}
+                    appearance={{
+                      button: "lg:w-full",
+                      content: "lg:w-[480px]",
+                    }}
                   />
                 </FormControl>
 
@@ -139,7 +143,7 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
                     unitType={UnitType.LENGTH}
                     onChange={field.onChange}
                     placeholder={tSchema("unitId.placeholder")}
-                    errorLabel={tSchema("unitId.error")}
+                    error={tSchema("unitId.error")}
                     notFound={tSchema("unitId.notFound")}
                     disabled={isPending}
                   />
@@ -242,7 +246,7 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
               <FormLabel>{tSchema("soilType.label")}</FormLabel>
               <FormControl>
                 <SelectOptions
-                  label={tSchema("soilType.placeholder")}
+                  placeholder={tSchema("soilType.placeholder")}
                   onChange={field.onChange}
                   options={Object.values(SoilType).map((item) => {
                     return {

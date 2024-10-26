@@ -12,7 +12,7 @@ import { toast } from "sonner";
 export const OrgDeleteButton = () => {
   const { onOpen, onClose, setPending } = useAlertDialog();
 
-  const t = useTranslations("organizations");
+  const t = useTranslations("organizations.form");
   const router = useRouter();
   const params = useParams<{
     orgId: string;
@@ -30,23 +30,27 @@ export const OrgDeleteButton = () => {
         }
       })
       .catch((error) => {
-        toast.error(t("status.failure.destroy"));
+        toast.error("Internal error");
       })
       .finally(() => {
         onClose();
       });
   };
-  const handleClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onOpen({
-      title: t("form.destroy.title"),
-      description: t("form.destroy.description"),
-      onConfirm,
-    });
-  };
+
   return (
-    <Button variant={"destroy"} size={"sm"} onClick={handleClick}>
-      <Trash className="mr-2" /> {t("form.destroy.label")}
+    <Button
+      variant={"destroy"}
+      size={"sm"}
+      onClick={(e) => {
+        e.stopPropagation();
+        onOpen({
+          title: t("destroy.title"),
+          description: t("destroy.description"),
+          onConfirm,
+        });
+      }}
+    >
+      <Trash className="mr-2" /> {t("destroy.label")}
     </Button>
   );
 };

@@ -90,7 +90,7 @@ export const PesticideEditDialog = () => {
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.edit"));
+          toast.error("Internal error");
         });
     });
   };
@@ -130,7 +130,7 @@ export const PesticideEditDialog = () => {
                   <FormLabel>{tSchema("type.label")}</FormLabel>
                   <FormControl>
                     <SelectOptions
-                      label={tSchema("type.placeholder")}
+                      placeholder={tSchema("type.placeholder")}
                       onChange={field.onChange}
                       options={Object.keys(PesticideType).map((item) => {
                         return {
@@ -154,7 +154,7 @@ export const PesticideEditDialog = () => {
                   <FormLabel>{tSchema("toxicityLevel.label")}</FormLabel>
                   <FormControl>
                     <SelectOptions
-                      label={tSchema("toxicityLevel.placeholder")}
+                      placeholder={tSchema("toxicityLevel.placeholder")}
                       onChange={field.onChange}
                       options={Object.keys(ToxicityLevel).map((item) => {
                         return {
@@ -211,7 +211,7 @@ export const PesticideEditDialog = () => {
                       unitType={UnitType.VOLUME}
                       disabled={isPending}
                       className="w-full"
-                      errorLabel={tSchema("recommendedDosage.unitId.error")}
+                      error={tSchema("recommendedDosage.unitId.error")}
                       notFound={tSchema("recommendedDosage.unitId.notFound")}
                       defaultValue={field.value}
                     />
@@ -261,7 +261,7 @@ export const PesticideEditDialog = () => {
                       unitType={UnitType.DATE}
                       disabled={isPending}
                       className="w-full"
-                      errorLabel={tSchema("withdrawalPeriod.unitId.error")}
+                      error={tSchema("withdrawalPeriod.unitId.error")}
                       notFound={tSchema("withdrawalPeriod.unitId.notFound")}
                       defaultValue={field.value}
                     />

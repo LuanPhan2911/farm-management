@@ -29,7 +29,7 @@ import { UnitType } from "@prisma/client";
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { DateRange } from "react-day-picker";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -55,20 +55,21 @@ export const CropCreateButton = () => {
       },
     },
   });
+  const [isOpen, setOpen] = useState(false);
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       create(values)
         .then(({ message, ok }) => {
           if (ok) {
             form.reset();
-
+            setOpen(false);
             toast.success(message);
           } else {
             toast.error(message);
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.create"));
+          toast.error("Internal error");
         });
     });
   };
@@ -83,7 +84,7 @@ export const CropCreateButton = () => {
     });
   };
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size={"sm"} variant={"success"}>
           <Plus className="h-4 w-4 mr-2" />{" "}
@@ -106,16 +107,16 @@ export const CropCreateButton = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{tSchema("name.label")}</FormLabel>
-                  <div className="flex gap-x-2">
-                    <FormControl>
-                      <Input
-                        value={field.value || undefined}
-                        onChange={field.onChange}
-                        placeholder={tSchema("name.placeholder")}
-                        disabled={isPending}
-                      />
-                    </FormControl>
-                  </div>
+
+                  <FormControl>
+                    <Input
+                      value={field.value || undefined}
+                      onChange={field.onChange}
+                      placeholder={tSchema("name.placeholder")}
+                      disabled={isPending}
+                    />
+                  </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -127,17 +128,21 @@ export const CropCreateButton = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{tSchema("plantId.label")}</FormLabel>
-                    <div className="flex gap-x-2">
-                      <FormControl>
-                        <PlantsSelect
-                          errorLabel={tSchema("plantId.error")}
-                          label={tSchema("plantId.placeholder")}
-                          notFound={tSchema("plantId.notFound")}
-                          onChange={field.onChange}
-                          disabled={isPending}
-                        />
-                      </FormControl>
-                    </div>
+
+                    <FormControl>
+                      <PlantsSelect
+                        error={tSchema("plantId.error")}
+                        placeholder={tSchema("plantId.placeholder")}
+                        notFound={tSchema("plantId.notFound")}
+                        onChange={field.onChange}
+                        disabled={isPending}
+                        appearance={{
+                          button: "lg:w-full",
+                          content: "lg:w-[350px]",
+                        }}
+                      />
+                    </FormControl>
+
                     <FormMessage />
                   </FormItem>
                 )}
@@ -148,21 +153,20 @@ export const CropCreateButton = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{tSchema("dateRange.label")}</FormLabel>
-                    <div className="flex gap-x-2">
-                      <FormControl>
-                        <DatePickerWithRange
-                          placeholder={tSchema("dateRange.placeholder")}
-                          handleChange={(dateRange: DateRange | undefined) => {
-                            handleChangeDate(dateRange);
-                          }}
-                          date={{
-                            from: field.value.startDate,
-                            to: field.value.endDate || undefined,
-                          }}
-                          disabled={isPending}
-                        />
-                      </FormControl>
-                    </div>
+                    <FormControl>
+                      <DatePickerWithRange
+                        placeholder={tSchema("dateRange.placeholder")}
+                        handleChange={(dateRange: DateRange | undefined) => {
+                          handleChangeDate(dateRange);
+                        }}
+                        date={{
+                          from: field.value.startDate,
+                          to: field.value.endDate || undefined,
+                        }}
+                        disabled={isPending}
+                        className="lg:w-full"
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -208,7 +212,7 @@ export const CropCreateButton = () => {
                           unitType={UnitType.WEIGHT}
                           disabled={isPending}
                           className="w-full"
-                          errorLabel={tSchema("estimatedYield.unitId.error")}
+                          error={tSchema("estimatedYield.unitId.error")}
                           notFound={tSchema("estimatedYield.unitId.notFound")}
                         />
                       </FormControl>
@@ -257,7 +261,7 @@ export const CropCreateButton = () => {
                           unitType={UnitType.WEIGHT}
                           disabled={isPending}
                           className="w-full"
-                          errorLabel={tSchema("actualYield.unitId.error")}
+                          error={tSchema("actualYield.unitId.error")}
                           notFound={tSchema("actualYield.unitId.notFound")}
                         />
                       </FormControl>
@@ -274,16 +278,16 @@ export const CropCreateButton = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{tSchema("status.label")}</FormLabel>
-                  <div className="flex gap-x-2">
-                    <FormControl>
-                      <Input
-                        placeholder={tSchema("status.placeholder")}
-                        value={field.value || undefined}
-                        onChange={field.onChange}
-                        disabled={isPending}
-                      />
-                    </FormControl>
-                  </div>
+
+                  <FormControl>
+                    <Input
+                      placeholder={tSchema("status.placeholder")}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
+                      disabled={isPending}
+                    />
+                  </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}

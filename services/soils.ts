@@ -7,7 +7,7 @@ import {
   getObjectSortOrder,
 } from "@/lib/utils";
 import { PaginatedResponse, SoilChart, SoilTable } from "@/types";
-import { deleteIntUnit, UnitValue, upsertIntUnit } from "./units";
+import { UnitValue, upsertIntUnit } from "./units";
 
 type SoilParams = {
   fieldId: string;
@@ -126,12 +126,10 @@ export const updateSoilPinned = async (id: string, pinned: boolean) => {
   });
 };
 export const deleteSoil = async (id: string) => {
-  return await db.$transaction(async (ctx) => {
-    const soil = await ctx.soil.delete({
-      where: { id },
-    });
-    return soil;
+  const soil = await db.soil.delete({
+    where: { id },
   });
+  return soil;
 };
 export const deleteManySoilUnconfirmed = async () => {
   const { count } = await db.soil.deleteMany({
@@ -174,14 +172,12 @@ export const getSoilsOnField = async ({
           ...(filterNumber && getObjectFilterNumber(filterNumber)),
         },
         orderBy: [
+          ...(orderBy ? getObjectSortOrder(orderBy) : []),
           {
             pinned: "desc",
           },
           {
             confirmed: "asc",
-          },
-          {
-            ...(orderBy && getObjectSortOrder(orderBy)),
           },
         ],
         include: {

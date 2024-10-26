@@ -13,6 +13,11 @@ import { FertilizerEditDialog } from "@/app/[locale]/(backoffice)/admin/(farm)/f
 import { PesticideEditDialog } from "@/app/[locale]/(backoffice)/admin/(farm)/pesticides/_components/pesticide-edit-button";
 import { CropEditDialog } from "@/app/[locale]/(backoffice)/admin/(farm)/fields/detail/[fieldId]/crops/_components/crop-edit-button";
 import { FileEditNameDialog } from "@/app/[locale]/(backoffice)/admin/(files)/_components/file-edit-name-button";
+import { PlantFertilizerEditDialog } from "@/app/[locale]/(backoffice)/admin/(farm)/plants/detail/[plantId]/fertilizers/_components/plant-fertilizers-edit-button";
+import { PlantPesticideEditDialog } from "@/app/[locale]/(backoffice)/admin/(farm)/plants/detail/[plantId]/pesticides/_components/plant-pesticides-edit-button";
+import { EquipmentDetailEditDialog } from "@/app/[locale]/(backoffice)/admin/(inventory)/equipments/detail/[equipmentId]/_components/equipment-detail-edit-button";
+import { MaterialUsageEditDialog } from "@/app/[locale]/(backoffice)/admin/(inventory)/materials/detail/[materialId]/usages/_components/material-usages-edit-button";
+import { EquipmentUsageEditDialog } from "@/app/[locale]/(backoffice)/admin/(inventory)/equipments/detail/[equipmentId]/details/[equipmentDetailId]/usages/_components/equipment-usage-edit-button";
 
 export const DialogProvider = () => {
   return (
@@ -30,6 +35,11 @@ export const DialogProvider = () => {
       <PesticideEditDialog />
       <CropEditDialog />
       <FileEditNameDialog />
+      <PlantFertilizerEditDialog />
+      <PlantPesticideEditDialog />
+      <EquipmentDetailEditDialog />
+      <MaterialUsageEditDialog />
+      <EquipmentUsageEditDialog />
     </>
   );
 };

@@ -94,7 +94,7 @@ export const WeatherEditDialog = () => {
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.edit"));
+          toast.error("Internal error");
         });
     });
   };
@@ -116,7 +116,7 @@ export const WeatherEditDialog = () => {
                 <div className="flex gap-x-2">
                   <FormControl>
                     <SelectOptions
-                      label="Select status"
+                      placeholder="Select status"
                       onChange={field.onChange}
                       options={Object.keys(WeatherStatus).map((item) => {
                         return {
@@ -169,7 +169,7 @@ export const WeatherEditDialog = () => {
                         unitType={UnitType.TEMPERATURE}
                         disabled={isPending}
                         className="w-full"
-                        errorLabel={tSchema("temperature.unitId.error")}
+                        error={tSchema("temperature.unitId.error")}
                         notFound={tSchema("temperature.unitId.notFound")}
                         defaultValue={field.value}
                       />
@@ -215,7 +215,7 @@ export const WeatherEditDialog = () => {
                         unitType={UnitType.PERCENT}
                         disabled={isPending}
                         className="w-full"
-                        errorLabel={tSchema("humidity.unitId.error")}
+                        error={tSchema("humidity.unitId.error")}
                         notFound={tSchema("humidity.unitId.notFound")}
                         defaultValue={field.value}
                       />
@@ -271,7 +271,7 @@ export const WeatherEditDialog = () => {
                         unitType={UnitType.ATMOSPHERICPRESSURE}
                         disabled={isPending}
                         className="w-full"
-                        errorLabel={tSchema("atmosphericPressure.unitId.error")}
+                        error={tSchema("atmosphericPressure.unitId.error")}
                         notFound={tSchema(
                           "atmosphericPressure.unitId.notFound"
                         )}
@@ -319,7 +319,7 @@ export const WeatherEditDialog = () => {
                         unitType={UnitType.RAINFALL}
                         disabled={isPending}
                         className="w-full"
-                        errorLabel={tSchema("rainfall.unitId.error")}
+                        error={tSchema("rainfall.unitId.error")}
                         notFound={tSchema("rainfall.unitId.notFound")}
                         defaultValue={field.value}
                       />

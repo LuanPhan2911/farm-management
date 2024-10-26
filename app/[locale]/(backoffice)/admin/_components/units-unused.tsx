@@ -3,7 +3,7 @@
 import { ErrorButton } from "@/components/buttons/error-button";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { UnusedUnitCount } from "@/types";
+import { UnitUnusedCount } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 
@@ -14,7 +14,7 @@ export const UnitsUnused = ({}: UnitsUnusedProps) => {
     queryKey: ["unused_units"],
     queryFn: async () => {
       const res = await fetch("/api/units/delete_unused/count");
-      return (await res.json()) as UnusedUnitCount;
+      return (await res.json()) as UnitUnusedCount;
     },
   });
   if (isPending) {

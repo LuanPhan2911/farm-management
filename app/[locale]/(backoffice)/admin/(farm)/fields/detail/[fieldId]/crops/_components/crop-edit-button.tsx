@@ -97,7 +97,7 @@ export const CropEditDialog = () => {
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.edit"));
+          toast.error("Internal error");
         });
     });
   };
@@ -126,16 +126,16 @@ export const CropEditDialog = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{tSchema("name.label")}</FormLabel>
-                <div className="flex gap-x-2">
-                  <FormControl>
-                    <Input
-                      value={field.value || undefined}
-                      onChange={field.onChange}
-                      placeholder={tSchema("name.placeholder")}
-                      disabled={isPending}
-                    />
-                  </FormControl>
-                </div>
+
+                <FormControl>
+                  <Input
+                    value={field.value || undefined}
+                    onChange={field.onChange}
+                    placeholder={tSchema("name.placeholder")}
+                    disabled={isPending}
+                  />
+                </FormControl>
+
                 <FormMessage />
               </FormItem>
             )}
@@ -147,18 +147,21 @@ export const CropEditDialog = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{tSchema("plantId.label")}</FormLabel>
-                  <div className="flex gap-x-2">
-                    <FormControl>
-                      <PlantsSelect
-                        errorLabel={tSchema("plantId.error")}
-                        label={tSchema("plantId.placeholder")}
-                        notFound={tSchema("plantId.notFound")}
-                        onChange={field.onChange}
-                        disabled={isPending}
-                        defaultValue={field.value}
-                      />
-                    </FormControl>
-                  </div>
+
+                  <FormControl>
+                    <PlantsSelect
+                      error={tSchema("plantId.error")}
+                      placeholder={tSchema("plantId.placeholder")}
+                      notFound={tSchema("plantId.notFound")}
+                      onChange={field.onChange}
+                      disabled={isPending}
+                      defaultValue={field.value}
+                      appearance={{
+                        button: "lg:w-full",
+                      }}
+                    />
+                  </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -169,19 +172,20 @@ export const CropEditDialog = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{tSchema("dateRange.label")}</FormLabel>
-                  <div className="flex gap-x-2">
-                    <FormControl>
-                      <DatePickerWithRange
-                        placeholder={tSchema("dateRange.placeholder")}
-                        handleChange={handleChangeDate}
-                        date={{
-                          from: field.value.startDate,
-                          to: field.value.endDate || undefined,
-                        }}
-                        disabled={isPending}
-                      />
-                    </FormControl>
-                  </div>
+
+                  <FormControl>
+                    <DatePickerWithRange
+                      placeholder={tSchema("dateRange.placeholder")}
+                      handleChange={handleChangeDate}
+                      date={{
+                        from: field.value.startDate,
+                        to: field.value.endDate || undefined,
+                      }}
+                      disabled={isPending}
+                      className="lg:w-full"
+                    />
+                  </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -227,7 +231,7 @@ export const CropEditDialog = () => {
                         unitType={UnitType.WEIGHT}
                         disabled={isPending}
                         className="w-full"
-                        errorLabel={tSchema("estimatedYield.unitId.error")}
+                        error={tSchema("estimatedYield.unitId.error")}
                         notFound={tSchema("estimatedYield.unitId.notFound")}
                         defaultValue={field.value || undefined}
                       />
@@ -273,7 +277,7 @@ export const CropEditDialog = () => {
                         unitType={UnitType.WEIGHT}
                         disabled={isPending}
                         className="w-full"
-                        errorLabel={tSchema("actualYield.unitId.error")}
+                        error={tSchema("actualYield.unitId.error")}
                         notFound={tSchema("actualYield.unitId.notFound")}
                         defaultValue={field.value || undefined}
                       />
@@ -291,16 +295,15 @@ export const CropEditDialog = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{tSchema("status.label")}</FormLabel>
-                <div className="flex gap-x-2">
-                  <FormControl>
-                    <Input
-                      placeholder={tSchema("status.placeholder")}
-                      value={field.value || undefined}
-                      onChange={field.onChange}
-                      disabled={isPending}
-                    />
-                  </FormControl>
-                </div>
+
+                <FormControl>
+                  <Input
+                    placeholder={tSchema("status.placeholder")}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
+                    disabled={isPending}
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}

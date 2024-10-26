@@ -141,11 +141,7 @@ export const getMessageFiles = async ({
         include: {
           owner: true,
         },
-        orderBy: [
-          {
-            ...(orderBy && getObjectSortOrder(orderBy)),
-          },
-        ],
+        orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
       }),
       db.file.count({
         where: {
@@ -200,7 +196,7 @@ export const getFilesByOrgId = async ({
         include: {
           owner: true,
         },
-        orderBy: [{ ...(orderBy && getObjectSortOrder(orderBy)) }],
+        orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
       }),
       db.file.count({
         where: {
@@ -254,7 +250,7 @@ export const getPublicFiles = async ({
         include: {
           owner: true,
         },
-        orderBy: [{ ...(orderBy && getObjectSortOrder(orderBy)) }],
+        orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
       }),
       db.file.count({
         where: {
@@ -309,7 +305,7 @@ export const getFilesByOwnerId = async ({
         include: {
           owner: true,
         },
-        orderBy: [{ ...(orderBy && getObjectSortOrder(orderBy)) }],
+        orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
       }),
       db.file.count({
         where: {
@@ -365,7 +361,7 @@ export const getFilesDeletedByOwnerId = async ({
         include: {
           owner: true,
         },
-        orderBy: [{ ...(orderBy && getObjectSortOrder(orderBy)) }],
+        orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
       }),
       db.file.count({
         where: {

@@ -12,21 +12,14 @@ import {
   EquipmentSelect,
 } from "@/types";
 import { EquipmentType } from "@prisma/client";
-import { deleteFloatUnit, upsertFloatUnit } from "./units";
+import { UnitValue, upsertFloatUnit } from "./units";
 
 type EquipmentParams = {
   name: string;
   type: EquipmentType;
   brand: string;
   purchaseDate: Date;
-  purchasePrice: {
-    unitId: string;
-    value: number;
-  };
-  status?: string | null;
-  maintenanceSchedule?: string | null;
-  operatingHours?: number | null;
-  location?: string | null;
+  purchasePrice?: Partial<UnitValue> | null;
   fuelConsumption?: number | null;
   energyType?: string | null;
   description?: string | null;
@@ -35,16 +28,15 @@ type EquipmentParams = {
 export const createEquipment = async (params: EquipmentParams) => {
   const { purchasePrice: purchasePriceParam, ...otherParams } = params;
   return await db.$transaction(async (ctx) => {
-    const purchasePrice = await ctx.floatUnit.create({
-      data: {
-        ...purchasePriceParam,
-      },
+    const purchasePrice = await upsertFloatUnit({
+      ctx,
+      data: purchasePriceParam,
     });
 
     const equipment = await ctx.equipment.create({
       data: {
         ...otherParams,
-        purchasePriceId: purchasePrice.id,
+        purchasePriceId: purchasePrice?.id,
       },
     });
     return equipment;
@@ -70,11 +62,10 @@ export const updateEquipment = async (id: string, params: EquipmentParams) => {
   });
 };
 export const deleteEquipment = async (id: string) => {
-  return await db.$transaction(async (ctx) => {
-    const equipment = await ctx.equipment.delete({
-      where: { id },
-    });
+  const equipment = await db.equipment.delete({
+    where: { id },
   });
+  return equipment;
 };
 type EquipmentQuery = {
   page?: number;
@@ -95,9 +86,7 @@ export const getEquipments = async ({
           ...(filterString && getObjectFilterString(filterString)),
           ...(filterNumber && getObjectFilterNumber(filterNumber)),
         },
-        orderBy: {
-          ...(orderBy && getObjectSortOrder(orderBy)),
-        },
+        orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
         take: LIMIT,
         skip: (page - 1) * LIMIT,
         include: {
@@ -108,6 +97,11 @@ export const getEquipments = async ({
                   name: true,
                 },
               },
+            },
+          },
+          _count: {
+            select: {
+              equipmentDetails: true,
             },
           },
         },
@@ -145,7 +139,9 @@ export const getEquipmentsSelect = async (): Promise<EquipmentSelect[]> => {
     return [];
   }
 };
-export const getEquipmentById = async (id: string) => {
+export const getEquipmentById = async (
+  id: string
+): Promise<EquipmentTable | null> => {
   try {
     return await db.equipment.findUnique({
       where: {
@@ -161,13 +157,18 @@ export const getEquipmentById = async (id: string) => {
             },
           },
         },
+        _count: {
+          select: {
+            equipmentDetails: true,
+          },
+        },
       },
     });
   } catch (error) {
     return null;
   }
 };
-export const getCountEquipmentType = async ({}: EquipmentQuery): Promise<
+export const getCountEquipmentType = async (): Promise<
   EquipmentTypeCount[]
 > => {
   try {

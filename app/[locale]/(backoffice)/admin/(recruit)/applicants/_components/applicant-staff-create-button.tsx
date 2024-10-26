@@ -198,9 +198,9 @@ export const ApplicantStaffCreateDialog = () => {
                 <FormLabel>{tSchema("role.label")}</FormLabel>
                 <FormControl>
                   <StaffSelectRole
-                    value={field.value || undefined}
+                    defaultValue={field.value || undefined}
                     onChange={field.onChange}
-                    label={tSchema("role.placeholder")}
+                    placeholder={tSchema("role.placeholder")}
                     hidden={[StaffRole.superadmin]}
                   />
                 </FormControl>

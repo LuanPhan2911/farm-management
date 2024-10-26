@@ -7,12 +7,11 @@ import { useAlertDialog } from "@/stores/use-alert-dialog";
 import { Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { useTransition } from "react";
 import { toast } from "sonner";
 export const PlantDeleteButton = () => {
   const { onOpen, onClose, setPending } = useAlertDialog();
 
-  const t = useTranslations("plants");
+  const t = useTranslations("plants.form");
   const router = useRouter();
   const params = useParams<{
     plantId: string;
@@ -30,7 +29,7 @@ export const PlantDeleteButton = () => {
         }
       })
       .catch((error) => {
-        toast.error(t("status.failure.destroy"));
+        toast.error("Internal error");
       })
       .finally(() => {
         onClose();
@@ -39,14 +38,14 @@ export const PlantDeleteButton = () => {
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onOpen({
-      title: t("form.destroy.title"),
-      description: t("form.destroy.description"),
+      title: t("destroy.title"),
+      description: t("destroy.description"),
       onConfirm,
     });
   };
   return (
     <Button variant={"destroy"} size={"sm"} onClick={handleClick}>
-      <Trash className="mr-2" /> {t("form.destroy.label")}
+      <Trash className="mr-2" /> {t("destroy.label")}
     </Button>
   );
 };

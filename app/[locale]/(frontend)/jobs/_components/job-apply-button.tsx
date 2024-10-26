@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import { useTranslations } from "next-intl";
 import { ApplicantSchema } from "@/schemas";
-import { useEffect, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { create } from "@/actions/applicant";
@@ -47,6 +47,7 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
       phone: "",
     },
   });
+  const [isOpen, setOpen] = useState(false);
   useEffect(() => {
     if (user?.fullName) {
       form.setValue("name", user.fullName);
@@ -60,7 +61,7 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
       create(values, jobId)
         .then(({ message }) => {
           form.reset();
-
+          setOpen(false);
           toast.success(message);
         })
         .catch((error: Error) => {
@@ -69,7 +70,7 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
     });
   };
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant={"gradient"}>{t("form.apply.label")}</Button>
       </DialogTrigger>

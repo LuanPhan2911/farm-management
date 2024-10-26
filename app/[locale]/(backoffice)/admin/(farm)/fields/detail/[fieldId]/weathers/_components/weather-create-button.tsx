@@ -49,25 +49,26 @@ export const WeatherCreateButton = () => {
       note: null,
     },
   });
+  const [isOpen, setOpen] = useState(false);
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       create(values)
         .then(({ message, ok }) => {
           if (ok) {
             form.reset();
-
+            setOpen(false);
             toast.success(message);
           } else {
             toast.error(message);
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.create"));
+          toast.error("Internal error");
         });
     });
   };
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size={"sm"} variant={"success"}>
           <Plus className="h-4 w-4 mr-2" />{" "}
@@ -94,7 +95,7 @@ export const WeatherCreateButton = () => {
                     <div className="flex gap-x-2">
                       <FormControl>
                         <SelectOptions
-                          label={tSchema("status.placeholder")}
+                          placeholder={tSchema("status.placeholder")}
                           onChange={field.onChange}
                           options={Object.keys(WeatherStatus).map((item) => {
                             return {
@@ -173,7 +174,7 @@ export const WeatherCreateButton = () => {
                           unitType={UnitType.TEMPERATURE}
                           disabled={isPending}
                           className="w-full"
-                          errorLabel={tSchema("temperature.unitId.error")}
+                          error={tSchema("temperature.unitId.error")}
                           notFound={tSchema("temperature.unitId.notFound")}
                         />
                       </FormControl>
@@ -218,7 +219,7 @@ export const WeatherCreateButton = () => {
                           unitType={UnitType.PERCENT}
                           disabled={isPending}
                           className="w-full"
-                          errorLabel={tSchema("humidity.unitId.error")}
+                          error={tSchema("humidity.unitId.error")}
                           notFound={tSchema("humidity.unitId.notFound")}
                         />
                       </FormControl>
@@ -273,9 +274,7 @@ export const WeatherCreateButton = () => {
                           unitType={UnitType.ATMOSPHERICPRESSURE}
                           disabled={isPending}
                           className="w-full"
-                          errorLabel={tSchema(
-                            "atmosphericPressure.unitId.error"
-                          )}
+                          error={tSchema("atmosphericPressure.unitId.error")}
                           notFound={tSchema(
                             "atmosphericPressure.unitId.notFound"
                           )}
@@ -322,7 +321,7 @@ export const WeatherCreateButton = () => {
                           unitType={UnitType.RAINFALL}
                           disabled={isPending}
                           className="w-full"
-                          errorLabel={tSchema("rainfall.unitId.error")}
+                          error={tSchema("rainfall.unitId.error")}
                           notFound={tSchema("rainfall.unitId.notFound")}
                         />
                       </FormControl>
@@ -435,6 +434,7 @@ export const WeatherCreateManyButton = () => {
     []
   );
   const [isPending, startTransition] = useTransition();
+  const [isOpen, setOpen] = useState(false);
   const onSubmit = () => {
     startTransition(() => {
       const data = (jsonContent as JSONContent).json;
@@ -442,6 +442,7 @@ export const WeatherCreateManyButton = () => {
         .then(({ message, ok }) => {
           if (ok) {
             toast.success(message);
+            setOpen(false);
             setJsonContent({
               json: initialContent,
             });
@@ -456,7 +457,7 @@ export const WeatherCreateManyButton = () => {
   };
   const t = useTranslations("weathers");
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size={"sm"} variant={"purple"}>
           <Upload className="h-4 w-4 mr-2" /> {t("form.createMany.label")}
@@ -478,7 +479,14 @@ export const WeatherCreateManyButton = () => {
           clearHandler={() => setJsonContent({ json: [] })}
           generateSample={() => setJsonContent({ json: initialContent })}
         />
-        <DynamicDialogFooter disabled={isPending} />
+        <Button
+          type="submit"
+          disabled={isPending}
+          variant={"blue"}
+          onClick={onSubmit}
+        >
+          Submit
+        </Button>
       </DialogContent>
     </Dialog>
   );

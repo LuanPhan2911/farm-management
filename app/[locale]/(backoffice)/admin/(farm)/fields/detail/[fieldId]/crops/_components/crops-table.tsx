@@ -44,8 +44,8 @@ export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
         <SearchBar isPagination placeholder={t("search.placeholder")} />
         <DatePickerWithRangeButton />
         <PlantsSelect
-          errorLabel={t("schema.plantId.error")}
-          label={t("schema.plantId.placeholder")}
+          error={t("schema.plantId.error")}
+          placeholder={t("schema.plantId.placeholder")}
           notFound={t("schema.plantId.notFound")}
           onChange={updateSearchParam}
           appearance={{
@@ -137,6 +137,11 @@ export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
           })}
         </TableBody>
       </Table>
+      {!data.length && (
+        <div className="my-4 text-muted-foreground flex justify-center">
+          No results.
+        </div>
+      )}
       <div className="py-4">
         <NavPagination totalPage={totalPage} />
       </div>

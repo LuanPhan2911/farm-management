@@ -23,7 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import slugify from "slugify";
 import { toast } from "sonner";
@@ -33,7 +33,7 @@ import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 interface OrgCreateButtonProps {}
 
 export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
-  const t = useTranslations("organizations");
+  const t = useTranslations("organizations.form");
   const tSchema = useTranslations("organizations.schema");
   const formSchema = OrganizationSchema(tSchema);
 
@@ -42,6 +42,7 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+  const [isOpen, setOpen] = useState(false);
   const orgName = form.watch("name");
   useEffect(() => {
     if (!orgName) {
@@ -62,35 +63,30 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
         .then(({ message, ok }) => {
           if (ok) {
             form.reset();
-
+            setOpen(false);
             toast.success(message);
           } else {
             toast.error(message);
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.create"));
+          toast.error("Internal error");
         });
     });
   };
-  const fetchCreatedByOrg = async () => {
-    const res = await fetch("/api/staffs/contain_admin");
-    return await res.json();
-  };
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant={"success"} size={"sm"}>
           <Plus className="h-4 w-4 mr-2" />{" "}
-          <span className="text-sm font-semibold">
-            {t("form.create.label")}
-          </span>
+          <span className="text-sm font-semibold">{t("create.label")}</span>
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t("form.create.title")}</DialogTitle>
-          <DialogDescription>{t("form.create.description")}</DialogDescription>
+          <DialogTitle>{t("create.title")}</DialogTitle>
+          <DialogDescription>{t("create.description")}</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -144,14 +140,13 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
                   <FormControl>
                     <div className="block">
                       <StaffsSelect
-                        queryKey={["staffs_contain_admin"]}
-                        queryFn={fetchCreatedByOrg}
                         defaultValue={field.value}
                         onChange={field.onChange}
-                        errorLabel={tSchema("createdBy.error")}
-                        label={tSchema("createdBy.placeholder")}
+                        error={tSchema("createdBy.error")}
+                        placeholder={tSchema("createdBy.placeholder")}
                         notFound={tSchema("createdBy.notFound")}
                         disabled={isPending}
+                        adminOnly
                       />
                     </div>
                   </FormControl>

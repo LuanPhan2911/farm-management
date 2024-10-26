@@ -49,7 +49,7 @@ export const StaffCreateDialog = () => {
 
   const isOpenDialog = isOpen && type === "staff.create";
   const [isPending, startTransition] = useTransition();
-  const t = useTranslations("staffs");
+  const t = useTranslations("staffs.form");
   const tSchema = useTranslations("staffs.schema");
   const formSchema = StaffSchema(tSchema);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -77,7 +77,7 @@ export const StaffCreateDialog = () => {
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.create"));
+          toast.error("Internal error");
         })
         .finally(() => {
           onClose();
@@ -90,8 +90,8 @@ export const StaffCreateDialog = () => {
   return (
     <DynamicDialog
       isOpen={isOpenDialog}
-      title={t("form.create.title")}
-      description={t("form.create.description")}
+      title={t("create.title")}
+      description={t("create.description")}
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -165,9 +165,9 @@ export const StaffCreateDialog = () => {
                 <FormLabel>{tSchema("role.label")}</FormLabel>
                 <FormControl>
                   <StaffSelectRole
-                    value={field.value || undefined}
+                    defaultValue={field.value || undefined}
                     onChange={field.onChange}
-                    label={tSchema("role.placeholder")}
+                    placeholder={tSchema("role.placeholder")}
                     disabled={isPending}
                     hidden={[StaffRole.superadmin]}
                   />

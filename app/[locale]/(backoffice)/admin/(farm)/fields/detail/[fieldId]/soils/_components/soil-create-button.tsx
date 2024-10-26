@@ -53,25 +53,26 @@ export const SoilCreateButton = () => {
       createdAt: new Date(),
     },
   });
+  const [isOpen, setOpen] = useState(false);
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       create(values)
         .then(({ message, ok }) => {
           if (ok) {
             form.reset();
-
+            setOpen(false);
             toast.success(message);
           } else {
             toast.error(message);
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.create"));
+          toast.error("Internal error");
         });
     });
   };
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size={"sm"} variant={"success"}>
           <Plus className="h-4 w-4 mr-2" />{" "}
@@ -168,7 +169,7 @@ export const SoilCreateButton = () => {
                           unitType={UnitType.PERCENT}
                           disabled={isPending}
                           className="w-full"
-                          errorLabel={tSchema("moisture.unitId.error")}
+                          error={tSchema("moisture.unitId.error")}
                           notFound={tSchema("moisture.unitId.notFound")}
                         />
                       </FormControl>
@@ -192,7 +193,7 @@ export const SoilCreateButton = () => {
                           unitType={UnitType.NUTRIENT}
                           disabled={isPending}
                           className="w-full"
-                          errorLabel={tSchema("nutrientUnitId.error")}
+                          error={tSchema("nutrientUnitId.error")}
                           notFound={tSchema("nutrientUnitId.notFound")}
                         />
                       </FormControl>
@@ -350,6 +351,7 @@ export const SoilCreateManyButton = () => {
     []
   );
   const [isPending, startTransition] = useTransition();
+  const [isOpen, setOpen] = useState(false);
   const onSubmit = () => {
     startTransition(() => {
       const data = (jsonContent as JSONContent).json;
@@ -357,6 +359,7 @@ export const SoilCreateManyButton = () => {
         .then(({ message, ok }) => {
           if (ok) {
             toast.success(message);
+            setOpen(false);
             setJsonContent({
               json: initialContent,
             });
@@ -371,7 +374,7 @@ export const SoilCreateManyButton = () => {
   };
   const t = useTranslations("soils");
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size={"sm"} variant={"purple"}>
           <Upload className="h-4 w-4 mr-2" /> {t("form.createMany.label")}
@@ -393,7 +396,14 @@ export const SoilCreateManyButton = () => {
           clearHandler={() => setJsonContent({ json: [] })}
           generateSample={() => setJsonContent({ json: initialContent })}
         />
-        <DynamicDialogFooter disabled={isPending} />
+        <Button
+          type="submit"
+          disabled={isPending}
+          variant={"blue"}
+          onClick={onSubmit}
+        >
+          Submit
+        </Button>
       </DialogContent>
     </Dialog>
   );

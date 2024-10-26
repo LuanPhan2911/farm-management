@@ -16,7 +16,7 @@ export const JobDeleteButton = ({ data, label }: JobDeleteButtonProps) => {
   const { id } = data;
   const { onOpen, onClose, setPending } = useAlertDialog();
 
-  const t = useTranslations("jobs");
+  const t = useTranslations("jobs.form");
   const onConfirm = async () => {
     setPending(true);
     destroy(id)
@@ -28,7 +28,7 @@ export const JobDeleteButton = ({ data, label }: JobDeleteButtonProps) => {
         }
       })
       .catch((error: Error) => {
-        toast.error(t("status.failure.destroy"));
+        toast.error("Internal error");
       })
       .finally(() => {
         onClose();
@@ -40,8 +40,8 @@ export const JobDeleteButton = ({ data, label }: JobDeleteButtonProps) => {
       onClick={(e) => {
         e.stopPropagation();
         onOpen({
-          title: t("form.destroy.title"),
-          description: t("form.destroy.description"),
+          title: t("destroy.title"),
+          description: t("destroy.description"),
           onConfirm,
         });
       }}

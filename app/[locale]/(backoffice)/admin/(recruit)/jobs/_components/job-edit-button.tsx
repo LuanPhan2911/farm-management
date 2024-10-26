@@ -84,7 +84,7 @@ export const JobEditForm = ({ job }: JobEditFormProps) => {
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.edit"));
+          toast.error("Internal error");
         });
     });
   };
@@ -122,7 +122,7 @@ export const JobEditForm = ({ job }: JobEditFormProps) => {
                 <FormLabel>{tSchema("experience.label")}</FormLabel>
                 <FormControl>
                   <SelectOptions
-                    label={tSchema("experience.placeholder")}
+                    placeholder={tSchema("experience.placeholder")}
                     onChange={field.onChange}
                     disabled={isPending}
                     defaultValue={field.value}

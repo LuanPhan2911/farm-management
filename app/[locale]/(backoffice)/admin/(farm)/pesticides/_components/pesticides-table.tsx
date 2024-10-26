@@ -92,6 +92,11 @@ export const PesticidesTable = ({ data, totalPage }: PesticidesTableProps) => {
           })}
         </TableBody>
       </Table>
+      {!data.length && (
+        <div className="my-4 text-muted-foreground flex justify-center">
+          No results.
+        </div>
+      )}
       <div className="py-4">
         <NavPagination totalPage={totalPage} />
       </div>

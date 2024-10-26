@@ -1,6 +1,6 @@
 import { generateWeather } from "@/lib/faker";
 import { WeatherSchema } from "@/schemas";
-import { getFieldIds } from "@/services/fields";
+import { getFieldsSelect } from "@/services/fields";
 import {
   createManyWeather,
   getWeatherUnitsForGenerateWeather,
@@ -33,10 +33,10 @@ export const POST = async (req: NextRequest) => {
       return NextResponse.json("Missing weather unit", { status: 401 });
     }
 
-    const fieldIds = await getFieldIds();
-    const weathers = fieldIds.map((fieldId) => {
+    const fieldIds = await getFieldsSelect();
+    const weathers = fieldIds.map(({ id }) => {
       const weather = generateWeather({
-        fieldId,
+        fieldId: id,
         atmosphericPressureUnitId,
         humidityUnitId,
         rainfallUnitId,

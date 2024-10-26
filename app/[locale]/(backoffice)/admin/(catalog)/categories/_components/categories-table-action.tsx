@@ -10,10 +10,11 @@ import { Button } from "@/components/ui/button";
 import { CategoryEditButton } from "./category-edit-button";
 import { CategoryDeleteButton } from "./category-delete-button";
 import { MoreHorizontal } from "lucide-react";
-import { Category } from "@prisma/client";
+
 import { useTranslations } from "next-intl";
+import { CategoryTable } from "@/types";
 interface CategoriesTableActionProps {
-  data: Category;
+  data: CategoryTable;
 }
 export const CategoriesTableAction = ({ data }: CategoriesTableActionProps) => {
   const t = useTranslations("categories.form");

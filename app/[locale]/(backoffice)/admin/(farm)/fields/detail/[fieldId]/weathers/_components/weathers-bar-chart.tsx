@@ -1,96 +1,64 @@
 "use client";
 
-import { ErrorButton } from "@/components/buttons/error-button";
-import { LargeCard } from "@/components/cards/large-card";
+import { BarChartContent } from "@/components/charts/bar-chart";
+import { ChartContext, ChartWrapper } from "@/components/charts/chart-wrapper";
 import { DatePickerInRange } from "@/components/form/date-picker-in-range";
-import { Hint } from "@/components/hint";
-import { Button } from "@/components/ui/button";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-import { Skeleton } from "@/components/ui/skeleton";
+import { ChartConfig } from "@/components/ui/chart";
 import { WeatherChart } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { addDays } from "date-fns";
-import { Eye, EyeOff, LucideIcon } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import queryString from "query-string";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { DateRange } from "react-day-picker";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
-interface WeathersBarChartProps {}
-
-export const WeathersBarChart = ({}: WeathersBarChartProps) => {
-  const defaultDateRange: DateRange = {
-    from: addDays(new Date(), -7),
-    to: new Date(),
-  };
-
+const inDays = 7;
+export const WeathersBarChart = () => {
   const [dateRange, setDateRange] = useState<DateRange>({
-    ...defaultDateRange,
+    from: addDays(new Date(), -inDays),
+    to: new Date(),
   });
-  const [isShown, setShown] = useState<boolean>(true);
-  const Icon: LucideIcon = isShown ? EyeOff : Eye;
-  const t = useTranslations("weathers.chart");
   return (
-    <div className="flex flex-col gap-y-4 p-4 max-w-full border rounded-lg">
-      <div className="flex justify-between">
-        <DatePickerInRange
-          dateRange={dateRange}
-          defaultDateRange={defaultDateRange}
-          setDateRange={setDateRange}
-          inDays={7}
-        />
-        <Hint label="Show/Hide chart" asChild>
-          <Button
-            size={"icon"}
-            variant={"cyan"}
-            onClick={() => setShown(!isShown)}
-          >
-            <Icon className="h-4 w-4" />
-          </Button>
-        </Hint>
-      </div>
-      {isShown ? (
-        <WeathersBarChartContent dateRange={dateRange} />
-      ) : (
-        <LargeCard
-          title={t("hidden.title")}
-          description={t("hidden.description")}
-        />
-      )}
-    </div>
+    <ChartWrapper
+      query={{
+        begin: dateRange.from?.toISOString(),
+        end: dateRange.to?.toISOString(),
+      }}
+      renderQuery={() => {
+        return (
+          <div>
+            <DatePickerInRange
+              value={dateRange}
+              defaultValue={dateRange}
+              onChange={setDateRange}
+              disabledDateRange={{
+                after: addDays(new Date(), 1),
+              }}
+              inDays={inDays}
+            />
+          </div>
+        );
+      }}
+    >
+      <WeathersBarChartContent />
+    </ChartWrapper>
   );
 };
 
-interface WeathersBarChartContentProps {
-  dateRange: DateRange;
-}
-const WeathersBarChartContent = ({
-  dateRange,
-}: WeathersBarChartContentProps) => {
+const WeathersBarChartContent = () => {
   const params = useParams<{
     fieldId: string;
   }>();
+  const { query } = useContext(ChartContext);
   const t = useTranslations("weathers.chart");
   const { data, isPending, isError, refetch } = useQuery({
-    queryKey: ["weathers_chart", dateRange],
+    queryKey: ["weathers_chart", query],
     queryFn: async () => {
-      const { from: begin, to: end } = dateRange;
       const url = queryString.stringifyUrl(
         {
           url: `/api/fields/${params!.fieldId}/weathers/chart`,
-          query: {
-            begin: begin?.toISOString(),
-            end: end?.toISOString(),
-          },
+          query,
         },
         {
           skipEmptyString: true,
@@ -104,80 +72,47 @@ const WeathersBarChartContent = ({
   const { dateTime } = useFormatter();
   const chartConfig = {
     temperature: {
-      label: t("fields.temperature"),
+      label: t("fields.temperature", {
+        unit: "C",
+      }),
       color: "hsl(var(--chart-1))",
     },
     humidity: {
-      label: t("fields.humidity"),
+      label: t("fields.humidity", {
+        unit: "%",
+      }),
       color: "hsl(var(--chart-2))",
     },
     rainfall: {
-      label: t("fields.rainfall"),
+      label: t("fields.rainfall", {
+        unit: "mm",
+      }),
       color: "hsl(var(--chart-3))",
     },
   } satisfies ChartConfig;
 
-  if (isPending) {
-    return <Skeleton className="w-full min-h-[200px]"></Skeleton>;
-  }
-  if (isError) {
-    return (
-      <LargeCard
-        title={<ErrorButton title={t("error.title")} refresh={refetch} />}
-        description={t("error.description")}
-      />
-    );
-  }
-  if (!data.length) {
-    return (
-      <LargeCard
-        title={t("notFound.title")}
-        description={t("notFound.description")}
-      />
-    );
-  }
-  const chartData = data.map((item) => {
-    const { temperature, humidity, rainfall } = item;
-    return {
-      createdAt: item.createdAt,
-      temperature: temperature?.value || 0,
-      humidity: humidity?.value || 0,
-      rainfall: rainfall?.value || 0,
-    };
-  });
   return (
-    <ChartContainer config={chartConfig} className="min-h-[200px] max-w-6xl">
-      <BarChart accessibilityLayer data={chartData}>
-        <CartesianGrid vertical={false} />
-        <XAxis
-          dataKey="createdAt"
-          tickLine={false}
-          tickMargin={10}
-          axisLine={false}
-          tickFormatter={(value) => {
-            return dateTime(new Date(value), {
-              day: "2-digit",
-              month: "short",
-              hour: "numeric",
-            });
-          }}
-        />
-        <YAxis />
-        <ChartTooltip
-          content={<ChartTooltipContent />}
-          labelFormatter={(label) => {
-            return dateTime(new Date(label), {
-              day: "2-digit",
-              month: "short",
-              hour: "numeric",
-            });
-          }}
-        />
-        <ChartLegend content={<ChartLegendContent />} />
-        <Bar dataKey="temperature" fill="var(--color-temperature)" radius={4} />
-        <Bar dataKey="humidity" fill="var(--color-humidity)" radius={4} />
-        <Bar dataKey="rainfall" fill="var(--color-rainfall)" radius={4} />
-      </BarChart>
-    </ChartContainer>
+    <BarChartContent
+      isError={isError}
+      isPending={isPending}
+      chartConfig={chartConfig}
+      refetch={refetch}
+      t={t}
+      XAxisKey="createdAt"
+      labelFormatter={(label) => dateTime(new Date(label), "short")}
+      tickFormatter={(value) => dateTime(new Date(value), "short")}
+      data={data}
+      chartData={(data) => {
+        return data.map((item) => {
+          const { temperature, humidity, rainfall } = item;
+          return {
+            createdAt: item.createdAt,
+            temperature: temperature?.value || 0,
+            humidity: humidity?.value || 0,
+            rainfall: rainfall?.value || 0,
+          };
+        });
+      }}
+    />
   );
 };

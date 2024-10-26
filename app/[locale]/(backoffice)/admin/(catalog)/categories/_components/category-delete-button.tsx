@@ -2,13 +2,14 @@
 import { destroy } from "@/actions/category";
 import { Button } from "@/components/ui/button";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
-import { Category } from "@prisma/client";
+import { CategoryTable } from "@/types";
+
 import { Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 interface CategoryDeleteButtonProps {
-  data: Category;
+  data: CategoryTable;
   label: string;
 }
 export const CategoryDeleteButton = ({
@@ -18,7 +19,7 @@ export const CategoryDeleteButton = ({
   const { id } = data;
   const { onOpen, onClose, setPending } = useAlertDialog();
 
-  const t = useTranslations("categories");
+  const t = useTranslations("categories.form");
 
   const onConfirm = async () => {
     setPending(true);
@@ -32,7 +33,7 @@ export const CategoryDeleteButton = ({
         }
       })
       .catch((error) => {
-        toast.error(t("status.failure.destroy"));
+        toast.error("Internal error");
       })
       .finally(() => {
         onClose();
@@ -44,8 +45,8 @@ export const CategoryDeleteButton = ({
       onClick={(e) => {
         e.stopPropagation();
         onOpen({
-          title: t("form.destroy.title"),
-          description: t("form.destroy.description"),
+          title: t("destroy.title"),
+          description: t("destroy.description"),
           onConfirm,
         });
       }}

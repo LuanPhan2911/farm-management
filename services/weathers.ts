@@ -221,15 +221,13 @@ export const updateManyWeatherConfirmed = async (params: WeatherConfirm) => {
 };
 
 export const deleteWeather = async (id: string) => {
-  return await db.$transaction(async (ctx) => {
-    const weather = await ctx.weather.delete({
-      where: {
-        id,
-        confirmed: false,
-      },
-    });
-    return weather;
+  const weather = await db.weather.delete({
+    where: {
+      id,
+      confirmed: false,
+    },
   });
+  return weather;
 };
 export const deleteManyWeatherUnConfirmed = async () => {
   const { count } = await db.weather.deleteMany({
@@ -345,18 +343,18 @@ export const getWeathersOnField = async ({
             ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
             ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
           },
+
           ...(filterString && getObjectFilterString(filterString)),
           ...(filterNumber && getObjectFilterNumber(filterNumber)),
         },
         orderBy: [
+          ...(orderBy ? getObjectSortOrder(orderBy) : []),
+
           {
             pinned: "desc",
           },
           {
             confirmed: "asc",
-          },
-          {
-            ...(orderBy && getObjectSortOrder(orderBy)),
           },
         ],
         include: {

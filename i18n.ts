@@ -10,5 +10,27 @@ export default getRequestConfig(async ({ locale }) => {
 
   return {
     messages: (await import(`@/messages/${locale}.json`)).default,
+    formats: {
+      dateTime: {
+        short: {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        },
+      },
+      number: {
+        precise: {
+          maximumFractionDigits: 3,
+        },
+      },
+      list: {
+        enumeration: {
+          style: "long",
+          type: "conjunction",
+        },
+      },
+    },
   };
 });

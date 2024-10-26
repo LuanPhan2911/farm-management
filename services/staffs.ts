@@ -113,30 +113,18 @@ export const getStaffsTable = async ({
   }
 };
 
-export const getStaffsSelectContainAdmin = async () => {
+type StaffSelectQuery = {
+  adminOnly?: boolean;
+};
+export const getStaffsSelect = async (params?: StaffSelectQuery) => {
   try {
     const staffs = await db.staff.findMany({
       where: {
-        role: {
-          in: [StaffRole.admin, StaffRole.superadmin],
-        },
-      },
-      cacheStrategy: {
-        ttl: 60,
-        swr: 60,
-      },
-    });
-    return staffs;
-  } catch (error) {
-    return [];
-  }
-};
-export const getStaffsSelect = async () => {
-  try {
-    const staffs = await db.staff.findMany({
-      cacheStrategy: {
-        ttl: 60,
-        swr: 60,
+        ...(params?.adminOnly && {
+          role: {
+            in: ["superadmin", "admin"],
+          },
+        }),
       },
     });
     return staffs;
@@ -146,7 +134,13 @@ export const getStaffsSelect = async () => {
 };
 
 export const getStaffById = async (id: string) => {
-  return await db.staff.findUnique({ where: { id } });
+  return await db.staff.findUnique({
+    where: { id },
+    cacheStrategy: {
+      swr: 60,
+      ttl: 60,
+    },
+  });
 };
 export const getCurrentStaff = async () => {
   const user = await currentUser();
@@ -158,6 +152,10 @@ export const getCurrentStaff = async () => {
   const staff = await db.staff.findUnique({
     where: {
       externalId: user.id,
+    },
+    cacheStrategy: {
+      swr: 60,
+      ttl: 60,
     },
   });
 
@@ -171,6 +169,10 @@ export const getCurrentStaffPages = async (req: NextApiRequest) => {
   const staff = await db.staff.findUnique({
     where: {
       externalId: userId,
+    },
+    cacheStrategy: {
+      swr: 60,
+      ttl: 60,
     },
   });
 

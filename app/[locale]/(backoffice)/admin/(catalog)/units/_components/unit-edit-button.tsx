@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { UnitSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Unit, UnitType } from "@prisma/client";
+import { UnitType } from "@prisma/client";
 import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
@@ -26,9 +26,10 @@ import { edit } from "@/actions/unit";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { SelectOptions } from "@/components/form/select-options";
+import { UnitTable } from "@/types";
 
 interface UnitEditButtonProps {
-  data: Unit;
+  data: UnitTable;
   label: string;
 }
 
@@ -56,7 +57,7 @@ export const UnitEditDialog = () => {
   const isOpenDialog = isOpen && type === "unit.edit";
 
   const tSchema = useTranslations("units.schema");
-  const t = useTranslations("units");
+  const t = useTranslations("units.form");
   const formSchema = UnitSchema(tSchema);
 
   const [isPending, startTransition] = useTransition();
@@ -85,15 +86,15 @@ export const UnitEditDialog = () => {
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.edit"));
+          toast.error("Internal error");
         });
     });
   };
   return (
     <DynamicDialog
       isOpen={isOpenDialog}
-      title={t("form.edit.title")}
-      description={t("form.edit.description")}
+      title={t("edit.title")}
+      description={t("edit.description")}
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -124,11 +125,11 @@ export const UnitEditDialog = () => {
                 <FormLabel>{tSchema("type.label")}</FormLabel>
                 <FormControl>
                   <SelectOptions
-                    label={tSchema("type.label")}
+                    placeholder={tSchema("type.label")}
                     onChange={field.onChange}
                     options={Object.values(UnitType).map((item) => {
                       return {
-                        label: t(`schema.type.options.${item}`),
+                        label: tSchema(`type.options.${item}`),
                         value: item,
                       };
                     })}

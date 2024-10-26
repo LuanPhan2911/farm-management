@@ -32,7 +32,7 @@ export const ScheduleSelectCron = ({
   ];
   return (
     <SelectOptions
-      label={placeholder}
+      placeholder={placeholder}
       onChange={onChange}
       defaultValue={defaultValue}
       options={options}

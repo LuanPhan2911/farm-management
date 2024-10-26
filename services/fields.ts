@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { FieldSelect } from "@/types";
 import { SoilType } from "@prisma/client";
 
 type FieldParams = {
@@ -44,10 +45,6 @@ export const getFields = async () => {
       include: {
         unit: true,
       },
-      cacheStrategy: {
-        swr: 60,
-        ttl: 60,
-      },
     });
     return fields;
   } catch (error) {
@@ -68,14 +65,16 @@ export const getFieldById = async (id: string) => {
     return null;
   }
 };
-export const getFieldIds = async () => {
+export const getFieldsSelect = async (): Promise<FieldSelect[]> => {
   try {
     const fields = await db.field.findMany({
       select: {
         id: true,
+        name: true,
+        location: true,
       },
     });
-    return fields.map((field) => field.id);
+    return fields;
   } catch (error) {
     return [];
   }
@@ -85,6 +84,7 @@ export const getFieldByOrgId = async (orgId: string) => {
     const field = await db.field.findUnique({
       where: { orgId },
     });
+    return field;
   } catch (error) {
     return null;
   }
