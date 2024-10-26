@@ -31,7 +31,7 @@ import { PesticideType, UnitType, ToxicityLevel } from "@prisma/client";
 
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useRef, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -48,25 +48,26 @@ export const PesticideCreateButton = () => {
       name: "",
     },
   });
+  const [isOpen, setOpen] = useState(false);
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       create(values)
         .then(({ message, ok }) => {
           if (ok) {
             form.reset();
-
+            setOpen(false);
             toast.success(message);
           } else {
             toast.error(message);
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.create"));
+          toast.error("Internal error");
         });
     });
   };
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size={"sm"} variant={"success"}>
           <Plus className="h-4 w-4 mr-2" />{" "}
@@ -110,7 +111,7 @@ export const PesticideCreateButton = () => {
                     <FormLabel>{tSchema("type.label")}</FormLabel>
                     <FormControl>
                       <SelectOptions
-                        label={tSchema("type.placeholder")}
+                        placeholder={tSchema("type.placeholder")}
                         onChange={field.onChange}
                         options={Object.keys(PesticideType).map((item) => {
                           return {
@@ -133,7 +134,7 @@ export const PesticideCreateButton = () => {
                     <FormLabel>{tSchema("toxicityLevel.label")}</FormLabel>
                     <FormControl>
                       <SelectOptions
-                        label={tSchema("toxicityLevel.placeholder")}
+                        placeholder={tSchema("toxicityLevel.placeholder")}
                         onChange={field.onChange}
                         options={Object.keys(ToxicityLevel).map((item) => {
                           return {
@@ -191,7 +192,7 @@ export const PesticideCreateButton = () => {
                         unitType={UnitType.VOLUME}
                         disabled={isPending}
                         className="w-full"
-                        errorLabel={tSchema("recommendedDosage.unitId.error")}
+                        error={tSchema("recommendedDosage.unitId.error")}
                         notFound={tSchema("recommendedDosage.unitId.notFound")}
                       />
                     </FormControl>
@@ -240,7 +241,7 @@ export const PesticideCreateButton = () => {
                         unitType={UnitType.DATE}
                         disabled={isPending}
                         className="w-full"
-                        errorLabel={tSchema("withdrawalPeriod.unitId.error")}
+                        error={tSchema("withdrawalPeriod.unitId.error")}
                         notFound={tSchema("withdrawalPeriod.unitId.notFound")}
                       />
                     </FormControl>

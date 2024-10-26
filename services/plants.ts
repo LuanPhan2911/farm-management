@@ -1,13 +1,7 @@
 import { db } from "@/lib/db";
 
 import { FertilizerType, Season } from "@prisma/client";
-import {
-  deleteFloatUnit,
-  deleteIntUnit,
-  UnitValue,
-  upsertFloatUnit,
-  upsertIntUnit,
-} from "./units";
+import { UnitValue, upsertFloatUnit, upsertIntUnit } from "./units";
 import { PlantSelect } from "@/types";
 
 type PlantParams = {
@@ -88,10 +82,8 @@ export const updatePlant = async (id: string, params: PlantParams) => {
   });
 };
 export const deletePlant = async (id: string) => {
-  return await db.$transaction(async (ctx) => {
-    const plant = await ctx.plant.delete({ where: { id } });
-    return plant;
-  });
+  const plant = await db.plant.delete({ where: { id } });
+  return plant;
 };
 export const getPlants = async () => {
   try {

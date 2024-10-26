@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { CategorySelect, CategoryTable } from "@/types";
 import { CategoryType } from "@prisma/client";
 type CategoryParams = {
   name: string;
@@ -33,7 +34,7 @@ export const deleteManyCategory = async (ids: string[]) => {
     },
   });
 };
-export const getCategoriesTable = async () => {
+export const getCategoriesTable = async (): Promise<CategoryTable[]> => {
   try {
     const categories = await db.category.findMany({
       orderBy: {
@@ -69,7 +70,9 @@ export const getCategoryById = async (id: string) => {
     return null;
   }
 };
-export const getCategoriesByType = async (type: CategoryType) => {
+export const getCategoriesByType = async (
+  type: CategoryType
+): Promise<CategorySelect[]> => {
   try {
     return await db.category.findMany({
       where: {

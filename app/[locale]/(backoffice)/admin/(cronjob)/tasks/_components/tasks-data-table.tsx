@@ -38,7 +38,7 @@ export const TasksDataTable = ({ data }: TaskDataTableProps) => {
         }
       })
       .catch((error: Error) => {
-        toast.error(t("status.failure.destroy"));
+        toast.error("Internal error");
       })
       .finally(() => {
         onClose();

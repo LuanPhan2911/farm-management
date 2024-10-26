@@ -1,6 +1,6 @@
 import { db, PrismaTransactionalClient } from "@/lib/db";
-import { UnusedUnitCount } from "@/types";
-import { FloatUnit, IntUnit, Prisma, UnitType } from "@prisma/client";
+import { UnitSelect, UnitTable, UnitUnusedCount } from "@/types";
+import { FloatUnit, IntUnit, UnitType } from "@prisma/client";
 
 type UnitParams = {
   name: string;
@@ -26,7 +26,7 @@ export const updateUnit = async (id: string, params: UnitParams) => {
     },
   });
 };
-export const getUnitsTable = async () => {
+export const getUnitsTable = async (): Promise<UnitTable[]> => {
   try {
     const units = await db.unit.findMany({
       orderBy: {
@@ -55,7 +55,7 @@ export const deleteManyUnit = async (ids: string[]) => {
   return count;
 };
 
-export const getUnitsByType = async (type: UnitType) => {
+export const getUnitsByType = async (type: UnitType): Promise<UnitSelect[]> => {
   try {
     const units = await db.unit.findMany({
       where: {
@@ -64,10 +64,6 @@ export const getUnitsByType = async (type: UnitType) => {
       select: {
         id: true,
         name: true,
-      },
-      cacheStrategy: {
-        ttl: 60,
-        swr: 60,
       },
     });
     return units;
@@ -235,7 +231,7 @@ export const deleteUnusedIntegerUnits = async () => {
   await Promise.all(deletePromises);
 };
 
-export const getCountUnusedUnit = async (): Promise<UnusedUnitCount> => {
+export const getCountUnusedUnit = async (): Promise<UnitUnusedCount> => {
   try {
     const floatUnitCount = await db.floatUnit.count({
       where: {

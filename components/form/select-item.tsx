@@ -18,14 +18,31 @@ export const SelectItemContent = ({
       <UserAvatar
         src={imageUrl || undefined}
         className="rounded-full"
-        size={"sm"}
+        size={"default"}
       />
-      <div className="ml-4">
+      <div className="w-full">
         <div className="text-sm font-medium leading-none text-start">
           {title}
         </div>
-        <p className="text-sm text-muted-foreground">{description}</p>
+        <p className="text-sm text-muted-foreground text-start">
+          {description}
+        </p>
       </div>
+    </div>
+  );
+};
+interface SelectItemContentWithoutImageProps {
+  title: string;
+  description?: string | null | undefined;
+}
+export const SelectItemContentWithoutImage = ({
+  title,
+  description,
+}: SelectItemContentWithoutImageProps) => {
+  return (
+    <div className="w-full flex flex-col p-1 gap-y-1">
+      <div className="text-sm font-medium leading-none text-start">{title}</div>
+      <p className="text-xs text-muted-foreground text-start">{description}</p>
     </div>
   );
 };

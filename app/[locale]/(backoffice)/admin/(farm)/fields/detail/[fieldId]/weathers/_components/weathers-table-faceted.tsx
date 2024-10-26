@@ -1,6 +1,9 @@
 "use client";
 
-import { FacetedFilterNumberButton } from "@/components/buttons/faceted-filter-number-button";
+import {
+  FacetedFilterNumberButton,
+  FilterNumberOption,
+} from "@/components/buttons/faceted-filter-number-button";
 import { useTranslations } from "next-intl";
 import { ErrorButton } from "@/components/buttons/error-button";
 import { FacetedFilterStringButton } from "@/components/buttons/faceted-filter-string-button";
@@ -12,69 +15,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams, useSearchParams } from "next/navigation";
 import queryString from "query-string";
 
-const WeathersFacetedHumidity = () => {
-  const t = useTranslations("weathers.search.faceted");
-
-  const options = [
-    {
-      label: "<=10",
-      value: "<=10",
-    },
-    {
-      label: "<=30",
-      value: "<=30",
-    },
-    {
-      label: ">30",
-      value: ">30",
-    },
-    {
-      label: ">=50",
-      value: ">=50",
-    },
-  ];
-  return (
-    <FacetedFilterNumberButton
-      options={options}
-      column="humidity.value"
-      title={t("humidity.placeholder")}
-    />
-  );
-};
-const WeathersFacetedRainfall = () => {
-  const t = useTranslations("weathers.search.faceted");
-
-  const options = [
-    {
-      label: "<=5",
-      value: "<=5",
-    },
-    {
-      label: ">=10",
-      value: ">=10",
-    },
-    {
-      label: ">=30",
-      value: ">=30",
-    },
-    {
-      label: ">=50",
-      value: ">=50",
-    },
-  ];
-  return (
-    <FacetedFilterNumberButton
-      options={options}
-      column="rainfall.value"
-      title={t("rainfall.placeholder")}
-    />
-  );
-};
-
 const WeathersFacetedStatus = () => {
   const { fieldId } = useParams<{
     fieldId: string;
-  }>();
+  }>()!;
   const searchParams = useSearchParams();
   const begin = searchParams!.get("begin");
   const end = searchParams!.get("end");
@@ -127,29 +71,41 @@ const WeathersFacetedStatus = () => {
     />
   );
 };
-
 const WeathersFacetedTemperature = () => {
   const t = useTranslations("weathers.search.faceted");
-  const options = [
+  const options: FilterNumberOption[] = [
     {
-      label: ">=40",
-      value: ">=40",
+      label: "Temp <=20",
+      value: {
+        lte: 20,
+      },
     },
     {
-      label: ">=30",
-      value: ">=30",
+      label: "20< Temp <=25",
+      value: {
+        gt: 20,
+        lte: 25,
+      },
     },
     {
-      label: ">=20",
-      value: ">=20",
+      label: "25< Temp <=30",
+      value: {
+        gt: 25,
+        lte: 30,
+      },
     },
     {
-      label: "<=10",
-      value: "<=10",
+      label: "30< Temp <=35",
+      value: {
+        gt: 30,
+        lte: 35,
+      },
     },
     {
-      label: "<=0",
-      value: "<=0",
+      label: "Temp >= 35",
+      value: {
+        gt: 35,
+      },
     },
   ];
   return (
@@ -157,6 +113,92 @@ const WeathersFacetedTemperature = () => {
       options={options}
       column="temperature.value"
       title={t("temperature.placeholder")}
+    />
+  );
+};
+const WeathersFacetedHumidity = () => {
+  const t = useTranslations("weathers.search.faceted");
+
+  const options: FilterNumberOption[] = [
+    {
+      label: "Humid <=30%",
+      value: {
+        lte: 30,
+      },
+    },
+    {
+      label: "30%< Humid <=50%",
+      value: {
+        gt: 30,
+        lte: 50,
+      },
+    },
+    {
+      label: "50%< Humid <=70%",
+      value: {
+        gt: 50,
+        lte: 70,
+      },
+    },
+    {
+      label: "Humid >70%",
+      value: {
+        gt: 70,
+      },
+    },
+  ];
+  return (
+    <FacetedFilterNumberButton
+      options={options}
+      column="humidity.value"
+      title={t("humidity.placeholder")}
+    />
+  );
+};
+const WeathersFacetedRainfall = () => {
+  const t = useTranslations("weathers.search.faceted");
+
+  const options: FilterNumberOption[] = [
+    {
+      label: "Rainfall=0",
+      value: {
+        equals: 0,
+      },
+    },
+    {
+      label: "0< Rain <=10",
+      value: {
+        gt: 0,
+        lte: 10,
+      },
+    },
+    {
+      label: "10< Rain <=25",
+      value: {
+        gt: 10,
+        lte: 25,
+      },
+    },
+    {
+      label: "25< Rain <=50",
+      value: {
+        gt: 25,
+        lte: 50,
+      },
+    },
+    {
+      label: "Rain >50",
+      value: {
+        gt: 50,
+      },
+    },
+  ];
+
+  return (
+    <FacetedFilterNumberButton
+      options={options}
+      column="rainfall.value"
+      title={t("rainfall.placeholder")}
     />
   );
 };

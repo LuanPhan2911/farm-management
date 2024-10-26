@@ -1,29 +1,31 @@
 "use client";
 import { useDebounceCallback } from "usehooks-ts";
-import { useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 import { Input } from "./ui/input";
 import { cn } from "@/lib/utils";
-import { useUpdateSearchParam } from "@/hooks/use-update-search-param";
+import { useUpdateSearchParams } from "@/hooks/use-update-search-param";
 interface SearchBarProps {
   placeholder: string;
   isPagination?: boolean;
+  pageCursor?: string;
   className?: string;
 }
 export const SearchBar = ({
   placeholder,
   isPagination,
   className,
+  pageCursor = "1",
 }: SearchBarProps) => {
-  const searchParams = useSearchParams();
-
-  const { updateSearchParam: updateQuery } = useUpdateSearchParam("query");
-  const { updateSearchParam: updatePage } = useUpdateSearchParam("page");
+  const { initialParams, updateSearchParams } = useUpdateSearchParams({
+    query: undefined,
+    page: undefined,
+  });
   const handleSearch = useDebounceCallback((term: string) => {
-    if (isPagination) {
-      updatePage("1");
-    }
-    updateQuery(term);
+    const updatedPage = isPagination ? pageCursor : undefined;
+    updateSearchParams({
+      page: updatedPage,
+      query: term,
+    });
   }, 300);
   return (
     <div className={cn("relative lg:w-[250px] w-full", className)}>
@@ -32,7 +34,7 @@ export const SearchBar = ({
         placeholder={placeholder}
         className="pl-8 h-9"
         onChange={(e) => handleSearch(e.target.value)}
-        defaultValue={searchParams!.get("query")?.toString()}
+        defaultValue={initialParams.query}
       />
     </div>
   );

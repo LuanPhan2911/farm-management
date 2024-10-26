@@ -41,7 +41,7 @@ export const JobsTable = ({ data }: JobsTableProps) => {
         }
       })
       .catch((error: Error) => {
-        toast.error(t("status.failure.destroy"));
+        toast.error("Internal error");
       })
       .finally(() => {
         onClose();

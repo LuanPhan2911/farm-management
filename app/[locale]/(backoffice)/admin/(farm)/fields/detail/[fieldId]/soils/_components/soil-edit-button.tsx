@@ -92,7 +92,7 @@ export const SoilEditDialog = () => {
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.edit"));
+          toast.error("Internal error");
         });
     });
   };
@@ -163,7 +163,7 @@ export const SoilEditDialog = () => {
                         unitType={UnitType.PERCENT}
                         disabled={isPending}
                         className="w-full"
-                        errorLabel={tSchema("moisture.unitId.error")}
+                        error={tSchema("moisture.unitId.error")}
                         notFound={tSchema("moisture.unitId.notFound")}
                         defaultValue={field.value}
                       />
@@ -188,7 +188,7 @@ export const SoilEditDialog = () => {
                         unitType={UnitType.NUTRIENT}
                         disabled={isPending}
                         className="w-full"
-                        errorLabel={tSchema("nutrientUnitId.error")}
+                        error={tSchema("nutrientUnitId.error")}
                         notFound={tSchema("nutrientUnitId.notFound")}
                         defaultValue={field.value}
                       />

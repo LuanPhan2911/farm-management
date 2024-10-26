@@ -50,7 +50,7 @@ const initialBody = {
 export const TaskSendMailButton = () => {
   const tSchema = useTranslations("tasks.schema");
 
-  const t = useTranslations("tasks");
+  const t = useTranslations("tasks.form");
 
   const formSchema = TaskSchema(tSchema);
 
@@ -85,7 +85,7 @@ export const TaskSendMailButton = () => {
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.create"));
+          toast.error("Internal error");
         });
     });
   };
@@ -99,7 +99,7 @@ export const TaskSendMailButton = () => {
           size={"sm"}
           className="w-full justify-start font-bold"
         >
-          {t("form.sendMail.label")}
+          {t("sendMail.label")}
         </Button>
       </SheetTrigger>
       <SheetContent
@@ -107,8 +107,8 @@ export const TaskSendMailButton = () => {
         className="lg:max-w-6xl w-full overflow-y-auto"
       >
         <SheetHeader>
-          <SheetTitle>{t("form.sendMail.title")}</SheetTitle>
-          <SheetDescription>{t("form.sendMail.description")}</SheetDescription>
+          <SheetTitle>{t("sendMail.title")}</SheetTitle>
+          <SheetDescription>{t("sendMail.description")}</SheetDescription>
         </SheetHeader>
 
         <div className="flex gap-x-4 items-end">
@@ -288,7 +288,7 @@ const TaskEmailSelect = ({ disabled }: TaskEmailSelectProps) => {
       <Label>{t("label")} </Label>
       <div className="flex gap-x-2 items-center">
         <StaffsSelectMultiple
-          errorLabel={t("error")}
+          error={t("error")}
           label={t("placeholder")}
           notFound={t("notFound")}
           disabled={disabled}

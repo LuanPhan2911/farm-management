@@ -1,13 +1,20 @@
 import {
   ApplicantTable,
+  CategoryTable,
   CropTable,
+  EquipmentDetailTable,
+  EquipmentUsageTable,
   FertilizerTable,
+  MaterialUsageTable,
   PesticideTable,
+  PlantFertilizerTable,
+  PlantPesticideTable,
   SoilTable,
+  UnitTable,
   WeatherTable,
 } from "@/types";
 import { User } from "@clerk/nextjs/server";
-import { Category, File, Unit } from "@prisma/client";
+import { File } from "@prisma/client";
 import { create } from "zustand";
 
 export type DialogType =
@@ -22,11 +29,16 @@ export type DialogType =
   | "pesticide.edit"
   | "crop.edit"
   | "file.createMany"
-  | "file.editName";
+  | "file.editName"
+  | "plantFertilizer.edit"
+  | "plantPesticide.edit"
+  | "equipmentDetail.edit"
+  | "materialUsage.edit"
+  | "equipmentUsage.edit";
 
 export interface DialogData {
-  category?: Category;
-  unit?: Unit;
+  category?: CategoryTable;
+  unit?: UnitTable;
   applicant?: ApplicantTable;
   user?: User;
   weather?: WeatherTable;
@@ -35,6 +47,11 @@ export interface DialogData {
   pesticide?: PesticideTable;
   crop?: CropTable;
   file?: File;
+  plantFertilizer?: PlantFertilizerTable;
+  plantPesticide?: PlantPesticideTable;
+  equipmentDetail?: EquipmentDetailTable;
+  materialUsage?: MaterialUsageTable;
+  equipmentUsage?: EquipmentUsageTable;
 }
 interface DialogStore {
   type: DialogType | null;

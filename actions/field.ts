@@ -2,7 +2,12 @@
 
 import { errorResponse, successResponse } from "@/lib/utils";
 import { FieldSchema } from "@/schemas";
-import { createField, deleteField, updateField } from "@/services/fields";
+import {
+  createField,
+  deleteField,
+  getFieldByOrgId,
+  updateField,
+} from "@/services/fields";
 import { ActionResponse } from "@/types";
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
@@ -20,6 +25,11 @@ export const create = async (
     return errorResponse(tSchema("errors.parse"));
   }
   try {
+    const { orgId } = validatedFields.data;
+    const fieldOrg = await getFieldByOrgId(orgId);
+    if (fieldOrg) {
+      return errorResponse(tSchema("errors.orgExist"));
+    }
     const field = await createField({ ...validatedFields.data });
     revalidatePath("/admin/fields");
     return successResponse(tStatus("success.create"));
@@ -40,6 +50,11 @@ export const edit = async (
     return errorResponse(tSchema("errors.parse"));
   }
   try {
+    const { orgId } = validatedFields.data;
+    const fieldOrg = await getFieldByOrgId(orgId);
+    if (fieldOrg && fieldOrg.id !== fieldId) {
+      return errorResponse(tSchema("errors.orgExist"));
+    }
     const field = await updateField(fieldId, validatedFields.data);
     revalidatePath(`/admin/fields/detail/${field.id}`);
     return successResponse(tStatus("success.edit"));

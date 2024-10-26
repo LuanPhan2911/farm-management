@@ -1,11 +1,15 @@
 import {
+  ActivityPriority,
+  ActivityStatus,
   CategoryType,
+  EquipmentStatus,
   EquipmentType,
   FertilizerType,
   Frequency,
   Gender,
   JobExperience,
   JobWorkingState,
+  MaterialType,
   PesticideType,
   Season,
   SoilType,
@@ -15,7 +19,7 @@ import {
   WeatherStatus,
 } from "@prisma/client";
 import { addDays } from "date-fns";
-import { nullable, z } from "zod";
+import { z } from "zod";
 import validator from "validator";
 
 // Custom Zod schema for date parsing
@@ -364,11 +368,11 @@ export const FieldSchema = (
 ) => {
   return z.object({
     name: stringSchema(t, "name", {
-      min: 5,
+      min: 3,
       max: 100,
     }),
     location: stringSchema(t, "location", {
-      min: 5,
+      min: 3,
       max: 100,
     }),
     orgId: z.string({
@@ -459,7 +463,9 @@ export const SoilSchema = (
   });
 };
 
-export const PlantSchema = (t: (arg: string) => string) => {
+export const PlantSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
   return z.object({
     name: stringSchema(t, "name", {
       min: 3,
@@ -497,8 +503,50 @@ export const PlantSchema = (t: (arg: string) => string) => {
     }),
   });
 };
+export const PlantFertilizerSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    plantId: stringSchema(t, "plantId", { required: true }),
+    fertilizerId: stringSchema(t, "fertilizerId", { required: true }),
+    stage: stringSchema(t, "stage", {
+      min: 1,
+      max: 100,
+    }),
+    dosage: floatUnitSchema(t, "dosage", {
+      min: 0,
+      max: 100,
+    }).nullish(),
+    note: stringSchema(t, "note", {
+      max: 255,
+      required: false,
+    }).nullish(),
+  });
+};
+export const PlantPesticideSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    plantId: stringSchema(t, "plantId", { required: true }),
+    pesticideId: stringSchema(t, "pesticideId", { required: true }),
+    stage: stringSchema(t, "stage", {
+      min: 1,
+      max: 100,
+    }),
+    dosage: floatUnitSchema(t, "dosage", {
+      min: 0,
+      max: 100,
+    }).nullish(),
+    note: stringSchema(t, "note", {
+      max: 255,
+      required: false,
+    }).nullish(),
+  });
+};
 
-export const FertilizerSchema = (t: (arg: string) => string) => {
+export const FertilizerSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
   return z.object({
     name: stringSchema(t, "name", {
       min: 5,
@@ -534,7 +582,10 @@ export const FertilizerSchema = (t: (arg: string) => string) => {
     }),
   });
 };
-export const PesticideSchema = (t: (arg: string) => string) => {
+
+export const PesticideSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
   return z.object({
     name: stringSchema(t, "name", {
       min: 3,
@@ -571,65 +622,6 @@ export const PesticideSchema = (t: (arg: string) => string) => {
     }).nullish(),
   });
 };
-export const EquipmentSchema = (t: (arg: string) => string) => {
-  return z.object({
-    name: stringSchema(t, "name", {
-      min: 3,
-      max: 50,
-    }),
-    type: z.nativeEnum(EquipmentType, {
-      message: t("type.enum"),
-    }),
-    brand: stringSchema(t, "brand", {
-      min: 3,
-      max: 100,
-    }),
-    purchaseDate: z.date({
-      required_error: t("purchaseDate.required_error"),
-      invalid_type_error: t("purchaseDate.invalid_type_error"),
-    }),
-    purchasePrice: floatUnitSchema(t, "purchasePrice", {
-      min: 0,
-      max: 1_000_000_000,
-    }),
-    status: stringSchema(t, "status", {
-      max: 255,
-      required: false,
-    }).nullish(),
-    maintenanceSchedule: stringSchema(t, "maintenanceSchedule", {
-      max: 255,
-      required: false,
-    }).nullish(),
-    operatingHours: numberSchema(t, "operatingHours", {
-      min: 0,
-      max: 1_000_000,
-      int: true,
-      required: false,
-    }).nullish(),
-    location: stringSchema(t, "location", {
-      max: 255,
-      required: false,
-    }).nullish(),
-    fuelConsumption: numberSchema(t, "fuelConsumption", {
-      min: 0,
-      max: 100_000,
-      required: false,
-    }).nullish(),
-    energyType: stringSchema(t, "energyType", {
-      max: 255,
-      required: false,
-    }).nullish(),
-    description: stringSchema(t, "description", {
-      max: 255,
-      required: false,
-    }).nullish(),
-    imageUrl: stringSchema(t, "imageUrl", {
-      max: 255,
-      required: false,
-    }).nullish(),
-  });
-};
-
 export const CropSchema = (
   t: (arg: string, obj?: Record<string, any>) => string
 ) => {
@@ -660,7 +652,193 @@ export const CropSchema = (
     status: stringSchema(t, "status", { max: 255, required: false }).nullish(),
   });
 };
+export const EquipmentSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    name: stringSchema(t, "name", {
+      min: 3,
+      max: 50,
+    }),
+    type: z.nativeEnum(EquipmentType, {
+      message: t("type.enum"),
+    }),
+    brand: stringSchema(t, "brand", {
+      min: 3,
+      max: 100,
+    }),
+    purchaseDate: z.date({
+      required_error: t("purchaseDate.required_error"),
+      invalid_type_error: t("purchaseDate.invalid_type_error"),
+    }),
+    purchasePrice: floatUnitSchema(t, "purchasePrice", {
+      min: 0,
+      max: 1_000_000_000,
+    }).nullish(),
+    fuelConsumption: numberSchema(t, "fuelConsumption", {
+      min: 0,
+      max: 100_000,
+      required: false,
+    }).nullish(),
+    energyType: stringSchema(t, "energyType", {
+      max: 255,
+      required: false,
+    }).nullish(),
+    description: stringSchema(t, "description", {
+      max: 255,
+      required: false,
+    }).nullish(),
+    imageUrl: stringSchema(t, "imageUrl", {
+      max: 255,
+      required: false,
+    }).nullish(),
+  });
+};
 
+export const EquipmentDetailSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    equipmentId: stringSchema(t, "equipmentId", {
+      required: true,
+    }),
+    name: stringSchema(t, "name", {
+      min: 1,
+      max: 100,
+      required: false,
+    }).nullish(),
+    status: z.nativeEnum(EquipmentStatus, {
+      message: t("status.enum"),
+    }),
+    maintenanceSchedule: stringSchema(t, "maintenanceSchedule", {
+      max: 255,
+      required: false,
+    }).nullish(),
+    operatingHours: numberSchema(t, "operatingHours", {
+      min: 0,
+      max: 1_000_000,
+      int: true,
+      required: false,
+    }).nullish(),
+    location: stringSchema(t, "location", {
+      max: 255,
+      required: false,
+    }).nullish(),
+  });
+};
+export const EquipmentUsageSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    equipmentDetailId: stringSchema(t, "equipmentDetailId", { required: true }),
+    activityId: stringSchema(t, "activityId", { required: false }).nullish(),
+    usageStartTime: z.date({
+      invalid_type_error: t("usageStartTime.invalid_type_error"),
+      required_error: t("usageStartTime.required_error"),
+    }),
+    duration: stringSchema(t, "duration", {
+      min: 1,
+      max: 100,
+      required: true,
+    }),
+    note: stringSchema(t, "note", {
+      max: 255,
+      required: false,
+    }).nullish(),
+    operatorId: stringSchema(t, "operatorId", {
+      required: false,
+    }).nullish(),
+  });
+};
+
+export const MaterialSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    name: stringSchema(t, "name", {
+      min: 3,
+      max: 100,
+    }),
+    quantityInStock: numberSchema(t, "quantityInStock", {
+      min: 0,
+      max: 1_000_000_000,
+      required: true,
+    }),
+    unitId: stringSchema(t, "unitId", { required: true }),
+    type: z.nativeEnum(MaterialType, {
+      message: t("type.enum"),
+    }),
+    description: stringSchema(t, "description", {
+      max: 255,
+      required: false,
+    }).nullish(),
+    imageUrl: stringSchema(t, "imageUrl", {
+      max: 255,
+      required: false,
+    }).nullish(),
+  });
+};
+export const MaterialUsageSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    unitId: stringSchema(t, "unitId", { required: true }),
+    materialId: stringSchema(t, "materialId", { required: true }),
+    activityId: stringSchema(t, "activityId", { required: false }).nullish(),
+    quantityUsed: numberSchema(t, "quantityUsed", {
+      min: 0,
+      max: 1_000_000_000,
+      required: true,
+    }),
+  });
+};
+
+export const ActivitySchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    name: stringSchema(t, "name", {
+      min: 1,
+      max: 100,
+      required: true,
+    }),
+    description: stringSchema(t, "description", {
+      max: 255,
+      required: false,
+    }).nullish(),
+    fieldId: stringSchema(t, "fieldId", {
+      required: true,
+    }),
+    activityDate: z.date({
+      invalid_type_error: t("activityDate.invalid_type_error"),
+      required_error: t("activityDate.required_error"),
+    }),
+    status: z.nativeEnum(ActivityStatus, {
+      message: t("priority.enum"),
+    }),
+    priority: z.nativeEnum(ActivityPriority, {
+      message: t("priority.enum"),
+    }),
+    estimatedDuration: stringSchema(t, "estimatedDuration", {
+      max: 100,
+      required: false,
+    }).nullish(),
+    actualDuration: stringSchema(t, "actualDuration", {
+      max: 100,
+      required: false,
+    }).nullish(),
+    note: stringSchema(t, "note", {
+      max: 255,
+      required: false,
+    }).nullish(),
+    createdById: stringSchema(t, "createdById", {
+      required: true,
+    }),
+    assignedToId: stringSchema(t, "assignedToId", {
+      required: true,
+    }),
+  });
+};
 export const TaskSchema = (
   t: (arg: string, obj?: Record<string, any>) => string
 ) => {

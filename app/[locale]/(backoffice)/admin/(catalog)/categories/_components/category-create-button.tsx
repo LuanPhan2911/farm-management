@@ -25,7 +25,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useEffect, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { create } from "@/actions/category";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
@@ -37,7 +37,7 @@ import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 export const CategoryCreateButton = () => {
   const tSchema = useTranslations("categories.schema");
   const formSchema = CategorySchema(tSchema);
-  const t = useTranslations("categories");
+  const t = useTranslations("categories.form");
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -55,35 +55,35 @@ export const CategoryCreateButton = () => {
       })
     );
   }, [name, form]);
+  const [isOpen, setOpen] = useState(false);
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       create(values)
         .then(({ message, ok }) => {
           if (ok) {
             toast.success(message);
+            setOpen(false);
           } else {
             toast.error(message);
           }
         })
         .catch((error) => {
-          toast.error(t("status.failure.create"));
+          toast.error("Internal error");
         });
     });
   };
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant={"success"}>
           <Plus className="h-4 w-4 mr-2" />{" "}
-          <span className="text-sm font-semibold">
-            {t("form.create.label")}
-          </span>
+          <span className="text-sm font-semibold">{t("create.label")}</span>
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t("form.create.title")}</DialogTitle>
-          <DialogDescription>{t("form.create.description")}</DialogDescription>
+          <DialogTitle>{t("create.title")}</DialogTitle>
+          <DialogDescription>{t("create.description")}</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -134,7 +134,7 @@ export const CategoryCreateButton = () => {
                   <FormLabel>{tSchema("type.label")}</FormLabel>
                   <FormControl>
                     <SelectOptions
-                      label={tSchema("type.placeholder")}
+                      placeholder={tSchema("type.placeholder")}
                       onChange={field.onChange}
                       disabled={isPending}
                       options={Object.values(CategoryType).map((item) => {

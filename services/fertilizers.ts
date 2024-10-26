@@ -7,6 +7,7 @@ import {
 } from "@/lib/utils";
 import {
   FertilizerFrequencyCount,
+  FertilizerSelect,
   FertilizerTable,
   FertilizerTypeCount,
   PaginatedResponse,
@@ -61,11 +62,10 @@ export const updateFertilizer = async (
   });
 };
 export const deleteFertilizer = async (id: string) => {
-  return await db.$transaction(async (ctx) => {
-    const fertilizer = await ctx.fertilizer.delete({
-      where: { id },
-    });
+  const fertilizer = await db.fertilizer.delete({
+    where: { id },
   });
+  return fertilizer;
 };
 type FertilizerQuery = {
   page?: number;
@@ -86,9 +86,7 @@ export const getFertilizers = async ({
           ...(filterString && getObjectFilterString(filterString)),
           ...(filterNumber && getObjectFilterNumber(filterNumber)),
         },
-        orderBy: {
-          ...(orderBy && getObjectSortOrder(orderBy)),
-        },
+        orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
         take: LIMIT,
         skip: (page - 1) * LIMIT,
         include: {
@@ -165,3 +163,28 @@ export const getCountFertilizerFrequencyOfUse =
       return [];
     }
   };
+
+export const getFertilizersSelect = async (): Promise<FertilizerSelect[]> => {
+  try {
+    return await db.fertilizer.findMany({
+      select: {
+        id: true,
+        name: true,
+        type: true,
+        frequencyOfUse: true,
+        applicationMethod: true,
+        recommendedDosage: {
+          include: {
+            unit: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  } catch (error) {
+    return [];
+  }
+};

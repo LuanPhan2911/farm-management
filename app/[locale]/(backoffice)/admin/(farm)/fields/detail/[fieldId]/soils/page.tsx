@@ -47,8 +47,8 @@ const SoilsPage = async ({ params, searchParams }: SoilsPageProps) => {
           <CardTitle>{t("title")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <SoilsBarChart />
           <SoilsTable data={data} totalPage={totalPage} />
+          <SoilsBarChart />
         </CardContent>
       </Card>
     </div>

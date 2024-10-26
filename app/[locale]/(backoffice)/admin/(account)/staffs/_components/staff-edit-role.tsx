@@ -84,11 +84,11 @@ export const StaffEditRoleDialog = () => {
       description={t("form.editRole.description")}
     >
       <StaffSelectRole
-        label={t("schema.role.placeholder")}
+        placeholder={t("schema.role.placeholder")}
         onChange={(value) => {
           setRole(value as StaffRole);
         }}
-        value={role}
+        defaultValue={role}
         disabled={isPending}
         hidden={[StaffRole.superadmin]}
       />

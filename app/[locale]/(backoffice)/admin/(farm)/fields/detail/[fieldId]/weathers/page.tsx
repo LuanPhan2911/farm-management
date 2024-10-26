@@ -48,8 +48,8 @@ const WeathersPage = async ({ params, searchParams }: WeathersPageProps) => {
           <CardTitle>{t("title")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <WeathersBarChart />
           <WeathersTable data={data} totalPage={totalPage} />
+          <WeathersBarChart />
         </CardContent>
       </Card>
     </div>

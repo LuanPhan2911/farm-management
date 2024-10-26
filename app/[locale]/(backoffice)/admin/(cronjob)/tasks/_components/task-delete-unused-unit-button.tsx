@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { create } from "@/actions/task";
 import { toast } from "sonner";
 import {
@@ -40,11 +40,11 @@ import { UnitsUnused } from "../../../_components/units-unused";
 
 export const TaskDeleteUnusedUnitButton = () => {
   const tSchema = useTranslations("tasks.schema");
-  const t = useTranslations("tasks");
+  const t = useTranslations("tasks.form");
 
   const formSchema = TaskSchema(tSchema);
   const [isPending, startTransition] = useTransition();
-
+  const [isOpen, setOpen] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     mode: "onChange",
     resolver: zodResolver(formSchema),
@@ -67,26 +67,26 @@ export const TaskDeleteUnusedUnitButton = () => {
         .then(({ message, ok }) => {
           if (ok) {
             form.reset();
-
+            setOpen(false);
             toast.success(message);
           } else {
             toast.error(message);
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.create"));
+          toast.error("Internal error");
         });
     });
   };
   return (
-    <Sheet>
+    <Sheet open={isOpen} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button
           variant={"outline-green"}
           size={"sm"}
           className="w-full justify-start font-bold"
         >
-          {t("form.destroyUnusedUnit.label")}
+          {t("destroyUnusedUnit.label")}
         </Button>
       </SheetTrigger>
       <SheetContent
@@ -94,9 +94,9 @@ export const TaskDeleteUnusedUnitButton = () => {
         className="lg:max-w-[600px] w-full overflow-y-auto"
       >
         <SheetHeader>
-          <SheetTitle>{t("form.destroyUnusedUnit.title")}</SheetTitle>
+          <SheetTitle>{t("destroyUnusedUnit.title")}</SheetTitle>
           <SheetDescription>
-            {t("form.destroyUnusedUnit.description")}
+            {t("destroyUnusedUnit.description")}
           </SheetDescription>
         </SheetHeader>
 

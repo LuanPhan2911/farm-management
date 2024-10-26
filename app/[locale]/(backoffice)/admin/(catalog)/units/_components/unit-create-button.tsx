@@ -25,7 +25,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { create } from "@/actions/unit";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
@@ -35,11 +35,11 @@ import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 
 export const UnitCreateButton = () => {
   const tSchema = useTranslations("units.schema");
-  const t = useTranslations("units");
+  const t = useTranslations("units.form");
 
   const formSchema = UnitSchema(tSchema);
   const [isPending, startTransition] = useTransition();
-
+  const [isOpen, setOpen] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -52,31 +52,29 @@ export const UnitCreateButton = () => {
         .then(({ message, ok }) => {
           if (ok) {
             form.reset();
-
+            setOpen(false);
             toast.success(message);
           } else {
             toast.error(message);
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.create"));
+          toast.error("Internal error");
         });
     });
   };
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size={"sm"} variant={"success"}>
           <Plus className="h-4 w-4 mr-2" />{" "}
-          <span className="text-sm font-semibold">
-            {t("form.create.label")}
-          </span>
+          <span className="text-sm font-semibold">{t("create.label")}</span>
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t("form.create.title")}</DialogTitle>
-          <DialogDescription>{t("form.create.description")}</DialogDescription>
+          <DialogTitle>{t("create.title")}</DialogTitle>
+          <DialogDescription>{t("create.description")}</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -108,7 +106,7 @@ export const UnitCreateButton = () => {
                   <FormLabel>{tSchema("type.label")}</FormLabel>
                   <FormControl>
                     <SelectOptions
-                      label={tSchema("type.placeholder")}
+                      placeholder={tSchema("type.placeholder")}
                       onChange={field.onChange}
                       options={Object.values(UnitType).map((item) => {
                         return {

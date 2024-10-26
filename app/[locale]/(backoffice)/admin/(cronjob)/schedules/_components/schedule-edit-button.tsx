@@ -67,7 +67,7 @@ export const ScheduleEditSheet = () => {
   const { data, isOpen, onClose, type } = useSheet();
   const isOpenSheet = isOpen && type === "schedule.edit";
   const tSchema = useTranslations("schedules.schema");
-  const t = useTranslations("schedules");
+  const t = useTranslations("schedules.form");
 
   const formSchema = ScheduleSchema(tSchema);
   const [isPending, startTransition] = useTransition();
@@ -107,7 +107,7 @@ export const ScheduleEditSheet = () => {
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.edit"));
+          toast.error("Internal error");
         });
     });
   };
@@ -115,8 +115,8 @@ export const ScheduleEditSheet = () => {
   return (
     <DynamicSheet
       isOpen={isOpenSheet}
-      title={t("form.edit.title")}
-      description={t("form.edit.description")}
+      title={t("edit.title")}
+      description={t("edit.description")}
       side={"right"}
       className="lg:max-w-[600px] w-full overflow-y-auto"
     >

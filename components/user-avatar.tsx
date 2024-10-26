@@ -1,13 +1,14 @@
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+
 import { cva, VariantProps } from "class-variance-authority";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 const avatarSizes = cva("", {
   variants: {
     size: {
-      default: "h-8 w-8",
+      default: "h-10 w-10",
       lg: "h-14 w-14",
-      sm: "h-5 w-5",
+      sm: "h-9 w-9",
     },
   },
   defaultVariants: {
@@ -26,20 +27,9 @@ export const UserAvatar = ({
   ...props
 }: UserAvatarProps) => {
   return (
-    <Avatar className={cn(avatarSizes({ size, className }))}>
-      <AvatarImage
-        src={src}
-        className={cn(avatarSizes({ size, className }))}
-        {...props}
-      />
-      <AvatarFallback
-        className={cn(
-          avatarSizes({ size, className }),
-          "bg-blue-300 p-1 rounded-full"
-        )}
-      >
-        CN
-      </AvatarFallback>
+    <Avatar>
+      <AvatarImage src={src} className={cn(avatarSizes({ size }))} {...props} />
+      <AvatarFallback className="bg-blue-300">CN</AvatarFallback>
     </Avatar>
   );
 };

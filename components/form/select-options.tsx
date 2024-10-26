@@ -11,18 +11,20 @@ export type SelectData = {
   label: string;
 };
 interface SelectOptionsProps {
-  label: string;
+  placeholder: string;
   defaultValue?: string | null;
   options: SelectData[];
   onChange: (value: string) => void;
   disabled?: boolean;
+  disabledValues?: string[];
 }
 export const SelectOptions = ({
   onChange,
   defaultValue,
   options,
-  label,
+  placeholder,
   disabled,
+  disabledValues,
 }: SelectOptionsProps) => {
   const handleChange = (currentValue: string) => {
     onChange(currentValue);
@@ -30,17 +32,21 @@ export const SelectOptions = ({
   return (
     <Select
       onValueChange={handleChange}
-      defaultValue={defaultValue || undefined}
+      value={defaultValue || undefined}
       disabled={disabled}
     >
       <SelectTrigger>
-        <SelectValue placeholder={label} />
+        <SelectValue placeholder={placeholder} />
       </SelectTrigger>
 
       <SelectContent>
         {options.map(({ label, value }) => {
           return (
-            <SelectItem key={value} value={value}>
+            <SelectItem
+              key={value}
+              value={value}
+              disabled={disabledValues?.includes(value)}
+            >
               {label}
             </SelectItem>
           );

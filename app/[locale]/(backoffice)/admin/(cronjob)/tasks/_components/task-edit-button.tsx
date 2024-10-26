@@ -37,7 +37,7 @@ export const TaskEditSheet = () => {
   const { data, isOpen, onClose, type } = useSheet();
   const isOpenSheet = isOpen && type === "task.edit";
   const tSchema = useTranslations("tasks.schema");
-  const t = useTranslations("tasks");
+  const t = useTranslations("tasks.form");
 
   const formSchema = TaskSchema(tSchema);
   const [isPending, startTransition] = useTransition();
@@ -77,7 +77,7 @@ export const TaskEditSheet = () => {
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.edit"));
+          toast.error("Internal error");
         });
     });
   };
@@ -85,8 +85,8 @@ export const TaskEditSheet = () => {
   return (
     <DynamicSheet
       isOpen={isOpenSheet}
-      title={t("form.edit.title")}
-      description={t("form.edit.description")}
+      title={t("edit.title")}
+      description={t("edit.description")}
       side={"right"}
       className="lg:max-w-[600px] w-full overflow-y-auto"
     >

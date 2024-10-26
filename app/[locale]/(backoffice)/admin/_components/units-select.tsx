@@ -5,11 +5,9 @@ import { ErrorButton } from "@/components/buttons/error-button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { UnitSelect } from "@/types";
-import { Unit, UnitType } from "@prisma/client";
+import { UnitType } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
-import { useTranslations } from "next-intl";
 import queryString from "query-string";
-import { useTransition } from "react";
 import Creatable from "react-select/creatable";
 import { toast } from "sonner";
 
@@ -20,7 +18,7 @@ interface UnitsSelectProps {
   placeholder: string;
   disabled?: boolean;
   className?: string;
-  errorLabel: string;
+  error: string;
   notFound: string;
 }
 export const UnitsSelect = ({
@@ -30,11 +28,9 @@ export const UnitsSelect = ({
   placeholder,
   disabled,
   className,
-  errorLabel,
+  error,
   notFound,
 }: UnitsSelectProps) => {
-  const [isCreating, startTransition] = useTransition();
-  const t = useTranslations("units.status");
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["units_select", type],
     queryFn: async () => {
@@ -54,32 +50,23 @@ export const UnitsSelect = ({
       return (await res.json()) as UnitSelect[];
     },
   });
-  const handleCreate = (inputValue: string) => {
-    startTransition(() => {
-      create({
-        name: inputValue,
-        type,
-      })
-        .then(({ message, ok, data }) => {
-          if (ok) {
-            toast.success(message);
-            const unit = data as Unit;
-            refetch();
-            onChange(unit.id);
-          } else {
-            toast.error(message);
-          }
-        })
-        .catch(() => {
-          toast.error(t("failure.create"));
-        });
-    });
+  const handleCreate = async (inputValue: string) => {
+    try {
+      const { message, ok, data } = await create({ name: inputValue, type });
+      if (ok) {
+        toast.success(message);
+
+        refetch();
+      } else {
+        toast.error(message);
+      }
+    } catch (error) {}
   };
   if (isPending) {
     return <Skeleton className="w-full h-12" />;
   }
   if (isError) {
-    return <ErrorButton title={errorLabel} refresh={refetch} />;
+    return <ErrorButton title={error} refresh={refetch} />;
   }
 
   const options = data.map((item) => {
@@ -101,9 +88,10 @@ export const UnitsSelect = ({
       }}
       onCreateOption={handleCreate}
       value={option}
-      isDisabled={disabled || isCreating}
+      isDisabled={disabled}
       className={cn("my-react-select-container", className)}
       classNamePrefix="my-react-select"
+      noOptionsMessage={() => notFound}
     />
   );
 };

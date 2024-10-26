@@ -310,13 +310,6 @@
     },
     "search": {
       "placeholder": "Filter by applicant email...",
-      "comboBox": {
-        "job": {
-          "notFound": "Job's not found",
-          "label": "Select job...",
-          "error": "Fail load jobs"
-        }
-      },
       "faceted": {
         "status": {
           "placeholder": "Select status..."
@@ -394,6 +387,12 @@
           "NEW": "New",
           "CONFIRM": "Confirm"
         }
+      },
+      "jobId": {
+        "label": "Job",
+        "placeholder": "Select jobs",
+        "notFound": "Job's not found",
+        "error": "Fail load jobs"
       }
     },
     "status": {
@@ -522,7 +521,7 @@
       },
       "workingTime": {
         "label": "Working Time",
-        "placeholder": "Working time eg: Monday to Friday 8:30am to 5pm",
+        "placeholder": "Eg: Monday to Friday 8:30am to 5pm",
         "required_error": "Working time is required!",
         "min": "Working time is required!",
         "max": "Job working time is maximum {max} characters"
@@ -1099,7 +1098,8 @@
     },
     "schema": {
       "errors": {
-        "parse": "Invalid fields!"
+        "parse": "Invalid fields!",
+        "orgExist": "A field just belong to one organization."
       },
       "name": {
         "label": "Name",
@@ -1216,9 +1216,9 @@
     "chart": {
       "title": "Temperature, humidity, rainfall chart",
       "fields": {
-        "temperature": "Temperature",
-        "humidity": "Humidity",
-        "rainfall": "Rainfall"
+        "temperature": "Temperature({unit})",
+        "humidity": "Humidity({unit})",
+        "rainfall": "Rainfall({unit})"
       },
       "error": {
         "title": "Refresh",
@@ -1437,16 +1437,16 @@
       }
     },
     "chart": {
-      "title": "Ph, nutrient NPK chart",
+      "title": "PH, Nutrient NPK chart",
       "fields": {
         "ph": "ph",
-        "nutrientNitrogen": "Nitrogen",
-        "nutrientPhosphorus": "Phosphorus",
-        "nutrientPotassium": "Potassium"
+        "nutrientNitrogen": "Nitrogen({unit})",
+        "nutrientPhosphorus": "Phosphorus({unit})",
+        "nutrientPotassium": "Potassium({unit})"
       },
       "error": {
         "title": "Refresh",
-        "description": "  Something went wrong when load soils"
+        "description": "Something went wrong when load soils"
       },
       "notFound": {
         "title": "No soils data for generate chart",
@@ -1871,6 +1871,9 @@
       "errors": {
         "parse": "Invalid fertilizers!"
       },
+      "fertilizerId": {
+        "itemDetail": "Please select item in popover to display fertilizer detail"
+      },
       "name": {
         "label": "Fertilizer name",
         "placeholder": "Fertilizer name",
@@ -1898,7 +1901,8 @@
       "composition": {
         "label": "Composition",
         "placeholder": "Other composition is such as Mn, Bo...",
-        "max": "Max composition length is {max} characters"
+        "max": "Max composition length is {max} characters",
+        "default": "No filled"
       },
       "manufacturer": {
         "label": "Manufacturer",
@@ -1908,13 +1912,15 @@
       "applicationMethod": {
         "label": "Method",
         "placeholder": "Eg: Root watering, spray on leaves",
-        "max": "Max method length is {max} characters"
+        "max": "Max method length is {max} characters",
+        "default": "No filled"
       },
       "frequencyOfUse": {
         "label": "Frequency of use",
         "placeholder": "Select frequency...",
         "enum": "Select frequency in list",
         "options": {
+          "default": "No selected",
           "WEEKLY": "Weekly",
           "MONTHLY": "Monthly",
           "YEARLY": "Yearly",
@@ -1928,13 +1934,15 @@
           "placeholder": "Unit",
           "error": "Fail load units",
           "notFound": "Units not found",
-          "label": "Unit"
+          "label": "Unit",
+          "default": "No selected"
         },
         "value": {
           "required_error": "Dosage value is required",
           "invalid_type_error": "Dosage value must be number",
           "min": "Min dosage value is {min}",
-          "max": "Max dosage value is {max}"
+          "max": "Max dosage value is {max}",
+          "default": "No filled"
         },
         "label": "Recommended dosage",
         "placeholder": "From 0 to 100"
@@ -2057,7 +2065,8 @@
         "options": {
           "LOW": "Low",
           "MID": "Medium",
-          "HIGH": "High"
+          "HIGH": "High",
+          "default": "No selected"
         }
       },
       "recommendedDosage": {
@@ -2066,13 +2075,15 @@
           "placeholder": "Unit",
           "error": "Fail load units",
           "notFound": "Units not found",
-          "label": "Unit"
+          "label": "Unit",
+          "default": "No selected"
         },
         "value": {
           "required_error": "Dosage value is required",
           "invalid_type_error": "Dosage value must be number",
           "min": "Min dosage value is {min}",
-          "max": "Max dosage value is {max}"
+          "max": "Max dosage value is {max}",
+          "default": "No filled"
         },
         "label": "Recommended dosage",
         "placeholder": "From 0 to 100"
@@ -2080,7 +2091,11 @@
       "applicationMethod": {
         "label": "Method",
         "placeholder": "Eg: Root watering, spray on leaves",
-        "max": "Max method length is {max} characters"
+        "max": "Max method length is {max} characters",
+        "default": "No filled"
+      },
+      "pesticideId": {
+        "itemDetail": "Please select item in popover to display pesticide detail"
       }
     },
     "status": {
@@ -2096,14 +2111,229 @@
       }
     }
   },
+  "plantFertilizers": {
+    "page": {
+      "title": "Recommended fertilizers for plant"
+    },
+    "table": {
+      "thead": {
+        "fertilizer": {
+          "name": "Fertilizer name",
+          "type": "Fertilizer type",
+          "recommendedDosage": "Recommended  dosage"
+        },
+        "stage": "Stage",
+        "dosage": "Plant dosage",
+        "note": "Note"
+      },
+      "trow": {
+        "dosage": "...",
+        "fertilizer": {
+          "recommendedDosage": "..."
+        },
+        "note": "..."
+      }
+    },
+    "search": {},
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add plant fertilizer",
+        "description": "Add plant fertilizer"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit plant fertilizer",
+        "description": "Edit plant fertilizer"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete plant fertilizer?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid plants!"
+      },
+      "stage": {
+        "label": "Plant stage",
+        "placeholder": "Eg: Newly planted...",
+        "required_error": "Plant stage is required",
+        "min": "Min stage length is {min} characters",
+        "max": "Stage's length must be less than {max} characters"
+      },
+      "fertilizerId": {
+        "label": "Fertilizer for plants",
+        "placeholder": "Select fertilizer...",
+        "required_error": "Fertilizer is required",
+        "notFound": "Fertilizer not found",
+        "error": "Fail load fertilizer!"
+      },
+      "plantId": {
+        "required_error": "Plant id is required!"
+      },
+
+      "dosage": {
+        "unitId": {
+          "required_error": "Required unit",
+          "placeholder": "Unit",
+          "label": "Unit",
+          "error": "Fail load units",
+          "notFound": "Units not found"
+        },
+        "value": {
+          "required_error": "Dosage value is required",
+          "invalid_type_error": "Dosage  value must be number",
+          "min": "Min dosage  value is {min}",
+          "max": "Max dosage requirement  value is {max}"
+        },
+        "label": "Dosage",
+        "placeholder": "From 0 to 100"
+      },
+      "note": {
+        "label": "Note",
+        "placeholder": "Note something",
+        "max": "Max note length is {max} character"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Fertilizer for plant created!",
+        "edit": "Fertilizer for plant edited!",
+        "destroy": "Fertilizer for plant deleted!"
+      },
+      "failure": {
+        "create": "Something went wrong while creating fertilizer for plant!",
+        "edit": "Something went wrong while editing fertilizer for plant!",
+        "destroy": "Something went wrong while deleting fertilizer for plant!"
+      }
+    }
+  },
+  "plantPesticides": {
+    "page": {
+      "title": "Recommended pesticides for plant"
+    },
+    "table": {
+      "thead": {
+        "pesticide": {
+          "name": "Pesticide name",
+          "type": "Pesticide type",
+          "recommendedDosage": "Recommended  dosage"
+        },
+        "stage": "Stage",
+        "dosage": "Plant dosage",
+        "note": "Note"
+      },
+      "trow": {
+        "dosage": "...",
+        "pesticide": {
+          "recommendedDosage": "..."
+        },
+        "note": "..."
+      }
+    },
+    "search": {},
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add plant pesticide",
+        "description": "Add plant pesticide"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit plant pesticide",
+        "description": "Edit plant pesticide"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete plant pesticide?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid plants!"
+      },
+      "stage": {
+        "label": "Plant stage",
+        "placeholder": "Eg: Newly planted...",
+        "required_error": "Plant stage is required",
+        "min": "Min stage length is {min} characters",
+        "max": "Stage's length must be less than {max} characters"
+      },
+      "pesticideId": {
+        "label": "Pesticide for plants",
+        "placeholder": "Select pesticide...",
+        "required_error": "Pesticide is required",
+        "notFound": "Pesticide not found",
+        "error": "Fail load pesticide!"
+      },
+      "plantId": {
+        "required_error": "Plant id is required!"
+      },
+
+      "dosage": {
+        "unitId": {
+          "required_error": "Required unit",
+          "placeholder": "Unit",
+          "label": "Unit",
+          "error": "Fail load units",
+          "notFound": "Units not found"
+        },
+        "value": {
+          "required_error": "Dosage value is required",
+          "invalid_type_error": "Dosage  value must be number",
+          "min": "Min dosage  value is {min}",
+          "max": "Max dosage requirement  value is {max}"
+        },
+        "label": "Dosage",
+        "placeholder": "From 0 to 100"
+      },
+      "note": {
+        "label": "Note",
+        "placeholder": "Note something",
+        "max": "Max note length is {max} character"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Pesticide for plant created!",
+        "edit": "Pesticide for plant edited!",
+        "destroy": "Pesticide for plant deleted!"
+      },
+      "failure": {
+        "create": "Something went wrong while creating pesticide for plant!",
+        "edit": "Something went wrong while editing pesticide for plant!",
+        "destroy": "Something went wrong while deleting pesticide for plant!"
+      }
+    }
+  },
   "equipments": {
     "page": {
       "title": "Manage equipments",
       "create": {
         "title": "New equipment"
       },
-      "edit": {
-        "title": "Edit equipment"
+      "detail": {
+        "title": "Edit equipment info",
+        "details": {
+          "title": "Equipment details"
+        },
+        "danger": {
+          "title": "Equipment danger"
+        }
+      }
+    },
+    "tabs": {
+      "info": {
+        "label": "Info"
+      },
+      "details": {
+        "label": "Equipment details"
+      },
+      "danger": {
+        "label": "Danger"
       }
     },
     "table": {
@@ -2111,13 +2341,10 @@
         "imageUrl": "Image",
         "name": "Name",
         "type": "Type",
-        "status": "Status",
-        "location": "Location",
-        "brand": "Brand"
+        "brand": "Brand",
+        "countDetail": "Number of detail"
       },
-      "trow": {
-        "location": "..."
-      }
+      "trow": {}
     },
     "search": {
       "placeholder": "Search by name...",
@@ -2138,6 +2365,9 @@
         "label": "Edit",
         "title": "Edit equipment",
         "description": "Update of equipment"
+      },
+      "detail": {
+        "label": "View detail"
       },
       "destroy": {
         "label": "Delete",
@@ -2178,7 +2408,7 @@
         "label": "Purchase date",
         "placeholder": "Select purchase date",
         "required_error": "Purchase date is required",
-        "invalid_type_error_error": "Invalid date type"
+        "invalid_type_error": "Invalid date type"
       },
       "purchasePrice": {
         "unitId": {
@@ -2196,29 +2426,6 @@
         },
         "label": "Purchase price",
         "placeholder": "Purchase price"
-      },
-      "status": {
-        "label": "Equipment status",
-        "placeholder": "Eg: operating, maintenance, damaged",
-        "max": "Status's length must be less than {max} characters"
-      },
-      "maintenanceSchedule": {
-        "label": "Equipment maintenance Schedule",
-        "placeholder": "Eg: monthly, weekly... ",
-        "max": "Maintenance Schedule's length must be less than {max} characters"
-      },
-      "operatingHours": {
-        "label": "Equipment operating hour",
-        "placeholder": "Eg: 300 hours",
-        "invalid_type_error": "Operating hour value must be number",
-        "int": "Operating hour must be integer",
-        "min": "Operating hour  value is {min}",
-        "max": "Operating hour  value is {max}"
-      },
-      "location": {
-        "label": "Equipment location",
-        "placeholder": "Equipment location",
-        "max": "Location's length must be less than {max} characters"
       },
       "fuelConsumption": {
         "label": "Equipment fuel Consumption",
@@ -2259,6 +2466,733 @@
       "title": "Equipment not found",
       "description": "Sorry, we couldn’t find the equipment you’re looking for.",
       "backLabel": "Go to equipments page"
+    }
+  },
+  "equipmentDetails": {
+    "page": {
+      "title": "Manage equipment details"
+    },
+    "table": {
+      "thead": {
+        "name": "Name",
+        "status": "Status",
+        "location": "Location",
+        "lastMaintenanceDate": "Last maintenance date",
+        "maintenanceSchedule": "Maintenance schedule",
+        "operatingHours": "Operating hours",
+        "equipment": {
+          "imageUrl": "Image"
+        }
+      },
+      "trow": {
+        "location": "Unknown",
+        "lastMaintenanceDate": "Never",
+        "maintenanceSchedule": "Never",
+        "operatingHours": "Never"
+      }
+    },
+    "search": {
+      "faceted": {
+        "status": {
+          "placeholder": "Equipment status",
+          "error": "Fail load equipment count"
+        }
+      }
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add equipment detail",
+        "description": "Add equipment detail"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit equipment detail",
+        "description": "Update of equipment detail"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete equipment detail?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      },
+      "viewUsage": {
+        "label": "View usages"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid equipment details!"
+      },
+      "equipmentId": {
+        "required_error": "Equipment id is required!"
+      },
+      "name": {
+        "label": "Equipment name",
+        "placeholder": "Equipment name",
+        "min": "Name must be at least {min} characters long",
+        "max": "Name must be at most {max} characters long."
+      },
+      "status": {
+        "label": "Equipment status",
+        "placeholder": "Update equipment status...",
+        "enum": "Select status in list",
+        "options": {
+          "MAINTENANCE": "Maintenance",
+          "WORKING": "Working",
+          "DECOMMISSION": "Decommission",
+          "AVAILABLE": "Available"
+        }
+      },
+      "maintenanceSchedule": {
+        "label": "Equipment maintenance Schedule",
+        "placeholder": "Eg: monthly, weekly... ",
+        "max": "Maintenance Schedule's length must be less than {max} characters"
+      },
+      "operatingHours": {
+        "label": "Equipment operating hour",
+        "placeholder": "Eg: 300 hours",
+        "invalid_type_error": "Operating hour value must be number",
+        "int": "Operating hour must be integer",
+        "min": "Operating hour  value is {min}",
+        "max": "Operating hour  value is {max}"
+      },
+      "location": {
+        "label": "Equipment location",
+        "placeholder": "Equipment location",
+        "max": "Location's length must be less than {max} characters"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Equipment detail created!",
+        "edit": "Equipment detail edited!",
+        "destroy": "Equipment detail deleted!"
+      },
+      "failure": {
+        "create": "Something went wrong while creating equipment detail!",
+        "edit": "Something went wrong while editing equipment detail!",
+        "destroy": "Something went wrong while deleting equipment detail!"
+      }
+    },
+    "notFound": {
+      "title": "Equipment detail not found",
+      "description": "Sorry, we couldn’t find the equipment detail you’re looking for.",
+      "backLabel": "Go to equipment details page"
+    }
+  },
+  "equipmentUsages": {
+    "page": {
+      "title": "Manage equipment usages"
+    },
+    "table": {
+      "thead": {
+        "equipmentDetail": {
+          "name": "Equipment name",
+          "status": "Equipment status",
+          "imageUrl": "Equipment image"
+        },
+        "activity": {
+          "name": "Activity name",
+          "status": "Activity Status",
+          "usage": "Usage"
+        },
+        "usageStartTime": "Created date",
+        "duration": "Duration",
+        "operator": "Operator"
+      },
+      "trow": {
+        "activity": {
+          "name": "No used",
+          "status": "No used",
+          "usage": "Usage",
+          "unused": "Unused"
+        },
+        "operator": "No operator"
+      }
+    },
+    "search": {
+      "placeholder": "Search by name..."
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add equipment usage",
+        "description": "Add equipment usage"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit equipment usage",
+        "description": "Update of equipment usage"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete equipment usage?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      },
+      "detailActivity": {
+        "label": "Detail activity"
+      },
+      "assign": {
+        "label": "Assign",
+        "title": "Assign equipment",
+        "description": "Assign equipment for activity"
+      },
+      "revoke": {
+        "label": "Revoke",
+        "title": "Revoke equipment",
+        "description": "Revoke equipment for activity"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid equipment usages!",
+        "existEquipmentDetail": "Equipment detail is not exist",
+        "existStaff": "Operator is not exist",
+        "existActivity": "Activity is not exist",
+        "existEquipmentUsage": "Equipment usage is not exist",
+        "invalidActivityStatus": "Activity status is in list:[new, in progress, pending] is possible update"
+      },
+      "activityId": {
+        "required_error": "Required activity id",
+        "placeholder": "Select activity",
+        "error": "Fail load activities",
+        "notFound": "Activities not found",
+        "label": "Activity"
+      },
+      "equipmentDetailId": {
+        "required_error": "Required equipment detail id",
+        "placeholder": "Select equipment",
+        "error": "Fail load equipments",
+        "notFound": "Equipments not found",
+        "label": "Equipment"
+      },
+      "operatorId": {
+        "placeholder": "Select operator",
+        "error": "Fail load operator",
+        "notFound": "Operator not found",
+        "label": "Operator"
+      },
+      "usageStartTime": {
+        "label": "Start usage",
+        "placeholder": "Start usage time",
+        "invalid_type_error": "Invalid date type",
+        "required_error": "Start usage time is required!"
+      },
+      "duration": {
+        "label": "Duration",
+        "placeholder": "Duration usage",
+        "min": "Duration must be at least {min} characters long",
+        "max": "Duration must be at most {max} characters long.",
+        "required_error": "Duration is required"
+      },
+      "note": {
+        "label": "Note",
+        "placeholder": "Usage note",
+        "max": "Note length must be at most {max} characters long."
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Equipment usage created!",
+        "edit": "Equipment usage edited!",
+        "destroy": "Equipment usage deleted!",
+        "assign": "Equipment usage assigned",
+        "revoke": "Equipment usage revoked"
+      },
+      "failure": {
+        "create": "Something went wrong while creating equipment usage!",
+        "edit": "Something went wrong while editing equipment usage!",
+        "destroy": "Something went wrong while deleting equipment usage!",
+        "assign": "Fail assigned equipment usage",
+        "revoke": "Fail revoked equipment usage"
+      }
+    },
+    "notFound": {
+      "title": "Equipment usage not found",
+      "description": "Sorry, we couldn’t find the equipment usage you’re looking for.",
+      "backLabel": "Go to equipment usages page"
+    }
+  },
+  "materials": {
+    "page": {
+      "title": "Manage materials",
+      "create": {
+        "title": "New material"
+      },
+      "detail": {
+        "title": "Material info",
+        "danger": {
+          "title": "Delete material"
+        },
+        "usages": {
+          "title": "Material usages"
+        }
+      }
+    },
+    "tabs": {
+      "info": {
+        "label": "Info"
+      },
+      "usages": {
+        "label": "Material usages"
+      },
+      "danger": {
+        "label": "Danger"
+      }
+    },
+    "table": {
+      "thead": {
+        "imageUrl": "Image",
+        "name": "Name",
+        "type": "Type",
+        "quantityInStock": "Quantity in stock",
+        "unitId": "Unit",
+        "countUsages": "Count usages"
+      },
+      "trow": {}
+    },
+    "search": {
+      "placeholder": "Search by name...",
+      "faceted": {
+        "type": {
+          "placeholder": "Material type",
+          "error": "Fail load material count"
+        }
+      }
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add material",
+        "description": "Add material"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit material",
+        "description": "Update of material"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete material?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid materials!"
+      },
+      "name": {
+        "label": "Material name",
+        "placeholder": "Material name",
+        "required_error": "Material name is required!",
+        "min": "Min name length is {min} characters",
+        "max": "Name's length must be less than {max} characters"
+      },
+      "type": {
+        "label": "Material type",
+        "placeholder": "Select material type...",
+        "enum": "Select material in list",
+        "options": {
+          "FERTILIZER": "Fertilizer",
+          "PESTICIDE": "Pesticide",
+          "SEED": "Seed",
+          "OTHER": "Other"
+        }
+      },
+
+      "unitId": {
+        "required_error": "Required unit",
+        "placeholder": "Unit",
+        "error": "Fail load units",
+        "notFound": "Units not found",
+        "label": "Unit"
+      },
+      "quantityInStock": {
+        "required_error": "Quantity value is required",
+        "invalid_type_error": "Quantity value must be number",
+        "min": "Min Quantity value is {min}",
+        "max": "Max Quantity value is {max}",
+        "label": "Quantity in stock",
+        "placeholder": "Quantity in stock"
+      },
+      "description": {
+        "label": "Material description",
+        "placeholder": "Material description",
+        "max": "Description's length must be less than {max} characters"
+      },
+      "imageUrl": {
+        "label": "Image of material",
+        "placeholder": "Upload image of material",
+        "max": "Image url's length must be less than {max} characters"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Material created!",
+        "edit": "Material edited!",
+        "destroy": "Material deleted!"
+      },
+      "failure": {
+        "create": "Something went wrong while creating material!",
+        "edit": "Something went wrong while editing material!",
+        "destroy": "Something went wrong while deleting material!"
+      }
+    },
+    "notFound": {
+      "title": "Material not found",
+      "description": "Sorry, we couldn’t find the material you’re looking for.",
+      "backLabel": "Go to materials page"
+    }
+  },
+  "materialUsages": {
+    "page": {
+      "title": "Manage material usages"
+    },
+    "table": {
+      "thead": {
+        "activity": {
+          "name": "Activity name",
+          "status": "Activity Status",
+          "usage": "Usage"
+        },
+        "material": {
+          "imageUrl": "Material image",
+          "name": "Material name",
+          "type": "Material type",
+          "quantityInStock": "Quantity in stock"
+        },
+        "quantityUsed": "Quantity used",
+        "unitId": "Unit"
+      },
+      "trow": {
+        "activity": {
+          "name": "No used",
+          "status": "No used",
+          "usage": "Usage",
+          "unused": "Unused"
+        }
+      }
+    },
+    "search": {
+      "placeholder": "Search by name..."
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add material usage",
+        "description": "Add material usage to activity"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit material usage",
+        "description": "Update of material usage"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete material usage?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      },
+      "detailActivity": {
+        "label": "Detail activity"
+      },
+      "assign": {
+        "label": "Assign",
+        "title": "Assign material",
+        "description": "Assign material for activity"
+      },
+      "revoke": {
+        "label": "Revoke",
+        "title": "Revoke material",
+        "description": "Revoke material for activity"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid material usages!",
+        "existMaterial": "Material is not exist",
+        "noEnoughQuantity": "Quantity in stock is {value}, not enough to use!",
+        "existActivity": "Activity is not exist",
+        "invalidActivityStatus": "Activity status is in list:[new, in progress, pending] is possible update"
+      },
+      "unitId": {
+        "required_error": "Required unit",
+        "placeholder": "Unit",
+        "error": "Fail load units",
+        "notFound": "Units not found",
+        "label": "Unit"
+      },
+      "activityId": {
+        "required_error": "Required activity id",
+        "placeholder": "Select activity",
+        "error": "Fail load activities",
+        "notFound": "Activities not found",
+        "label": "Activity"
+      },
+      "materialId": {
+        "required_error": "Required material id",
+        "placeholder": "Select material",
+        "error": "Fail load materials",
+        "notFound": "Materials not found",
+        "label": "Material"
+      },
+      "quantityUsed": {
+        "required_error": "Quantity value is required",
+        "invalid_type_error": "Quantity value must be number",
+        "min": "Min Quantity value is {min}",
+        "max": "Max Quantity value is {max}",
+        "label": "Quantity used",
+        "placeholder": "Quantity used"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Material usage created!",
+        "edit": "Material usage edited!",
+        "destroy": "Material usage deleted!",
+        "assign": "Assigned material usage!",
+        "revoke": "Revoked material usage"
+      },
+      "failure": {
+        "create": "Something went wrong while creating material usage!",
+        "edit": "Something went wrong while editing material usage!",
+        "destroy": "Something went wrong while deleting material usage!",
+        "assign": "Fail assigned material usage",
+        "revoke": "Fail revoked material usage"
+      }
+    },
+    "notFound": {
+      "title": "Material usage not found",
+      "description": "Sorry, we couldn’t find the material usage you’re looking for.",
+      "backLabel": "Go to material usages page"
+    }
+  },
+  "activities": {
+    "page": {
+      "title": "Manage activities",
+      "create": {
+        "title": "Create activity"
+      },
+      "detail": {
+        "title": "Activity info",
+        "equipment-usages": {
+          "title": "Equipment usages"
+        },
+        "material-usages": {
+          "title": "Material usages"
+        },
+        "danger": {
+          "title": "Danger"
+        }
+      }
+    },
+    "tabs": {
+      "info": {
+        "label": "Info"
+      },
+      "equipment-usages": {
+        "label": "Equipment usages"
+      },
+      "material-usages": {
+        "label": "Material usages"
+      },
+      "danger": {
+        "label": "Danger"
+      }
+    },
+    "chart": {
+      "countStatus": {
+        "title": "Activity Status Chart",
+        "fields": {
+          "status": "Status",
+          "_count": "Count"
+        },
+        "error": {
+          "title": "Refresh",
+          "description": "Fail load status"
+        },
+        "notFound": {
+          "title": "No data for generate chart",
+          "description": "No activity have in date range "
+        },
+        "hidden": {
+          "title": "Chart will be hidden",
+          "description": "Click icon eye in the right corner to show chart"
+        }
+      },
+      "countPriority": {
+        "title": "Activity Priority Chart",
+        "fields": {
+          "priority": "Priority",
+          "_count": "Count"
+        },
+        "error": {
+          "title": "Refresh",
+          "description": "Fail load priority"
+        },
+        "notFound": {
+          "title": "No data for generate chart",
+          "description": "No activity have in date range "
+        },
+        "hidden": {
+          "title": "Chart will be hidden",
+          "description": "Click icon eye in the right corner to show chart"
+        }
+      }
+    },
+    "table": {
+      "thead": {
+        "activityDate": "Activity date",
+        "name": "Activity name",
+        "status": "Activity Status",
+        "priority": "Activity Priority",
+        "estimatedDuration": "Estimated duration",
+        "createdBy": "CreatedBy",
+        "assignedTo": "AssignedTo",
+        "countEquipmentUsage": "Count equipment",
+        "countMaterialUsage": "Count material"
+      },
+      "trow": {
+        "estimatedDuration": "No filled"
+      }
+    },
+    "search": {
+      "placeholder": "Search by name..."
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add activity",
+        "description": "Admin can create activity for farmer"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit activity",
+        "description": "Update of activity"
+      },
+      "viewDetail": {
+        "label": "View detail"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete activity?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      },
+      "complete": {
+        "label": "Finish",
+        "title": "Finish activity?",
+        "description": "Update finish activity"
+      },
+      "cancel": {
+        "label": "Cancel Activity",
+        "title": "Cancel activity?",
+        "description": "Are you absolutely sure? This action can not be undone!"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid activity",
+        "unauthorized": "Staff unauthorized",
+        "createPermission": "No permission create activity",
+        "existStaff": "Staff is not existed",
+        "existActivity": "Activity is not exist",
+        "invalidActivityStatus": "Activity status is in list:[new, in progress, pending] is possible update",
+        "updatePermission": "No permission update"
+      },
+      "name": {
+        "label": "Activity name",
+        "placeholder": "Activity name",
+        "required_error": "Activity name is required!",
+        "min": "Min name length is {min} characters",
+        "max": "Name's length must be less than {max} characters"
+      },
+      "description": {
+        "label": "Activity description",
+        "placeholder": "Activity description",
+        "max": "Description's length must be less than {max} characters"
+      },
+      "fieldId": {
+        "label": "Field",
+        "placeholder": "Select field",
+        "required_error": "Required field id",
+        "error": "Fail load fields",
+        "notFound": "Fields not found"
+      },
+      "activityDate": {
+        "label": "Start date",
+        "placeholder": "Start date time",
+        "invalid_type_error": "Invalid date type",
+        "required_error": "Start usage time is required!"
+      },
+
+      "status": {
+        "options": {
+          "NEW": "New",
+          "PENDING": "Pending",
+          "IN_PROGRESS": "In progress",
+          "COMPLETED": "Completed",
+          "CANCELLED": "Cancelled"
+        },
+        "label": "Status",
+        "placeholder": "Select status...",
+        "enum": "Please select status in list"
+      },
+      "priority": {
+        "options": {
+          "LOW": "Low",
+          "MEDIUM": "Medium",
+          "HIGH": "High",
+          "URGENT": "Urgent"
+        },
+        "label": "Priority",
+        "placeholder": "Select priority...",
+        "enum": "Please select priority in list"
+      },
+      "estimatedDuration": {
+        "label": "Estimated duration",
+        "placeholder": "Estimated duration",
+        "max": "Estimated duration's length must be less than {max} characters"
+      },
+      "actualDuration": {
+        "label": "Actual duration",
+        "placeholder": "Actual duration",
+        "max": "Actual duration's length must be less than {max} characters"
+      },
+      "note": {
+        "label": "Note",
+        "placeholder": "Note",
+        "max": "Note's length must be less than {max} characters"
+      },
+      "createdById": {
+        "required_error": "Created by id required"
+      },
+      "assignedToId": {
+        "label": "Assigned to",
+        "placeholder": "Select assigned to",
+        "required_error": "Assigned to is required",
+        "error": "Fail load staffs",
+        "notFound": "Staffs not found"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Activity created!",
+        "edit": "Activity edited!",
+        "destroy": "Activity deleted!",
+        "complete": "Activity completed!",
+        "cancel": "Activity cancelled!"
+      },
+      "failure": {
+        "create": "Something went wrong while creating activity!",
+        "edit": "Something went wrong while editing activity!",
+        "destroy": "Something went wrong while deleting activity!",
+        "complete": "Fail completed",
+        "cancel": "Fail cancelled"
+      }
+    },
+    "notFound": {
+      "title": "Activity not found",
+      "description": "Sorry, we couldn’t find the activity you’re looking for.",
+      "backLabel": "Go to activities page"
     }
   },
   "crops": {
@@ -2802,11 +3736,27 @@
     "/admin/plants/create": "Create",
     "/admin/plants/detail": "Detail",
     "/admin/plants/detail/danger": "Danger",
+    "/admin/plants/detail/fertilizers": "Plant Fertilizers",
+    "/admin/plants/detail/pesticides": "Plant Pesticides",
     "/admin/fertilizers": "Fertilizer",
     "/admin/pesticides": "Pesticide",
     "/admin/equipments": "Equipment",
     "/admin/equipments/create": "Create",
-    "/admin/equipments/edit": "Edit",
+    "/admin/equipments/detail": "Info",
+    "/admin/equipments/detail/details": "Details",
+    "/admin/equipments/detail/details/usages": "Usages",
+    "/admin/equipments/detail/danger": "Danger",
+    "/admin/materials": "Material",
+    "/admin/materials/create": "Create",
+    "/admin/materials/detail": "Info",
+    "/admin/materials/detail/danger": "Danger",
+    "/admin/materials/detail/usages": "Usages",
+    "/admin/activities": "Activities",
+    "/admin/activities/create": "Create",
+    "/admin/activities/detail": "Info",
+    "/admin/activities/detail/equipment-usages": "Equipment Usages",
+    "/admin/activities/detail/material-usages": "Material Usages",
+    "/admin/activities/detail/danger": "Danger",
     "/admin/tasks": "Tasks",
     "/admin/schedules": "Schedules",
     "/admin/messages": "All messages",

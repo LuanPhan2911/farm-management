@@ -67,6 +67,11 @@ export const OrgsTable = ({ orgs, totalPage }: OrgsTableProps) => {
           })}
         </TableBody>
       </Table>
+      {!orgs.length && (
+        <div className="my-4 text-muted-foreground flex justify-center">
+          No results.
+        </div>
+      )}
       <div className="py-4">
         <NavPagination totalPage={totalPage} />
       </div>
