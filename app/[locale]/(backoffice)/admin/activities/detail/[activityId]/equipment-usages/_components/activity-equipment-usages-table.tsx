@@ -49,23 +49,17 @@ export const ActivityEquipmentUsagesTable = ({
           <TableRow>
             <TableHead className="lg:w-[200px]">
               <OrderByButton
-                column="activity.name"
-                label={t("table.thead.activity.name")}
+                column="usageStartTime"
+                label={t("table.thead.usageStartTime")}
               />
             </TableHead>
-            <TableHead>{t("table.thead.activity.status")}</TableHead>
+            <TableHead>{t("table.thead.activity.usage")}</TableHead>
             <TableHead>{t("table.thead.equipmentDetail.imageUrl")}</TableHead>
             <TableHead className="lg:w-[200px]">
               {t("table.thead.equipmentDetail.name")}
             </TableHead>
             <TableHead>{t("table.thead.equipmentDetail.status")}</TableHead>
 
-            <TableHead className="lg:w-[200px]">
-              <OrderByButton
-                column="usageStartTime"
-                label={t("table.thead.usageStartTime")}
-              />
-            </TableHead>
             <TableHead>{t("table.thead.duration")}</TableHead>
             <TableHead>{t("table.thead.operator")}</TableHead>
 
@@ -80,14 +74,16 @@ export const ActivityEquipmentUsagesTable = ({
                 className="cursor-pointer"
                 onClick={() => handleEdit(item)}
               >
-                <TableCell>
-                  {item.activity?.name || t("table.trow.activity.name")}
+                <TableCell className="text-center">
+                  {dateTime(item.usageStartTime, "short")}
                 </TableCell>
                 <TableCell>
                   {item.activity ? (
-                    <ActivityStatusValue value={item.activity.status} />
+                    <span className="text-green-400">
+                      {t("table.trow.activity.usage")}
+                    </span>
                   ) : (
-                    t("table.trow.activity.status")
+                    t("table.trow.activity.unused")
                   )}
                 </TableCell>
                 <TableCell>
@@ -102,14 +98,6 @@ export const ActivityEquipmentUsagesTable = ({
                   />
                 </TableCell>
 
-                <TableCell className="text-center">
-                  {dateTime(item.usageStartTime, {
-                    month: "short",
-                    day: "2-digit",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </TableCell>
                 <TableCell>{item.duration}</TableCell>
                 <TableCell>
                   <SelectItemContent

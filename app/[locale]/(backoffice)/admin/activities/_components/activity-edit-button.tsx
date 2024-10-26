@@ -24,15 +24,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { SelectOptions } from "@/components/form/select-options";
 
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
-import { ActivityPriority } from "@prisma/client";
+import { ActivityPriority, ActivityStatus } from "@prisma/client";
 import { FieldsSelect } from "../../_components/fields-select";
 import { StaffsSelect } from "../../_components/staffs-select";
 import { DatePickerWithTime } from "@/components/form/date-picker-with-time";
+import { canUpdateActivityStatus } from "@/lib/permission";
 
 interface ActivityEditFormProps {
   data: ActivityTable;
+  disabled?: boolean;
 }
-export const ActivityEditForm = ({ data }: ActivityEditFormProps) => {
+export const ActivityEditForm = ({ data, disabled }: ActivityEditFormProps) => {
   const tSchema = useTranslations("activities.schema");
   const formSchema = ActivitySchema(tSchema);
 
@@ -62,12 +64,11 @@ export const ActivityEditForm = ({ data }: ActivityEditFormProps) => {
         });
     });
   };
-
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4 max-w-5xl"
+        className="space-y-4 max-w-6xl"
       >
         <FormField
           control={form.control}
@@ -80,7 +81,7 @@ export const ActivityEditForm = ({ data }: ActivityEditFormProps) => {
                   placeholder={tSchema("name.placeholder")}
                   value={field.value || undefined}
                   onChange={field.onChange}
-                  disabled={isPending}
+                  disabled={isPending || disabled}
                 />
               </FormControl>
 
@@ -99,7 +100,7 @@ export const ActivityEditForm = ({ data }: ActivityEditFormProps) => {
                   placeholder={tSchema("description.placeholder")}
                   value={field.value || undefined}
                   onChange={field.onChange}
-                  disabled={isPending}
+                  disabled={isPending || disabled}
                 />
               </FormControl>
 
@@ -107,6 +108,62 @@ export const ActivityEditForm = ({ data }: ActivityEditFormProps) => {
             </FormItem>
           )}
         />
+        <div className="grid lg:grid-cols-2 gap-2">
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("status.label")}</FormLabel>
+                <FormControl>
+                  <SelectOptions
+                    placeholder={tSchema("status.placeholder")}
+                    onChange={field.onChange}
+                    options={Object.values(ActivityStatus).map((item) => {
+                      return {
+                        label: tSchema(`status.options.${item}`),
+                        value: item,
+                      };
+                    })}
+                    defaultValue={field.value}
+                    disabled={isPending || disabled}
+                    disabledValues={[
+                      ActivityStatus.COMPLETED,
+                      ActivityStatus.CANCELLED,
+                    ]}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="priority"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("priority.label")}</FormLabel>
+                <FormControl>
+                  <SelectOptions
+                    placeholder={tSchema("priority.placeholder")}
+                    onChange={field.onChange}
+                    options={Object.values(ActivityPriority).map((item) => {
+                      return {
+                        label: tSchema(`priority.options.${item}`),
+                        value: item,
+                      };
+                    })}
+                    defaultValue={field.value}
+                    disabled={isPending || disabled}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <div className="grid lg:grid-cols-3 gap-2">
           <FormField
             control={form.control}
@@ -160,7 +217,7 @@ export const ActivityEditForm = ({ data }: ActivityEditFormProps) => {
                     placeholder={tSchema("actualDuration.placeholder")}
                     value={field.value || undefined}
                     onChange={field.onChange}
-                    disabled={isPending}
+                    disabled={isPending || disabled}
                   />
                 </FormControl>
 
@@ -221,58 +278,7 @@ export const ActivityEditForm = ({ data }: ActivityEditFormProps) => {
             )}
           />
         </div>
-        <div className="grid lg:grid-cols-2 gap-2">
-          <FormField
-            control={form.control}
-            name="status"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("status.label")}</FormLabel>
-                <FormControl>
-                  <SelectOptions
-                    placeholder={tSchema("status.placeholder")}
-                    onChange={field.onChange}
-                    options={activityUpdateStatus.map((item) => {
-                      return {
-                        label: tSchema(`status.options.${item}`),
-                        value: item,
-                      };
-                    })}
-                    defaultValue={field.value}
-                    disabled={isPending}
-                  />
-                </FormControl>
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="priority"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("priority.label")}</FormLabel>
-                <FormControl>
-                  <SelectOptions
-                    placeholder={tSchema("priority.placeholder")}
-                    onChange={field.onChange}
-                    options={Object.values(ActivityPriority).map((item) => {
-                      return {
-                        label: tSchema(`priority.options.${item}`),
-                        value: item,
-                      };
-                    })}
-                    defaultValue={field.value}
-                    disabled={isPending}
-                  />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
         <FormField
           control={form.control}
           name="note"
@@ -284,7 +290,7 @@ export const ActivityEditForm = ({ data }: ActivityEditFormProps) => {
                   placeholder={tSchema("note.placeholder")}
                   value={field.value || undefined}
                   onChange={field.onChange}
-                  disabled={isPending}
+                  disabled={isPending || disabled}
                 />
               </FormControl>
 
@@ -292,7 +298,10 @@ export const ActivityEditForm = ({ data }: ActivityEditFormProps) => {
             </FormItem>
           )}
         />
-        <DynamicDialogFooter disabled={isPending} closeButton={false} />
+        <DynamicDialogFooter
+          disabled={isPending || disabled}
+          closeButton={false}
+        />
       </form>
     </Form>
   );

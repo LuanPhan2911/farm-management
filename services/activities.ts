@@ -1,5 +1,11 @@
 import { db } from "@/lib/db";
-import { ActivitySelect, ActivityTable, PaginatedResponse } from "@/types";
+import {
+  ActivityPriorityCount,
+  ActivitySelect,
+  ActivityStatusCount,
+  ActivityTable,
+  PaginatedResponse,
+} from "@/types";
 import { ActivityPriority, ActivityStatus } from "@prisma/client";
 import { getCurrentStaff, getStaffById } from "./staffs";
 import {
@@ -22,6 +28,56 @@ import {
   getObjectSortOrder,
 } from "@/lib/utils";
 
+const checkCreateActivity = async ({
+  createdById,
+  assignedToId,
+}: {
+  createdById: string;
+  assignedToId: string;
+}) => {
+  const createdBy = await getCurrentStaff();
+  // check create by exist
+  if (!createdBy || createdBy.id !== createdById) {
+    throw new UnAuthorizedError();
+  }
+  // check created by role
+  if (!canCreateActivity(createdBy.role)) {
+    throw new ActivityCreatePermissionError();
+  }
+  const assignedTo = await getStaffById(assignedToId);
+  if (!assignedTo) {
+    throw new StaffExistError();
+  }
+  return true;
+};
+const checkUpdateActivity = async (id: string) => {
+  const currentStaff = await getCurrentStaff();
+  if (!currentStaff) {
+    throw new UnAuthorizedError();
+  }
+  const activity = await db.activity.findUnique({
+    where: {
+      id,
+    },
+  });
+  if (!activity) {
+    throw new ActivityExistError();
+  }
+  if (!canUpdateActivityStatus(activity.status)) {
+    throw new ActivityUpdateStatusError();
+  }
+  const { assignedToId, createdById } = activity;
+  if (
+    !canStaffUpdateActivity({
+      assignedToId,
+      createdById,
+      currentStaff,
+    })
+  ) {
+    throw new ActivityUpdatePermissionError();
+  }
+  return true;
+};
 type ActivityParams = {
   name: string;
   description?: string | null;
@@ -43,19 +99,10 @@ type ActivityParams = {
  */
 export const createActivity = async (params: ActivityParams) => {
   const { createdById, assignedToId } = params;
-  const createdBy = await getCurrentStaff();
-  // check create by exist
-  if (!createdBy || createdBy.id !== createdById) {
-    throw new UnAuthorizedError();
-  }
-  // check created by role
-  if (!canCreateActivity(createdBy.role)) {
-    throw new ActivityCreatePermissionError();
-  }
-  const assignedTo = await getStaffById(assignedToId);
-  if (!assignedTo) {
-    throw new StaffExistError();
-  }
+  await checkCreateActivity({
+    assignedToId,
+    createdById,
+  });
 
   const activity = await db.activity.create({
     data: {
@@ -86,31 +133,7 @@ export const updateActivity = async (
   id: string,
   params: ActivityUpdateParams
 ) => {
-  const currentStaff = await getCurrentStaff();
-  if (!currentStaff) {
-    throw new UnAuthorizedError();
-  }
-  const activity = await db.activity.findUnique({
-    where: {
-      id,
-    },
-  });
-  if (!activity) {
-    throw new ActivityExistError();
-  }
-  if (!canUpdateActivityStatus(activity.status)) {
-    throw new ActivityUpdateStatusError();
-  }
-  const { assignedToId, createdById } = activity;
-  if (
-    !canStaffUpdateActivity({
-      assignedToId,
-      createdById,
-      currentStaff,
-    })
-  ) {
-    throw new ActivityUpdatePermissionError();
-  }
+  await checkUpdateActivity(id);
 
   const updatedActivity = await db.activity.update({
     where: { id },
@@ -128,31 +151,7 @@ export const updateActivity = async (
  * @returns
  */
 export const deleteActivity = async (id: string) => {
-  const currentStaff = await getCurrentStaff();
-  if (!currentStaff) {
-    throw new UnAuthorizedError();
-  }
-  const activity = await db.activity.findUnique({
-    where: {
-      id,
-    },
-  });
-  if (!activity) {
-    throw new ActivityExistError();
-  }
-  if (!canUpdateActivityStatus(activity.status)) {
-    throw new ActivityUpdateStatusError();
-  }
-  const { assignedToId, createdById } = activity;
-  if (
-    !canStaffUpdateActivity({
-      assignedToId,
-      createdById,
-      currentStaff,
-    })
-  ) {
-    throw new ActivityUpdatePermissionError();
-  }
+  await checkUpdateActivity(id);
   const deletedActivity = await db.activity.delete({
     where: {
       id,
@@ -160,6 +159,43 @@ export const deleteActivity = async (id: string) => {
   });
 
   return deletedActivity;
+};
+
+export const updateActivityStatus = async (
+  id: string,
+  status: "COMPLETED" | "CANCELLED"
+) => {
+  await checkUpdateActivity(id);
+  const equipmentDetails = await db.equipmentUsage.findMany({
+    where: {
+      activityId: id,
+    },
+    distinct: ["equipmentDetailId"],
+    select: {
+      equipmentDetailId: true,
+    },
+  });
+  const [updatedActivity, updatedEquipmentDetails] = await db.$transaction([
+    db.activity.update({
+      where: {
+        id,
+      },
+      data: {
+        status,
+      },
+    }),
+    db.equipmentDetail.updateMany({
+      where: {
+        id: {
+          in: equipmentDetails.map((item) => item.equipmentDetailId),
+        },
+      },
+      data: {
+        status: "AVAILABLE",
+      },
+    }),
+  ]);
+  return { updatedActivity, updatedEquipmentDetails };
 };
 
 type ActivitySelectQuery = {
@@ -311,5 +347,70 @@ export const getActivityById = async ({
     });
   } catch (error) {
     return null;
+  }
+};
+
+type ActivityCountQuery = {
+  begin?: Date;
+  end?: Date;
+};
+export const getCountActivityStatus = async ({
+  begin,
+  end,
+}: ActivityCountQuery): Promise<ActivityStatusCount[]> => {
+  try {
+    if (!begin || !end) {
+      return [];
+    }
+    const result = await db.activity.groupBy({
+      by: "status",
+      where: {
+        activityDate: {
+          ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
+          ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
+        },
+      },
+      _count: {
+        _all: true,
+      },
+    });
+    return result.map((item) => {
+      return {
+        status: item.status,
+        _count: item._count._all,
+      };
+    });
+  } catch (error) {
+    return [];
+  }
+};
+export const getCountActivityPriority = async ({
+  begin,
+  end,
+}: ActivityCountQuery): Promise<ActivityPriorityCount[]> => {
+  try {
+    if (!begin || !end) {
+      return [];
+    }
+    const result = await db.activity.groupBy({
+      by: "priority",
+      where: {
+        activityDate: {
+          ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
+          ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
+        },
+      },
+      _count: {
+        _all: true,
+      },
+    });
+    return result.map((item) => {
+      return {
+        priority: item.priority,
+        _count: item._count._all,
+      };
+    });
+  } catch (error) {
+    return [];
   }
 };

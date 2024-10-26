@@ -31,7 +31,6 @@ import { toast } from "sonner";
 
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 import { useParams } from "next/navigation";
-import { ActivitiesSelect } from "@/app/[locale]/(backoffice)/admin/_components/activities-select";
 import { DatePickerWithTime } from "@/components/form/date-picker-with-time";
 import { StaffsSelect } from "@/app/[locale]/(backoffice)/admin/_components/staffs-select";
 import { Staff } from "@prisma/client";
@@ -40,9 +39,11 @@ import { EquipmentDetailsSelect } from "@/app/[locale]/(backoffice)/admin/_compo
 
 interface ActivityEquipmentUsageCreateButtonProps {
   currentOperator: Staff;
+  disabled?: boolean;
 }
 export const ActivityEquipmentUsageCreateButton = ({
   currentOperator,
+  disabled,
 }: ActivityEquipmentUsageCreateButtonProps) => {
   const tSchema = useTranslations("equipmentUsages.schema");
   const t = useTranslations("equipmentUsages.form");
@@ -81,7 +82,7 @@ export const ActivityEquipmentUsageCreateButton = ({
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size={"sm"} variant={"success"}>
+        <Button size={"sm"} variant={"success"} disabled={disabled}>
           <Plus className="h-4 w-4 mr-2" />{" "}
           <span className="text-sm font-semibold">{t("create.label")}</span>
         </Button>
@@ -105,7 +106,7 @@ export const ActivityEquipmentUsageCreateButton = ({
                       <EquipmentDetailsSelect
                         onChange={field.onChange}
                         placeholder={tSchema("equipmentDetailId.placeholder")}
-                        disabled={isPending}
+                        disabled={isPending || disabled}
                         error={tSchema("equipmentDetailId.error")}
                         notFound={tSchema("equipmentDetailId.notFound")}
                         defaultValue={field.value}
@@ -129,9 +130,9 @@ export const ActivityEquipmentUsageCreateButton = ({
                     <FormControl>
                       <StaffsSelect
                         onChange={field.onChange}
-                        defaultValue={field.value}
+                        defaultValue={field.value || undefined}
                         placeholder={tSchema("operatorId.placeholder")}
-                        disabled={isPending}
+                        disabled={isPending || disabled}
                         error={tSchema("operatorId.error")}
                         notFound={tSchema("operatorId.notFound")}
                         appearance={{
@@ -157,7 +158,7 @@ export const ActivityEquipmentUsageCreateButton = ({
                       <DatePickerWithTime
                         onChange={field.onChange}
                         placeholder={tSchema("usageStartTime.placeholder")}
-                        disabled={isPending}
+                        disabled={isPending || disabled}
                         value={field.value}
                         disabledDateRange={{
                           before: new Date(),
@@ -180,7 +181,7 @@ export const ActivityEquipmentUsageCreateButton = ({
                         placeholder={tSchema("duration.placeholder")}
                         value={field.value || undefined}
                         onChange={field.onChange}
-                        disabled={isPending}
+                        disabled={isPending || disabled}
                       />
                     </FormControl>
                     <FormMessage />
@@ -200,7 +201,7 @@ export const ActivityEquipmentUsageCreateButton = ({
                       placeholder={tSchema("note.placeholder")}
                       value={field.value || undefined}
                       onChange={field.onChange}
-                      disabled={isPending}
+                      disabled={isPending || disabled}
                     />
                   </FormControl>
                   <FormMessage />
@@ -208,7 +209,7 @@ export const ActivityEquipmentUsageCreateButton = ({
               )}
             />
 
-            <DynamicDialogFooter disabled={isPending} />
+            <DynamicDialogFooter disabled={isPending || disabled} />
           </form>
         </Form>
       </DialogContent>

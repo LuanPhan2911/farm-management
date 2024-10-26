@@ -5,11 +5,9 @@ import { ErrorButton } from "@/components/buttons/error-button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { UnitSelect } from "@/types";
-import { Unit, UnitType } from "@prisma/client";
+import { UnitType } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
-import { useTranslations } from "next-intl";
 import queryString from "query-string";
-import { useTransition } from "react";
 import Creatable from "react-select/creatable";
 import { toast } from "sonner";
 

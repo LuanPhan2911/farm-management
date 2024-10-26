@@ -6,6 +6,8 @@ import { ActivityEquipmentUsageCreateButton } from "./_components/activity-equip
 import { ActivityEquipmentUsagesTable } from "./_components/activity-equipment-usages-table";
 import { getCurrentStaff } from "@/services/staffs";
 import { notFound } from "next/navigation";
+import { getActivityById } from "@/services/activities";
+import { canUpdateActivityStatus } from "@/lib/permission";
 export async function generateMetadata() {
   const t = await getTranslations("activities.page.detail.equipment-usages");
   return {
@@ -37,6 +39,14 @@ const ActivityEquipmentUsagesPage = async ({
   if (!currentStaff) {
     notFound();
   }
+  const activity = await getActivityById({
+    activityId: params.activityId,
+    staffId: currentStaff.id,
+  });
+  if (!activity) {
+    notFound();
+  }
+  const canUpdate = canUpdateActivityStatus(activity.status);
   return (
     <Card>
       <CardHeader>
@@ -44,7 +54,10 @@ const ActivityEquipmentUsagesPage = async ({
       </CardHeader>
       <CardContent>
         <div className="flex justify-end">
-          <ActivityEquipmentUsageCreateButton currentOperator={currentStaff} />
+          <ActivityEquipmentUsageCreateButton
+            currentOperator={currentStaff}
+            disabled={!canUpdate}
+          />
         </div>
         <ActivityEquipmentUsagesTable data={data} />
       </CardContent>

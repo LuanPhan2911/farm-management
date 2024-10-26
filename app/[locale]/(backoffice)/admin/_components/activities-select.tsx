@@ -5,28 +5,25 @@ import { useQuery } from "@tanstack/react-query";
 
 import queryString from "query-string";
 import { ErrorButton } from "@/components/buttons/error-button";
-import { ComboBoxCustom } from "@/components/form/combo-box";
+import {
+  ComboBoxCustom,
+  ComboBoxCustomAppearance,
+} from "@/components/form/combo-box";
 import { ActivitySelect } from "@/types";
 import { useFormatter } from "next-intl";
 import { ActivityStatusValue } from "../activities/_components/activity-status-value";
 import { ActivityPriorityValue } from "../activities/_components/activity-priority-value";
 
 interface ActivitiesSelectProps {
-  defaultValue?: string | null;
+  defaultValue?: string;
   onChange: (value: string | undefined) => void;
   disabled?: boolean;
   placeholder: string;
   error: string;
   notFound: string;
+  appearance?: ComboBoxCustomAppearance;
 }
-export const ActivitiesSelect = ({
-  onChange,
-  defaultValue,
-  disabled,
-  placeholder,
-  error,
-  notFound,
-}: ActivitiesSelectProps) => {
+export const ActivitiesSelect = (props: ActivitiesSelectProps) => {
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["activities_select"],
     queryFn: async () => {
@@ -43,29 +40,18 @@ export const ActivitiesSelect = ({
     },
   });
 
-  if (isPending) {
-    return <Skeleton className="lg:w-[350px] w-full h-12"></Skeleton>;
-  }
-  if (isError) {
-    return <ErrorButton title={error} refresh={refetch} />;
-  }
   return (
     <ComboBoxCustom
-      options={data}
+      {...props}
+      data={data}
       labelKey="name"
       valueKey="id"
-      placeholder={placeholder}
-      notFound={notFound}
-      onChange={onChange}
-      defaultValue={defaultValue || undefined}
+      isError={isError}
+      isPending={isPending}
+      refetch={refetch}
       renderItem={(item) => {
         return <ActivitiesSelectItem {...item} />;
       }}
-      appearance={{
-        button: "lg:w-full h-12",
-        content: "lg:w-[400px]",
-      }}
-      disabled={disabled}
     />
   );
 };

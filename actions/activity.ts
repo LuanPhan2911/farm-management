@@ -14,6 +14,7 @@ import {
   createActivity,
   deleteActivity,
   updateActivity,
+  updateActivityStatus,
 } from "@/services/activities";
 import { ActionResponse } from "@/types";
 import { getTranslations } from "next-intl/server";
@@ -113,5 +114,58 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
       return errorResponse(tSchema("errors.updatePermission"));
     }
     return errorResponse(tStatus("failure.destroy"));
+  }
+};
+
+export const completeActivity = async (
+  id: string,
+  status: "COMPLETED" | "CANCELLED"
+): Promise<ActionResponse> => {
+  const tSchema = await getTranslations("activities.schema");
+  const tStatus = await getTranslations("activities.status");
+  try {
+    const { updatedActivity } = await updateActivityStatus(id, status);
+    revalidatePath("/admin/activities");
+    return successResponse(tStatus("success.complete"));
+  } catch (error) {
+    if (error instanceof UnAuthorizedError) {
+      return errorResponse(tSchema("errors.unauthorized"));
+    }
+    if (error instanceof ActivityExistError) {
+      return errorResponse(tSchema("errors.existActivity"));
+    }
+    if (error instanceof ActivityUpdateStatusError) {
+      return errorResponse(tSchema("errors.invalidActivityStatus"));
+    }
+    if (error instanceof ActivityUpdatePermissionError) {
+      return errorResponse(tSchema("errors.updatePermission"));
+    }
+    return errorResponse(tStatus("failure.complete"));
+  }
+};
+export const cancelActivity = async (
+  id: string,
+  status: "COMPLETED" | "CANCELLED"
+): Promise<ActionResponse> => {
+  const tSchema = await getTranslations("activities.schema");
+  const tStatus = await getTranslations("activities.status");
+  try {
+    const { updatedActivity } = await updateActivityStatus(id, status);
+    revalidatePath("/admin/activities");
+    return successResponse(tStatus("success.cancel"));
+  } catch (error) {
+    if (error instanceof UnAuthorizedError) {
+      return errorResponse(tSchema("errors.unauthorized"));
+    }
+    if (error instanceof ActivityExistError) {
+      return errorResponse(tSchema("errors.existActivity"));
+    }
+    if (error instanceof ActivityUpdateStatusError) {
+      return errorResponse(tSchema("errors.invalidActivityStatus"));
+    }
+    if (error instanceof ActivityUpdatePermissionError) {
+      return errorResponse(tSchema("errors.updatePermission"));
+    }
+    return errorResponse(tStatus("failure.cancel"));
   }
 };

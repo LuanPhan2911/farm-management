@@ -3,16 +3,25 @@
 import { ErrorButton } from "@/components/buttons/error-button";
 import { ComboBoxDefault, ComboBoxData } from "@/components/form/combo-box";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useUpdateSearchParam } from "@/hooks/use-update-search-param";
 import { JobSelect } from "@/types";
 import { useQuery } from "@tanstack/react-query";
-import { useTranslations } from "next-intl";
 
 interface JobsSelectProps {
+  onChange: (value: string | undefined) => void;
   defaultValue?: string;
+  disabled?: boolean;
+  placeholder: string;
+  notFound: string;
+  error: string;
 }
-export const JobsSelect = ({ defaultValue }: JobsSelectProps) => {
-  const t = useTranslations("applicants.search.comboBox.job");
+export const JobsSelect = ({
+  defaultValue,
+  error,
+  notFound,
+  onChange,
+  placeholder,
+  disabled,
+}: JobsSelectProps) => {
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["jobs_select"],
     queryFn: async () => {
@@ -20,13 +29,12 @@ export const JobsSelect = ({ defaultValue }: JobsSelectProps) => {
       return (await res.json()) as JobSelect[];
     },
   });
-  const { updateSearchParam } = useUpdateSearchParam("jobId");
 
   if (isPending) {
     return <Skeleton className="h-10 w-60" />;
   }
   if (isError) {
-    return <ErrorButton refresh={refetch} title={t("error")} />;
+    return <ErrorButton refresh={refetch} title={error} />;
   }
   const options: ComboBoxData[] = data.map((item) => {
     return {
@@ -38,10 +46,11 @@ export const JobsSelect = ({ defaultValue }: JobsSelectProps) => {
   return (
     <ComboBoxDefault
       options={options}
-      notFound={t("notFound")}
-      placeholder={t("label")}
-      onChange={updateSearchParam}
+      notFound={notFound}
+      placeholder={placeholder}
+      onChange={onChange}
       defaultValue={defaultValue}
+      disabled={disabled}
     />
   );
 };

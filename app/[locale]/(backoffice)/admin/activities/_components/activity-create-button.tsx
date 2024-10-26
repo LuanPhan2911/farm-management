@@ -59,6 +59,9 @@ export const ActivityCreateForm = ({
       status: "NEW",
       priority: "LOW",
       createdById: currentStaff.id,
+      activityDate: new Date(),
+      estimatedDuration: "1 day",
+      actualDuration: "1 day",
     },
   });
   const onSubmit = (values: z.infer<typeof formSchema>) => {
@@ -82,7 +85,7 @@ export const ActivityCreateForm = ({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4 max-w-5xl"
+        className="space-y-4 max-w-6xl"
       >
         <FormField
           control={form.control}
@@ -122,7 +125,7 @@ export const ActivityCreateForm = ({
             </FormItem>
           )}
         />
-        <div className="grid lg:grid-cols-3 gap-2">
+        <div className="grid lg:grid-cols-4 gap-2">
           <FormField
             control={form.control}
             name="activityDate"
@@ -145,6 +148,32 @@ export const ActivityCreateForm = ({
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="priority"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("priority.label")}</FormLabel>
+                <FormControl>
+                  <SelectOptions
+                    placeholder={tSchema("priority.placeholder")}
+                    onChange={field.onChange}
+                    options={Object.values(ActivityPriority).map((item) => {
+                      return {
+                        label: tSchema(`priority.options.${item}`),
+                        value: item,
+                      };
+                    })}
+                    defaultValue={field.value}
+                    disabled={isPending}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="estimatedDuration"
@@ -195,7 +224,7 @@ export const ActivityCreateForm = ({
                   <StaffsSelect
                     placeholder={tSchema("assignedToId.placeholder")}
                     onChange={field.onChange}
-                    defaultValue={field.value}
+                    defaultValue={field.value || undefined}
                     error={tSchema("assignedToId.error")}
                     notFound={tSchema("assignedToId.notFound")}
                     disabled={isPending}
@@ -236,33 +265,7 @@ export const ActivityCreateForm = ({
             )}
           />
         </div>
-        <div className="grid lg:grid-cols-3 gap-2">
-          <FormField
-            control={form.control}
-            name="priority"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("priority.label")}</FormLabel>
-                <FormControl>
-                  <SelectOptions
-                    placeholder={tSchema("priority.placeholder")}
-                    onChange={field.onChange}
-                    options={Object.values(ActivityPriority).map((item) => {
-                      return {
-                        label: tSchema(`priority.options.${item}`),
-                        value: item,
-                      };
-                    })}
-                    defaultValue={field.value}
-                    disabled={isPending}
-                  />
-                </FormControl>
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
         <FormField
           control={form.control}
           name="note"

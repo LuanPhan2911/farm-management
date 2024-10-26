@@ -55,7 +55,7 @@ const StaffSelectItem = ({
 interface StaffsSelectProps {
   adminOnly?: boolean;
   onChange: (value: string | undefined) => void;
-  defaultValue?: string | null;
+  defaultValue?: string;
   disabled?: boolean;
   placeholder: string;
   notFound: string;
@@ -63,23 +63,14 @@ interface StaffsSelectProps {
   appearance?: ComboBoxCustomAppearance;
 }
 
-export const StaffsSelect = ({
-  adminOnly = false,
-  defaultValue,
-  disabled,
-  placeholder,
-  notFound,
-  error,
-  onChange,
-  appearance,
-}: StaffsSelectProps) => {
+export const StaffsSelect = (props: StaffsSelectProps) => {
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["staffs_select"],
     queryFn: async () => {
       const url = queryString.stringifyUrl({
         url: "/api/staffs/select",
         query: {
-          adminOnly,
+          adminOnly: props.adminOnly || false,
         },
       });
       const res = await fetch(url);
@@ -87,25 +78,16 @@ export const StaffsSelect = ({
     },
   });
 
-  if (isPending) {
-    return <Skeleton className="lg:w-[250px] w-full h-12"></Skeleton>;
-  }
-  if (isError) {
-    return <ErrorButton title={error} refresh={refetch} />;
-  }
-
   return (
     <ComboBoxCustom
-      placeholder={placeholder}
-      notFound={notFound}
-      defaultValue={defaultValue || undefined}
-      options={data}
+      {...props}
+      data={data}
+      isError={isError}
+      isPending={isPending}
+      refetch={refetch}
       valueKey="id"
       labelKey="name"
       renderItem={(item) => <StaffSelectItem {...item} />}
-      disabled={disabled}
-      onChange={onChange}
-      appearance={appearance}
     />
   );
 };

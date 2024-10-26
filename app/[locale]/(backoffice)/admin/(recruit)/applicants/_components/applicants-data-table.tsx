@@ -16,13 +16,16 @@ import { ApplicantStatus } from "@prisma/client";
 import { Badge } from "@/components/ui/badge";
 import { ApplicantTable } from "@/types";
 import { useDialog } from "@/stores/use-dialog";
+import { JobsSelect } from "../../../_components/jobs-select";
+import { useUpdateSearchParam } from "@/hooks/use-update-search-param";
 
 interface ApplicantsTableProps {
   applicants: ApplicantTable[];
 }
 export const ApplicantsTable = ({ applicants }: ApplicantsTableProps) => {
   const t = useTranslations("applicants");
-
+  const tSchema = useTranslations("applicants.schema.jobId");
+  const { updateSearchParam, initialParam } = useUpdateSearchParam("jobId");
   const { onOpen, onClose, setPending } = useAlertDialog();
   const { onOpen: onOpenModal } = useDialog();
   const handleConfirm = (rows: ApplicantTable[]) => {
@@ -163,16 +166,25 @@ export const ApplicantsTable = ({ applicants }: ApplicantsTableProps) => {
   ];
 
   return (
-    <DataTable
-      columns={columns}
-      data={applicants}
-      searchable={{
-        value: "email",
-        placeholder: t("search.placeholder"),
-      }}
-      bulkActions={bulkActions}
-      facetedFilters={facetedFilters}
-      onViewDetail={handleCreateStaff}
-    />
+    <>
+      <JobsSelect
+        error={tSchema("error")}
+        notFound={tSchema("notFound")}
+        onChange={updateSearchParam}
+        placeholder={tSchema("placeholder")}
+        defaultValue={initialParam}
+      />
+      <DataTable
+        columns={columns}
+        data={applicants}
+        searchable={{
+          value: "email",
+          placeholder: t("search.placeholder"),
+        }}
+        bulkActions={bulkActions}
+        facetedFilters={facetedFilters}
+        onViewDetail={handleCreateStaff}
+      />
+    </>
   );
 };

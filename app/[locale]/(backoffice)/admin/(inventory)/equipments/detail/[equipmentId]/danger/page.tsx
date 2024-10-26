@@ -6,7 +6,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { getEquipmentById, getEquipmentsSelect } from "@/services/equipments";
+import { getEquipmentById } from "@/services/equipments";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { DestroyButton } from "@/components/buttons/destroy-button";
@@ -24,14 +24,6 @@ export async function generateMetadata() {
   };
 }
 
-export async function generateStaticParams() {
-  const equipments = await getEquipmentsSelect();
-  return equipments.map((item) => {
-    return {
-      equipmentId: item.id,
-    };
-  });
-}
 const EquipmentDangerPage = async ({ params }: EquipmentDangerPageProps) => {
   const t = await getTranslations("equipments.form");
   const data = await getEquipmentById(params.equipmentId);

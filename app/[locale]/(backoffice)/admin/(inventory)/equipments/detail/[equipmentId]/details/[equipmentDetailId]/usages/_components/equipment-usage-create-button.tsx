@@ -107,7 +107,11 @@ export const EquipmentUsageCreateButton = ({
                         disabled={isPending}
                         error={tSchema("activityId.error")}
                         notFound={tSchema("activityId.notFound")}
-                        defaultValue={field.value}
+                        defaultValue={field.value || undefined}
+                        appearance={{
+                          button: "lg:w-full h-12",
+                          content: "lg:w-[400px]",
+                        }}
                       />
                     </FormControl>
 
@@ -124,7 +128,7 @@ export const EquipmentUsageCreateButton = ({
                     <FormControl>
                       <StaffsSelect
                         onChange={field.onChange}
-                        defaultValue={field.value}
+                        defaultValue={field.value || undefined}
                         placeholder={tSchema("operatorId.placeholder")}
                         disabled={isPending}
                         error={tSchema("operatorId.error")}

@@ -1,10 +1,8 @@
-import { ErrorButton } from "@/components/buttons/error-button";
 import {
   ComboBoxCustom,
   ComboBoxCustomAppearance,
 } from "@/components/form/combo-box";
 import { SelectItemContent } from "@/components/form/select-item";
-import { Skeleton } from "@/components/ui/skeleton";
 import { PlantSelect } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 
@@ -17,15 +15,7 @@ interface PlantsSelectProps {
   error: string;
   appearance?: ComboBoxCustomAppearance;
 }
-export const PlantsSelect = ({
-  defaultValue,
-  error,
-  placeholder,
-  notFound,
-  onChange,
-  disabled,
-  appearance,
-}: PlantsSelectProps) => {
+export const PlantsSelect = (props: PlantsSelectProps) => {
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["plants"],
     queryFn: async () => {
@@ -33,22 +23,14 @@ export const PlantsSelect = ({
       return (await res.json()) as PlantSelect[];
     },
   });
-  if (isPending) {
-    return <Skeleton className="lg:w-[250px] w-full h-12"></Skeleton>;
-  }
-  if (isError) {
-    return <ErrorButton title={error} refresh={refetch} />;
-  }
 
   return (
     <ComboBoxCustom
-      placeholder={placeholder}
-      notFound={notFound}
-      onChange={onChange}
-      defaultValue={defaultValue}
-      disabled={disabled}
-      options={data}
-      appearance={appearance}
+      {...props}
+      data={data}
+      isError={isError}
+      isPending={isPending}
+      refetch={refetch}
       valueKey="id"
       labelKey="name"
       renderItem={(item) => (

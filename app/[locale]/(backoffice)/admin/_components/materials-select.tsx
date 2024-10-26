@@ -17,15 +17,7 @@ interface MaterialsSelectProps {
   error: string;
   appearance?: ComboBoxCustomAppearance;
 }
-export const MaterialsSelect = ({
-  defaultValue,
-  error,
-  placeholder,
-  notFound,
-  onChange,
-  disabled,
-  appearance,
-}: MaterialsSelectProps) => {
+export const MaterialsSelect = (props: MaterialsSelectProps) => {
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["materials"],
     queryFn: async () => {
@@ -33,22 +25,14 @@ export const MaterialsSelect = ({
       return (await res.json()) as MaterialSelect[];
     },
   });
-  if (isPending) {
-    return <Skeleton className="lg:w-[250px] w-full h-12"></Skeleton>;
-  }
-  if (isError) {
-    return <ErrorButton title={error} refresh={refetch} />;
-  }
 
   return (
     <ComboBoxCustom
-      placeholder={placeholder}
-      notFound={notFound}
-      onChange={onChange}
-      defaultValue={defaultValue}
-      disabled={disabled}
-      options={data}
-      appearance={appearance}
+      {...props}
+      data={data}
+      isError={isError}
+      isPending={isPending}
+      refetch={refetch}
       valueKey="id"
       labelKey="name"
       renderItem={(item) => (

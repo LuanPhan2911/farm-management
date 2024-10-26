@@ -24,8 +24,6 @@ import { toast } from "sonner";
 import { edit } from "@/actions/equipment-usage";
 import { Input } from "@/components/ui/input";
 import { EquipmentUsageTable } from "@/types";
-import { ActivitiesSelect } from "@/app/[locale]/(backoffice)/admin/_components/activities-select";
-import { StaffsSelect } from "@/app/[locale]/(backoffice)/admin/_components/staffs-select";
 import { DatePickerWithTime } from "@/components/form/date-picker-with-time";
 import { Textarea } from "@/components/ui/textarea";
 

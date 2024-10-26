@@ -1,13 +1,14 @@
 "use client";
 
-import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { Organization } from "@clerk/nextjs/server";
 
 import queryString from "query-string";
-import { ErrorButton } from "@/components/buttons/error-button";
 import { SelectItemContent } from "@/components/form/select-item";
-import { ComboBoxCustom } from "@/components/form/combo-box";
+import {
+  ComboBoxCustom,
+  ComboBoxCustomAppearance,
+} from "@/components/form/combo-box";
 
 interface OrgsSelectProps {
   defaultValue?: string;
@@ -16,15 +17,9 @@ interface OrgsSelectProps {
   placeholder: string;
   error: string;
   notFound: string;
+  appearance?: ComboBoxCustomAppearance;
 }
-export const OrgsSelect = ({
-  onChange,
-  defaultValue,
-  disabled,
-  placeholder,
-  error,
-  notFound,
-}: OrgsSelectProps) => {
+export const OrgsSelect = (props: OrgsSelectProps) => {
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["orgs_select"],
     queryFn: async () => {
@@ -41,29 +36,18 @@ export const OrgsSelect = ({
     },
   });
 
-  if (isPending) {
-    return <Skeleton className="lg:w-[250px] w-full h-12"></Skeleton>;
-  }
-  if (isError) {
-    return <ErrorButton title={error} refresh={refetch} />;
-  }
   return (
     <ComboBoxCustom
-      options={data}
+      {...props}
+      data={data}
+      isError={isError}
+      isPending={isPending}
+      refetch={refetch}
       labelKey="name"
       valueKey="id"
-      placeholder={placeholder}
-      notFound={notFound}
-      onChange={onChange}
-      defaultValue={defaultValue}
       renderItem={(item) => {
         return <SelectItemContent imageUrl={item.imageUrl} title={item.name} />;
       }}
-      appearance={{
-        button: "lg:w-full",
-        content: "lg:w-[480px]",
-      }}
-      disabled={disabled}
     />
   );
 };

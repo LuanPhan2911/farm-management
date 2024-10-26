@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { ActivityTable } from "@/types";
 import { ActivitiesTableAction } from "./activities-table-action";
 
@@ -29,7 +29,7 @@ interface ActivitiesTableProps {
 }
 export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
   const router = useRouter();
-
+  const { dateTime } = useFormatter();
   const t = useTranslations("activities");
   const handleViewDetail = (row: ActivityTable) => {
     router.push(`/admin/activities/detail/${row.id}`);
@@ -44,6 +44,13 @@ export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>
+              <OrderByButton
+                column="activityDate"
+                label={t("table.thead.activityDate")}
+                defaultValue="desc"
+              />
+            </TableHead>
             <TableHead>
               <OrderByButton column="name" label={t("table.thead.name")} />
             </TableHead>
@@ -65,7 +72,8 @@ export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
                 className="cursor-pointer"
                 onClick={() => handleViewDetail(item)}
               >
-                <TableCell>{item.name}</TableCell>
+                <TableCell>{dateTime(item.activityDate, "short")}</TableCell>
+                <TableCell className="lg:w-[350px]">{item.name}</TableCell>
                 <TableCell>
                   <ActivityStatusValue value={item.status} />
                 </TableCell>

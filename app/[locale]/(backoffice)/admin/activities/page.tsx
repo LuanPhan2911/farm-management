@@ -6,6 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ActivityCreateButton } from "./_components/activity-create-button";
 import { getCurrentStaff } from "@/services/staffs";
 import { notFound } from "next/navigation";
+import {
+  ActivitiesPriorityPieChart,
+  ActivitiesStatusPieChart,
+} from "./_components/activities-chart";
 interface ActivitiesPageProps {
   params: {};
   searchParams: {
@@ -50,6 +54,14 @@ const ActivitiesPage = async ({ searchParams }: ActivitiesPageProps) => {
             <ActivityCreateButton />
           </div>
           <ActivitiesTable data={data} totalPage={totalPage} />
+        </CardContent>
+      </Card>
+      <Card>
+        <CardContent>
+          <div className="grid lg:grid-cols-2 gap-4">
+            <ActivitiesStatusPieChart />
+            <ActivitiesPriorityPieChart />
+          </div>
         </CardContent>
       </Card>
     </div>

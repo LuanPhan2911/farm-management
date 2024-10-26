@@ -16,6 +16,9 @@ import {
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
+import { Skeleton } from "../ui/skeleton";
+import { ErrorButton } from "../buttons/error-button";
 export interface ComboBoxData {
   label: string;
   value: string;
@@ -27,6 +30,7 @@ interface ComboBoxProps {
   onChange: (value: string) => void;
   defaultValue?: string;
   className?: string;
+  disabled?: boolean;
 }
 export const ComboBoxDefault = ({
   options,
@@ -35,6 +39,7 @@ export const ComboBoxDefault = ({
   onChange,
   defaultValue,
   className,
+  disabled,
 }: ComboBoxProps) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(defaultValue);
@@ -58,6 +63,7 @@ export const ComboBoxDefault = ({
           role="combobox"
           aria-expanded={open}
           className={cn("lg:w-[260px] w-full justify-between", className)}
+          disabled={disabled}
         >
           <p className="truncate text-start">
             {value
@@ -106,10 +112,16 @@ export type ComboBoxCustomAppearance = {
   content?: string;
 };
 interface ComboBoxCustomProps<T extends Record<string, any>> {
-  options: T[];
+  data: T[] | undefined;
+  isPending: boolean;
+  isError: boolean;
+  refetch: (
+    options?: RefetchOptions
+  ) => Promise<QueryObserverResult<T[], Error>>;
   labelKey: keyof T;
   valueKey: keyof T;
   notFound: string;
+  error: string;
   placeholder: string;
   disabled?: boolean;
   onChange: (value: string | undefined) => void;
@@ -120,15 +132,19 @@ interface ComboBoxCustomProps<T extends Record<string, any>> {
   noItemDetailMessage?: string;
 }
 export const ComboBoxCustom = <T extends Record<string, any>>({
-  options,
+  data: options,
   labelKey,
   valueKey,
   placeholder,
   notFound,
+  error,
   disabled,
   appearance,
   defaultValue,
   noItemDetailMessage,
+  isPending,
+  isError,
+  refetch,
   onChange,
   renderItem,
   renderItemDetail,
@@ -144,12 +160,21 @@ export const ComboBoxCustom = <T extends Record<string, any>>({
 
     setOpen(false);
   };
-  const searchData = options.reduce(
+
+  const searchData = options?.reduce(
     (a, b) => ({ ...a, [b[valueKey]]: b[labelKey].toLowerCase() }),
     {} as Record<string, string | undefined>
   );
-  const selectedItem = options.find((item) => item[valueKey] === value);
+  const selectedItem = options?.find((item) => item[valueKey] === value);
 
+  if (isPending) {
+    return (
+      <Skeleton className={cn("lg:w-full h-12", appearance?.button)}></Skeleton>
+    );
+  }
+  if (isError) {
+    return <ErrorButton title={error} refresh={refetch} />;
+  }
   return (
     <div className="flex flex-col gap-y-2">
       <Popover open={open} onOpenChange={setOpen}>
@@ -172,14 +197,16 @@ export const ComboBoxCustom = <T extends Record<string, any>>({
         <PopoverContent className={cn("lg:w-[260px] p-0", appearance?.content)}>
           <Command
             filter={(value, search) => {
-              return searchData[value]?.includes(search.toLowerCase()) ? 1 : 0;
+              return searchData?.[value]?.includes(search.toLowerCase())
+                ? 1
+                : 0;
             }}
           >
             <CommandInput placeholder={placeholder} />
             <CommandList>
               <CommandEmpty>{notFound}</CommandEmpty>
               <CommandGroup>
-                {options.map((item) => (
+                {options?.map((item) => (
                   <CommandItem
                     key={item[valueKey]}
                     value={item[valueKey]}

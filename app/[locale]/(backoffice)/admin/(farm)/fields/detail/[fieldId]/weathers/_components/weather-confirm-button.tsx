@@ -77,7 +77,7 @@ export const WeatherConfirmButton = ({
 };
 
 export const WeathersConfirmedAllButton = () => {
-  const { onOpen, setPending } = useAlertDialog();
+  const { onOpen, setPending, onClose } = useAlertDialog();
 
   const t = useTranslations("weathers");
   const params = useParams<{
@@ -95,6 +95,9 @@ export const WeathersConfirmedAllButton = () => {
       })
       .catch((error: Error) => {
         toast.error(t("status.failure.editManyConfirmed"));
+      })
+      .finally(() => {
+        onClose();
       });
   };
   return (

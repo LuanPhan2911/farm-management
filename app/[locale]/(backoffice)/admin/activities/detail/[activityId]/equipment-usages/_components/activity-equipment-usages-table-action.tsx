@@ -8,15 +8,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 
-import { DetailButton } from "@/components/buttons/detail-button";
 import { DestroyButton } from "@/components/buttons/destroy-button";
 import { assign, destroy, revoke } from "@/actions/equipment-usage";
 import { EquipmentUsageTable } from "@/types";
 import { useTranslations } from "next-intl";
-import {
-  canUpdateActivityStatus,
-  canUpdateEquipmentUsage,
-} from "@/lib/permission";
+import { canUpdateActivityStatus } from "@/lib/permission";
 import { EquipmentUsageEditButton } from "@/app/[locale]/(backoffice)/admin/(inventory)/equipments/detail/[equipmentId]/details/[equipmentDetailId]/usages/_components/equipment-usage-edit-button";
 import { ActionButton } from "@/components/buttons/action-button";
 import { useParams } from "next/navigation";
@@ -30,9 +26,7 @@ export const ActivityEquipmentUsagesTableAction = ({
   const t = useTranslations("equipmentUsages.form");
   const params = useParams<{ activityId: string }>()!;
   const canUpdate =
-    !data.activity ||
-    canUpdateActivityStatus(data.activity.status) ||
-    canUpdateEquipmentUsage(data.equipmentDetail.status);
+    !data.activity || canUpdateActivityStatus(data.activity.status);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

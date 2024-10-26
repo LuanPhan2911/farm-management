@@ -13,14 +13,21 @@ interface OrderByButtonProps {
   defaultValue?: "desc" | "asc";
 }
 export const OrderByButton = ({
-  defaultValue = "desc",
+  defaultValue,
   column,
   label,
 }: OrderByButtonProps) => {
-  const { updateSearchParam, initialParam } = useUpdateSearchParam("orderBy");
+  const { updateSearchParam, initialParam } = useUpdateSearchParam(
+    "orderBy",
+    defaultValue
+      ? JSON.stringify({
+          [column]: defaultValue,
+        })
+      : undefined
+  );
   const orderValue = safeParseJSON<OrderValue>(initialParam);
   const [value, setValue] = useState(() => {
-    return orderValue ? orderValue[column] : defaultValue;
+    return orderValue ? orderValue[column] : defaultValue || "desc";
   });
   const handleClick = () => {
     const updatedOrderValue: OrderValue = {};

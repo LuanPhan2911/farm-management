@@ -310,13 +310,6 @@
     },
     "search": {
       "placeholder": "Filter by applicant email...",
-      "comboBox": {
-        "job": {
-          "notFound": "Job's not found",
-          "label": "Select job...",
-          "error": "Fail load jobs"
-        }
-      },
       "faceted": {
         "status": {
           "placeholder": "Select status..."
@@ -394,6 +387,12 @@
           "NEW": "New",
           "CONFIRM": "Confirm"
         }
+      },
+      "jobId": {
+        "label": "Job",
+        "placeholder": "Select jobs",
+        "notFound": "Job's not found",
+        "error": "Fail load jobs"
       }
     },
     "status": {
@@ -1217,9 +1216,9 @@
     "chart": {
       "title": "Temperature, humidity, rainfall chart",
       "fields": {
-        "temperature": "Temperature",
-        "humidity": "Humidity",
-        "rainfall": "Rainfall"
+        "temperature": "Temperature({unit})",
+        "humidity": "Humidity({unit})",
+        "rainfall": "Rainfall({unit})"
       },
       "error": {
         "title": "Refresh",
@@ -1438,16 +1437,16 @@
       }
     },
     "chart": {
-      "title": "Ph, nutrient NPK chart",
+      "title": "PH, Nutrient NPK chart",
       "fields": {
         "ph": "ph",
-        "nutrientNitrogen": "Nitrogen",
-        "nutrientPhosphorus": "Phosphorus",
-        "nutrientPotassium": "Potassium"
+        "nutrientNitrogen": "Nitrogen({unit})",
+        "nutrientPhosphorus": "Phosphorus({unit})",
+        "nutrientPotassium": "Potassium({unit})"
       },
       "error": {
         "title": "Refresh",
-        "description": "  Something went wrong when load soils"
+        "description": "Something went wrong when load soils"
       },
       "notFound": {
         "title": "No soils data for generate chart",
@@ -2594,16 +2593,19 @@
         },
         "activity": {
           "name": "Activity name",
-          "status": "Activity Status"
+          "status": "Activity Status",
+          "usage": "Usage"
         },
-        "usageStartTime": "Start usage",
+        "usageStartTime": "Created date",
         "duration": "Duration",
         "operator": "Operator"
       },
       "trow": {
         "activity": {
           "name": "No used",
-          "status": "No used"
+          "status": "No used",
+          "usage": "Usage",
+          "unused": "Unused"
         },
         "operator": "No operator"
       }
@@ -2648,7 +2650,7 @@
         "existStaff": "Operator is not exist",
         "existActivity": "Activity is not exist",
         "existEquipmentUsage": "Equipment usage is not exist",
-        "invalidActivityStatus": "Activity status is in progress or new is possible to update usage"
+        "invalidActivityStatus": "Activity status is in list:[new, in progress, pending] is possible update"
       },
       "activityId": {
         "required_error": "Required activity id",
@@ -2878,7 +2880,7 @@
       "create": {
         "label": "Add",
         "title": "Add material usage",
-        "description": "Add material usage"
+        "description": "Add material usage to activity"
       },
       "edit": {
         "label": "Edit",
@@ -2910,7 +2912,7 @@
         "existMaterial": "Material is not exist",
         "noEnoughQuantity": "Quantity in stock is {value}, not enough to use!",
         "existActivity": "Activity is not exist",
-        "invalidActivityStatus": "Activity status is in progress or new is possible to update usage"
+        "invalidActivityStatus": "Activity status is in list:[new, in progress, pending] is possible update"
       },
       "unitId": {
         "required_error": "Required unit",
@@ -2997,8 +2999,49 @@
         "label": "Danger"
       }
     },
+    "chart": {
+      "countStatus": {
+        "title": "Activity Status Chart",
+        "fields": {
+          "status": "Status",
+          "_count": "Count"
+        },
+        "error": {
+          "title": "Refresh",
+          "description": "Fail load status"
+        },
+        "notFound": {
+          "title": "No data for generate chart",
+          "description": "No activity have in date range "
+        },
+        "hidden": {
+          "title": "Chart will be hidden",
+          "description": "Click icon eye in the right corner to show chart"
+        }
+      },
+      "countPriority": {
+        "title": "Activity Priority Chart",
+        "fields": {
+          "priority": "Priority",
+          "_count": "Count"
+        },
+        "error": {
+          "title": "Refresh",
+          "description": "Fail load priority"
+        },
+        "notFound": {
+          "title": "No data for generate chart",
+          "description": "No activity have in date range "
+        },
+        "hidden": {
+          "title": "Chart will be hidden",
+          "description": "Click icon eye in the right corner to show chart"
+        }
+      }
+    },
     "table": {
       "thead": {
+        "activityDate": "Activity date",
         "name": "Activity name",
         "status": "Activity Status",
         "priority": "Activity Priority",
@@ -3019,7 +3062,7 @@
       "create": {
         "label": "Add",
         "title": "Add activity",
-        "description": "Add activity"
+        "description": "Admin can create activity for farmer"
       },
       "edit": {
         "label": "Edit",
@@ -3033,11 +3076,27 @@
         "label": "Delete",
         "title": "Delete activity?",
         "description": "Are you absolutely sure? This action can not be undone!"
+      },
+      "complete": {
+        "label": "Finish",
+        "title": "Finish activity?",
+        "description": "Update finish activity"
+      },
+      "cancel": {
+        "label": "Cancel Activity",
+        "title": "Cancel activity?",
+        "description": "Are you absolutely sure? This action can not be undone!"
       }
     },
     "schema": {
       "errors": {
-        "parse": "Invalid activity"
+        "parse": "Invalid activity",
+        "unauthorized": "Staff unauthorized",
+        "createPermission": "No permission create activity",
+        "existStaff": "Staff is not existed",
+        "existActivity": "Activity is not exist",
+        "invalidActivityStatus": "Activity status is in list:[new, in progress, pending] is possible update",
+        "updatePermission": "No permission update"
       },
       "name": {
         "label": "Activity name",
@@ -3118,12 +3177,16 @@
       "success": {
         "create": "Activity created!",
         "edit": "Activity edited!",
-        "destroy": "Activity deleted!"
+        "destroy": "Activity deleted!",
+        "complete": "Activity completed!",
+        "cancel": "Activity cancelled!"
       },
       "failure": {
         "create": "Something went wrong while creating activity!",
         "edit": "Something went wrong while editing activity!",
-        "destroy": "Something went wrong while deleting activity!"
+        "destroy": "Something went wrong while deleting activity!",
+        "complete": "Fail completed",
+        "cancel": "Fail cancelled"
       }
     },
     "notFound": {

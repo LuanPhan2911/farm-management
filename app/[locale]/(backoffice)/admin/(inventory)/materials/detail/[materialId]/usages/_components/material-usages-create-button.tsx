@@ -102,6 +102,11 @@ export const MaterialUsageCreateButton = ({
                       disabled={isPending}
                       error={tSchema("activityId.error")}
                       notFound={tSchema("activityId.notFound")}
+                      defaultValue={field.value || undefined}
+                      appearance={{
+                        button: "lg:w-full h-12",
+                        content: "lg:w-[400px]",
+                      }}
                     />
                   </FormControl>
 

@@ -1,14 +1,15 @@
 "use client";
 
-import { Skeleton } from "@/components/ui/skeleton";
 import { isImage } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { FileSelect } from "@/types";
 
 import queryString from "query-string";
-import { ErrorButton } from "@/components/buttons/error-button";
 import Image from "next/image";
-import { ComboBoxCustom } from "@/components/form/combo-box";
+import {
+  ComboBoxCustom,
+  ComboBoxCustomAppearance,
+} from "@/components/form/combo-box";
 
 interface FilesSelectProps {
   onChange: (value: string | undefined) => void;
@@ -17,15 +18,9 @@ interface FilesSelectProps {
   error: string;
   notFound: string;
   defaultValue?: string;
+  appearance?: ComboBoxCustomAppearance;
 }
-export const FilesSelect = ({
-  error,
-  notFound,
-  onChange,
-  disabled,
-  placeholder,
-  defaultValue,
-}: FilesSelectProps) => {
+export const FilesSelect = (props: FilesSelectProps) => {
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["files_select"],
     queryFn: async () => {
@@ -43,32 +38,20 @@ export const FilesSelect = ({
     },
   });
 
-  if (isPending) {
-    return <Skeleton className="lg:w-[250px] w-full h-12"></Skeleton>;
-  }
-  if (isError) {
-    return <ErrorButton title={error} refresh={refetch} />;
-  }
-
   return (
     <ComboBoxCustom
-      options={data}
+      {...props}
+      data={data}
+      isError={isError}
+      isPending={isPending}
+      refetch={refetch}
       labelKey="name"
       valueKey="url"
-      placeholder={placeholder}
-      notFound={notFound}
-      onChange={onChange}
-      defaultValue={defaultValue}
       renderItem={(item) => {
         return (
           <FileSelectItem name={item.name} type={item.type} url={item.url} />
         );
       }}
-      appearance={{
-        button: "lg:w-full",
-        content: "lg:w-[480px]",
-      }}
-      disabled={disabled}
     />
   );
 };

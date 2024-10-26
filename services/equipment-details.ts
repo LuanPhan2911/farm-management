@@ -84,6 +84,7 @@ export const getEquipmentDetailsSelect = async (
         name: true,
         equipmentId: true,
         status: true,
+        location: true,
         equipment: {
           select: {
             name: true,
@@ -132,6 +133,7 @@ export const getEquipmentDetailsSelectForActivity = async (): Promise<
         id: true,
         name: true,
         equipmentId: true,
+        location: true,
         status: true,
         equipment: {
           select: {

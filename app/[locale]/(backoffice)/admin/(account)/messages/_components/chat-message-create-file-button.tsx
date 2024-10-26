@@ -254,6 +254,10 @@ export const ChatMessageCreateFileFromCLoud = ({
                         onChange={field.onChange}
                         disabled={isPending}
                         defaultValue={field.value || undefined}
+                        appearance={{
+                          button: "lg:w-full",
+                          content: "lg:w-[480px]",
+                        }}
                       />
                     </FormControl>
                   </FormItem>

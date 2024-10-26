@@ -2,7 +2,6 @@ import { getApplicants } from "@/services/applicants";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ApplicantsTable } from "./_components/applicants-data-table";
 import { getTranslations } from "next-intl/server";
-import { JobsSelect } from "../../_components/jobs-select";
 
 interface ApplicantsPageProps {
   searchParams: {
@@ -30,7 +29,6 @@ const ApplicantsPage = async ({ searchParams }: ApplicantsPageProps) => {
           <CardTitle>{t("title")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <JobsSelect />
           <ApplicantsTable applicants={applicants} />
         </CardContent>
       </Card>

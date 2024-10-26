@@ -9,20 +9,21 @@ import { useFormatter } from "next-intl";
 import { Calendar } from "../ui/calendar";
 import { addDays, max, min } from "date-fns";
 
-interface DatePickerInRangeProps extends HTMLAttributes<HTMLDivElement> {
-  dateRange: DateRange;
-  defaultDateRange: DateRange;
-  setDateRange: (date: DateRange) => void;
+interface DatePickerInRangeProps {
+  value: DateRange;
+  defaultValue: DateRange;
+  onChange: (date: DateRange) => void;
   inDays?: number;
   disabled?: boolean;
   disabledDateRange?: Matcher | Matcher[];
   placeholder?: string;
+  className?: string;
 }
 export const DatePickerInRange = ({
-  dateRange,
-  defaultDateRange,
+  value: dateRange,
+  defaultValue: defaultDateRange,
   inDays = 7,
-  setDateRange,
+  onChange: setDateRange,
   disabled,
   disabledDateRange,
   placeholder,

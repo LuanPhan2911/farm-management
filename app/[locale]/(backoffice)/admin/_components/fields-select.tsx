@@ -1,10 +1,8 @@
-import { ErrorButton } from "@/components/buttons/error-button";
 import {
   ComboBoxCustom,
   ComboBoxCustomAppearance,
 } from "@/components/form/combo-box";
 import { SelectItemContentWithoutImage } from "@/components/form/select-item";
-import { Skeleton } from "@/components/ui/skeleton";
 import { FieldSelect } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 
@@ -17,15 +15,7 @@ interface FieldsSelectProps {
   error: string;
   appearance?: ComboBoxCustomAppearance;
 }
-export const FieldsSelect = ({
-  defaultValue,
-  error,
-  placeholder,
-  notFound,
-  onChange,
-  disabled,
-  appearance,
-}: FieldsSelectProps) => {
+export const FieldsSelect = (props: FieldsSelectProps) => {
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["fields"],
     queryFn: async () => {
@@ -33,24 +23,16 @@ export const FieldsSelect = ({
       return (await res.json()) as FieldSelect[];
     },
   });
-  if (isPending) {
-    return <Skeleton className="lg:w-[250px] w-full h-12"></Skeleton>;
-  }
-  if (isError) {
-    return <ErrorButton title={error} refresh={refetch} />;
-  }
 
   return (
     <ComboBoxCustom
-      placeholder={placeholder}
-      notFound={notFound}
-      onChange={onChange}
-      defaultValue={defaultValue}
-      disabled={disabled}
-      options={data}
-      appearance={appearance}
+      {...props}
       valueKey="id"
       labelKey="name"
+      data={data}
+      isError={isError}
+      isPending={isPending}
+      refetch={refetch}
       renderItem={(item) => (
         <SelectItemContentWithoutImage
           title={item.name}

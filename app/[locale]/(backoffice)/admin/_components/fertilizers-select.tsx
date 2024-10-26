@@ -1,4 +1,3 @@
-import { ErrorButton } from "@/components/buttons/error-button";
 import {
   ComboBoxCustom,
   ComboBoxCustomAppearance,
@@ -6,7 +5,6 @@ import {
 import { InputDisabled } from "@/components/form/input-disabled";
 import { SelectItemContentWithoutImage } from "@/components/form/select-item";
 import { FormItem, FormLabel } from "@/components/ui/form";
-import { Skeleton } from "@/components/ui/skeleton";
 import { FertilizerSelect } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
@@ -20,15 +18,7 @@ interface FertilizersSelectProps {
   error: string;
   appearance?: ComboBoxCustomAppearance;
 }
-export const FertilizersSelect = ({
-  defaultValue,
-  error,
-  placeholder,
-  notFound,
-  onChange,
-  disabled,
-  appearance,
-}: FertilizersSelectProps) => {
+export const FertilizersSelect = (props: FertilizersSelectProps) => {
   const tSchema = useTranslations("fertilizers.schema");
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["fertilizers"],
@@ -37,22 +27,14 @@ export const FertilizersSelect = ({
       return (await res.json()) as FertilizerSelect[];
     },
   });
-  if (isPending) {
-    return <Skeleton className="lg:w-[250px] w-full h-12"></Skeleton>;
-  }
-  if (isError) {
-    return <ErrorButton title={error} refresh={refetch} />;
-  }
 
   return (
     <ComboBoxCustom
-      placeholder={placeholder}
-      notFound={notFound}
-      onChange={onChange}
-      defaultValue={defaultValue}
-      disabled={disabled}
-      options={data}
-      appearance={appearance}
+      {...props}
+      isError={isError}
+      isPending={isPending}
+      refetch={refetch}
+      data={data}
       valueKey="id"
       labelKey="name"
       renderItem={(item) => (

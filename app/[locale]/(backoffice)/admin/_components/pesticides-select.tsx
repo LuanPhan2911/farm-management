@@ -1,4 +1,3 @@
-import { ErrorButton } from "@/components/buttons/error-button";
 import {
   ComboBoxCustom,
   ComboBoxCustomAppearance,
@@ -6,7 +5,6 @@ import {
 import { InputDisabled } from "@/components/form/input-disabled";
 import { SelectItemContentWithoutImage } from "@/components/form/select-item";
 import { FormItem, FormLabel } from "@/components/ui/form";
-import { Skeleton } from "@/components/ui/skeleton";
 import { PesticideSelect } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
@@ -20,15 +18,7 @@ interface PesticidesSelectProps {
   error: string;
   appearance?: ComboBoxCustomAppearance;
 }
-export const PesticidesSelect = ({
-  defaultValue,
-  error,
-  placeholder,
-  notFound,
-  onChange,
-  disabled,
-  appearance,
-}: PesticidesSelectProps) => {
+export const PesticidesSelect = (props: PesticidesSelectProps) => {
   const tSchema = useTranslations("pesticides.schema");
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["pesticides"],
@@ -37,22 +27,14 @@ export const PesticidesSelect = ({
       return (await res.json()) as PesticideSelect[];
     },
   });
-  if (isPending) {
-    return <Skeleton className="lg:w-[250px] w-full h-12"></Skeleton>;
-  }
-  if (isError) {
-    return <ErrorButton title={error} refresh={refetch} />;
-  }
 
   return (
     <ComboBoxCustom
-      placeholder={placeholder}
-      notFound={notFound}
-      onChange={onChange}
-      defaultValue={defaultValue}
-      disabled={disabled}
-      options={data}
-      appearance={appearance}
+      {...props}
+      data={data}
+      isError={isError}
+      isPending={isPending}
+      refetch={refetch}
       valueKey="id"
       labelKey="name"
       renderItem={(item) => (

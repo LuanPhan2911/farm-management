@@ -37,6 +37,8 @@ export const create = async (
 
     revalidatePathEquipmentUsage({
       equipmentDetailId: equipmentUsage.equipmentDetailId,
+      activityId: equipmentUsage.activityId,
+      equipmentId: equipmentUsage.equipmentDetail.equipmentId,
     });
     return successResponse(tStatus("success.create"));
   } catch (error) {
@@ -77,6 +79,8 @@ export const edit = async (
 
     revalidatePathEquipmentUsage({
       equipmentDetailId: equipmentUsage.equipmentDetailId,
+      activityId: equipmentUsage.activityId,
+      equipmentId: equipmentUsage.equipmentDetail.equipmentId,
     });
 
     return successResponse(tStatus("success.edit"));
@@ -99,6 +103,8 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
 
     revalidatePathEquipmentUsage({
       equipmentDetailId: equipmentUsage.equipmentDetailId,
+      activityId: equipmentUsage.activityId,
+      equipmentId: equipmentUsage.equipmentDetail.equipmentId,
     });
     return successResponse(tStatus("success.destroy"));
   } catch (error) {
@@ -125,6 +131,8 @@ export const assign = async (
 
     revalidatePathEquipmentUsage({
       equipmentDetailId: equipmentUsage.equipmentDetailId,
+      activityId: equipmentUsage.activityId,
+      equipmentId: equipmentUsage.equipmentDetail.equipmentId,
     });
     return successResponse(tStatus("success.assign"));
   } catch (error) {
@@ -153,6 +161,8 @@ export const revoke = async (
 
     revalidatePathEquipmentUsage({
       equipmentDetailId: equipmentUsage.equipmentDetailId,
+      activityId: equipmentUsage.activityId,
+      equipmentId: equipmentUsage.equipmentDetail.equipmentId,
     });
     return successResponse(tStatus("success.revoke"));
   } catch (error) {

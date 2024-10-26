@@ -16,6 +16,7 @@ interface SelectOptionsProps {
   options: SelectData[];
   onChange: (value: string) => void;
   disabled?: boolean;
+  disabledValues?: string[];
 }
 export const SelectOptions = ({
   onChange,
@@ -23,6 +24,7 @@ export const SelectOptions = ({
   options,
   placeholder,
   disabled,
+  disabledValues,
 }: SelectOptionsProps) => {
   const handleChange = (currentValue: string) => {
     onChange(currentValue);
@@ -40,7 +42,11 @@ export const SelectOptions = ({
       <SelectContent>
         {options.map(({ label, value }) => {
           return (
-            <SelectItem key={value} value={value}>
+            <SelectItem
+              key={value}
+              value={value}
+              disabled={disabledValues?.includes(value)}
+            >
               {label}
             </SelectItem>
           );

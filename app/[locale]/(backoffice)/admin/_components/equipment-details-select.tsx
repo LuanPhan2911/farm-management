@@ -17,15 +17,7 @@ interface EquipmentDetailsSelectProps {
   error: string;
   appearance?: ComboBoxCustomAppearance;
 }
-export const EquipmentDetailsSelect = ({
-  defaultValue,
-  error,
-  placeholder,
-  notFound,
-  onChange,
-  disabled,
-  appearance,
-}: EquipmentDetailsSelectProps) => {
+export const EquipmentDetailsSelect = (props: EquipmentDetailsSelectProps) => {
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["equipment-details-select"],
     queryFn: async () => {
@@ -33,28 +25,21 @@ export const EquipmentDetailsSelect = ({
       return (await res.json()) as EquipmentDetailSelect[];
     },
   });
-  if (isPending) {
-    return <Skeleton className="lg:w-[250px] w-full h-12"></Skeleton>;
-  }
-  if (isError) {
-    return <ErrorButton title={error} refresh={refetch} />;
-  }
 
   return (
     <ComboBoxCustom
-      placeholder={placeholder}
-      notFound={notFound}
-      onChange={onChange}
-      defaultValue={defaultValue}
-      disabled={disabled}
-      options={data}
-      appearance={appearance}
+      {...props}
+      data={data}
+      isError={isError}
+      isPending={isPending}
+      refetch={refetch}
       valueKey="id"
       labelKey="name"
       renderItem={(item) => (
         <SelectItemContent
           imageUrl={item.equipment.imageUrl}
           title={item.name || item.equipment.name}
+          description={`Location: ${item.location || "No filled"}`}
         />
       )}
     />

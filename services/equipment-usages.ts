@@ -15,25 +15,32 @@ import { revalidatePath } from "next/cache";
 
 type RevalidateEquipmentUsageParam = {
   equipmentDetailId: string;
+  equipmentId: string;
+  activityId: string | null;
 };
 export const revalidatePathEquipmentUsage = ({
+  equipmentId,
   equipmentDetailId,
+  activityId,
 }: RevalidateEquipmentUsageParam) => {
-  revalidatePath(`/admin/equipments/detail/${equipmentDetailId}`);
-  revalidatePath(`/admin/equipments/detail/${equipmentDetailId}/details`);
-  revalidatePath(`/admin/equipments/detail/${equipmentDetailId}/usages`);
+  revalidatePath(`/admin/equipments/detail/${equipmentId}`);
+  revalidatePath(`/admin/equipments/detail/${equipmentId}/details`);
+  revalidatePath(
+    `/admin/equipments/detail/${equipmentId}/details/${equipmentDetailId}/usages`
+  );
+  if (activityId) {
+    revalidatePath(`/admin/activities/detail/${activityId}/equipment-usages`);
+  }
 };
-type EquipmentUsageParams = {
-  activityId?: string | null;
+const checkCreateEquipmentUsage = async ({
+  equipmentDetailId,
+  operatorId,
+  activityId,
+}: {
   equipmentDetailId: string;
-  usageStartTime: Date;
-  duration: string;
   operatorId?: string | null;
-  note?: string | null;
-};
-
-export const createEquipmentUsage = async (params: EquipmentUsageParams) => {
-  const { activityId, operatorId, equipmentDetailId } = params;
+  activityId?: string | null;
+}) => {
   const equipmentDetail = await db.equipmentDetail.findUnique({
     where: {
       id: equipmentDetailId,
@@ -53,6 +60,11 @@ export const createEquipmentUsage = async (params: EquipmentUsageParams) => {
       where: { id: activityId },
       select: {
         status: true,
+        field: {
+          select: {
+            location: true,
+          },
+        },
       },
     });
     if (!activity) {
@@ -62,33 +74,15 @@ export const createEquipmentUsage = async (params: EquipmentUsageParams) => {
       throw new ActivityUpdateStatusError();
     }
   }
-
-  const [updatedEquipmentDetail, equipmentUsage] = await db.$transaction([
-    db.equipmentDetail.update({
-      where: {
-        id: equipmentDetailId,
-      },
-      data: {
-        status: activityId ? "WORKING" : "AVAILABLE",
-      },
-    }),
-    db.equipmentUsage.create({
-      data: { ...params },
-    }),
-  ]);
-  return { updatedEquipmentDetail, equipmentUsage };
+  return true;
 };
-type EquipmentUsageUpdateParams = {
-  duration: string;
-  note?: string | null;
-  usageStartTime: Date;
-};
-export const updateEquipmentUsage = async (
-  id: string,
-  params: EquipmentUsageUpdateParams
-) => {
+const checkUpdateEquipmentUsage = async ({
+  equipmentUsageId,
+}: {
+  equipmentUsageId: string;
+}) => {
   const equipmentUsage = await db.equipmentUsage.findUnique({
-    where: { id },
+    where: { id: equipmentUsageId },
     select: {
       activity: {
         select: {
@@ -105,12 +99,70 @@ export const updateEquipmentUsage = async (
       throw new ActivityUpdateStatusError();
     }
   }
+  return true;
+};
+type EquipmentUsageParams = {
+  activityId?: string | null;
+  equipmentDetailId: string;
+  usageStartTime: Date;
+  duration: string;
+  operatorId?: string | null;
+  note?: string | null;
+};
+
+export const createEquipmentUsage = async (params: EquipmentUsageParams) => {
+  const { activityId, operatorId, equipmentDetailId } = params;
+  await checkCreateEquipmentUsage({
+    equipmentDetailId,
+    activityId,
+    operatorId,
+  });
+
+  const [updatedEquipmentDetail, equipmentUsage] = await db.$transaction([
+    db.equipmentDetail.update({
+      where: {
+        id: equipmentDetailId,
+      },
+      data: {
+        status: "WORKING",
+      },
+    }),
+    db.equipmentUsage.create({
+      data: { ...params },
+      include: {
+        equipmentDetail: {
+          select: {
+            equipmentId: true,
+          },
+        },
+      },
+    }),
+  ]);
+  return { updatedEquipmentDetail, equipmentUsage };
+};
+type EquipmentUsageUpdateParams = {
+  duration: string;
+  note?: string | null;
+  usageStartTime: Date;
+};
+export const updateEquipmentUsage = async (
+  id: string,
+  params: EquipmentUsageUpdateParams
+) => {
+  await checkUpdateEquipmentUsage({ equipmentUsageId: id });
   const updatedEquipmentUsage = await db.equipmentUsage.update({
     where: {
       id,
     },
     data: {
       ...params,
+    },
+    include: {
+      equipmentDetail: {
+        select: {
+          equipmentId: true,
+        },
+      },
     },
   });
   return updatedEquipmentUsage;
@@ -145,6 +197,13 @@ export const assignEquipmentUsage = async (
     data: {
       activityId,
     },
+    include: {
+      equipmentDetail: {
+        select: {
+          equipmentId: true,
+        },
+      },
+    },
   });
   return updatedEquipmentUsage;
 };
@@ -169,6 +228,13 @@ export const revokeEquipmentUsage = async (
     where: { id },
     data: {
       activityId: null,
+    },
+    include: {
+      equipmentDetail: {
+        select: {
+          equipmentId: true,
+        },
+      },
     },
   });
   return updatedEquipmentUsage;
@@ -196,19 +262,26 @@ export const deleteEquipmentUsage = async (id: string) => {
 
   //1: update equipment detail status to available
   //2: delete equipment usage
-  const [updatedEquipmentDetail, deletedEquipmentUsage] = await db.$transaction(
+  const [deletedEquipmentUsage, updatedEquipmentDetail] = await db.$transaction(
     [
+      db.equipmentUsage.delete({
+        where: {
+          id,
+        },
+        include: {
+          equipmentDetail: {
+            select: {
+              equipmentId: true,
+            },
+          },
+        },
+      }),
       db.equipmentDetail.update({
         where: {
           id: equipmentUsage.equipmentDetailId,
         },
         data: {
           status: "AVAILABLE",
-        },
-      }),
-      db.equipmentUsage.delete({
-        where: {
-          id,
         },
       }),
     ]
@@ -249,6 +322,7 @@ export const getEquipmentUsages = async ({
               name: true,
               equipmentId: true,
               status: true,
+              location: true,
               equipment: {
                 select: {
                   name: true,
@@ -336,6 +410,7 @@ export const getEquipmentUsagesByActivityId = async ({
             name: true,
             equipmentId: true,
             status: true,
+            location: true,
             equipment: {
               select: {
                 name: true,

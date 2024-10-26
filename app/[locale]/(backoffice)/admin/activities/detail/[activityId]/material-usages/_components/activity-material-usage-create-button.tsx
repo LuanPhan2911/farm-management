@@ -33,11 +33,13 @@ import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 import { useParams } from "next/navigation";
 import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { UnitType } from "@prisma/client";
-import { ActivitiesSelect } from "@/app/[locale]/(backoffice)/admin/_components/activities-select";
-import { MaterialTable } from "@/types";
 import { MaterialsSelect } from "@/app/[locale]/(backoffice)/admin/_components/materials-select";
-
-export const ActivityMaterialUsageCreateButton = () => {
+interface ActivityMaterialUsageCreateButtonProps {
+  disabled?: boolean;
+}
+export const ActivityMaterialUsageCreateButton = ({
+  disabled,
+}: ActivityMaterialUsageCreateButtonProps) => {
   const tSchema = useTranslations("materialUsages.schema");
   const t = useTranslations("materialUsages.form");
   const formSchema = MaterialUsageSchema(tSchema);
@@ -71,12 +73,12 @@ export const ActivityMaterialUsageCreateButton = () => {
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size={"sm"} variant={"success"}>
+        <Button size={"sm"} variant={"success"} disabled={disabled}>
           <Plus className="h-4 w-4 mr-2" />{" "}
           <span className="text-sm font-semibold">{t("create.label")}</span>
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-xl">
         <DialogHeader>
           <DialogTitle>{t("create.title")}</DialogTitle>
           <DialogDescription>{t("create.description")}</DialogDescription>
@@ -94,7 +96,7 @@ export const ActivityMaterialUsageCreateButton = () => {
                     <MaterialsSelect
                       onChange={field.onChange}
                       placeholder={tSchema("materialId.placeholder")}
-                      disabled={isPending}
+                      disabled={isPending || disabled}
                       error={tSchema("materialId.error")}
                       notFound={tSchema("materialId.notFound")}
                       appearance={{
@@ -121,7 +123,7 @@ export const ActivityMaterialUsageCreateButton = () => {
                           placeholder={tSchema("quantityUsed.placeholder")}
                           value={field.value || undefined}
                           onChange={field.onChange}
-                          disabled={isPending}
+                          disabled={isPending || disabled}
                           type="number"
                         />
                       </FormControl>
@@ -141,7 +143,7 @@ export const ActivityMaterialUsageCreateButton = () => {
                         onChange={field.onChange}
                         placeholder={tSchema("unitId.placeholder")}
                         unitType={UnitType.QUANTITY}
-                        disabled={isPending}
+                        disabled={isPending || disabled}
                         className="w-full"
                         error={tSchema("unitId.error")}
                         notFound={tSchema("unitId.notFound")}
@@ -155,7 +157,7 @@ export const ActivityMaterialUsageCreateButton = () => {
               />
             </div>
 
-            <DynamicDialogFooter disabled={isPending} />
+            <DynamicDialogFooter disabled={isPending || disabled} />
           </form>
         </Form>
       </DialogContent>

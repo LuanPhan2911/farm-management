@@ -76,7 +76,7 @@ export const SoilConfirmButton = ({
 };
 
 export const SoilsConfirmedAllButton = () => {
-  const { onOpen, setPending, isPending } = useAlertDialog();
+  const { onOpen, setPending, onClose } = useAlertDialog();
 
   const t = useTranslations("soils");
   const params = useParams<{
@@ -94,6 +94,9 @@ export const SoilsConfirmedAllButton = () => {
       })
       .catch((error: Error) => {
         toast.error(t("status.failure.editManyConfirmed"));
+      })
+      .finally(() => {
+        onClose();
       });
   };
   return (

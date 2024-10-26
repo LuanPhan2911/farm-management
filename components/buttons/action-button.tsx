@@ -1,12 +1,13 @@
 "use client";
 
 import { useAlertDialog } from "@/stores/use-alert-dialog";
-import { Button } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
 import { Check } from "lucide-react";
 import { toast } from "sonner";
 import { ActionResponse } from "@/types";
+import { VariantProps } from "class-variance-authority";
 
-interface ActionButtonProps {
+interface ActionButtonProps extends VariantProps<typeof buttonVariants> {
   className?: string;
   label: string;
   title: string;
@@ -14,8 +15,10 @@ interface ActionButtonProps {
   actionFn: () => Promise<ActionResponse>;
   disabled?: boolean;
 }
-export const ActionButton = <T extends unknown>({
+export const ActionButton = ({
   className,
+  size,
+  variant,
   description,
   label,
   title,
@@ -43,8 +46,8 @@ export const ActionButton = <T extends unknown>({
   return (
     <Button
       className={className}
-      variant={"blue"}
-      size={"sm"}
+      variant={variant || "blue"}
+      size={size || "sm"}
       onClick={(e) => {
         e.stopPropagation();
         onOpen({

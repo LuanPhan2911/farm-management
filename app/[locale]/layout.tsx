@@ -46,7 +46,30 @@ export default async function RootLayout({
              */
             routerConfig={extractRouterConfig(ourFileRouter)}
           />
-          <NextIntlClientProvider messages={messages}>
+          <NextIntlClientProvider
+            messages={messages}
+            formats={{
+              dateTime: {
+                short: {
+                  day: "2-digit",
+                  month: "short",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                },
+              },
+              number: {
+                precise: {
+                  maximumFractionDigits: 3,
+                },
+              },
+              list: {
+                enumeration: {
+                  style: "long",
+                  type: "conjunction",
+                },
+              },
+            }}
+          >
             <ThemeProvider
               attribute="class"
               defaultTheme="system"

@@ -6,7 +6,6 @@ import { EquipmentUsageCreateButton } from "./_components/equipment-usage-create
 import { EquipmentUsagesTable } from "./_components/equipment-usages-table";
 import { getEquipmentUsages } from "@/services/equipment-usages";
 import { parseToNumber } from "@/lib/utils";
-import { getEquipmentDetailsSelect } from "@/services/equipment-details";
 import { getCurrentStaff } from "@/services/staffs";
 export async function generateMetadata() {
   const t = await getTranslations("equipmentUsages.page");
@@ -15,17 +14,6 @@ export async function generateMetadata() {
   };
 }
 
-export async function generateStaticParams({
-  params,
-}: EquipmentUsagesPageProps) {
-  const equipmentDetails = await getEquipmentDetailsSelect(params.equipmentId);
-  return equipmentDetails.map(({ id, equipmentId }) => {
-    return {
-      equipmentDetailId: id,
-      equipmentId: equipmentId,
-    };
-  });
-}
 interface EquipmentUsagesPageProps {
   params: {
     equipmentId: string;

@@ -12,6 +12,8 @@ import { getTranslations } from "next-intl/server";
 import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/activity";
 import { getCurrentStaff } from "@/services/staffs";
+import { ActivityCancelButton } from "../../../_components/activity-edit-status-button";
+import { canUpdateActivityStatus } from "@/lib/permission";
 
 interface ActivityDangerPageProps {
   params: {
@@ -38,21 +40,34 @@ const ActivityDangerPage = async ({ params }: ActivityDangerPageProps) => {
   if (!data) {
     notFound();
   }
+  const canUpdate = canUpdateActivityStatus(data.status);
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("destroy.title")}</CardTitle>
-        <CardDescription>{t("destroy.description")}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <DestroyButton
-          destroyFn={destroy}
-          id={data.id}
-          inltKey="activities"
-          redirectHref="/admin/activities"
-        />
-      </CardContent>
-    </Card>
+    <>
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("cancel.title")}</CardTitle>
+          <CardDescription>{t("cancel.description")}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ActivityCancelButton activityId={data.id} disabled={!canUpdate} />
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("destroy.title")}</CardTitle>
+          <CardDescription>{t("destroy.description")}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <DestroyButton
+            destroyFn={destroy}
+            id={data.id}
+            inltKey="activities"
+            redirectHref="/admin/activities"
+            disabled={!canUpdate}
+          />
+        </CardContent>
+      </Card>
+    </>
   );
 };
 export default ActivityDangerPage;

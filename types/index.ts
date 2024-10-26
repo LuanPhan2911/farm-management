@@ -365,6 +365,7 @@ export type EquipmentDetailSelect = {
   name: string | null;
   equipmentId: string;
   status: EquipmentStatus;
+  location: string | null;
   equipment: {
     name: string;
     type: EquipmentType;
@@ -404,5 +405,13 @@ export type ActivitySelect = {
   assignedTo: Staff;
   activityDate: Date;
   note: string | null;
+};
+export type ActivityStatusCount = {
+  status: ActivityStatus;
+  _count: number;
+};
+export type ActivityPriorityCount = {
+  priority: ActivityPriority;
+  _count: number;
 };
 export const activityUpdateStatus = ["NEW", "PENDING", "IN_PROGRESS"] as const;
