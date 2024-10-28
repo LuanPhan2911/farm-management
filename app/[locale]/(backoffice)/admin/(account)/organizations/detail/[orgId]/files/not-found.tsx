@@ -1,14 +1,14 @@
 import { NotFoundPage } from "@/components/not-found-page";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 interface OrgMessageFilesNotFoundPageProps {
   params: {
     orgId: string;
   };
 }
-const OrgMessageFilesNotFoundPage = ({
+const OrgMessageFilesNotFoundPage = async ({
   params,
 }: OrgMessageFilesNotFoundPageProps) => {
-  const t = useTranslations("files.notFound");
+  const t = await getTranslations("files.notFound");
   return (
     <NotFoundPage
       title={t("title")}

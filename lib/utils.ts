@@ -370,6 +370,12 @@ export function isImage(type: string): boolean {
   return imageMimeTypes.includes(type);
 }
 
+export function isPDF(type: string): boolean {
+  return type === "application/pdf";
+}
+export function isJson(type: string): boolean {
+  return type === "application/json";
+}
 export function dateToString(date: Date | undefined): string | undefined {
   return date ? `${format(date, "yyy-MM-dd")}` : undefined;
 }

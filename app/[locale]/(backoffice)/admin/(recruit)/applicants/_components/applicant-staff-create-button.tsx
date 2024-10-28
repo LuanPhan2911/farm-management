@@ -28,6 +28,7 @@ import { StaffSelectRole } from "../../../_components/staff-select-role";
 import { useForm } from "react-hook-form";
 import { ApplicantTable } from "@/types";
 import { StaffRole } from "@prisma/client";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface ApplicantStaffCreateButtonProps {
   data: ApplicantTable;
@@ -64,6 +65,7 @@ export const ApplicantStaffCreateDialog = () => {
   const t = useTranslations("applicants");
   const tSchema = useTranslations("staffs.schema");
   const formSchema = StaffSchema(tSchema);
+  const { isAdmin } = useCurrentStaffRole();
   const form = useForm<z.infer<typeof formSchema>>({
     mode: "onChange",
     resolver: zodResolver(formSchema),
@@ -201,7 +203,11 @@ export const ApplicantStaffCreateDialog = () => {
                     defaultValue={field.value || undefined}
                     onChange={field.onChange}
                     placeholder={tSchema("role.placeholder")}
-                    hidden={[StaffRole.superadmin]}
+                    disabledValues={[
+                      ...(isAdmin
+                        ? [StaffRole.superadmin, StaffRole.admin]
+                        : []),
+                    ]}
                   />
                 </FormControl>
 

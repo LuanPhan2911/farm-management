@@ -2,7 +2,10 @@
 import { useUploadThing } from "@/lib/uploadthing";
 import { useDropzone } from "@uploadthing/react";
 import { useCallback, useEffect, useState } from "react";
-import { generateClientDropzoneAccept } from "uploadthing/client";
+import {
+  generateClientDropzoneAccept,
+  generatePermittedFileTypes,
+} from "uploadthing/client";
 import {
   Carousel,
   CarouselContent,
@@ -45,7 +48,7 @@ export const UploadFiles = ({
 }: UploadFilesProps) => {
   const [files, setFiles] = useState<FileUpload[]>([]);
 
-  const { startUpload, permittedFileInfo, isUploading } = useUploadThing(
+  const { startUpload, routeConfig, isUploading } = useUploadThing(
     "fileUploader",
     {
       onClientUploadComplete: (
@@ -84,7 +87,6 @@ export const UploadFiles = ({
   );
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      setUploading(true);
       setFiles(
         acceptedFiles.map((file) =>
           Object.assign(file, {
@@ -96,6 +98,7 @@ export const UploadFiles = ({
       );
       if (mode === "auto") {
         startUpload(acceptedFiles, input || {});
+        setUploading(true);
       }
     },
     [input, startUpload, mode, setUploading]
@@ -109,13 +112,11 @@ export const UploadFiles = ({
       );
   }, [files]);
 
-  const fileTypes = permittedFileInfo?.config
-    ? Object.keys(permittedFileInfo?.config)
-    : [];
-
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    accept: fileTypes ? generateClientDropzoneAccept(fileTypes) : undefined,
+    accept: generateClientDropzoneAccept(
+      generatePermittedFileTypes(routeConfig).fileTypes
+    ),
     maxFiles: MAX_FILES,
     disabled: disabled || isUploading,
   });

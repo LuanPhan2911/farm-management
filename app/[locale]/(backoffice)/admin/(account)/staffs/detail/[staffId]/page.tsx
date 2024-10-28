@@ -1,15 +1,12 @@
 import { getUserById } from "@/services/users";
 import { notFound } from "next/navigation";
-import { StaffBasicInfo } from "../../_components/staff-basic-info";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getTranslations } from "next-intl/server";
 import { getStaffsSelect } from "@/services/staffs";
+import { UserEditForm } from "../../../users/_components/user-edit-button";
+import { UserInfo } from "../../../users/_components/user-info";
+import { Separator } from "@/components/ui/separator";
+import { StaffsTableAction } from "../../_components/staffs-table-action";
 
 interface StaffDetailPageProps {
   params: {
@@ -43,9 +40,12 @@ const StaffDetailPage = async ({ params }: StaffDetailPageProps) => {
           <CardTitle>{t("title")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="max-w-6xl">
-            <StaffBasicInfo data={structuredClone(staff)} />
+          <div className="flex justify-end">
+            <StaffsTableAction data={structuredClone(staff)} />
           </div>
+          <UserInfo data={structuredClone(staff)} />
+          <Separator className="my-4" />
+          <UserEditForm data={structuredClone(staff)} />
         </CardContent>
       </Card>
     </div>

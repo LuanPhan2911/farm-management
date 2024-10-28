@@ -1,8 +1,10 @@
 import { getUserById } from "@/services/users";
 import { notFound } from "next/navigation";
-import { UserBasicInfo } from "../../_components/user-basic-info";
 import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { UserEditForm } from "../../_components/user-edit-button";
+import { UserInfo } from "../../_components/user-info";
+import { Separator } from "@/components/ui/separator";
 
 interface UserDetailPageProps {
   params: {
@@ -29,9 +31,9 @@ const UserDetailPage = async ({ params }: UserDetailPageProps) => {
           <CardTitle>{t("title")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="max-w-5xl">
-            <UserBasicInfo data={structuredClone(user)} />
-          </div>
+          <UserInfo data={structuredClone(user)} />
+          <Separator className="my-4" />
+          <UserEditForm data={structuredClone(user)} />
         </CardContent>
       </Card>
     </div>

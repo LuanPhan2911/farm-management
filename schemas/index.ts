@@ -287,20 +287,26 @@ export const UserSchema = (
     firstName: stringSchema(t, "firstName", {
       min: 1,
       max: 100,
-    }),
+      required: false,
+    }).nullish(),
     lastName: stringSchema(t, "lastName", {
       min: 1,
       max: 100,
-    }),
+      required: false,
+    }).nullish(),
 
     phone: stringSchema(t, "phone", {
       min: 1,
       max: 15,
-    }).refine(validator.isMobilePhone, t("phone.isPhone")),
+      required: false,
+    })
+      .refine(validator.isMobilePhone, t("phone.isPhone"))
+      .nullish(),
     address: stringSchema(t, "address", {
       min: 1,
       max: 255,
-    }),
+      required: false,
+    }).nullish(),
   });
 };
 
@@ -1005,6 +1011,8 @@ export const MessageSchema = () => {
       .max(5000, "Max content length is 5000 characters"),
     fileIds: z.array(z.string()).nullish(),
     fileUrl: z.string().nullish(),
+    name: z.string().nullish(),
+    type: z.string().nullish(),
   });
 };
 export const FileNameSchema = (
@@ -1023,5 +1031,6 @@ export const FileCopySchema = (
     ownerId: z.string(),
     isPublic: z.boolean().optional(),
     orgId: z.string().nullish(),
+    type: z.string(),
   });
 };

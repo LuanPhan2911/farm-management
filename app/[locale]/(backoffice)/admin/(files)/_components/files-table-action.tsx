@@ -11,7 +11,6 @@ import { useTranslations } from "next-intl";
 import { FileWithOwner } from "@/types";
 import { FileEditDeletedButton } from "./file-edit-deleted-button";
 import { Staff } from "@prisma/client";
-import { useRole } from "@/hooks/use-role";
 import { DownloadButtonWithUrl } from "@/components/buttons/download-button";
 import {
   ContextMenu,
@@ -22,6 +21,7 @@ import {
 import { PropsWithChildren } from "react";
 import { FileEditNameButton } from "./file-edit-name-button";
 import { FileCopyButton } from "./file-copy-button";
+import { isSuperAdmin } from "@/lib/permission";
 interface FilesTableActionProps {
   data: FileWithOwner;
   currentStaff: Staff;
@@ -31,8 +31,8 @@ export const FilesTableAction = ({
   currentStaff,
 }: FilesTableActionProps) => {
   const t = useTranslations("files.form");
-  const { isSuperAdmin } = useRole(currentStaff.role);
-  const isOwner = currentStaff.id === data.owner.id || isSuperAdmin;
+  const isSuperAdminRole = isSuperAdmin(currentStaff.role);
+  const isOwner = currentStaff.id === data.owner.id || isSuperAdminRole;
 
   return (
     <DropdownMenu>
@@ -86,8 +86,8 @@ export const FilesTableActionContextMenu = ({
   children,
 }: FilesTableActionContextMenuProps) => {
   const t = useTranslations("files.form");
-  const { isSuperAdmin } = useRole(currentStaff.role);
-  const isOwner = currentStaff.id === data.owner.id || isSuperAdmin;
+  const isSuperAdminRole = isSuperAdmin(currentStaff.role);
+  const isOwner = currentStaff.id === data.owner.id || isSuperAdminRole;
 
   return (
     <ContextMenu>

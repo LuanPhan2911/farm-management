@@ -28,7 +28,7 @@ export default async function handler(
     // check all chat message orgIg= all
     let message;
     const isPublic = orgId === "all";
-    let { content, fileIds, fileUrl } = validatedFields.data;
+    let { content, fileIds, fileUrl, name, type } = validatedFields.data;
     if (fileUrl) {
       //check file exist
 
@@ -36,6 +36,8 @@ export default async function handler(
         url: fileUrl,
         ownerId: staff.id,
         isPublic,
+        name,
+        type,
       });
 
       if (copiedFile) {

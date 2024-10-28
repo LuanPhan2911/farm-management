@@ -11,34 +11,35 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { OrganizationSchema } from "@/schemas";
+import { useAuth } from "@clerk/nextjs";
 import { Organization } from "@clerk/nextjs/server";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFormatter, useTranslations } from "next-intl";
-import { useEffect, useTransition } from "react";
+import { useTranslations } from "next-intl";
+import { useContext, useEffect, useTransition } from "react";
 
 import { FileUploader } from "react-drag-drop-files";
 import { useForm } from "react-hook-form";
 import slugify from "slugify";
 import { toast } from "sonner";
 import { z } from "zod";
+import { OrgContext } from "./org-tabs";
 
 interface OrgEditFormProps {
   data: Organization;
 }
 export const OrgEditForm = ({ data }: OrgEditFormProps) => {
-  const { relativeTime } = useFormatter();
-
   const tSchema = useTranslations("organizations.schema");
   const formSchema = OrganizationSchema(tSchema);
-
   const [isPending, startTransition] = useTransition();
 
+  const { canUpdate } = useContext(OrgContext);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       ...data,
-      slug: data.slug || "",
+      slug: data.slug || undefined,
     },
   });
   const orgName = form.watch("name");
@@ -58,7 +59,6 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
       edit(values, data.id)
         .then(({ message, ok }) => {
           if (ok) {
-            form.reset();
             toast.success(message);
           } else {
             toast.error(message);
@@ -74,19 +74,17 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
       const formData = new FormData();
       formData.append("file", file);
       startTransition(() => {
-        startTransition(() => {
-          editLogo(data.id, data.createdBy, formData)
-            .then(({ message, ok }) => {
-              if (ok) {
-                toast.success(message);
-              } else {
-                toast.error(message);
-              }
-            })
-            .catch((error: Error) => {
-              toast.error("Internal error");
-            });
-        });
+        editLogo(data.id, data.createdBy, formData)
+          .then(({ message, ok }) => {
+            if (ok) {
+              toast.success(message);
+            } else {
+              toast.error(message);
+            }
+          })
+          .catch((error: Error) => {
+            toast.error("Internal error");
+          });
       });
     }
   };
@@ -108,7 +106,7 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
                   placeholder={tSchema("name.placeholder")}
                   value={field.value || undefined}
                   onChange={field.onChange}
-                  disabled={isPending}
+                  disabled={isPending || !canUpdate}
                 />
               </FormControl>
 
@@ -127,7 +125,7 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
                   placeholder={tSchema("slug.placeholder")}
                   value={field.value || undefined}
                   onChange={field.onChange}
-                  disabled={isPending}
+                  disabled={isPending || !canUpdate}
                 />
               </FormControl>
 
@@ -136,17 +134,18 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
           )}
         />
         <FormItem>
-          <FormLabel>{tSchema("createdAt.label")}</FormLabel>
-          <FormControl>
-            <p className="font-bold text-sm">{relativeTime(data.createdAt)}</p>
-          </FormControl>
-        </FormItem>
-        <FormItem>
           <FormLabel>{tSchema("logo.label")}</FormLabel>
-          <FileUploader handleChange={onUpload} types={["JPG", "PNG"]} />
+          <FileUploader
+            handleChange={onUpload}
+            types={["JPG", "PNG"]}
+            disabled={isPending || !canUpdate}
+          />
         </FormItem>
 
-        <DynamicDialogFooter disabled={isPending} closeButton={false} />
+        <DynamicDialogFooter
+          disabled={isPending || !canUpdate}
+          closeButton={false}
+        />
       </form>
     </Form>
   );

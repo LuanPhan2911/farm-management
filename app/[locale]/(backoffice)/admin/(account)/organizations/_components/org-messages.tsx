@@ -15,6 +15,9 @@ import { SocketIndicator } from "@/components/socket-indicator";
 import { Link } from "@/navigation";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { DropdownMenuButton } from "@/components/buttons/dropdown-menu-button";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+
 interface OrgMessages {
   org: Organization;
   currentStaff: Staff;
@@ -29,17 +32,22 @@ export const OrgMessages = ({ org, currentStaff }: OrgMessages) => {
           {t("messages.title")}
           <SocketIndicator />
         </CardTitle>
-        <CardDescription>{t("messages.description")}</CardDescription>
+        <CardDescription className="flex justify-between">
+          {t("messages.description")}
+          <DropdownMenuButton>
+            <DropdownMenuItem>
+              <Link href={`/admin/organizations/detail/${org.id}/files`}>
+                <Button variant={"blue"} size={"sm"}>
+                  Uploaded files
+                </Button>
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuButton>
+        </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4 mb-4">
-        <div className="flex justify-start">
-          <Link href={`/admin/organizations/detail/${org.id}/files`}>
-            <Button variant={"blue"} size={"sm"}>
-              Uploaded files
-            </Button>
-          </Link>
-        </div>
         <Separator />
+
         <ChatMessages
           chatId={org.id}
           apiUrl="/api/messages"

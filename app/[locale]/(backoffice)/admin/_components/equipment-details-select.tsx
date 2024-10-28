@@ -1,10 +1,8 @@
-import { ErrorButton } from "@/components/buttons/error-button";
 import {
   ComboBoxCustom,
   ComboBoxCustomAppearance,
 } from "@/components/form/combo-box";
 import { SelectItemContent } from "@/components/form/select-item";
-import { Skeleton } from "@/components/ui/skeleton";
 import { EquipmentDetailSelect } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 

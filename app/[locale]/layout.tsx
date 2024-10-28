@@ -56,6 +56,13 @@ export default async function RootLayout({
                   hour: "2-digit",
                   minute: "2-digit",
                 },
+                long: {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                },
               },
               number: {
                 precise: {
@@ -78,7 +85,7 @@ export default async function RootLayout({
             >
               <QueryProvider>
                 {children}
-                <Toaster duration={10000} />
+                <Toaster />
                 <DialogProvider />
                 <SheetProvider />
               </QueryProvider>

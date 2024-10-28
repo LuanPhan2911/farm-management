@@ -7,7 +7,7 @@ interface StaffSelectRoleProps {
   defaultValue?: string;
   onChange: (value: string) => void;
   disabled?: boolean;
-  hidden?: StaffRole[];
+  disabledValues?: StaffRole[];
 }
 
 export const StaffSelectRole = ({
@@ -15,17 +15,15 @@ export const StaffSelectRole = ({
   onChange,
   defaultValue,
   disabled,
-  hidden,
+  disabledValues,
 }: StaffSelectRoleProps) => {
   const t = useTranslations("staffs.schema.role.options");
-  const options: SelectData[] = Object.values(StaffRole)
-    .map((item) => {
-      return {
-        label: t(`${item}`),
-        value: item,
-      };
-    })
-    .filter((item) => !hidden?.includes(item.value));
+  const options: SelectData[] = Object.values(StaffRole).map((item) => {
+    return {
+      label: t(`${item}`),
+      value: item,
+    };
+  });
   return (
     <SelectOptions
       placeholder={placeholder}
@@ -33,6 +31,7 @@ export const StaffSelectRole = ({
       onChange={onChange}
       defaultValue={defaultValue}
       disabled={disabled}
+      disabledValues={disabledValues}
     />
   );
 };

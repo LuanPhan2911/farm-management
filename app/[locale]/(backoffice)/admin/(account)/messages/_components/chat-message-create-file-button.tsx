@@ -190,6 +190,8 @@ export const ChatMessageCreateFileFromCLoud = ({
     defaultValues: {
       content: "",
       fileUrl: undefined,
+      name: undefined,
+      type: undefined,
     },
   });
 
@@ -257,6 +259,10 @@ export const ChatMessageCreateFileFromCLoud = ({
                         appearance={{
                           button: "lg:w-full",
                           content: "lg:w-[480px]",
+                        }}
+                        onSelectedFile={(file) => {
+                          form.setValue("name", file.name);
+                          form.setValue("type", file.type);
                         }}
                       />
                     </FormControl>

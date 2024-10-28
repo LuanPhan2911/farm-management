@@ -2,17 +2,16 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { CategoryEditButton } from "./category-edit-button";
-import { CategoryDeleteButton } from "./category-delete-button";
 import { MoreHorizontal } from "lucide-react";
 
 import { useTranslations } from "next-intl";
 import { CategoryTable } from "@/types";
+import { destroy } from "@/actions/category";
+import { DestroyButton } from "@/components/buttons/destroy-button";
 interface CategoriesTableActionProps {
   data: CategoryTable;
 }
@@ -30,7 +29,12 @@ export const CategoriesTableAction = ({ data }: CategoriesTableActionProps) => {
           <CategoryEditButton data={data} label={t("edit.label")} />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <CategoryDeleteButton data={data} label={t("destroy.label")} />
+          <DestroyButton
+            destroyFn={destroy}
+            id={data.id}
+            inltKey="categories"
+            className="w-full"
+          />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

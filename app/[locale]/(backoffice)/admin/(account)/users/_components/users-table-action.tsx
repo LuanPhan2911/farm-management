@@ -6,16 +6,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Ellipsis } from "lucide-react";
-import { UserDeleteButton } from "./user-delete-button";
 import { useTranslations } from "next-intl";
 import { User } from "@clerk/nextjs/server";
-
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { DestroyButton } from "@/components/buttons/destroy-button";
+import { destroy } from "@/actions/user";
 interface UsersTableActionProps {
   data: User;
 }
-export const UsersTableAction = ({ data: user }: UsersTableActionProps) => {
+export const UsersTableAction = ({ data }: UsersTableActionProps) => {
   const t = useTranslations("users.form");
-
+  const { isSuperAdmin } = useCurrentStaffRole();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -23,7 +24,13 @@ export const UsersTableAction = ({ data: user }: UsersTableActionProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
-          <UserDeleteButton data={user} label={t("destroy.label")} />
+          <DestroyButton
+            destroyFn={destroy}
+            id={data.id}
+            inltKey="users"
+            className="w-full"
+            disabled={!isSuperAdmin}
+          />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

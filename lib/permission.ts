@@ -1,3 +1,4 @@
+import { User } from "@clerk/nextjs/server";
 import {
   ActivityStatus,
   EquipmentStatus,
@@ -7,8 +8,11 @@ import {
 export const isSuperAdmin = (role: StaffRole) => {
   return role === StaffRole.superadmin;
 };
-export const isAdmin = (role: StaffRole) => {
+export const isOnlyAdmin = (role: StaffRole) => {
   return role === StaffRole.superadmin || role == StaffRole.admin;
+};
+export const isAdmin = (role: StaffRole) => {
+  return role == StaffRole.admin;
 };
 export const isFarmer = (role: StaffRole) => {
   return role === StaffRole.farmer;

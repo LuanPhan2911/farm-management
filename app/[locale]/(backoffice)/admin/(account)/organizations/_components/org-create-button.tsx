@@ -30,15 +30,17 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { StaffsSelect } from "../../../_components/staffs-select";
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
-interface OrgCreateButtonProps {}
+import { useCurrentStaff } from "@/hooks/use-current-staff";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
-export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
+export const OrgCreateButton = () => {
   const t = useTranslations("organizations.form");
   const tSchema = useTranslations("organizations.schema");
   const formSchema = OrganizationSchema(tSchema);
 
   const [isPending, startTransition] = useTransition();
-
+  const { currentStaff } = useCurrentStaff();
+  const { isOnlyAdmin } = useCurrentStaffRole();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
@@ -57,6 +59,11 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
       })
     );
   }, [orgName, form]);
+  useEffect(() => {
+    if (currentStaff) {
+      form.setValue("createdBy", currentStaff.id);
+    }
+  }, [currentStaff, form]);
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       create(values)
@@ -78,7 +85,7 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={"success"} size={"sm"}>
+        <Button variant={"success"} size={"sm"} disabled={!isOnlyAdmin}>
           <Plus className="h-4 w-4 mr-2" />{" "}
           <span className="text-sm font-semibold">{t("create.label")}</span>
         </Button>
@@ -147,6 +154,10 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
                         notFound={tSchema("createdBy.notFound")}
                         disabled={isPending}
                         adminOnly
+                        appearance={{
+                          button: "lg:w-full h-12",
+                          content: "lg:w-[350px]",
+                        }}
                       />
                     </div>
                   </FormControl>

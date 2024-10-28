@@ -6,11 +6,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { UnitEditButton } from "./unit-edit-button";
-import { UnitDeleteButton } from "./unit-delete-button";
 import { MoreHorizontal } from "lucide-react";
 
 import { useTranslations } from "next-intl";
 import { UnitTable } from "@/types";
+import { DestroyButton } from "@/components/buttons/destroy-button";
+import { destroy } from "@/actions/unit";
 interface UnitsTableActionProps {
   data: UnitTable;
 }
@@ -28,7 +29,12 @@ export const UnitsTableAction = ({ data }: UnitsTableActionProps) => {
           <UnitEditButton data={data} label={t("edit.label")} />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <UnitDeleteButton data={data} label={t("destroy.label")} />
+          <DestroyButton
+            destroyFn={destroy}
+            id={data.id}
+            inltKey="units"
+            className="w-full"
+          />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

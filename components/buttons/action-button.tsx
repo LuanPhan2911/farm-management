@@ -2,13 +2,14 @@
 
 import { useAlertDialog } from "@/stores/use-alert-dialog";
 import { Button, buttonVariants } from "../ui/button";
-import { Check } from "lucide-react";
+import { Check, LucideIcon } from "lucide-react";
 import { toast } from "sonner";
 import { ActionResponse } from "@/types";
 import { VariantProps } from "class-variance-authority";
 
 interface ActionButtonProps extends VariantProps<typeof buttonVariants> {
   className?: string;
+  icon?: LucideIcon;
   label: string;
   title: string;
   description: string;
@@ -23,9 +24,11 @@ export const ActionButton = ({
   label,
   title,
   disabled,
+  icon: Icon,
   actionFn,
 }: ActionButtonProps) => {
   const { onOpen, setPending, isPending, onClose } = useAlertDialog();
+  const DefaultIcon = Icon ? Icon : Check;
   const onClick = () => {
     setPending(true);
     actionFn()
@@ -58,7 +61,7 @@ export const ActionButton = ({
       }}
       disabled={isPending || disabled}
     >
-      <Check className="h-4 w-4 mr-2" />
+      <DefaultIcon className="h-4 w-4 mr-2" />
       {label}
     </Button>
   );

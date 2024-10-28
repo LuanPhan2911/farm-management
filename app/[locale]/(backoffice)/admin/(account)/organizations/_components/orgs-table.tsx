@@ -17,6 +17,8 @@ import { UserAvatar } from "@/components/user-avatar";
 
 import { useRouter } from "@/navigation";
 import { OrgsTableSortBy } from "./orgs-table-sort-by";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { useOrganizationList } from "@clerk/nextjs";
 
 interface OrgsTableProps {
   orgs: Organization[];
@@ -26,16 +28,25 @@ export const OrgsTable = ({ orgs, totalPage }: OrgsTableProps) => {
   const t = useTranslations("organizations");
   const { relativeTime } = useFormatter();
   const router = useRouter();
+  const { isSuperAdmin } = useCurrentStaffRole();
+  const { setActive } = useOrganizationList();
   const handleClick = (org: Organization) => {
+    if (isSuperAdmin) {
+      setActive?.({ organization: null });
+    } else {
+      setActive?.({ organization: org.id });
+    }
     router.push(`/admin/organizations/detail/${org.id}`);
   };
 
   return (
     <>
-      <div className="py-4 flex gap-2 lg:flex-row flex-col items-start lg:items-center">
-        <SearchBar placeholder={t("search.placeholder")} isPagination />
-        <OrgsTableSortBy />
-      </div>
+      {isSuperAdmin && (
+        <div className="py-4 flex gap-2 lg:flex-row flex-col items-start lg:items-center">
+          <SearchBar placeholder={t("search.placeholder")} isPagination />
+          <OrgsTableSortBy />
+        </div>
+      )}
 
       <Table>
         <TableHeader>

@@ -2,14 +2,13 @@
 import { UserAvatar } from "@/components/user-avatar";
 import { ChatParamKey, useChatQuery } from "@/hooks/use-chat-query";
 import { useChatSocket } from "@/hooks/use-chat-socket";
-import { useRole } from "@/hooks/use-role";
 import { MessageWithStaff } from "@/types";
 import { File, Staff } from "@prisma/client";
-import { Loader2, ServerCrash } from "lucide-react";
+import { FileJson, FileText, Loader2, ServerCrash } from "lucide-react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useFormatter, useTranslations } from "next-intl";
 import Image from "next/image";
-import { cn, isImage } from "@/lib/utils";
+import { cn, isImage, isJson, isPDF } from "@/lib/utils";
 import {
   ChatMessageEditButton,
   ChatMessageEditForm,
@@ -27,6 +26,7 @@ import { DownloadButtonWithUrl } from "@/components/buttons/download-button";
 import { StaffMetadataRole } from "../../../_components/staff-metadata-role";
 import { Separator } from "@/components/ui/separator";
 import { useScrollToBottom } from "@/hooks/use-scroll-bottom";
+import { isAdmin } from "@/lib/permission";
 
 interface ChatMessagesProps {
   chatId: string;
@@ -94,7 +94,7 @@ export const ChatMessages = ({
 
   if (status === "pending") {
     return (
-      <div className="flex flex-col h-[300px] justify-center items-center">
+      <div className="flex flex-col h-[250px] justify-center items-center">
         <Loader2 className="w-7 h-7 animate-spin my-4 " />
         <p className="text-xs">{t("notFound")}</p>
       </div>
@@ -102,7 +102,7 @@ export const ChatMessages = ({
   }
   if (status === "error") {
     return (
-      <div className="flex flex-col h-[300px] justify-center items-center">
+      <div className="flex flex-col h-[250px] justify-center items-center">
         <ServerCrash className="w-7 h-7 my-4 " />
         <ErrorButton title={t("error")} refresh={refetch} />
       </div>
@@ -110,13 +110,13 @@ export const ChatMessages = ({
   }
 
   return (
-    <div className="flex-1 flex flex-col py-4 overflow-y-auto gap-2">
-      {!hasNextPage && <div className="flex-1"></div>}
+    <div className="flex flex-col min-h-[250px]">
+      {!hasNextPage && <div className="flex-1 flex"></div>}
       {!data?.pages?.[0]?.items?.length && <ChatWelcome title={t("welcome")} />}
       {hasNextPage && (
-        <div className="flex justify-center">
+        <div className="flex justify-center py-4">
           {isFetchingNextPage ? (
-            <Loader2 className="h-6 w-6 animate-spin py-4" />
+            <Loader2 className="h-6 w-6 animate-spin" />
           ) : (
             <Button
               onClick={() => fetchNextPage()}
@@ -155,7 +155,7 @@ export const ChatMessages = ({
 
 const ChatWelcome = ({ title }: { title: string }) => {
   return (
-    <div className="space-y-2 px-4 mb-4">
+    <div className="space-y-2">
       <p className="text-md font-semibold text-muted-foreground">{title}</p>
     </div>
   );
@@ -172,7 +172,7 @@ const ChatItem = ({
   socketQuery,
   currentStaff,
 }: ChatItemProps) => {
-  const { isAdmin } = useRole(message.staff.role);
+  const isAdminRole = isAdmin(message.staff.role);
   const { relativeTime } = useFormatter();
 
   const [isEditing, setEditing] = useState(false);
@@ -183,7 +183,7 @@ const ChatItem = ({
   const isUpdated = createdAt !== updatedAt;
   const hasFiles = !!files && files.length > 0;
 
-  const canDeleteMessage = !deleted && (isAdmin || isOwner);
+  const canDeleteMessage = !deleted && (isAdminRole || isOwner);
   const canEditMessage = !deleted && isOwner;
 
   return (
@@ -281,10 +281,12 @@ const ChatItemFiles = ({ files }: ChatItemFilesProps) => {
                           className="p-2"
                         />
                       ) : (
-                        <div className="h-full w-full flex flex-col justify-center">
-                          <div className="text-xs text-center text-blue-400 font-semibold w-full line-clamp-1">
-                            {file.type}
-                          </div>
+                        <div className="h-full w-full flex flex-col items-center">
+                          {isPDF(file.type) && <FileText className="h-8 w-8" />}
+                          {isJson(file.type) && (
+                            <FileJson className="h-8 w-8" />
+                          )}
+
                           <div className="text-xs text-center text-muted-foreground w-full break-words">
                             {file.name}
                           </div>

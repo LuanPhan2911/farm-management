@@ -4,6 +4,7 @@ import { FileCopySchema, FileNameSchema } from "@/schemas";
 import {
   createFileFromUrl,
   deleteFile,
+  revalidatePathFile,
   updateFileDeleted,
   updateFileName,
 } from "@/services/files";
@@ -14,12 +15,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 export const create = (file: File) => {
-  revalidatePath("/admin/my-files");
-  revalidatePath("/admin/public-files");
-  revalidatePath("/admin/messages/files");
-  if (file.orgId) {
-    revalidatePath(`/admin/organizations/detail/${file.orgId}/files`);
-  }
+  revalidatePathFile(file);
 };
 export const copy = async (
   values: z.infer<ReturnType<typeof FileCopySchema>>
@@ -33,9 +29,13 @@ export const copy = async (
     if (!validatedFields.success) {
       return errorResponse(tSchema("errors.parse"));
     }
-    const { name } = validatedFields.data;
+    const { name, ownerId, url, isPublic, orgId, type } = validatedFields.data;
     const file = await createFileFromUrl({
-      ...validatedFields.data,
+      ownerId,
+      url,
+      isPublic,
+      orgId,
+      type,
       name: `Copy of ${name}`,
     });
     revalidatePath("/admin/my-files");

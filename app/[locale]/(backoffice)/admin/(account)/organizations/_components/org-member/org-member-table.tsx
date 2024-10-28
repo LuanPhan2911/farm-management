@@ -1,5 +1,4 @@
 "use client";
-import { NavPagination } from "@/components/nav-pagination";
 import { SearchBar } from "@/components/search-bar";
 import {
   Table,
@@ -10,32 +9,26 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { UserAvatar } from "@/components/user-avatar";
-import { OrgMemberAdd } from "./org-member-add";
 import { OrgMemberAction } from "./org-member-action";
 import { OrgMemberRoleEditButton } from "./org-member-role-edit-button";
 import { OrgRole } from "@/types";
 import { useFormatter, useTranslations } from "next-intl";
 import { OrganizationMembership } from "@clerk/nextjs/server";
-import { useRouter } from "@/navigation";
 
 interface OrgMemberTableProps {
   data: OrganizationMembership[];
-  totalPage: number;
 }
-export const OrgMemberTable = ({ data, totalPage }: OrgMemberTableProps) => {
+export const OrgMemberTable = ({ data }: OrgMemberTableProps) => {
   const t = useTranslations("organizations");
   const { relativeTime } = useFormatter();
-  const router = useRouter();
-  const handleEdit = (row: OrganizationMembership) => {
-    router.push(`/admin/staffs/detail/${row.publicUserData?.userId}`);
-  };
+
   return (
     <>
-      <div className="flex justify-end">
-        <OrgMemberAdd />
-      </div>
       <div className="py-4 flex gap-2 lg:flex-row flex-col items-start lg:items-center">
-        <SearchBar placeholder={t("search.placeholder")} isPagination />
+        <SearchBar
+          placeholder={t("search.member.placeholder")}
+          isPagination={false}
+        />
       </div>
       <Table>
         <TableHeader>
@@ -53,11 +46,7 @@ export const OrgMemberTable = ({ data, totalPage }: OrgMemberTableProps) => {
           {data.map((item) => {
             const { publicUserData, role, createdAt } = item;
             return (
-              <TableRow
-                key={publicUserData?.userId}
-                className="cursor-pointer"
-                onClick={() => handleEdit(item)}
-              >
+              <TableRow key={publicUserData?.userId}>
                 <TableCell>
                   <UserAvatar
                     src={publicUserData?.imageUrl || undefined}
@@ -76,7 +65,7 @@ export const OrgMemberTable = ({ data, totalPage }: OrgMemberTableProps) => {
                 </TableCell>
                 <TableCell>{relativeTime(createdAt)}</TableCell>
                 <TableCell>
-                  <OrgMemberAction data={publicUserData} />
+                  <OrgMemberAction data={item} />
                 </TableCell>
               </TableRow>
             );
@@ -88,9 +77,6 @@ export const OrgMemberTable = ({ data, totalPage }: OrgMemberTableProps) => {
           No results.
         </div>
       )}
-      <div className="py-4">
-        <NavPagination totalPage={totalPage} />
-      </div>
     </>
   );
 };

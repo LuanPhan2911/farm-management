@@ -3,17 +3,6 @@ import { UserAvatar } from "@/components/user-avatar";
 import { User } from "@clerk/nextjs/server";
 import { useFormatter, useTranslations } from "next-intl";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { Settings } from "lucide-react";
-import { UserDeleteButton } from "./user-delete-button";
 import { getEmailAddress, getFullName } from "@/lib/utils";
 
 interface UserInfoProps {
@@ -25,7 +14,7 @@ export const UserInfo = ({ data }: UserInfoProps) => {
 
   return (
     <div className="flex flex-col gap-y-2 justify-center py-5 p-3 relative">
-      <UserAvatar src={data.imageUrl} size={"lg"} className="rounded-full" />
+      <UserAvatar src={data.imageUrl} />
       <div className="flex flex-col gap-y-2">
         <div className="text-md font-semibold flex items-center gap-x-2">
           {getFullName(data)}
@@ -48,21 +37,6 @@ export const UserInfo = ({ data }: UserInfoProps) => {
         {t("table.thead.joinedAt")}:{" "}
         <span className="font-semibold">{relativeTime(data.createdAt)}</span>
       </div>
-
-      <DropdownMenu>
-        <DropdownMenuTrigger className="absolute top-1 right-1" asChild>
-          <Button variant={"purple"} size={"sm"}>
-            <Settings />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <UserDeleteButton data={data} label="Delete User" />
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
     </div>
   );
 };

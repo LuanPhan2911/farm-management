@@ -4,6 +4,10 @@ import { parseToNumber } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getTranslations } from "next-intl/server";
 import { OrgCreateButton } from "./_components/org-create-button";
+import { getCurrentStaff } from "@/services/staffs";
+import { checkRole } from "@/lib/role";
+import { notFound } from "next/navigation";
+import { getOrganizationMembershipList } from "@/services/users";
 
 interface OrganizationPageProps {
   searchParams: {
@@ -22,8 +26,9 @@ const OrganizationsPage = async ({ searchParams }: OrganizationPageProps) => {
   const page = parseToNumber(searchParams!.page, 1);
   const t = await getTranslations("organizations.page");
   const { orderBy, query } = searchParams;
-  const { data: organizations, totalPage } = await getOrganizations({
-    currentPage: page,
+
+  const { data, totalPage } = await getOrganizations({
+    page: page,
     orderBy,
     query,
   });
@@ -38,10 +43,7 @@ const OrganizationsPage = async ({ searchParams }: OrganizationPageProps) => {
           <div className="flex justify-end">
             <OrgCreateButton />
           </div>
-          <OrgsTable
-            orgs={structuredClone(organizations)}
-            totalPage={totalPage}
-          />
+          <OrgsTable orgs={structuredClone(data)} totalPage={totalPage} />
         </CardContent>
       </Card>
     </div>

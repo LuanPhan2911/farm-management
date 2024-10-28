@@ -8,14 +8,20 @@ export const useCurrentStaffRole = () => {
       isAdmin: false,
       isSuperAdmin: false,
       isFarmer: false,
+      isOnlyAdmin: false,
+      user: null,
     };
   }
   const isSuperAdmin = user.publicMetadata?.role === StaffRole.superadmin;
-  const isAdmin = isSuperAdmin || user.publicMetadata?.role === StaffRole.admin;
+  const isAdmin = user.publicMetadata?.role === StaffRole.admin;
   const isFarmer = user.publicMetadata?.role === StaffRole.farmer;
+  const isOnlyAdmin =
+    isSuperAdmin || user.publicMetadata?.role === StaffRole.admin;
   return {
     isAdmin,
     isSuperAdmin,
     isFarmer,
+    isOnlyAdmin,
+    user,
   };
 };

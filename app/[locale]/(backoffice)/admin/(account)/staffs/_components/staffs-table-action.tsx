@@ -8,15 +8,19 @@ import {
 import { Ellipsis } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { User } from "@clerk/nextjs/server";
-import { StaffDeleteButton } from "./staff-delele-button";
-import { StaffEditRole } from "./staff-edit-role";
-
+import { StaffEditRoleButton } from "./staff-edit-role";
+import { isSuperAdmin } from "@/lib/permission";
+import { StaffRole } from "@prisma/client";
+import { DestroyButton } from "@/components/buttons/destroy-button";
+import { destroy } from "@/actions/staff";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 interface StaffsTableActionProps {
   data: User;
 }
-export const StaffsTableAction = ({ data: staff }: StaffsTableActionProps) => {
+export const StaffsTableAction = ({ data }: StaffsTableActionProps) => {
   const t = useTranslations("staffs.form");
-
+  const isSuperAdminRole = isSuperAdmin(data.publicMetadata.role as StaffRole);
+  const { isAdmin } = useCurrentStaffRole();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -24,10 +28,17 @@ export const StaffsTableAction = ({ data: staff }: StaffsTableActionProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
-          <StaffEditRole data={staff} label={t("editRole.label")} />
+          <StaffEditRoleButton data={data} label={t("editRole.label")} />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <StaffDeleteButton data={staff} label={t("destroy.label")} />
+          <DestroyButton
+            destroyFn={destroy}
+            id={data.id}
+            inltKey="staffs"
+            className="w-full"
+            disabled={isSuperAdminRole || isAdmin}
+            redirectHref="/admin/staffs"
+          />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

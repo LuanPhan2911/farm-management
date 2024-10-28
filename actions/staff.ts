@@ -83,26 +83,3 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
     return errorResponse(tStatus("failure.destroy"));
   }
 };
-export const edit = async (
-  values: z.infer<ReturnType<typeof UserSchema>>,
-  userId: string
-): Promise<ActionResponse> => {
-  const tSchema = await getTranslations("users.schema");
-  const tStatus = await getTranslations("users.status");
-  const paramsSchema = UserSchema(tSchema);
-  const validatedFields = paramsSchema.safeParse(values);
-
-  if (!validatedFields.success) {
-    return errorResponse(tSchema("errors.parse"));
-  }
-
-  try {
-    const user = await updateUser(userId, validatedFields.data);
-
-    revalidatePath("/admin/users");
-    revalidatePath(`/admin/users/detail/${user.id}`);
-    return successResponse(tStatus("success.edit"));
-  } catch (error) {
-    return errorResponse(tStatus("failure.edit"));
-  }
-};

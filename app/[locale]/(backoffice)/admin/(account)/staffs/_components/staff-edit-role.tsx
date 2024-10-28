@@ -14,16 +14,17 @@ import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { StaffSelectRole } from "../../../_components/staff-select-role";
 
-import { useRole } from "@/hooks/use-role";
+import { isSuperAdmin } from "@/lib/permission";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface UserSetRoleProps {
   data: User;
   label: string;
 }
-export const StaffEditRole = ({ data, label }: UserSetRoleProps) => {
+export const StaffEditRoleButton = ({ data, label }: UserSetRoleProps) => {
   const { onOpen } = useDialog();
-  const { isSuperAdmin } = useRole(data.publicMetadata.role as StaffRole);
-
+  const isSuperAdminRole = isSuperAdmin(data.publicMetadata.role as StaffRole);
+  const { isAdmin } = useCurrentStaffRole();
   return (
     <Button
       className="w-full"
@@ -34,7 +35,7 @@ export const StaffEditRole = ({ data, label }: UserSetRoleProps) => {
         });
       }}
       variant={"success"}
-      disabled={isSuperAdmin}
+      disabled={isSuperAdminRole || isAdmin}
     >
       <Edit className="h-4 w-4 mr-2" />
       {label}
@@ -47,7 +48,7 @@ export const StaffEditRoleDialog = () => {
   const isOpenDialog = isOpen && type === "staff.editRole";
   const [isPending, startTransition] = useTransition();
   const [role, setRole] = useState<StaffRole>("admin");
-
+  const { isAdmin } = useCurrentStaffRole();
   useEffect(() => {
     if (data.user) {
       const role = data.user.publicMetadata.role as StaffRole;
@@ -68,8 +69,8 @@ export const StaffEditRoleDialog = () => {
             toast.error(message);
           }
         })
-        .catch((error: Error) => {
-          toast.error(t("status.failure.editRole"));
+        .catch(() => {
+          toast.error("Internal error");
         })
         .finally(() => {
           onClose();
@@ -90,7 +91,9 @@ export const StaffEditRoleDialog = () => {
         }}
         defaultValue={role}
         disabled={isPending}
-        hidden={[StaffRole.superadmin]}
+        disabledValues={[
+          ...(isAdmin ? [StaffRole.superadmin, StaffRole.admin] : []),
+        ]}
       />
 
       <div className="flex gap-x-2 justify-end">

@@ -1,5 +1,11 @@
 import { getTranslations } from "next-intl/server";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { ChatMessages } from "./_components/chat-messages";
 import { getCurrentStaff } from "@/services/staffs";
 import { ChatMessageCreateForm } from "./_components/chat-message-create-button";
@@ -8,6 +14,8 @@ import { SocketIndicator } from "@/components/socket-indicator";
 import { Link } from "@/navigation";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { DropdownMenuButton } from "@/components/buttons/dropdown-menu-button";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 export async function generateMetadata() {
   const t = await getTranslations("messages.page");
@@ -28,16 +36,19 @@ const MessagesPage = async () => {
           <CardTitle className="flex justify-between items-center">
             {t("title")} <SocketIndicator />
           </CardTitle>
+          <CardDescription className="flex justify-end">
+            <DropdownMenuButton>
+              <DropdownMenuItem>
+                <Link href={"/admin/messages/files"}>
+                  <Button variant={"blue"} size={"sm"}>
+                    Uploaded files
+                  </Button>
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuButton>
+          </CardDescription>
         </CardHeader>
         <CardContent className="flex-1 flex flex-col gap-4 mb-4">
-          <div className="flex justify-start">
-            <Link href={"/admin/messages/files"}>
-              <Button variant={"blue"} size={"sm"}>
-                Uploaded files
-              </Button>
-            </Link>
-          </div>
-          <Separator />
           <ChatMessages
             chatId={"all"}
             apiUrl="/api/messages"

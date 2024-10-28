@@ -1,7 +1,8 @@
 import { LIMIT } from "@/configs/paginationConfig";
-import { clerkClient } from "@clerk/nextjs/server";
+import { clerkClient, OrganizationMembership } from "@clerk/nextjs/server";
 import { StaffRole } from "@prisma/client";
 import { getStaffExternalIds } from "./staffs";
+import { PaginatedResponse } from "@/types";
 
 type UserParams = {
   name: string;
@@ -99,20 +100,20 @@ export const updateUserMetadata = async (
   return user;
 };
 type UpdateUserParams = {
-  firstName?: string;
-  lastName?: string;
-  phone: string;
-  address: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  phone?: string | null;
+  address?: string | null;
 };
 export const updateUser = async (userId: string, params: UpdateUserParams) => {
   await clerkClient().users.updateUser(userId, {
-    firstName: params.firstName,
-    lastName: params.lastName,
+    firstName: params.firstName || undefined,
+    lastName: params.lastName || undefined,
   });
   const user = await clerkClient().users.updateUserMetadata(userId, {
     publicMetadata: {
-      phone: params.phone,
-      address: params.address,
+      phone: params.phone || undefined,
+      address: params.address || undefined,
     },
   });
   return user;
@@ -127,5 +128,32 @@ export const getUserById = async (id: string) => {
     return user;
   } catch (error) {
     return null;
+  }
+};
+
+export const getOrganizationMembershipList = async ({
+  userId,
+  page = 1,
+}: {
+  userId: string;
+  page: number;
+}): Promise<PaginatedResponse<OrganizationMembership>> => {
+  try {
+    const { data, totalCount } =
+      await clerkClient().users.getOrganizationMembershipList({
+        limit: LIMIT,
+        offset: (page - 1) * LIMIT,
+        userId,
+      });
+    const totalPage = Math.ceil(totalCount / LIMIT);
+    return {
+      data,
+      totalPage,
+    };
+  } catch (error) {
+    return {
+      data: [],
+      totalPage: 0,
+    };
   }
 };

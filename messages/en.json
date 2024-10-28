@@ -668,7 +668,7 @@
       },
       "phone": {
         "label": "Phone number",
-        "placeholder": "+84 182012 293",
+        "placeholder": "Phone number",
         "required_error": "Phone number is required!",
         "min": "Phone number is required!",
         "max": "Phone number must be less than {max} number",
@@ -845,7 +845,7 @@
         "description": "Chat with other members"
       },
       "danger": {
-        "title": "Danger zone",
+        "title": "Danger",
         "description": "Delete organization. This action cannot be undone!"
       }
     },
@@ -869,17 +869,7 @@
     "search": {
       "placeholder": "Filter by organization name...",
       "member": {
-        "placeholder": "Search by name...",
-        "sortByDropdown": {
-          "label": "Sort by: ",
-          "placeholder": "Select sort by...",
-          "options": {
-            "createdAt": "Create at",
-            "email": "Email",
-            "firstName": "First name",
-            "lastName": "Last name"
-          }
-        }
+        "placeholder": "Search by email..."
       },
       "sortByDropdown": {
         "label": "Sort by: ",
@@ -912,16 +902,11 @@
         "title": "Delete organization?",
         "description": "Are you absolutely sure? This action can not be undone!"
       },
-      "destroyMany": {
-        "label": "Delete all selected",
-        "title": "Delete all selected organizations?",
-        "description": "Are you absolutely sure? This action can not be undone!"
-      },
       "viewProfile": {
         "label": "View profile"
       },
       "destroyMember": {
-        "label": "Remove member",
+        "label": "Remove",
         "title": "Remove member?",
         "description": "Remove member from organizations. This action can not be undone!"
       },
@@ -3553,7 +3538,7 @@
   },
   "messages": {
     "page": {
-      "title": "Chat all",
+      "title": "Chat to all staff in organizations",
       "files": {
         "title": "Uploaded files"
       }

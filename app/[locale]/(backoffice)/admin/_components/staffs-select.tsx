@@ -22,7 +22,7 @@ interface StaffSelectItemProps {
   email: string;
   role: StaffRole;
 }
-const StaffSelectItem = ({
+export const StaffSelectItem = ({
   email,
   imageUrl,
   name,

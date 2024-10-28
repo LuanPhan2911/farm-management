@@ -20,27 +20,28 @@ import { OrganizationMemberSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useTranslations } from "next-intl";
-import { useState, useTransition } from "react";
+import { useContext, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { createMember } from "@/actions/organization";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
-import { OrgMemberRole } from "./org-member-role";
+import { OrgMemberRoleSelect } from "../../../../_components/org-member-role";
 
-import { StaffsSelect } from "../../../../_components/staffs-select";
 import { Plus } from "lucide-react";
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
+import { OrgContext } from "../org-tabs";
+import { OrgMembersSelect } from "../../../../_components/org-members-select";
 
-interface OrgMemberAddProps {}
-export const OrgMemberAdd = ({}: OrgMemberAddProps) => {
+interface OrgMemberCreateButtonProps {}
+export const OrgMemberCreateButton = ({}: OrgMemberCreateButtonProps) => {
   const params = useParams<{
     orgId: string;
-  }>();
-  const t = useTranslations("organizations");
+  }>()!;
+  const t = useTranslations("organizations.form");
   const tSchema = useTranslations("organizations.schema.member");
   const formSchema = OrganizationMemberSchema(tSchema);
-
+  const { canUpdate } = useContext(OrgContext);
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -51,12 +52,8 @@ export const OrgMemberAdd = ({}: OrgMemberAddProps) => {
   });
   const [isOpen, setOpen] = useState(false);
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    const orgId = params?.orgId;
-    if (!orgId) {
-      return;
-    }
     startTransition(() => {
-      createMember(values, orgId)
+      createMember(values, params.orgId)
         .then(({ message, ok }) => {
           if (ok) {
             form.reset();
@@ -75,17 +72,14 @@ export const OrgMemberAdd = ({}: OrgMemberAddProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={"success"} size={"sm"}>
-          <Plus className="mr-2" /> {t("form.createMember.label")}
+        <Button variant={"success"} size={"sm"} disabled={!canUpdate}>
+          <Plus className="mr-2" /> {t("createMember.label")}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle> {t("form.createMember.title")}</DialogTitle>
-          <DialogDescription>
-            {" "}
-            {t("form.createMember.description")}
-          </DialogDescription>
+          <DialogTitle> {t("createMember.title")}</DialogTitle>
+          <DialogDescription>{t("createMember.description")}</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -96,16 +90,21 @@ export const OrgMemberAdd = ({}: OrgMemberAddProps) => {
                 <FormItem>
                   <FormLabel>{tSchema("memberId.label")}</FormLabel>
                   <FormControl>
-                    <div className="block">
-                      <StaffsSelect
-                        defaultValue={field.value}
-                        onChange={field.onChange}
-                        error={tSchema("memberId.error")}
-                        placeholder={tSchema("memberId.placeholder")}
-                        notFound={tSchema("memberId.notFound")}
-                        disabled={isPending}
-                      />
-                    </div>
+                    <OrgMembersSelect
+                      query={{
+                        orgId: params.orgId,
+                      }}
+                      defaultValue={field.value}
+                      onChange={field.onChange}
+                      error={tSchema("memberId.error")}
+                      placeholder={tSchema("memberId.placeholder")}
+                      notFound={tSchema("memberId.notFound")}
+                      disabled={isPending || !canUpdate}
+                      appearance={{
+                        button: "lg:w-full h-12",
+                        content: "lg:w-[350px]",
+                      }}
+                    />
                   </FormControl>
 
                   <FormMessage />
@@ -119,12 +118,11 @@ export const OrgMemberAdd = ({}: OrgMemberAddProps) => {
                 <FormItem>
                   <FormLabel>{tSchema("role.label")}</FormLabel>
                   <FormControl>
-                    <div className="block">
-                      <OrgMemberRole
-                        onChange={field.onChange}
-                        value={field.value}
-                      />
-                    </div>
+                    <OrgMemberRoleSelect
+                      onChange={field.onChange}
+                      value={field.value}
+                      disabled={isPending || !canUpdate}
+                    />
                   </FormControl>
 
                   <FormMessage />
@@ -132,7 +130,7 @@ export const OrgMemberAdd = ({}: OrgMemberAddProps) => {
               )}
             />
 
-            <DynamicDialogFooter disabled={isPending} />
+            <DynamicDialogFooter disabled={isPending || !canUpdate} />
           </form>
         </Form>
       </DialogContent>

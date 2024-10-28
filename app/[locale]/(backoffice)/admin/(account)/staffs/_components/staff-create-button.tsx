@@ -28,6 +28,7 @@ import { z } from "zod";
 import { StaffSelectRole } from "../../../_components/staff-select-role";
 import { generateEmail, generatePassword } from "@/lib/utils";
 import { StaffRole } from "@prisma/client";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 export const StaffCreateButton = () => {
   const { onOpen } = useDialog();
@@ -52,6 +53,7 @@ export const StaffCreateDialog = () => {
   const t = useTranslations("staffs.form");
   const tSchema = useTranslations("staffs.schema");
   const formSchema = StaffSchema(tSchema);
+  const { isAdmin } = useCurrentStaffRole();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -169,7 +171,11 @@ export const StaffCreateDialog = () => {
                     onChange={field.onChange}
                     placeholder={tSchema("role.placeholder")}
                     disabled={isPending}
-                    hidden={[StaffRole.superadmin]}
+                    disabledValues={[
+                      ...(isAdmin
+                        ? [StaffRole.superadmin, StaffRole.admin]
+                        : []),
+                    ]}
                   />
                 </FormControl>
 
