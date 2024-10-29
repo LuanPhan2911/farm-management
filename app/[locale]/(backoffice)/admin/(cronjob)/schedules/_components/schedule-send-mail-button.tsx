@@ -40,7 +40,7 @@ import { EmailTemplate } from "@/components/mail/email-template";
 import { StaffsSelectMultiple } from "../../../_components/staffs-select";
 import { Label } from "@/components/ui/label";
 import { ClipboardButton } from "@/components/buttons/clipboard-button";
-import { ScheduleSelectCron } from "./schedule-select-cron";
+import { ScheduleSelectCron } from "../../../_components/schedule-select-cron";
 import { Textarea } from "@/components/ui/textarea";
 const initialBody = {
   receivers: ["example@gmail.com"],
@@ -48,7 +48,15 @@ const initialBody = {
   contents: ["Notify salary..."],
   sender: "From Accountant",
 };
-export const ScheduleSendMailButton = () => {
+
+interface ScheduleSendMailButtonProps {
+  appKey?: string | undefined;
+  appUrl?: string | undefined;
+}
+export const ScheduleSendMailButton = ({
+  appKey,
+  appUrl,
+}: ScheduleSendMailButtonProps) => {
   const tSchema = useTranslations("schedules.schema");
 
   const t = useTranslations("schedules.form");
@@ -65,9 +73,9 @@ export const ScheduleSendMailButton = () => {
       description: "Schedule for automatically send email",
       cron: "",
       request: {
-        url: "[Your HOST]/en/api/mails",
+        url: `${appUrl ?? "[Your HOST]"}/en/api/mails`,
         headers: JSON.stringify({
-          Authorization: "Your API KEY",
+          Authorization: appKey ?? "[Your API KEY]",
         }),
         body: JSON.stringify(initialBody),
       },
@@ -96,11 +104,7 @@ export const ScheduleSendMailButton = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button
-          variant={"outline-blue"}
-          size={"sm"}
-          className="w-full justify-start font-bold"
-        >
+        <Button variant={"blue"} size={"sm"}>
           {t("sendMail.label")}
         </Button>
       </SheetTrigger>

@@ -3,8 +3,6 @@ import { getTranslations } from "next-intl/server";
 import { FileCreateButton } from "../_components/file-create-button";
 import { FilesTable } from "../_components/files-table";
 import { getFilesByOwnerId } from "@/services/files";
-import { getCurrentStaff } from "@/services/staffs";
-import { notFound } from "next/navigation";
 import { parseToNumber } from "@/lib/utils";
 export async function generateMetadata() {
   const t = await getTranslations("files.page.my-files");
@@ -23,12 +21,8 @@ const MyFilesPage = async ({ searchParams }: MyFilesPageProps) => {
   const page = parseToNumber(searchParams.page, 1);
   const { query, orderBy } = searchParams;
   const t = await getTranslations("files.page.my-files");
-  const currentStaff = await getCurrentStaff();
-  if (!currentStaff) {
-    notFound();
-  }
+
   const { data, totalPage } = await getFilesByOwnerId({
-    ownerId: currentStaff.id,
     page,
     orderBy,
     query,
@@ -43,11 +37,7 @@ const MyFilesPage = async ({ searchParams }: MyFilesPageProps) => {
           <div className="flex justify-end">
             <FileCreateButton />
           </div>
-          <FilesTable
-            data={data}
-            totalPage={totalPage}
-            currentStaff={currentStaff}
-          />
+          <FilesTable data={data} totalPage={totalPage} />
         </CardContent>
       </Card>
     </div>

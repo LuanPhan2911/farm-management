@@ -8,7 +8,6 @@ import { SoilTable } from "@/types";
 import { Check, Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { useTransition } from "react";
 import { toast } from "sonner";
 
 interface SoilConfirmButtonProps {

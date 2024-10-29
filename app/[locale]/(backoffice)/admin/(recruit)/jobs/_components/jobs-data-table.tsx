@@ -10,13 +10,13 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/datatable/datatable-column-header";
 import { JobsTableAction } from "./jobs-table-action";
 import { useAlertDialog } from "@/stores/use-alert-dialog";
-import { destroyMany } from "@/actions/job";
+import { destroyMany, editPublished } from "@/actions/job";
 import { toast } from "sonner";
 import { JobTable } from "@/types";
-import { JobPublishedSwitch } from "./job-published-switch";
-import { JobExpired } from "./job-expired";
+import { JobExpiredValue } from "./job-expired-value";
 import { JobExperience } from "@prisma/client";
 import { useRouter } from "next/navigation";
+import { ConfirmButton } from "@/components/buttons/confirm-button";
 
 interface JobsTableProps {
   data: JobTable[];
@@ -127,7 +127,7 @@ export const JobsTable = ({ data }: JobsTableProps) => {
       header: t("table.thead.status"),
       cell: ({ row }) => {
         const data = row.original.expiredAt;
-        return <JobExpired expiredAt={data} />;
+        return <JobExpiredValue expiredAt={data} />;
       },
     },
     {
@@ -135,7 +135,16 @@ export const JobsTable = ({ data }: JobsTableProps) => {
       header: t("table.thead.published"),
       cell: ({ row }) => {
         const data = row.original;
-        return <JobPublishedSwitch data={data} />;
+        return (
+          <ConfirmButton
+            checked={data.published}
+            confirmFn={() => editPublished(data.id, !data.published)}
+            label={t("form.editPublished.label")}
+            title={t("form.editPublished.title")}
+            description={t("form.editPublished.description")}
+            isButton={false}
+          />
+        );
       },
     },
     {

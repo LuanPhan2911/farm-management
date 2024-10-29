@@ -1,13 +1,15 @@
 "use client";
-import { refresh } from "@/actions/task";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { LucideIcon, Pause, RefreshCcw } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { useEffect, useState, useTransition } from "react";
 
-export const TaskRefreshButton = () => {
-  const t = useTranslations("tasks");
+import { ActionResponse } from "@/types";
+import { LucideIcon, Pause, RefreshCcw } from "lucide-react";
+import { useEffect, useState, useTransition } from "react";
+import { Button } from "../ui/button";
+import { cn } from "@/lib/utils";
+
+interface LiveRefreshButtonProps {
+  refreshFn: () => Promise<ActionResponse>;
+}
+export const LiveRefreshButton = ({ refreshFn }: LiveRefreshButtonProps) => {
   const [isLive, setLive] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -17,7 +19,7 @@ export const TaskRefreshButton = () => {
     if (isLive) {
       const id = setInterval(() => {
         startTransition(async () => {
-          await refresh(); // Call your refresh function to revalidate tasks
+          await refreshFn(); // Call your refresh function to revalidate tasks
         });
       }, 10000); // Every 10 seconds
 
@@ -43,7 +45,7 @@ export const TaskRefreshButton = () => {
   return (
     <Button
       size={"sm"}
-      variant={isLive ? "outline-green" : "outline-yellow"}
+      variant={isLive ? "success" : "edit"}
       onClick={() => setLive((prev) => !prev)}
       disabled={isPending}
       className="mx-2"

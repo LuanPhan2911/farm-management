@@ -454,7 +454,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete job?",
-        "description": "Are you absolutely sure? This action can not be undone! If job in use, you cannot to delete."
+        "description": "Are you absolutely sure? This action can not be undone! All applicants applied to the job will be deleted."
       },
       "destroyMany": {
         "label": "Delete all selected",
@@ -3595,14 +3595,14 @@
   "files": {
     "page": {
       "my-files": {
-        "title": "My files"
+        "title": "MyFiles"
       },
       "public-files": {
-        "title": "Public files",
+        "title": "PublicFiles",
         "description": "Public storage of organization"
       },
       "my-trash": {
-        "title": "My trash",
+        "title": "MyTrash",
         "description": "After 30 days, files will be automatically removed"
       }
     },
@@ -3629,17 +3629,17 @@
       "copy": {
         "label": "Make copy",
         "title": "Make copy",
-        "description": "Make a new copy from file"
+        "description": "Make a new copy from file to MyFiles page "
       },
       "restore": {
         "label": "Restore",
         "title": "Restore file",
-        "description": "After restored, file will be move to my files page"
+        "description": "After restored, file will be move to MyFiles page"
       },
       "editDeleted": {
         "label": "Move to trash",
         "title": "Move to trash?",
-        "description": "File will be moved to owner file trash page!"
+        "description": "File will be moved to owner MyTrash page!"
       },
       "editName": {
         "label": "Edit name",

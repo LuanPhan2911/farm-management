@@ -11,9 +11,10 @@ import { parseToDate } from "@/lib/utils";
 
 import { Hint } from "@/components/hint";
 import { useSheet } from "@/stores/use-sheet";
-import { SchedulePauseButton } from "./schedule-pause-button";
 import { SchedulesTableAction } from "./schedules-table-action";
 import { Badge } from "@/components/ui/badge";
+import { ConfirmButton } from "@/components/buttons/confirm-button";
+import { editPaused } from "@/actions/schedule";
 
 interface ScheduleDataTableProps {
   data: ScheduleResponse[];
@@ -72,7 +73,24 @@ export const SchedulesDataTable = ({ data }: ScheduleDataTableProps) => {
       cell: ({ row }) => {
         const data = row.original;
 
-        return <SchedulePauseButton data={data} />;
+        return (
+          <ConfirmButton
+            checked={data.paused}
+            confirmFn={() =>
+              editPaused(
+                {
+                  ...data,
+                  paused: !data.paused,
+                },
+                data.id
+              )
+            }
+            label={t("form.editPaused.label")}
+            title={t("form.editPaused.title")}
+            description={t("form.editPaused.description")}
+            isButton={false}
+          />
+        );
       },
     },
     {

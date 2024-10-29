@@ -72,7 +72,7 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={"gradient"}>{t("form.apply.label")}</Button>
+        <Button variant={"blue"}>{t("form.apply.label")}</Button>
       </DialogTrigger>
       <DialogContent className="overflow-y-auto">
         <DialogHeader>

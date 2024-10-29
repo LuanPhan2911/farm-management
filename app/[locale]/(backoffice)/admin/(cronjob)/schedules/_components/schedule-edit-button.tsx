@@ -31,7 +31,7 @@ import {
   OnChangeStatus,
   toTextContent,
 } from "vanilla-jsoneditor";
-import { ScheduleSelectCron } from "./schedule-select-cron";
+import { ScheduleSelectCron } from "../../../_components/schedule-select-cron";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ScheduleResponse } from "@/types";

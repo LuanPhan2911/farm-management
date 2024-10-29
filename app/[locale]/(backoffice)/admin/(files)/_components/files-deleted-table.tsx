@@ -14,22 +14,20 @@ import {
 import { FileWithOwner } from "@/types";
 import { useFormatter, useTranslations } from "next-intl";
 import Image from "next/image";
-import { Staff } from "@prisma/client";
 
-import { isImage } from "@/lib/utils";
+import { isImage, isJson, isPDF } from "@/lib/utils";
 import {
   FilesDeletedTableAction,
   FilesDeletedTableActionContextMenu,
 } from "./files-deleted-table-action";
+import { FileJson, FileText } from "lucide-react";
 interface FilesDeletedTableProps {
   data: FileWithOwner[];
   totalPage: number;
-  currentStaff: Staff;
 }
 export const FilesDeletedTable = ({
   data,
   totalPage,
-  currentStaff,
 }: FilesDeletedTableProps) => {
   const { dateTime } = useFormatter();
   const t = useTranslations("files");
@@ -60,11 +58,7 @@ export const FilesDeletedTable = ({
         <TableBody>
           {data.map((item) => {
             return (
-              <FilesDeletedTableActionContextMenu
-                key={item.id}
-                data={item}
-                currentStaff={currentStaff}
-              >
+              <FilesDeletedTableActionContextMenu key={item.id} data={item}>
                 <TableRow className="cursor-pointer">
                   <TableCell>
                     {isImage(item.type) ? (
@@ -72,8 +66,9 @@ export const FilesDeletedTable = ({
                         <Image src={item.url} alt="Image" fill />
                       </div>
                     ) : (
-                      <div className="h-16 w-16 flex items-center justify-center border rounded-lg">
-                        <span className="text-blue-300">{item.type}</span>
+                      <div className="h-10 w-10 flex items-center justify-center border rounded-lg">
+                        {isPDF(item.type) && <FileText className="h-8 w-8" />}
+                        {isJson(item.type) && <FileJson className="h-8 w-8" />}
                       </div>
                     )}
                   </TableCell>
@@ -108,10 +103,7 @@ export const FilesDeletedTable = ({
                       : "Null"}
                   </TableCell>
                   <TableCell>
-                    <FilesDeletedTableAction
-                      data={item}
-                      currentStaff={currentStaff}
-                    />
+                    <FilesDeletedTableAction data={item} />
                   </TableCell>
                 </TableRow>
               </FilesDeletedTableActionContextMenu>

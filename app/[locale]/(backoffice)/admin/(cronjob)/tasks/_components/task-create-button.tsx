@@ -37,8 +37,11 @@ import {
 } from "vanilla-jsoneditor";
 import { JSONEditorReact } from "@/components/vanila-json-editor";
 import { DynamicSheetFooter } from "@/components/dialog/dynamic-sheet";
-
-export const TaskCreateButton = () => {
+interface TaskCreateButtonProps {
+  appKey?: string | undefined;
+  appUrl?: string | undefined;
+}
+export const TaskCreateButton = ({ appKey, appUrl }: TaskCreateButtonProps) => {
   const tSchema = useTranslations("tasks.schema");
   const t = useTranslations("tasks.form");
 
@@ -52,8 +55,10 @@ export const TaskCreateButton = () => {
       name: null,
       scheduled_for: new Date().toISOString(),
       request: {
-        url: "",
-        headers: "",
+        url: `${appUrl}/en/api/[Your Route]`,
+        headers: JSON.stringify({
+          Authorization: appKey ?? "[Your API KEY]",
+        }),
         body: "",
       },
     },

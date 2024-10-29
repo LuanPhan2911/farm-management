@@ -7,9 +7,7 @@ import {
 } from "@/components/ui/card";
 import { parseToNumber } from "@/lib/utils";
 import { getPublicFiles } from "@/services/files";
-import { getCurrentStaff } from "@/services/staffs";
 import { getTranslations } from "next-intl/server";
-import { notFound } from "next/navigation";
 import { FileCreateButton } from "../_components/file-create-button";
 import { FilesTable } from "../_components/files-table";
 
@@ -30,10 +28,7 @@ const PublicFilesPage = async ({ searchParams }: PublicFilesPageProps) => {
   const page = parseToNumber(searchParams.page, 1);
   const { query, orderBy } = searchParams;
   const t = await getTranslations("files.page.public-files");
-  const currentStaff = await getCurrentStaff();
-  if (!currentStaff) {
-    notFound();
-  }
+
   const { data, totalPage } = await getPublicFiles({
     page,
     orderBy,
@@ -54,11 +49,7 @@ const PublicFilesPage = async ({ searchParams }: PublicFilesPageProps) => {
               }}
             />
           </div>
-          <FilesTable
-            data={data}
-            totalPage={totalPage}
-            currentStaff={currentStaff}
-          />
+          <FilesTable data={data} totalPage={totalPage} />
         </CardContent>
       </Card>
     </div>

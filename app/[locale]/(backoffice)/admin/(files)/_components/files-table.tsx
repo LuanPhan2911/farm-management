@@ -18,20 +18,14 @@ import {
   FilesTableAction,
   FilesTableActionContextMenu,
 } from "./files-table-action";
-import { Staff } from "@prisma/client";
 
 import { isImage, isJson, isPDF } from "@/lib/utils";
 import { FileJson, FileText } from "lucide-react";
 interface FilesTableProps {
   data: FileWithOwner[];
   totalPage: number;
-  currentStaff: Staff;
 }
-export const FilesTable = ({
-  data,
-  totalPage,
-  currentStaff,
-}: FilesTableProps) => {
+export const FilesTable = ({ data, totalPage }: FilesTableProps) => {
   const { dateTime } = useFormatter();
   const t = useTranslations("files");
   return (
@@ -59,11 +53,7 @@ export const FilesTable = ({
         <TableBody>
           {data.map((item) => {
             return (
-              <FilesTableActionContextMenu
-                key={item.id}
-                data={item}
-                currentStaff={currentStaff}
-              >
+              <FilesTableActionContextMenu key={item.id} data={item}>
                 <TableRow className="cursor-pointer">
                   <TableCell>
                     {isImage(item.type) ? (
@@ -87,7 +77,7 @@ export const FilesTable = ({
                   </TableCell>
                   <TableCell>{dateTime(item.createdAt, "long")}</TableCell>
                   <TableCell>
-                    <FilesTableAction data={item} currentStaff={currentStaff} />
+                    <FilesTableAction data={item} />
                   </TableCell>
                 </TableRow>
               </FilesTableActionContextMenu>

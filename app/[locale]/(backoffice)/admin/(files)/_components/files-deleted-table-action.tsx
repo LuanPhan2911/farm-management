@@ -6,10 +6,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Undo } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { FileWithOwner } from "@/types";
-import { Staff } from "@prisma/client";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -17,18 +16,19 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { PropsWithChildren } from "react";
-import { FileRestoreButton } from "./file-restore-button";
-import { FileDeleteButton } from "./file-delete-button";
+import { useCurrentStaff } from "@/hooks/use-current-staff";
+import { DestroyButton } from "@/components/buttons/destroy-button";
+import { destroy, editDeleted } from "@/actions/file";
+import { ActionButton } from "@/components/buttons/action-button";
 interface FilesDeletedTableActionProps {
   data: FileWithOwner;
-  currentStaff: Staff;
 }
 export const FilesDeletedTableAction = ({
   data,
-  currentStaff,
 }: FilesDeletedTableActionProps) => {
   const t = useTranslations("files.form");
-  const isOwner = currentStaff.id === data.owner.id;
+  const { currentStaff } = useCurrentStaff();
+  const isOwner = currentStaff?.id === data.owner.id;
   const canRestore = isOwner && data.messageId === null;
   return (
     <DropdownMenu>
@@ -39,16 +39,28 @@ export const FilesDeletedTableAction = ({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-fit">
         <DropdownMenuItem>
-          <FileRestoreButton
-            data={data}
+          <ActionButton
+            actionFn={() =>
+              editDeleted(data.id, {
+                deleted: false,
+              })
+            }
+            title={t("restore.label")}
+            description={t("restore.description")}
             label={t("restore.label")}
+            className="w-full"
+            icon={Undo}
+            size={"sm"}
+            variant={"blue"}
             disabled={!canRestore}
           />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <FileDeleteButton
-            data={data}
-            label={t("destroy.label")}
+          <DestroyButton
+            destroyFn={destroy}
+            id={data.id}
+            inltKey="files"
+            className="w-full"
             disabled={!isOwner}
           />
         </DropdownMenuItem>
@@ -58,32 +70,42 @@ export const FilesDeletedTableAction = ({
 };
 interface FilesDeletedTableActionContextMenuProps extends PropsWithChildren {
   data: FileWithOwner;
-  currentStaff: Staff;
 }
 export const FilesDeletedTableActionContextMenu = ({
-  currentStaff,
   data,
   children,
 }: FilesDeletedTableActionContextMenuProps) => {
   const t = useTranslations("files.form");
-
-  const isOwner = currentStaff.id === data.owner.id;
-
+  const { currentStaff } = useCurrentStaff();
+  const isOwner = currentStaff?.id === data.owner.id;
+  const canRestore = isOwner && data.messageId === null;
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
       <ContextMenuContent className="w-40">
         <ContextMenuItem>
-          <FileRestoreButton
-            data={data}
+          <ActionButton
+            actionFn={() =>
+              editDeleted(data.id, {
+                deleted: false,
+              })
+            }
+            title={t("restore.label")}
+            description={t("restore.description")}
             label={t("restore.label")}
-            disabled={!isOwner}
+            className="w-full"
+            icon={Undo}
+            size={"sm"}
+            variant={"blue"}
+            disabled={!canRestore}
           />
         </ContextMenuItem>
         <ContextMenuItem>
-          <FileDeleteButton
-            data={data}
-            label={t("destroy.label")}
+          <DestroyButton
+            destroyFn={destroy}
+            id={data.id}
+            inltKey="files"
+            className="w-full"
             disabled={!isOwner}
           />
         </ContextMenuItem>

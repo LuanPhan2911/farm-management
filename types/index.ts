@@ -32,7 +32,6 @@ import {
   Soil,
   SoilType,
   Staff,
-  StaffRole,
   ToxicityLevel,
   Unit,
   Weather,
@@ -41,7 +40,6 @@ import {
 import { Server as NetServer, Socket } from "net";
 import { NextApiResponse } from "next";
 import { Server as SocketIoServer } from "socket.io";
-import { z } from "zod";
 
 export type OrgRole = "org:member" | "org:admin";
 
@@ -97,6 +95,9 @@ export type JobTable = {
   gender: Gender;
   published: boolean;
   expiredAt: Date;
+  _count: {
+    applicants: number;
+  };
 };
 export type JobCard = {
   id: string;

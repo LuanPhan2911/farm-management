@@ -37,9 +37,16 @@ import {
 import { JSONEditorReact } from "@/components/vanila-json-editor";
 import { DynamicSheetFooter } from "@/components/dialog/dynamic-sheet";
 import { Textarea } from "@/components/ui/textarea";
-import { ScheduleSelectCron } from "./schedule-select-cron";
+import { ScheduleSelectCron } from "../../../_components/schedule-select-cron";
 
-export const ScheduleCreateButton = () => {
+interface ScheduleCreateButtonProps {
+  appKey?: string | undefined;
+  appUrl?: string | undefined;
+}
+export const ScheduleCreateButton = ({
+  appKey,
+  appUrl,
+}: ScheduleCreateButtonProps) => {
   const tSchema = useTranslations("schedules.schema");
   const t = useTranslations("schedules.form");
 
@@ -54,8 +61,10 @@ export const ScheduleCreateButton = () => {
       description: null,
       cron: "",
       request: {
-        url: "",
-        headers: "",
+        url: `${appUrl}/en/api/[Your Route]`,
+        headers: JSON.stringify({
+          Authorization: appKey ?? "[Your API KEY]",
+        }),
         body: "",
       },
     },

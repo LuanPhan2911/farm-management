@@ -12,11 +12,11 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
-import { isImage, safeParseJSON } from "@/lib/utils";
+import { isImage, isJson, isPDF, safeParseJSON } from "@/lib/utils";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
-import { Check, X } from "lucide-react";
+import { Check, FileJson, FileText, X } from "lucide-react";
 import { v4 } from "uuid";
 import { ClientUploadedFileData } from "uploadthing/types";
 import { File as FilePrisma } from "@prisma/client";
@@ -174,11 +174,14 @@ export const UploadFiles = ({
                           {file.preview ? (
                             <Image src={file.preview} alt="Preview" fill />
                           ) : (
-                            <div className="flex flex-col justify-end h-full max-w-full">
-                              <div className="text-xs text-center text-blue-400 font-semibold w-full line-clamp-1">
-                                {file.type}
-                              </div>
-                              <div className="text-xs text-center text-muted-foreground w-full break-words">
+                            <div className="flex flex-col justify-center items-center h-full max-w-full">
+                              {isPDF(file.type) && (
+                                <FileText className="h-8 w-8" />
+                              )}
+                              {isJson(file.type) && (
+                                <FileJson className="h-8 w-8" />
+                              )}
+                              <div className="text-xs text-center text-muted-foreground w-full break-words pt-4">
                                 {file.name}
                               </div>
                             </div>

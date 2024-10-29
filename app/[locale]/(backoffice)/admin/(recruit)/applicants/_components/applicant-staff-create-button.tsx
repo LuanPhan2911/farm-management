@@ -62,26 +62,23 @@ export const ApplicantStaffCreateDialog = () => {
 
   const isOpenDialog = isOpen && type === "applicant.createStaff";
   const [isPending, startTransition] = useTransition();
-  const t = useTranslations("applicants");
+  const t = useTranslations("applicants.form");
   const tSchema = useTranslations("staffs.schema");
   const formSchema = StaffSchema(tSchema);
   const { isAdmin } = useCurrentStaffRole();
   const form = useForm<z.infer<typeof formSchema>>({
     mode: "onChange",
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      role: "farmer",
-      email: "",
-      password: "",
-    },
   });
   useEffect(() => {
     if (data.applicant) {
-      form.setValue("name", data.applicant.name);
-      form.setValue("email", generateEmail(data.applicant.name));
-      form.setValue("receiverEmail", data.applicant.email);
-      form.setValue("password", generatePassword(8));
+      form.reset({
+        name: data.applicant.name,
+        email: generateEmail(data.applicant.name),
+        receiverEmail: data.applicant.email,
+        password: generatePassword(8),
+        role: "farmer",
+      });
     }
   }, [form, data]);
   const watchName = form.watch("name");
@@ -109,7 +106,7 @@ export const ApplicantStaffCreateDialog = () => {
           }
         })
         .catch((error: Error) => {
-          toast.error(t("status.failure.createStaff"));
+          toast.error("Interal error");
         })
         .finally(() => {
           onClose();
@@ -119,8 +116,8 @@ export const ApplicantStaffCreateDialog = () => {
   return (
     <DynamicDialog
       isOpen={isOpenDialog}
-      title={t("form.createStaff.title")}
-      description={t("form.createStaff.description")}
+      title={t("createStaff.title")}
+      description={t("createStaff.description")}
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -200,7 +197,7 @@ export const ApplicantStaffCreateDialog = () => {
                 <FormLabel>{tSchema("role.label")}</FormLabel>
                 <FormControl>
                   <StaffSelectRole
-                    defaultValue={field.value || undefined}
+                    defaultValue={field.value}
                     onChange={field.onChange}
                     placeholder={tSchema("role.placeholder")}
                     disabledValues={[

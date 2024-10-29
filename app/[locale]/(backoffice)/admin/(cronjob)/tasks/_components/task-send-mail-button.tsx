@@ -47,7 +47,14 @@ const initialBody = {
   contents: ["Notify salary..."],
   sender: "From Accountant",
 };
-export const TaskSendMailButton = () => {
+interface TaskSendMailButtonProps {
+  appKey?: string | undefined;
+  appUrl?: string | undefined;
+}
+export const TaskSendMailButton = ({
+  appKey,
+  appUrl,
+}: TaskSendMailButtonProps) => {
   const tSchema = useTranslations("tasks.schema");
 
   const t = useTranslations("tasks.form");
@@ -63,9 +70,9 @@ export const TaskSendMailButton = () => {
       name: "send_mail_task",
       scheduled_for: new Date().toISOString(),
       request: {
-        url: "[Your HOST]/en/api/mails",
+        url: `${appUrl ?? "[Your HOST]"}/en/api/mails`,
         headers: JSON.stringify({
-          Authorization: "Your API KEY",
+          Authorization: appKey ?? "[Your API KEY]",
         }),
         body: JSON.stringify(initialBody),
       },
@@ -94,11 +101,7 @@ export const TaskSendMailButton = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button
-          variant={"outline-blue"}
-          size={"sm"}
-          className="w-full justify-start font-bold"
-        >
+        <Button variant={"blue"} size={"sm"}>
           {t("sendMail.label")}
         </Button>
       </SheetTrigger>

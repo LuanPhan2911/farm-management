@@ -188,6 +188,12 @@ const floatUnitRelations = {
   purchasePrices: { none: {} },
   estimatedYields: { none: {} },
   actualYields: { none: {} },
+  plantFertilizerDosages: {
+    none: {},
+  },
+  plantPesticideDosages: {
+    none: {},
+  },
 };
 const intUnitRelations = {
   humidities: { none: {} },

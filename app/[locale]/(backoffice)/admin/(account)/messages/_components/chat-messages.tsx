@@ -273,31 +273,41 @@ const ChatItemFiles = ({ files }: ChatItemFilesProps) => {
                 <div className="p-1">
                   <Card>
                     <CardContent className="flex aspect-square items-center justify-center relative cursor-pointer">
-                      {isImage(file.type) ? (
-                        <Image
-                          src={file.url}
-                          alt="Preview"
-                          fill
-                          className="p-2"
-                        />
-                      ) : (
-                        <div className="h-full w-full flex flex-col items-center">
-                          {isPDF(file.type) && <FileText className="h-8 w-8" />}
-                          {isJson(file.type) && (
-                            <FileJson className="h-8 w-8" />
-                          )}
+                      {!file.deleted ? (
+                        <>
+                          {isImage(file.type) ? (
+                            <Image
+                              src={file.url}
+                              alt="Preview"
+                              fill
+                              className="p-2"
+                            />
+                          ) : (
+                            <div className="h-full w-full flex flex-col items-center">
+                              {isPDF(file.type) && (
+                                <FileText className="h-8 w-8" />
+                              )}
+                              {isJson(file.type) && (
+                                <FileJson className="h-8 w-8" />
+                              )}
 
-                          <div className="text-xs text-center text-muted-foreground w-full break-words">
-                            {file.name}
+                              <div className="text-xs text-center text-muted-foreground w-full break-words pt-4">
+                                {file.name}
+                              </div>
+                            </div>
+                          )}
+                          <div className="absolute bottom-1 right-1 hidden group-hover:block">
+                            <DownloadButtonWithUrl
+                              name={file.name}
+                              url={file.url}
+                            />
                           </div>
-                        </div>
+                        </>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">
+                          File deleted
+                        </span>
                       )}
-                      <div className="absolute bottom-1 right-1 hidden group-hover:block">
-                        <DownloadButtonWithUrl
-                          name={file.name}
-                          url={file.url}
-                        />
-                      </div>
                     </CardContent>
                   </Card>
                 </div>
