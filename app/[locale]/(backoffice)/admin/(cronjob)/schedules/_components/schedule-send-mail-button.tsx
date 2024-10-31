@@ -73,9 +73,9 @@ export const ScheduleSendMailButton = ({
       description: "Schedule for automatically send email",
       cron: "",
       request: {
-        url: `${appUrl ?? "[Your HOST]"}/en/api/mails`,
+        url: `${appUrl || "[Your HOST]"}/en/api/mails`,
         headers: JSON.stringify({
-          Authorization: appKey ?? "[Your API KEY]",
+          Authorization: appKey || "[Your API KEY]",
         }),
         body: JSON.stringify(initialBody),
       },

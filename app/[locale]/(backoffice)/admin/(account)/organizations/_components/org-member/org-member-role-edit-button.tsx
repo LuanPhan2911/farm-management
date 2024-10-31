@@ -46,9 +46,9 @@ export const OrgMemberRoleEditButton = ({
       });
   };
 
-  const { canUpdate, isCreated, isSelf } = useContext(OrgContext);
+  const { canManageMember, isCreated, isSelf } = useContext(OrgContext);
 
-  const disabled = !canUpdate || isSelf(userId) || isCreated(userId);
+  const disabled = !canManageMember || isSelf(userId) || isCreated(userId);
 
   return (
     <OrgMemberRoleSelect

@@ -41,8 +41,8 @@ import { Server as NetServer, Socket } from "net";
 import { NextApiResponse } from "next";
 import { Server as SocketIoServer } from "socket.io";
 
-export type OrgRole = "org:member" | "org:admin";
-
+export type OrgRole = "org:member" | "org:admin" | "org:field_staff";
+export const orgRoles = ["org:admin", "org:member", "org:field_staff"] as const;
 export type NextApiResponseServerIo<T> = NextApiResponse<T> & {
   socket: Socket & {
     server: NetServer & {
@@ -135,7 +135,7 @@ export type FieldTable = Field & {
 export type FieldSelect = {
   id: string;
   name: string;
-  location: string;
+  location: string | null;
 };
 
 export type WeatherTable = Weather & {
@@ -388,10 +388,7 @@ export type EquipmentUsageTable = EquipmentUsage & {
 export type ActivityTable = Activity & {
   assignedTo: Staff;
   createdBy: Staff;
-  field: {
-    name: string;
-    location: string;
-  };
+  field: FieldSelect;
   _count: {
     equipmentUseds: number;
     materialUseds: number;

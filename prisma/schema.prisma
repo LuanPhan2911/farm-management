@@ -265,13 +265,13 @@ model Field {
   id String @id @default(uuid())
 
   name     String
-  location String
-  orgId    String @unique
+  location String?
+  orgId    String?
 
   //manage width, height, area, shape
-  width  Float
-  height Float
-  area   Float
+  width  Float?
+  height Float?
+  area   Float?
   unitId String?
   unit   Unit?   @relation(fields: [unitId], references: [id], onDelete: SetNull)
   shape  String?

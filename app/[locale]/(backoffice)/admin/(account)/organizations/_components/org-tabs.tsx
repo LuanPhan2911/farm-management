@@ -18,11 +18,14 @@ import { OrgMemberTable } from "./org-member/org-member-table";
 import { useSearchParams } from "next/navigation";
 import { includeString } from "@/lib/utils";
 import { OrgMemberCreateButton } from "./org-member/org-member-create-button";
-import { createContext, useContext } from "react";
-import { useAuth } from "@clerk/nextjs";
+import { createContext, useContext, useEffect } from "react";
+import { OrganizationSwitcher, useAuth } from "@clerk/nextjs";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/organization";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "@/navigation";
+
 interface OrgTabsProps {
   org: Organization;
   orgMember: OrganizationMembership[];
@@ -30,36 +33,64 @@ interface OrgTabsProps {
 }
 
 export const OrgContext = createContext<{
-  canUpdate: boolean;
+  canManageOrg: boolean;
+  canDeleteOrg: boolean;
+  canManageMember: boolean;
   isCreated: (userId: string | undefined | null) => boolean;
   isSelf: (currentUserId: string | undefined | null) => boolean;
 }>({
-  canUpdate: false,
+  canManageOrg: false,
+  canDeleteOrg: false,
+  canManageMember: false,
   isCreated: () => false,
   isSelf: () => false,
 });
 export const OrgTabs = ({ org, orgMember, currentStaff }: OrgTabsProps) => {
   const t = useTranslations("organizations.tabs");
-  const { orgRole, orgId, userId } = useAuth();
+  const { has, userId, orgId } = useAuth();
   const { isSuperAdmin } = useCurrentStaffRole();
-  const canUpdate =
-    isSuperAdmin || (orgRole === "org:admin" && orgId === org.id);
+  const router = useRouter();
+  const canManageOrg = has?.({ permission: "org:sys_profile:manage" }) || false;
+  const canManageMember =
+    has?.({ permission: "org:sys_memberships:manage" }) || false;
+  const canDeleteOrg =
+    has?.({ permission: "org:sys_profile:delete" }) || isSuperAdmin;
 
+  useEffect(() => {
+    if (!orgId) {
+      return;
+    }
+    if (org.id !== orgId) {
+      router.replace(`/admin/organizations/detail/${orgId}`);
+    }
+  }, [orgId, router, org.id]);
   return (
     <OrgContext.Provider
       value={{
-        canUpdate: canUpdate,
+        canManageOrg,
+        canDeleteOrg,
+        canManageMember,
         isCreated: (userIdCreated) => org.createdBy === userIdCreated,
         isSelf: (currentUserId) => userId === currentUserId,
       }}
     >
       <Tabs defaultValue="profile">
-        <TabsList className="grid grid-cols-4 lg:w-[500px] w-full">
-          <TabsTrigger value="profile">{t("profile.title")}</TabsTrigger>
-          <TabsTrigger value="member">{t("member.title")}</TabsTrigger>
-          <TabsTrigger value="messages">{t("messages.title")}</TabsTrigger>
-          <TabsTrigger value="danger">{t("danger.title")}</TabsTrigger>
-        </TabsList>
+        <div className="flex justify-between">
+          <TabsList className="grid grid-cols-4 lg:w-[500px] w-full">
+            <TabsTrigger value="profile">{t("profile.title")}</TabsTrigger>
+            <TabsTrigger value="member">{t("member.title")}</TabsTrigger>
+            <TabsTrigger value="messages">{t("messages.title")}</TabsTrigger>
+            <TabsTrigger value="danger">{t("danger.title")}</TabsTrigger>
+          </TabsList>
+          <Button className="bg-slate-300 hidden lg:inline-flex">
+            <OrganizationSwitcher
+              afterSelectPersonalUrl={`/admin/organizations`}
+              afterLeaveOrganizationUrl={`/admin/organizations`}
+              skipInvitationScreen
+            />
+          </Button>
+        </div>
+
         <TabsContent value="profile">
           <OrgProfile data={org} />
         </TabsContent>
@@ -134,9 +165,8 @@ interface OrgDangerProps {
 }
 export const OrgDanger = ({ data }: OrgDangerProps) => {
   const t = useTranslations("organizations.tabs");
-  const { canUpdate, isCreated } = useContext(OrgContext);
-  const { userId } = useAuth();
-  const disabled = !canUpdate || !isCreated(userId);
+  const { canDeleteOrg } = useContext(OrgContext);
+  const disabled = !canDeleteOrg;
   return (
     <Card>
       <CardHeader>

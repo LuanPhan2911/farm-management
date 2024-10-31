@@ -41,7 +41,7 @@ export const OrgMemberCreateButton = ({}: OrgMemberCreateButtonProps) => {
   const t = useTranslations("organizations.form");
   const tSchema = useTranslations("organizations.schema.member");
   const formSchema = OrganizationMemberSchema(tSchema);
-  const { canUpdate } = useContext(OrgContext);
+  const { canManageMember } = useContext(OrgContext);
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -72,7 +72,7 @@ export const OrgMemberCreateButton = ({}: OrgMemberCreateButtonProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={"success"} size={"sm"} disabled={!canUpdate}>
+        <Button variant={"success"} size={"sm"} disabled={!canManageMember}>
           <Plus className="mr-2" /> {t("createMember.label")}
         </Button>
       </DialogTrigger>
@@ -99,7 +99,7 @@ export const OrgMemberCreateButton = ({}: OrgMemberCreateButtonProps) => {
                       error={tSchema("memberId.error")}
                       placeholder={tSchema("memberId.placeholder")}
                       notFound={tSchema("memberId.notFound")}
-                      disabled={isPending || !canUpdate}
+                      disabled={isPending || !canManageMember}
                       appearance={{
                         button: "lg:w-full h-12",
                         content: "lg:w-[350px]",
@@ -121,7 +121,7 @@ export const OrgMemberCreateButton = ({}: OrgMemberCreateButtonProps) => {
                     <OrgMemberRoleSelect
                       onChange={field.onChange}
                       value={field.value}
-                      disabled={isPending || !canUpdate}
+                      disabled={isPending || !canManageMember}
                     />
                   </FormControl>
 
@@ -130,7 +130,7 @@ export const OrgMemberCreateButton = ({}: OrgMemberCreateButtonProps) => {
               )}
             />
 
-            <DynamicDialogFooter disabled={isPending || !canUpdate} />
+            <DynamicDialogFooter disabled={isPending || !canManageMember} />
           </form>
         </Form>
       </DialogContent>

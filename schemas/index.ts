@@ -21,6 +21,7 @@ import {
 import { addDays } from "date-fns";
 import { z } from "zod";
 import validator from "validator";
+import { orgRoles } from "@/types";
 
 // Custom Zod schema for date parsing
 const dateSchema = z.preprocess(
@@ -355,7 +356,6 @@ export const OrganizationSchema = (
   });
 };
 
-const orgRoles = ["org:admin", "org:member"] as const;
 export const OrganizationMemberSchema = (
   t: (arg: string, obj?: Record<string, any>) => string
 ) => {
@@ -378,25 +378,28 @@ export const FieldSchema = (
       max: 100,
     }),
     location: stringSchema(t, "location", {
-      min: 3,
       max: 100,
-    }),
-    orgId: z.string({
-      required_error: t("orgId.required_error"),
-    }),
+      required: false,
+    }).nullish(),
+    orgId: stringSchema(t, "orgId", {
+      required: false,
+    }).nullish(),
     height: numberSchema(t, "height", {
       min: 0,
       max: 100_000,
-    }),
+      required: false,
+    }).nullish(),
     width: numberSchema(t, "width", {
       min: 0,
       max: 100_000,
-    }),
+      required: false,
+    }).nullish(),
 
     area: numberSchema(t, "area", {
       min: 0,
       max: 1_000_000,
-    }),
+      required: false,
+    }).nullish(),
     unitId: z.string().nullish(),
     shape: stringSchema(t, "shape", {
       max: 100,

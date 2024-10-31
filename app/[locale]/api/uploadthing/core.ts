@@ -86,7 +86,7 @@ export const ourFileRouter = {
             type,
             url,
             ownerId: staff.id,
-            isPublic: metadata.input.isPublic ?? false,
+            isPublic: metadata.input.isPublic || false,
             orgId: metadata.input.orgId,
           });
 

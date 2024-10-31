@@ -85,7 +85,7 @@ export default async function RootLayout({
             >
               <QueryProvider>
                 {children}
-                <Toaster />
+                <Toaster duration={10000} />
                 <DialogProvider />
                 <SheetProvider />
               </QueryProvider>

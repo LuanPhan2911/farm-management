@@ -10,7 +10,7 @@ import {
 import { FieldTable } from "@/types";
 import { MoreHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { FieldDetailButton } from "./field-detail-button";
+import { DetailButton } from "@/components/buttons/detail-button";
 
 interface FieldsTableActionProps {
   data: FieldTable;
@@ -26,7 +26,11 @@ export const FieldsTableAction = ({ data }: FieldsTableActionProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
-          <FieldDetailButton data={data} label={t("viewDetail.label")} />
+          <DetailButton
+            href={`/admin/fields/detail/${data.id}`}
+            label={t("viewDetail.label")}
+            className="w-full"
+          />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -19,6 +19,7 @@ import { useRouter } from "@/navigation";
 import { OrgsTableSortBy } from "./orgs-table-sort-by";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { useOrganizationList } from "@clerk/nextjs";
+import { toast } from "sonner";
 
 interface OrgsTableProps {
   orgs: Organization[];
@@ -31,11 +32,10 @@ export const OrgsTable = ({ orgs, totalPage }: OrgsTableProps) => {
   const { isSuperAdmin } = useCurrentStaffRole();
   const { setActive } = useOrganizationList();
   const handleClick = (org: Organization) => {
-    if (isSuperAdmin) {
+    setActive?.({ organization: org.id }).catch(() => {
       setActive?.({ organization: null });
-    } else {
-      setActive?.({ organization: org.id });
-    }
+      toast.warning(t("other.setActive"));
+    });
     router.push(`/admin/organizations/detail/${org.id}`);
   };
 

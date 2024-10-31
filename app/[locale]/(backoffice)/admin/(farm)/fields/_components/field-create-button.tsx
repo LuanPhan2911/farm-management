@@ -14,44 +14,41 @@ import { FieldSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { OrgsSelect } from "../../../_components/orgs-select";
 import { UnitsSelect } from "../../../_components/units-select";
-import { Link, useRouter } from "@/navigation";
 import { toast } from "sonner";
 import { create } from "@/actions/field";
 import { SoilType, UnitType } from "@prisma/client";
 import { SelectOptions } from "@/components/form/select-options";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
-
-export const FieldCreateButton = () => {
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useAuth } from "@clerk/nextjs";
+interface FieldCreateButtonProps {
+  disabled?: boolean;
+}
+export const FieldCreateButton = ({ disabled }: FieldCreateButtonProps) => {
+  const { orgId } = useAuth();
   const t = useTranslations("fields.form");
-  return (
-    <Link href={"/admin/fields/create"}>
-      <Button variant={"success"} size={"sm"}>
-        <Plus className="mr-2" />
-        {t("create.label")}
-      </Button>
-    </Link>
-  );
-};
-export const FieldCreateForm = () => {
   const tSchema = useTranslations("fields.schema");
   const formSchema = FieldSchema(tSchema);
-  const t = useTranslations("fields");
   const [isPending, startTransition] = useTransition();
-  const router = useRouter();
+  const [isOpen, setOpen] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      orgId,
+    },
   });
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
@@ -59,7 +56,6 @@ export const FieldCreateForm = () => {
         .then(({ message, ok }) => {
           if (ok) {
             toast.success(message);
-            router.push("/admin/fields");
           } else {
             toast.error(message);
           }
@@ -69,19 +65,21 @@ export const FieldCreateForm = () => {
         });
     });
   };
-
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("form.create.title")}</CardTitle>
-        <CardDescription>{t("form.create.description")}</CardDescription>
-      </CardHeader>
-      <CardContent>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant={"success"} size={"sm"} disabled={disabled}>
+          <Plus className="mr-2" />
+          {t("create.label")}
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-5xl">
+        <DialogHeader>
+          <DialogTitle>{t("create.title")}</DialogTitle>
+          <DialogDescription>{t("create.description")}</DialogDescription>
+        </DialogHeader>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4 max-w-5xl"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="name"
@@ -120,7 +118,8 @@ export const FieldCreateForm = () => {
                 </FormItem>
               )}
             />
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+            <div className="grid lg:grid-cols-3 gap-2">
               <FormField
                 control={form.control}
                 name="orgId"
@@ -129,7 +128,7 @@ export const FieldCreateForm = () => {
                     <FormLabel>{tSchema("orgId.label")}</FormLabel>
                     <FormControl>
                       <OrgsSelect
-                        defaultValue={field.value}
+                        defaultValue={field.value || undefined}
                         onChange={field.onChange}
                         error={tSchema("orgId.error")}
                         placeholder={tSchema("orgId.placeholder")}
@@ -139,6 +138,30 @@ export const FieldCreateForm = () => {
                           button: "lg:w-full",
                           content: "lg:w-[480px]",
                         }}
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="soilType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("soilType.label")}</FormLabel>
+                    <FormControl>
+                      <SelectOptions
+                        placeholder={tSchema("soilType.placeholder")}
+                        onChange={field.onChange}
+                        options={Object.values(SoilType).map((item) => {
+                          return {
+                            label: tSchema(`soilType.options.${item}`),
+                            value: item,
+                          };
+                        })}
+                        disabled={isPending}
                       />
                     </FormControl>
 
@@ -250,35 +273,11 @@ export const FieldCreateForm = () => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="soilType"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("soilType.label")}</FormLabel>
-                  <FormControl>
-                    <SelectOptions
-                      placeholder={tSchema("soilType.placeholder")}
-                      onChange={field.onChange}
-                      options={Object.values(SoilType).map((item) => {
-                        return {
-                          label: tSchema(`soilType.options.${item}`),
-                          value: item,
-                        };
-                      })}
-                      disabled={isPending}
-                    />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
             <DynamicDialogFooter disabled={isPending} closeButton={false} />
           </form>
         </Form>
-      </CardContent>
-    </Card>
+      </DialogContent>
+    </Dialog>
   );
 };

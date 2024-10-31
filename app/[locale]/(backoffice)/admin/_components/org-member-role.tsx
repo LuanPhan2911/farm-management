@@ -24,6 +24,10 @@ export const OrgMemberRoleSelect = ({
       value: "org:admin",
     },
     {
+      label: t("options.field_staff"),
+      value: "org:field_staff",
+    },
+    {
       label: t("options.member"),
       value: "org:member",
     },

@@ -1,12 +1,9 @@
 "use client";
 import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuList,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
-import { cn } from "@/lib/utils";
-import { Link, usePathname } from "@/navigation";
+  CustomNavigationMenu,
+  NavigationMenuData,
+} from "@/components/custom-navigation-menu";
+import { usePathname } from "@/navigation";
 import { useTranslations } from "next-intl";
 
 import { useParams } from "next/navigation";
@@ -14,11 +11,13 @@ import { useParams } from "next/navigation";
 export const EquipmentNavigationMenu = () => {
   const params = useParams<{
     equipmentId: string;
+    equipmentDetailId: string;
   }>();
-  const pathname = usePathname();
+
   const t = useTranslations("equipments.tabs");
+
   const getHref = `/admin/equipments/detail/${params?.equipmentId}`;
-  const menu = [
+  const data: NavigationMenuData[] = [
     {
       href: `${getHref}`,
       label: t("info.label"),
@@ -26,37 +25,19 @@ export const EquipmentNavigationMenu = () => {
     {
       href: `${getHref}/details`,
       label: t("details.label"),
+      ...(params?.equipmentDetailId && {
+        subData: [
+          {
+            label: t("details.usages.label"),
+            href: `${getHref}/details/${params.equipmentDetailId}/usages`,
+          },
+        ],
+      }),
     },
     {
       href: `${getHref}/danger`,
       label: t("danger.label"),
     },
   ];
-  return (
-    <NavigationMenu className="border rounded-md">
-      <NavigationMenuList>
-        {menu.map(({ href, label }) => {
-          return (
-            <NavigationMenuItem key={href}>
-              <Link
-                href={href}
-                className={cn(
-                  navigationMenuTriggerStyle(),
-                  href === pathname && "border-l-4 border-l-green-500 "
-                )}
-              >
-                <span
-                  className={cn(
-                    href === pathname && "text-green-500 hover:text-green-400"
-                  )}
-                >
-                  {label}
-                </span>
-              </Link>
-            </NavigationMenuItem>
-          );
-        })}
-      </NavigationMenuList>
-    </NavigationMenu>
-  );
+  return <CustomNavigationMenu data={data} />;
 };

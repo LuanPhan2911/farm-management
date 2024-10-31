@@ -969,7 +969,8 @@
           "enum": "Please select role in list",
           "options": {
             "admin": "Admin",
-            "member": "Member"
+            "member": "Member",
+            "field_staff": "Field Staff"
           }
         }
       }
@@ -998,6 +999,9 @@
       "title": "Organization not found",
       "description": "Sorry, we couldn’t find the organization you’re looking for.",
       "backLabel": "Go to organizations page"
+    },
+    "other": {
+      "setActive": "You are not member in this organization so you don't have admin permission in this organization"
     }
   },
 
@@ -1084,7 +1088,7 @@
     "schema": {
       "errors": {
         "parse": "Invalid fields!",
-        "orgExist": "A field just belong to one organization."
+        "existOrg": "OrgId is not exist."
       },
       "name": {
         "label": "Name",
@@ -2315,7 +2319,10 @@
         "label": "Info"
       },
       "details": {
-        "label": "Equipment details"
+        "label": "Equipment details",
+        "usages": {
+          "label": "Equipment usages"
+        }
       },
       "danger": {
         "label": "Danger"

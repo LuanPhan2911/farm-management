@@ -15,7 +15,7 @@ export function DataTableSearchColumn<TData>({
   return (
     <Input
       placeholder={placeholder}
-      value={(table.getColumn(column)?.getFilterValue() as string) ?? ""}
+      value={(table.getColumn(column)?.getFilterValue() as string) || ""}
       onChange={(event) =>
         table.getColumn(column)?.setFilterValue(event.target.value)
       }

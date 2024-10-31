@@ -8,39 +8,19 @@ import { useTranslations } from "next-intl";
 import { FieldTable } from "@/types";
 import { FieldsTableAction } from "./fields-table-action";
 import { UnitWithValue } from "../../../_components/unit-with-value";
-import { useRouter } from "@/navigation";
+
 import { SoilType } from "@prisma/client";
+import { useRouter } from "next/navigation";
 
 interface FieldsDataTableProps {
   data: FieldTable[];
 }
 
 export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
-  const t = useTranslations("fields");
   const router = useRouter();
+  const t = useTranslations("fields");
+
   const columns: ColumnDef<FieldTable>[] = [
-    {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
     {
       accessorKey: "name",
       header: ({ column }) => {
@@ -52,7 +32,6 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
         );
       },
     },
-
     {
       accessorKey: "location",
       header: ({ column }) => {
@@ -73,6 +52,9 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
             title={t("table.thead.soilType")}
           />
         );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
       },
       cell: ({ row }) => {
         const data = row.original;
@@ -159,8 +141,8 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
         value: "name",
         placeholder: t("search.placeholder"),
       }}
-      onViewDetail={onViewDetail}
       facetedFilters={facetedFilters}
+      onViewDetail={onViewDetail}
     />
   );
 };

@@ -8,6 +8,8 @@ import {
   upsertStaff,
 } from "@/services/staffs";
 import { StaffRole } from "@prisma/client";
+import { deleteMessagesByOrgId } from "@/services/messages";
+import { updateFieldOrgWhenOrgDeleted } from "@/services/fields";
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
@@ -95,6 +97,13 @@ export async function POST(req: Request) {
     const id = evt.data.id;
     if (id) {
       await deleteStaff(id);
+    }
+  }
+  if (evt.type === "organization.deleted") {
+    const id = evt.data.id;
+    if (id) {
+      await deleteMessagesByOrgId(id);
+      await updateFieldOrgWhenOrgDeleted(id);
     }
   }
   return new Response("", { status: 200 });

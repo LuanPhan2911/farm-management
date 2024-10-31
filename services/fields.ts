@@ -1,14 +1,16 @@
 import { db } from "@/lib/db";
 import { FieldSelect } from "@/types";
+import { clerkClient } from "@clerk/nextjs/server";
 import { SoilType } from "@prisma/client";
+import { getCurrentStaff } from "./staffs";
 
 type FieldParams = {
   name: string;
-  location: string;
-  orgId: string;
-  height: number;
-  width: number;
-  area: number;
+  location?: string | null;
+  orgId?: string | null;
+  height?: number | null;
+  width?: number | null;
+  area?: number | null;
   unitId?: string | null;
   shape?: string | null;
   soilType?: SoilType | null;
@@ -33,15 +35,59 @@ export const updateField = async (id: string, params: FieldParams) => {
   });
   return field;
 };
+
+export const updateFieldOrgWhenOrgDeleted = async (orgId: string) => {
+  return await db.field.updateMany({
+    where: {
+      orgId,
+    },
+    data: {
+      orgId: null,
+    },
+  });
+};
 export const deleteField = async (id: string) => {
   const field = await db.field.delete({
     where: { id },
   });
   return field;
 };
-export const getFields = async () => {
+
+type FieldQuery = {
+  orgId: string | null;
+};
+export const getFields = async ({ orgId }: FieldQuery) => {
   try {
+    // check user in org
+    const currentStaff = await getCurrentStaff();
+    if (!currentStaff) {
+      return [];
+    }
+
+    if (orgId === null && currentStaff.role !== "superadmin") {
+      return [];
+    }
+    if (orgId !== null && currentStaff.role !== "superadmin") {
+      const { data } =
+        await clerkClient().organizations.getOrganizationMembershipList({
+          organizationId: orgId,
+          limit: 100,
+        });
+      const currentStaffInOrg = data.find(
+        (item) => item.publicUserData?.userId === currentStaff.externalId
+      );
+      if (!currentStaffInOrg) {
+        return [];
+      }
+    }
+
+    //if is superadmin return field with null orgId
+
+    // if admin, farmer return field just field on org
     const fields = await db.field.findMany({
+      where: {
+        orgId,
+      },
       include: {
         unit: true,
       },
@@ -77,15 +123,5 @@ export const getFieldsSelect = async (): Promise<FieldSelect[]> => {
     return fields;
   } catch (error) {
     return [];
-  }
-};
-export const getFieldByOrgId = async (orgId: string) => {
-  try {
-    const field = await db.field.findUnique({
-      where: { orgId },
-    });
-    return field;
-  } catch (error) {
-    return null;
   }
 };

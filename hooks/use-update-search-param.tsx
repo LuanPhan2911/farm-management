@@ -86,7 +86,7 @@ export const useUpdateSearchParams = <
 
     for (const key in updatedKeys) {
       const param = searchParams?.get(key);
-      updatedKeys[key] = param ?? updatedKeys[key] ?? undefined;
+      updatedKeys[key] = param || updatedKeys[key] || undefined;
     }
 
     return updatedKeys;

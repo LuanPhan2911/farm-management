@@ -63,7 +63,7 @@ export const ScheduleCreateButton = ({
       request: {
         url: `${appUrl}/en/api/[Your Route]`,
         headers: JSON.stringify({
-          Authorization: appKey ?? "[Your API KEY]",
+          Authorization: appKey || "[Your API KEY]",
         }),
         body: "",
       },

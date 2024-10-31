@@ -70,9 +70,9 @@ export const TaskSendMailButton = ({
       name: "send_mail_task",
       scheduled_for: new Date().toISOString(),
       request: {
-        url: `${appUrl ?? "[Your HOST]"}/en/api/mails`,
+        url: `${appUrl || "[Your HOST]"}/en/api/mails`,
         headers: JSON.stringify({
-          Authorization: appKey ?? "[Your API KEY]",
+          Authorization: appKey || "[Your API KEY]",
         }),
         body: JSON.stringify(initialBody),
       },

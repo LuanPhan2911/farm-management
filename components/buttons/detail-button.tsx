@@ -1,10 +1,11 @@
 "use client";
 
 import { Link } from "@/navigation";
-import { Button } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
 import { cn } from "@/lib/utils";
+import { VariantProps } from "class-variance-authority";
 
-interface DetailButtonProps {
+interface DetailButtonProps extends VariantProps<typeof buttonVariants> {
   label: string;
   disabled?: boolean;
   href: string;
@@ -15,6 +16,8 @@ export const DetailButton = ({
   label,
   disabled,
   className,
+  size,
+  variant,
 }: DetailButtonProps) => {
   return (
     <Link
@@ -25,8 +28,8 @@ export const DetailButton = ({
       }}
     >
       <Button
-        variant={"cyan"}
-        size={"sm"}
+        variant={variant || "cyan"}
+        size={size || "sm"}
         disabled={disabled}
         className={cn(className)}
       >

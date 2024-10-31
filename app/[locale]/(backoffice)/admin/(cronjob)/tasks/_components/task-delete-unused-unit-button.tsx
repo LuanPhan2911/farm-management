@@ -59,9 +59,9 @@ export const TaskDeleteUnusedUnitButton = ({
       name: "delete_unused_unit_task",
       scheduled_for: new Date().toISOString(),
       request: {
-        url: `${appUrl ?? "[Your HOST]"}/en/api/units/delete_unused`,
+        url: `${appUrl || "[Your HOST]"}/en/api/units/delete_unused`,
         headers: JSON.stringify({
-          Authorization: appKey ?? "[Your API KEY]",
+          Authorization: appKey || "[Your API KEY]",
         }),
         body: "",
       },

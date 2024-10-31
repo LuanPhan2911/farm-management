@@ -238,6 +238,7 @@ export const getActivities = async ({
           createdBy: true,
           field: {
             select: {
+              id: true,
               name: true,
               location: true,
             },
@@ -333,6 +334,7 @@ export const getActivityById = async ({
         createdBy: true,
         field: {
           select: {
+            id: true,
             name: true,
             location: true,
           },

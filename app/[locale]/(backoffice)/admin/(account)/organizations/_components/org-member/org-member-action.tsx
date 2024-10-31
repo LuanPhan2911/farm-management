@@ -17,12 +17,12 @@ interface OrgMemberActionProps {
 }
 export const OrgMemberAction = ({ data }: OrgMemberActionProps) => {
   const t = useTranslations("organizations.form");
-  const { canUpdate, isCreated, isSelf } = useContext(OrgContext);
+  const { canManageMember, isCreated, isSelf } = useContext(OrgContext);
   if (!data.publicUserData) {
     return null;
   }
   const disabled =
-    !canUpdate ||
+    !canManageMember ||
     isSelf(data.publicUserData.userId) ||
     isCreated(data.publicUserData.userId);
   return (

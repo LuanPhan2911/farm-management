@@ -11,9 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { OrganizationSchema } from "@/schemas";
-import { useAuth } from "@clerk/nextjs";
 import { Organization } from "@clerk/nextjs/server";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
@@ -33,8 +31,8 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
   const tSchema = useTranslations("organizations.schema");
   const formSchema = OrganizationSchema(tSchema);
   const [isPending, startTransition] = useTransition();
+  const { canManageOrg } = useContext(OrgContext);
 
-  const { canUpdate } = useContext(OrgContext);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -106,7 +104,7 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
                   placeholder={tSchema("name.placeholder")}
                   value={field.value || undefined}
                   onChange={field.onChange}
-                  disabled={isPending || !canUpdate}
+                  disabled={isPending || !canManageOrg}
                 />
               </FormControl>
 
@@ -125,7 +123,7 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
                   placeholder={tSchema("slug.placeholder")}
                   value={field.value || undefined}
                   onChange={field.onChange}
-                  disabled={isPending || !canUpdate}
+                  disabled={isPending || !canManageOrg}
                 />
               </FormControl>
 
@@ -138,12 +136,12 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
           <FileUploader
             handleChange={onUpload}
             types={["JPG", "PNG"]}
-            disabled={isPending || !canUpdate}
+            disabled={isPending || !canManageOrg}
           />
         </FormItem>
 
         <DynamicDialogFooter
-          disabled={isPending || !canUpdate}
+          disabled={isPending || !canManageOrg}
           closeButton={false}
         />
       </form>

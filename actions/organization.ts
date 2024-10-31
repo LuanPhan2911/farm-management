@@ -2,7 +2,6 @@
 
 import { errorResponse, successResponse } from "@/lib/utils";
 import { OrganizationMemberSchema, OrganizationSchema } from "@/schemas";
-import { getFieldByOrgId } from "@/services/fields";
 import {
   createMemberOrganization,
   createOrganization,
@@ -106,12 +105,8 @@ export const editLogo = async (
 };
 export const destroy = async (orgId: string): Promise<ActionResponse> => {
   const tStatus = await getTranslations("organizations.status");
-  const tSchema = await getTranslations("organizations.schema");
+
   try {
-    const field = await getFieldByOrgId(orgId);
-    if (field) {
-      return errorResponse(tSchema("errors.existField"));
-    }
     await deleteOrganization(orgId);
 
     revalidatePath("/admin/organizations");
