@@ -2,7 +2,8 @@
 
 import { destroy } from "@/actions/plant";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "@/navigation";
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
+
 import { useAlertDialog } from "@/stores/use-alert-dialog";
 import { Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -12,7 +13,7 @@ export const PlantDeleteButton = () => {
   const { onOpen, onClose, setPending } = useAlertDialog();
 
   const t = useTranslations("plants.form");
-  const router = useRouter();
+  const router = useRouterWithRole();
   const params = useParams<{
     plantId: string;
   }>();
@@ -23,7 +24,7 @@ export const PlantDeleteButton = () => {
         if (ok) {
           onClose();
           toast.success(message);
-          router.replace("/admin/plants");
+          router.replace("plants");
         } else {
           toast.error(message);
         }

@@ -10,7 +10,7 @@ const EquipmentNotFoundPage = () => {
       title={t("title")}
       description={t("description")}
       backButtonLabel={t("backLabel")}
-      backButtonUrl="/admin/equipments"
+      backButtonUrl="equipments"
     />
   );
 };

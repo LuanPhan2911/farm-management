@@ -10,7 +10,7 @@ const MaterialNotFoundPage = () => {
       title={t("title")}
       description={t("description")}
       backButtonLabel={t("backLabel")}
-      backButtonUrl="/admin/materials"
+      backButtonUrl="materials"
     />
   );
 };

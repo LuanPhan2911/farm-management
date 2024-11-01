@@ -24,7 +24,7 @@ interface UserSetRoleProps {
 export const StaffEditRoleButton = ({ data, label }: UserSetRoleProps) => {
   const { onOpen } = useDialog();
   const isSuperAdminRole = isSuperAdmin(data.publicMetadata.role as StaffRole);
-  const { isAdmin } = useCurrentStaffRole();
+  const { isSuperAdmin: canEdit } = useCurrentStaffRole();
   return (
     <Button
       className="w-full"
@@ -35,7 +35,7 @@ export const StaffEditRoleButton = ({ data, label }: UserSetRoleProps) => {
         });
       }}
       variant={"success"}
-      disabled={isSuperAdminRole || isAdmin}
+      disabled={isSuperAdminRole || !canEdit}
     >
       <Edit className="h-4 w-4 mr-2" />
       {label}

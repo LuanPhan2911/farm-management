@@ -11,7 +11,7 @@ const JobEditNotFoundPage = () => {
       title={t("title")}
       description={t("description")}
       backButtonLabel={t("backLabel")}
-      backButtonUrl="/admin/jobs"
+      backButtonUrl="jobs"
     />
   );
 };

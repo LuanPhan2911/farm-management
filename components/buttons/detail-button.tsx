@@ -4,6 +4,8 @@ import { Link } from "@/navigation";
 import { Button, buttonVariants } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { VariantProps } from "class-variance-authority";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { usePrefix } from "@/hooks/use-prefix";
 
 interface DetailButtonProps extends VariantProps<typeof buttonVariants> {
   label: string;
@@ -19,9 +21,10 @@ export const DetailButton = ({
   size,
   variant,
 }: DetailButtonProps) => {
+  const prefix = usePrefix();
   return (
     <Link
-      href={href}
+      href={prefix ? `${prefix}/${href}` : href}
       className={cn(className)}
       onClick={(e) => {
         e.stopPropagation();

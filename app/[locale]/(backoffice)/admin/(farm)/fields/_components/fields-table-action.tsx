@@ -27,7 +27,7 @@ export const FieldsTableAction = ({ data }: FieldsTableActionProps) => {
       <DropdownMenuContent>
         <DropdownMenuItem>
           <DetailButton
-            href={`/admin/fields/detail/${data.id}`}
+            href={`fields/detail/${data.id}`}
             label={t("viewDetail.label")}
             className="w-full"
           />

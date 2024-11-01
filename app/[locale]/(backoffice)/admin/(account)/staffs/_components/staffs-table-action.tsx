@@ -20,7 +20,8 @@ interface StaffsTableActionProps {
 export const StaffsTableAction = ({ data }: StaffsTableActionProps) => {
   const t = useTranslations("staffs.form");
   const isSuperAdminRole = isSuperAdmin(data.publicMetadata.role as StaffRole);
-  const { isAdmin } = useCurrentStaffRole();
+  const { isSuperAdmin: canDelete } = useCurrentStaffRole();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -36,7 +37,7 @@ export const StaffsTableAction = ({ data }: StaffsTableActionProps) => {
             id={data.id}
             inltKey="staffs"
             className="w-full"
-            disabled={isSuperAdminRole || isAdmin}
+            disabled={isSuperAdminRole || !canDelete}
             redirectHref="/admin/staffs"
           />
         </DropdownMenuItem>

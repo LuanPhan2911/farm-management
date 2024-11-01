@@ -8,9 +8,12 @@ import { Notification } from "./notification";
 import { BreadcrumbResponsive } from "./breadcrumb-responsive";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
+import { OrganizationSwitcher } from "@clerk/nextjs";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 export const Navbar = () => {
   const { isOpen, onToggle } = useDashboardSidebar();
+  const { isOnlyAdmin } = useCurrentStaffRole();
   return (
     <div
       className={cn(
@@ -35,9 +38,20 @@ export const Navbar = () => {
         </div>
       </div>
       <div className="flex gap-x-4">
+        <Notification />
         <LocaleSwitcher />
         <ModeToggle />
-        <Notification />
+        <Button variant={"outline"} className="dark:bg-slate-300">
+          <OrganizationSwitcher
+            skipInvitationScreen
+            appearance={{
+              elements: {
+                organizationSwitcherPopoverActionButton:
+                  !isOnlyAdmin && "hidden",
+              },
+            }}
+          />
+        </Button>
         <ProfileButton />
       </div>
     </div>

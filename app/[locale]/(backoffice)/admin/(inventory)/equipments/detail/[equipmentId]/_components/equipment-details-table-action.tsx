@@ -29,7 +29,7 @@ export const EquipmentDetailsTableAction = ({
       <DropdownMenuContent align="start" className="w-fit">
         <DropdownMenuItem>
           <DetailButton
-            href={`/admin/equipments/detail/${data.equipmentId}/details/${data.id}/usages`}
+            href={`equipments/detail/${data.equipmentId}/details/${data.id}/usages`}
             className="w-full"
             label={t("viewUsage.label")}
           />

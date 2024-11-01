@@ -24,9 +24,10 @@ import { CategoriesSelect } from "../../../_components/categories-select";
 import { CategoryType, FertilizerType, Season, UnitType } from "@prisma/client";
 import { SelectOptions } from "@/components/form/select-options";
 import { UnitsSelect } from "../../../_components/units-select";
-import { Link, useRouter } from "@/navigation";
+import { Link } from "@/navigation";
 import { UploadImage } from "@/components/form/upload-image";
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
 
 export const PlantCreateButton = () => {
   const t = useTranslations("plants.form");
@@ -42,7 +43,7 @@ export const PlantCreateButton = () => {
 export const PlantCreateForm = () => {
   const tSchema = useTranslations("plants.schema");
   const t = useTranslations("plants");
-  const router = useRouter();
+  const { push } = useRouterWithRole();
   const formSchema = PlantSchema(tSchema);
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -59,7 +60,7 @@ export const PlantCreateForm = () => {
           if (ok) {
             form.reset();
             toast.success(message);
-            router.push("/admin/plants");
+            push("plants");
           } else {
             toast.error(message);
           }

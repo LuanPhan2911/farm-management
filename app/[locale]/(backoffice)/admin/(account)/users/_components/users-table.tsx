@@ -14,9 +14,10 @@ import { User } from "@clerk/nextjs/server";
 import { useFormatter, useTranslations } from "next-intl";
 import { SearchBar } from "@/components/search-bar";
 import { NavPagination } from "@/components/nav-pagination";
-import { useRouter } from "@/navigation";
+
 import { getEmailAddress, getFullName } from "@/lib/utils";
 import { UsersTableSortBy } from "./users-table-sort-by";
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
 
 interface UsersTableProps {
   data: User[];
@@ -25,9 +26,9 @@ interface UsersTableProps {
 export const UsersTable = ({ data, totalPage }: UsersTableProps) => {
   const t = useTranslations("users");
   const { relativeTime } = useFormatter();
-  const router = useRouter();
+  const router = useRouterWithRole();
   const handleClick = (id: string) => {
-    router.push(`/admin/users/detail/${id}`);
+    router.push(`users/detail/${id}`);
   };
   return (
     <>

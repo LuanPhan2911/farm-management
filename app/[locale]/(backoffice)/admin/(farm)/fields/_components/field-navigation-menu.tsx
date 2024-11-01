@@ -3,6 +3,8 @@ import {
   CustomNavigationMenu,
   NavigationMenuData,
 } from "@/components/custom-navigation-menu";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { usePrefix } from "@/hooks/use-prefix";
 import { useTranslations } from "next-intl";
 
 import { useParams } from "next/navigation";
@@ -11,9 +13,13 @@ export const FieldNavigationMenu = () => {
   const params = useParams<{
     fieldId: string;
   }>()!;
-
+  const prefix = usePrefix();
   const t = useTranslations("fields.tabs");
-  const getHref = `/admin/fields/detail/${params.fieldId}`;
+  if (!prefix) {
+    return null;
+  }
+
+  const getHref = `${prefix}/fields/detail/${params.fieldId}`;
   const data: NavigationMenuData[] = [
     {
       href: `${getHref}`,

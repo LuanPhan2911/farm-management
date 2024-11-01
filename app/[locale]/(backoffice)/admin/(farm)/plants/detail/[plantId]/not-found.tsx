@@ -8,7 +8,7 @@ const PlantDetailNotFound = () => {
       title={t("title")}
       description={t("description")}
       backButtonLabel={t("backLabel")}
-      backButtonUrl="/admin/users"
+      backButtonUrl="users"
     />
   );
 };

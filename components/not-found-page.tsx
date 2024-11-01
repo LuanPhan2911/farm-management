@@ -2,6 +2,8 @@
 
 import { Link } from "@/navigation";
 import { Button } from "@/components/ui/button";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { usePrefix } from "@/hooks/use-prefix";
 
 interface NotFoundPageProps {
   title?: string;
@@ -15,6 +17,7 @@ export const NotFoundPage = ({
   title,
   backButtonUrl,
 }: NotFoundPageProps) => {
+  const prefix = usePrefix();
   return (
     <div className="grid min-h-full place-items-center px-6 py-24 sm:py-32 lg:px-8">
       <div className="text-center">
@@ -27,7 +30,9 @@ export const NotFoundPage = ({
             "Sorry, we couldn’t find the page you’re looking for."}
         </p>
         <div className="mt-10 flex items-center justify-center gap-x-6">
-          <Link href={backButtonUrl || "/admin"}>
+          <Link
+            href={prefix ? `${prefix}/${backButtonUrl}` : backButtonUrl || "/"}
+          >
             <Button variant={"blue"} size={"sm"}>
               {backButtonLabel || "Go to dashboard"}
             </Button>

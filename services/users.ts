@@ -88,12 +88,12 @@ export const updateUserMetadata = async (
   {
     role,
   }: {
-    role: StaffRole;
+    role?: StaffRole | undefined;
   }
 ) => {
   const user = await clerkClient().users.updateUserMetadata(userId, {
     publicMetadata: {
-      role,
+      role: role || null,
     },
   });
 

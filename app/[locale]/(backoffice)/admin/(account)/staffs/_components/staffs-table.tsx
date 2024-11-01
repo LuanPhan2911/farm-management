@@ -13,11 +13,11 @@ import { User } from "@clerk/nextjs/server";
 import { useFormatter, useTranslations } from "next-intl";
 import { SearchBar } from "@/components/search-bar";
 import { NavPagination } from "@/components/nav-pagination";
-import { useRouter } from "@/navigation";
 import { StaffMetadataRole } from "../../../_components/staff-metadata-role";
 import { StaffsTableAction } from "./staffs-table-action";
 import { getEmailAddress } from "@/lib/utils";
 import { StaffsTableSortBy } from "./staffs-table-sort-by";
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
 
 interface StaffsTableProps {
   data: User[];
@@ -26,9 +26,9 @@ interface StaffsTableProps {
 export const StaffsTable = ({ data, totalPage }: StaffsTableProps) => {
   const t = useTranslations("staffs");
   const { relativeTime } = useFormatter();
-  const router = useRouter();
+  const { push } = useRouterWithRole();
   const handleClick = (id: string) => {
-    router.push(`/admin/staffs/detail/${id}`);
+    push(`/staffs/detail/${id}`);
   };
   return (
     <>

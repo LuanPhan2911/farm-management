@@ -2,7 +2,6 @@
 import { DataTable } from "@/components/datatable";
 import { DataTableColumnHeader } from "@/components/datatable/datatable-column-header";
 
-import { Checkbox } from "@radix-ui/react-checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
 import { FieldTable } from "@/types";
@@ -10,14 +9,14 @@ import { FieldsTableAction } from "./fields-table-action";
 import { UnitWithValue } from "../../../_components/unit-with-value";
 
 import { SoilType } from "@prisma/client";
-import { useRouter } from "next/navigation";
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
 
 interface FieldsDataTableProps {
   data: FieldTable[];
 }
 
 export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
-  const router = useRouter();
+  const { push } = useRouterWithRole();
   const t = useTranslations("fields");
 
   const columns: ColumnDef<FieldTable>[] = [
@@ -131,7 +130,7 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
     },
   ];
   const onViewDetail = (item: FieldTable) => {
-    router.push(`/admin/fields/detail/${item.id}`);
+    push(`fields/detail/${item.id}`);
   };
   return (
     <DataTable

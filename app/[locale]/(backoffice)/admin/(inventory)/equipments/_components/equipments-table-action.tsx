@@ -26,7 +26,7 @@ export const EquipmentsTableAction = ({ data }: EquipmentsTableActionProps) => {
       <DropdownMenuContent align="start" className="w-fit">
         <DropdownMenuItem>
           <DetailButton
-            href={`/admin/equipments/detail/${data.id}`}
+            href={`equipments/detail/${data.id}`}
             label={t("detail.label")}
             className="w-full"
           />

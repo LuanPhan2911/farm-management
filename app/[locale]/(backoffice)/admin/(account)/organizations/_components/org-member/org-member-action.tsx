@@ -33,7 +33,7 @@ export const OrgMemberAction = ({ data }: OrgMemberActionProps) => {
       <DropdownMenuContent>
         <DropdownMenuItem>
           <DetailButton
-            href={`/admin/staffs/details/${data.publicUserData.userId}`}
+            href={`staffs/detail/${data.publicUserData.userId}`}
             label={t("viewProfile.label")}
             className="w-full"
           />

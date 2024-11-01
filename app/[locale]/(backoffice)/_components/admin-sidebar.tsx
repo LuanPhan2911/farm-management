@@ -11,12 +11,10 @@ import {
   Clock,
   Compass,
   Database,
-  DatabaseZap,
   Flower,
   Flower2,
   Folder,
   FolderLock,
-  Gavel,
   Goal,
   Grid2X2,
   Hammer,
@@ -27,7 +25,6 @@ import {
   MountainSnow,
   ScrollText,
   Section,
-  Sprout,
   SquareUserRound,
   Store,
   Trash,
@@ -43,12 +40,13 @@ import { useEffect } from "react";
 import { Icons } from "@/components/icons";
 import { siteConfig } from "@/configs/siteConfig";
 import { useMedia } from "@/hooks/use-media";
+import { useTranslations } from "next-intl";
 
 export const AdminSidebar = () => {
   const { isOpen, onClose } = useDashboardSidebar();
   const { isMobile } = useMedia();
   const pathname = usePathname();
-
+  const t = useTranslations("sidebar");
   useEffect(() => {
     if (isMobile) {
       onClose();
@@ -71,144 +69,144 @@ export const AdminSidebar = () => {
           href="/admin/dashboard"
           active={isActive(pathname, "/admin/dashboard")}
           icon={LayoutGrid}
-          title="Dashboard"
+          title={t("dashboard")}
         />
         <SidebarItem
           href="/admin/activities"
           active={isActive(pathname, "/admin/activities")}
           icon={Goal}
-          title="Activities"
+          title={t("activities")}
         />
-        <SidebarAccordionItem title="Account" icon={Users}>
+        <SidebarAccordionItem title={t("account")} icon={Users}>
           <SidebarItem
             href="/admin/users"
             active={isActive(pathname, "/admin/users")}
             icon={User}
-            title="Users"
+            title={t("users")}
           />
           <SidebarItem
             href="/admin/staffs"
             active={isActive(pathname, "/admin/staffs")}
             icon={SquareUserRound}
-            title="Staffs"
+            title={t("staffs")}
           />
 
           <SidebarItem
             href="/admin/organizations"
             active={isActive(pathname, "/admin/organizations")}
             icon={Building}
-            title="Organizations"
+            title={t("organizations")}
           />
           <SidebarItem
             href="/admin/messages"
             active={isActive(pathname, "/admin/messages")}
             icon={MessageCircle}
-            title="Messages"
+            title={t("messages")}
           />
         </SidebarAccordionItem>
 
-        <SidebarAccordionItem title="Farm" icon={House}>
+        <SidebarAccordionItem title={t("farm")} icon={House}>
           <SidebarItem
             href="/admin/fields"
             active={isActive(pathname, "/admin/fields")}
             icon={Grid2X2}
-            title="Fields"
+            title={t("fields")}
           />
           <SidebarItem
             href="/admin/plants"
             active={isActive(pathname, "/admin/plants")}
             icon={Flower2}
-            title="Plants"
+            title={t("plants")}
           />
           <SidebarItem
             href="/admin/fertilizers"
             active={isActive(pathname, "/admin/fertilizers")}
             icon={Leaf}
-            title="Fertilizers"
+            title={t("fertilizers")}
           />
           <SidebarItem
             href="/admin/pesticides"
             active={isActive(pathname, "/admin/pesticides")}
             icon={BugOff}
-            title="Pesticides"
+            title={t("pesticides")}
           />
         </SidebarAccordionItem>
-        <SidebarAccordionItem title="Inventory" icon={Store}>
+        <SidebarAccordionItem title={t("inventory")} icon={Store}>
           <SidebarItem
             href="/admin/materials"
             active={isActive(pathname, "/admin/materials")}
             icon={Database}
-            title="Materials"
+            title={t("materials")}
           />
           <SidebarItem
             href="/admin/equipments"
             active={isActive(pathname, "/admin/equipments")}
             icon={Hammer}
-            title="Equipments"
+            title={t("equipments")}
           />
         </SidebarAccordionItem>
-        <SidebarAccordionItem title="Catalogue" icon={Flower}>
+        <SidebarAccordionItem title={t("catalogue")} icon={Flower}>
           <SidebarItem
             href="/admin/categories"
             active={isActive(pathname, "/admin/categories")}
             icon={Section}
-            title="Categories"
+            title={t("categories")}
           />
           <SidebarItem
             href="/admin/units"
             active={isActive(pathname, "/admin/units")}
             icon={MountainSnow}
-            title="Units"
+            title={t("units")}
           />
         </SidebarAccordionItem>
 
-        <SidebarAccordionItem title="Recruit" icon={Clipboard}>
+        <SidebarAccordionItem title={t("recruit")} icon={Clipboard}>
           <SidebarItem
             href="/admin/jobs"
             active={isActive(pathname, "/admin/jobs")}
             icon={Compass}
-            title="Jobs"
+            title={t("jobs")}
           />
           <SidebarItem
             href="/admin/applicants"
             active={isActive(pathname, "/admin/applicants")}
             icon={User}
-            title="Applicants"
+            title={t("applicants")}
           />
         </SidebarAccordionItem>
-        <SidebarAccordionItem icon={ScrollText} title="Cron Job">
+        <SidebarAccordionItem title={t("cron-job")} icon={ScrollText}>
           <SidebarItem
             href="/admin/tasks"
             active={isActive(pathname, "/admin/tasks")}
             icon={BookCheck}
-            title="Tasks"
+            title={t("tasks")}
           />
           <SidebarItem
             href="/admin/schedules"
             active={isActive(pathname, "/admin/schedules")}
             icon={Clock}
-            title="Schedules"
+            title={t("schedules")}
           />
         </SidebarAccordionItem>
 
-        <SidebarAccordionItem title="Files" icon={ArchiveRestore}>
+        <SidebarAccordionItem title={t("storage")} icon={ArchiveRestore}>
           <SidebarItem
             href="/admin/my-files"
             active={isActive(pathname, "/admin/my-files")}
             icon={FolderLock}
-            title="My files"
+            title={t("my-files")}
           />
           <SidebarItem
             href="/admin/public-files"
             active={isActive(pathname, "/admin/public-files")}
             icon={Folder}
-            title="Public files"
+            title={t("public-files")}
           />
           <SidebarItem
             href="/admin/my-trash"
             active={isActive(pathname, "/admin/my-trash")}
             icon={Trash}
-            title="My trash"
+            title={t("my-trash")}
           />
         </SidebarAccordionItem>
       </div>

@@ -19,12 +19,11 @@ import { useSearchParams } from "next/navigation";
 import { includeString } from "@/lib/utils";
 import { OrgMemberCreateButton } from "./org-member/org-member-create-button";
 import { createContext, useContext, useEffect } from "react";
-import { OrganizationSwitcher, useAuth } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/organization";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "@/navigation";
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
 
 interface OrgTabsProps {
   org: Organization;
@@ -49,7 +48,7 @@ export const OrgTabs = ({ org, orgMember, currentStaff }: OrgTabsProps) => {
   const t = useTranslations("organizations.tabs");
   const { has, userId, orgId } = useAuth();
   const { isSuperAdmin } = useCurrentStaffRole();
-  const router = useRouter();
+  const { push } = useRouterWithRole();
   const canManageOrg = has?.({ permission: "org:sys_profile:manage" }) || false;
   const canManageMember =
     has?.({ permission: "org:sys_memberships:manage" }) || false;
@@ -61,9 +60,9 @@ export const OrgTabs = ({ org, orgMember, currentStaff }: OrgTabsProps) => {
       return;
     }
     if (org.id !== orgId) {
-      router.replace(`/admin/organizations/detail/${orgId}`);
+      push(`organizations/detail/${orgId}`);
     }
-  }, [orgId, router, org.id]);
+  }, [orgId, push, org.id]);
   return (
     <OrgContext.Provider
       value={{
@@ -82,13 +81,6 @@ export const OrgTabs = ({ org, orgMember, currentStaff }: OrgTabsProps) => {
             <TabsTrigger value="messages">{t("messages.title")}</TabsTrigger>
             <TabsTrigger value="danger">{t("danger.title")}</TabsTrigger>
           </TabsList>
-          <Button className="bg-slate-300 hidden lg:inline-flex">
-            <OrganizationSwitcher
-              afterSelectPersonalUrl={`/admin/organizations`}
-              afterLeaveOrganizationUrl={`/admin/organizations`}
-              skipInvitationScreen
-            />
-          </Button>
         </div>
 
         <TabsContent value="profile">

@@ -26,7 +26,7 @@ export const ActivitiesTableAction = ({ data }: ActivitiesTableActionProps) => {
       <DropdownMenuContent align="start" className="w-fit">
         <DropdownMenuItem>
           <DetailButton
-            href={`/admin/activities/detail/${data.id}`}
+            href={`activities/detail/${data.id}`}
             label={t("viewDetail.label")}
             className="w-full"
           />

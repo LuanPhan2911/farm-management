@@ -133,7 +133,7 @@ export const FieldCreateButton = ({ disabled }: FieldCreateButtonProps) => {
                         error={tSchema("orgId.error")}
                         placeholder={tSchema("orgId.placeholder")}
                         notFound={tSchema("orgId.notFound")}
-                        disabled={isPending}
+                        disabled={true}
                         appearance={{
                           button: "lg:w-full",
                           content: "lg:w-[480px]",

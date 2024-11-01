@@ -56,7 +56,7 @@ export const EquipmentUsagesTableAction = ({
         {data.activity && (
           <DropdownMenuItem>
             <DetailButton
-              href={`/admin/activities/detail/${data.activity.id}`}
+              href={`activities/detail/${data.activity.id}`}
               label={t("detailActivity.label")}
             />
           </DropdownMenuItem>

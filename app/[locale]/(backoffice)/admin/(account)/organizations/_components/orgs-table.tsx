@@ -15,11 +15,11 @@ import { SearchBar } from "@/components/search-bar";
 import { NavPagination } from "@/components/nav-pagination";
 import { UserAvatar } from "@/components/user-avatar";
 
-import { useRouter } from "@/navigation";
 import { OrgsTableSortBy } from "./orgs-table-sort-by";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { useOrganizationList } from "@clerk/nextjs";
 import { toast } from "sonner";
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
 
 interface OrgsTableProps {
   orgs: Organization[];
@@ -28,7 +28,7 @@ interface OrgsTableProps {
 export const OrgsTable = ({ orgs, totalPage }: OrgsTableProps) => {
   const t = useTranslations("organizations");
   const { relativeTime } = useFormatter();
-  const router = useRouter();
+  const { push } = useRouterWithRole();
   const { isSuperAdmin } = useCurrentStaffRole();
   const { setActive } = useOrganizationList();
   const handleClick = (org: Organization) => {
@@ -36,7 +36,7 @@ export const OrgsTable = ({ orgs, totalPage }: OrgsTableProps) => {
       setActive?.({ organization: null });
       toast.warning(t("other.setActive"));
     });
-    router.push(`/admin/organizations/detail/${org.id}`);
+    push(`organizations/detail/${org.id}`);
   };
 
   return (

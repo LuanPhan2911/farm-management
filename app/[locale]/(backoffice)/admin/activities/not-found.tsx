@@ -10,7 +10,7 @@ const ActivityNotFoundPage = () => {
       title={t("title")}
       description={t("description")}
       backButtonLabel={t("backLabel")}
-      backButtonUrl="/admin/activities"
+      backButtonUrl="activities"
     />
   );
 };

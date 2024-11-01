@@ -626,6 +626,11 @@
       }
     },
     "form": {
+      "editRole": {
+        "label": "Make user as staff",
+        "title": "Edit role",
+        "description": "When role edited, user will be staff"
+      },
       "detail": {
         "label": "Detail",
         "title": "User basic information",
@@ -3703,7 +3708,6 @@
   "route": {
     "/admin": "Admin",
     "/admin/dashboard": "Dashboard",
-    "/admin/products": "Products",
     "/admin/categories": "Categories",
     "/admin/units": "Units",
     "/admin/jobs": "Jobs",
@@ -3718,7 +3722,6 @@
     "/admin/organizations/detail": "Detail",
     "/admin/organizations/detail/files": "Uploaded files",
     "/admin/fields": "Field",
-    "/admin/fields/create": "Create",
     "/admin/fields/detail": "Detail",
     "/admin/fields/detail/danger": "Danger",
     "/admin/fields/detail/crops": "Crops",
@@ -3755,6 +3758,51 @@
     "/admin/messages/files": "Uploaded files",
     "/admin/my-files": "My files",
     "/admin/public-files": "Public files",
-    "/admin/my-trash": "My trash"
+    "/admin/my-trash": "My trash",
+
+    "/farmer": "Farmer",
+    "/farmer/staffs": "Staffs",
+    "/farmer/staffs/detail": "Detail",
+    "/farmer/organizations": "Organization",
+    "/farmer/organizations/detail": "Detail",
+    "/farmer/organizations/detail/files": "Uploaded files",
+    "/farmer/messages": "All messages",
+    "/farmer/messages/files": "Uploaded files",
+    "/farmer/fields": "Field",
+    "/farmer/fields/detail": "Detail",
+    "/farmer/fields/detail/danger": "Danger",
+    "/farmer/fields/detail/crops": "Crops",
+    "/farmer/fields/detail/weathers": "Weathers",
+    "/farmer/fields/detail/soils": "Soils"
+  },
+  "sidebar": {
+    "farm": "Farm",
+    "account": "Account",
+    "inventory": "Inventory",
+    "catalogue": "Catalogue",
+    "recruit": "Recruit",
+    "cron-job": "Cron job",
+    "storage": "Storage",
+    "dashboard": "Dashboard",
+    "activities": "Activities",
+    "users": "Users",
+    "staffs": "Staffs",
+    "organizations": "Organizations",
+    "messages": "Messages",
+    "fields": "Fields",
+    "plants": "Plants",
+    "fertilizers": "Fertilizers",
+    "pesticides": "Pesticides",
+    "materials": "Materials",
+    "equipments": "Equipments",
+    "categories": "Categories",
+    "units": "Units",
+    "jobs": "Jobs",
+    "applicants": "Applicants",
+    "tasks": "Tasks",
+    "schedules": "Schedules",
+    "my-files": "My Files",
+    "public-files": "Public Files",
+    "my-trash": "My trash"
   }
 }

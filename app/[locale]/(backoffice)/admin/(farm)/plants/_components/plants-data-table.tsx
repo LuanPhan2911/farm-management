@@ -8,15 +8,16 @@ import { UserAvatar } from "@/components/user-avatar";
 import { PlantsTableAction } from "./plants-table-action";
 
 import { DataTable } from "@/components/datatable";
-import { useRouter } from "@/navigation";
+
 import { FertilizerType, Season } from "@prisma/client";
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
 
 interface PlantsDataTableProps {
   data: PlantTable[];
 }
 export const PlantsDataTable = ({ data }: PlantsDataTableProps) => {
   const t = useTranslations("plants");
-  const router = useRouter();
+  const router = useRouterWithRole();
   const columns: ColumnDef<PlantTable>[] = [
     {
       id: "select",
@@ -145,7 +146,7 @@ export const PlantsDataTable = ({ data }: PlantsDataTableProps) => {
     },
   ];
   const onViewDetail = (data: PlantTable) => {
-    router.push(`/admin/plants/detail/${data.id}`);
+    router.push(`plants/detail/${data.id}`);
   };
   return (
     <DataTable

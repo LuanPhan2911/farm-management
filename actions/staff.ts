@@ -2,12 +2,11 @@
 
 import { sendStaffCreateUser } from "@/lib/mail";
 import { errorResponse, successResponse } from "@/lib/utils";
-import { StaffSchema, UserSchema } from "@/schemas";
+import { StaffSchema } from "@/schemas";
+import { deleteStaff } from "@/services/staffs";
 import {
   createUser,
-  deleteUser,
   getUserByEmail,
-  updateUser,
   updateUserMetadata,
 } from "@/services/users";
 import { ActionResponse } from "@/types";
@@ -62,6 +61,7 @@ export const editRole = async (
     });
 
     //TODO webhook for update staff role
+    revalidatePath(`/admin/users`);
     revalidatePath("/admin/staffs");
     revalidatePath(`/admin/staffs/detail/${userId}`);
     return successResponse(tStatus("success.editRole"));
@@ -70,13 +70,17 @@ export const editRole = async (
   }
 };
 
-export const destroy = async (id: string): Promise<ActionResponse> => {
+export const destroy = async (externalId: string): Promise<ActionResponse> => {
   const tStatus = await getTranslations("staffs.status");
 
   try {
-    const user = await deleteUser(id);
+    const user = await updateUserMetadata(externalId, {
+      role: undefined,
+    });
+    const staff = await deleteStaff(externalId);
 
     //TODO: webhook for delete staff
+    revalidatePath(`/admin/users`);
     revalidatePath("/admin/staffs");
     return successResponse(tStatus("success.destroy"));
   } catch (error) {

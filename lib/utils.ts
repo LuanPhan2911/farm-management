@@ -65,6 +65,9 @@ export function generateEmail(name: string) {
 export function getFullName(user: User) {
   return `${user.firstName || ""} ${user.lastName || ""}`.trim();
 }
+export function mergeName(firstName: string | null, lastName: string | null) {
+  return `${firstName || ""} ${lastName || ""}`.trim();
+}
 export function getEmailAddress(user: User) {
   const email = user.emailAddresses;
   return email[0].emailAddress;
