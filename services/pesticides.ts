@@ -13,17 +13,11 @@ import {
   PesticideTypeCount,
 } from "@/types";
 import { PesticideType, ToxicityLevel } from "@prisma/client";
-import {
-  deleteFloatUnit,
-  deleteIntUnit,
-  UnitValue,
-  upsertFloatUnit,
-  upsertIntUnit,
-} from "./units";
+import { UnitValue, upsertFloatUnit, upsertIntUnit } from "./units";
 
 type PesticideParams = {
   name: string;
-  type: PesticideType;
+  type?: PesticideType | null;
   ingredient?: string | null;
   manufacturer?: string | null;
   withdrawalPeriod?: Partial<UnitValue> | null;
@@ -157,14 +151,18 @@ export const getCountPesticideType = async ({}: PesticideQuery): Promise<
   try {
     const result = await db.pesticide.groupBy({
       by: "type",
-
+      where: {
+        type: {
+          not: null,
+        },
+      },
       _count: {
         _all: true,
       },
     });
     return result.map((item) => {
       return {
-        type: item.type,
+        type: item.type!,
         _count: item._count._all,
       };
     });
@@ -177,7 +175,11 @@ export const getCountPesticideToxicityLevel =
     try {
       const result = await db.pesticide.groupBy({
         by: "toxicityLevel",
-
+        where: {
+          toxicityLevel: {
+            not: null,
+          },
+        },
         _count: {
           _all: true,
         },
@@ -202,6 +204,15 @@ export const getPesticidesSelect = async (): Promise<PesticideSelect[]> => {
         type: true,
         toxicityLevel: true,
         applicationMethod: true,
+        withdrawalPeriod: {
+          include: {
+            unit: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
         recommendedDosage: {
           include: {
             unit: {

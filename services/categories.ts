@@ -82,6 +82,10 @@ export const getCategoriesByType = async (
         name: true,
         id: true,
       },
+      cacheStrategy: {
+        swr: 60,
+        ttl: 60,
+      },
     });
   } catch (error) {
     return [];

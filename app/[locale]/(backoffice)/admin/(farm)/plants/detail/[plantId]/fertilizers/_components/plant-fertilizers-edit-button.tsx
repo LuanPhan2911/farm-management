@@ -28,6 +28,7 @@ import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units
 import { edit } from "@/actions/plant-fertilizer";
 import { Textarea } from "@/components/ui/textarea";
 import { FertilizersSelect } from "@/app/[locale]/(backoffice)/admin/_components/fertilizers-select";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface PlantFertilizerEditButtonProps {
   data: PlantFertilizerTable;
@@ -39,6 +40,7 @@ export const PlantFertilizerEditButton = ({
   label,
 }: PlantFertilizerEditButtonProps) => {
   const { onOpen } = useDialog();
+  const { isOnlyAdmin: canEdit } = useCurrentStaffRole();
   return (
     <Button
       className="w-full"
@@ -50,6 +52,7 @@ export const PlantFertilizerEditButton = ({
       }}
       size={"sm"}
       variant={"edit"}
+      disabled={!canEdit}
     >
       <Edit className="w-4 h-4 mr-2" />
       {label}
@@ -64,6 +67,7 @@ export const PlantFertilizerEditDialog = () => {
   const t = useTranslations("plantFertilizers");
   const formSchema = PlantFertilizerSchema(tSchema);
 
+  const { isOnlyAdmin: canEdit } = useCurrentStaffRole();
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -116,7 +120,7 @@ export const PlantFertilizerEditDialog = () => {
                         placeholder={tSchema("fertilizerId.placeholder")}
                         error={tSchema("fertilizerId.error")}
                         notFound={tSchema("fertilizerId.notFound")}
-                        disabled={isPending}
+                        disabled={isPending || !canEdit}
                         onChange={field.onChange}
                         appearance={{
                           button: "lg:w-full 2",
@@ -141,7 +145,7 @@ export const PlantFertilizerEditDialog = () => {
                         placeholder={tSchema("stage.placeholder")}
                         value={field.value ?? undefined}
                         onChange={field.onChange}
-                        disabled={isPending}
+                        disabled={isPending || !canEdit}
                       />
                     </FormControl>
                     <FormMessage />
@@ -162,7 +166,7 @@ export const PlantFertilizerEditDialog = () => {
                             placeholder={tSchema("dosage.placeholder")}
                             value={field.value ?? undefined}
                             onChange={field.onChange}
-                            disabled={isPending}
+                            disabled={isPending || !canEdit}
                             type="number"
                           />
                         </FormControl>
@@ -182,7 +186,7 @@ export const PlantFertilizerEditDialog = () => {
                           onChange={field.onChange}
                           placeholder={tSchema("dosage.unitId.placeholder")}
                           unitType={UnitType.VOLUME}
-                          disabled={isPending}
+                          disabled={isPending || !canEdit}
                           className="w-full"
                           error={tSchema("dosage.unitId.error")}
                           notFound={tSchema("dosage.unitId.notFound")}
@@ -206,7 +210,7 @@ export const PlantFertilizerEditDialog = () => {
                         placeholder={tSchema("note.placeholder")}
                         value={field.value ?? undefined}
                         onChange={field.onChange}
-                        disabled={isPending}
+                        disabled={isPending || !canEdit}
                       />
                     </FormControl>
                     <FormMessage />
@@ -216,7 +220,7 @@ export const PlantFertilizerEditDialog = () => {
             </div>
           </div>
 
-          <DynamicDialogFooter disabled={isPending} />
+          <DynamicDialogFooter disabled={isPending || !canEdit} />
         </form>
       </Form>
     </DynamicDialog>

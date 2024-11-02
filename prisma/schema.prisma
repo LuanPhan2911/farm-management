@@ -292,31 +292,6 @@ enum Season {
   WINTER
 }
 
-model Crop {
-  id   String @id @default(uuid())
-  name String
-
-  startDate DateTime
-  endDate   DateTime?
-
-  fieldId String
-  field   Field  @relation(fields: [fieldId], references: [id])
-
-  plantId String
-  plant   Plant  @relation(fields: [plantId], references: [id])
-
-  estimatedYieldId String?
-  estimatedYield   FloatUnit? @relation(name: "estimatedYield", fields: [estimatedYieldId], references: [id], onDelete: SetNull) // Sản lượng dự kiến
-
-  actualYieldId String?
-  actualYield   FloatUnit? @relation(name: "actualYield", fields: [actualYieldId], references: [id], onDelete: SetNull) // Sản lượng thực tế
-
-  status String? // Tình trạng mùa vụ
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model Plant {
   id String @id @default(uuid())
 
@@ -325,12 +300,12 @@ model Plant {
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id])
 
-  growthDuration     String // Số ngày từ khi gieo trồng đến thu hoạch
+  growthDuration     String? // Số ngày từ khi gieo trồng đến thu hoạch
   season             Season? // Mùa vụ phù hợp
   idealTemperatureId String? // Nhiệt độ lý tưởng
   idealHumidityId    String? // Độ ẩm lý tưởng
   waterRequirementId String? // Lượng nước cần thiết
-  fertilizerType     FertilizerType // Loại phân bón nên sử dụng
+  fertilizerType     FertilizerType? // Loại phân bón nên sử dụng
 
   // Liên kết với các bảng khác
   idealTemperature FloatUnit? @relation(name: "idealTemperature", fields: [idealTemperatureId], references: [id], onDelete: SetNull)
@@ -362,9 +337,9 @@ model Fertilizer {
   id String @id @default(uuid())
 
   name String
-  type FertilizerType
+  type FertilizerType?
 
-  nutrientOfNPK String // NPK ratio
+  nutrientOfNPK String? // NPK ratio
   manufacturer  String?
 
   recommendedDosageId String? // Liều lượng khuyến nghị
@@ -395,7 +370,7 @@ model Pesticide {
   id String @id @default(uuid())
 
   name         String
-  type         PesticideType
+  type         PesticideType?
   ingredient   String?
   manufacturer String?
 
@@ -606,6 +581,31 @@ enum ActivityPriority {
   MEDIUM
   HIGH
   URGENT
+}
+
+model Crop {
+  id   String @id @default(uuid())
+  name String
+
+  startDate DateTime
+  endDate   DateTime?
+
+  fieldId String
+  field   Field  @relation(fields: [fieldId], references: [id])
+
+  plantId String
+  plant   Plant  @relation(fields: [plantId], references: [id])
+
+  estimatedYieldId String?
+  estimatedYield   FloatUnit? @relation(name: "estimatedYield", fields: [estimatedYieldId], references: [id], onDelete: SetNull) // Sản lượng dự kiến
+
+  actualYieldId String?
+  actualYield   FloatUnit? @relation(name: "actualYield", fields: [actualYieldId], references: [id], onDelete: SetNull) // Sản lượng thực tế
+
+  status String? // Tình trạng mùa vụ
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Activity {

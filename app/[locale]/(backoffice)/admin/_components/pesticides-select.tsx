@@ -47,6 +47,16 @@ export const PesticidesSelect = (props: PesticidesSelectProps) => {
       renderItemDetail={(item) => {
         return (
           <div className="space-y-2">
+            <FormItem>
+              <FormLabel>{tSchema("type.label")}</FormLabel>
+              <InputDisabled
+                placeholder={tSchema("type.placeholder")}
+                value={
+                  item.type ? tSchema(`type.options.${item.type}`) : undefined
+                }
+                defaultValue={tSchema("type.options.default")}
+              />
+            </FormItem>
             <div className="grid grid-cols-5 gap-2">
               <div className="col-span-3">
                 <FormItem>
@@ -55,6 +65,32 @@ export const PesticidesSelect = (props: PesticidesSelectProps) => {
                     placeholder={tSchema("recommendedDosage.placeholder")}
                     value={item.recommendedDosage?.value}
                     defaultValue={tSchema("recommendedDosage.value.default")}
+                  />
+                </FormItem>
+              </div>
+              <div className="col-span-2">
+                <FormItem>
+                  <FormLabel>
+                    {tSchema("recommendedDosage.unitId.label")}
+                  </FormLabel>
+                  <InputDisabled
+                    placeholder={tSchema(
+                      "recommendedDosage.unitId.placeholder"
+                    )}
+                    value={item.recommendedDosage?.unit?.name}
+                    defaultValue={tSchema("recommendedDosage.unitId.default")}
+                  />
+                </FormItem>
+              </div>
+            </div>
+            <div className="grid grid-cols-5 gap-2">
+              <div className="col-span-3">
+                <FormItem>
+                  <FormLabel>{tSchema("withdrawalPeriod.label")}</FormLabel>
+                  <InputDisabled
+                    placeholder={tSchema("withdrawalPeriod.placeholder")}
+                    value={item.withdrawalPeriod?.value}
+                    defaultValue={tSchema("withdrawalPeriod.value.default")}
                   />
                 </FormItem>
               </div>

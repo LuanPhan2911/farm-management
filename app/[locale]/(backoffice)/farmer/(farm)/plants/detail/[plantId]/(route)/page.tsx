@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { PlantEditForm } from "../../../_components/plant-edit-button";
+import { PlantEditForm } from "@/app/[locale]/(backoffice)/admin/(farm)/plants/_components/plant-edit-button";
 
 interface PlantDetailPageProps {
   params: {

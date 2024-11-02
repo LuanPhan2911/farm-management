@@ -481,18 +481,20 @@ export const PlantSchema = (
     }).nullish(),
     categoryId: z.string({ required_error: t("categoryId.required_error") }),
     growthDuration: stringSchema(t, "growthDuration", {
-      min: 3,
       max: 100,
-    }),
+      required: false,
+    }).nullish(),
 
     season: z
       .nativeEnum(Season, {
         message: "season.enum",
       })
       .nullish(),
-    fertilizerType: z.nativeEnum(FertilizerType, {
-      message: t("fertilizerType.enum"),
-    }),
+    fertilizerType: z
+      .nativeEnum(FertilizerType, {
+        message: t("fertilizerType.enum"),
+      })
+      .nullish(),
     idealTemperature: floatUnitSchema(t, "idealTemperature", {
       min: -20,
       max: 50,
@@ -553,16 +555,18 @@ export const FertilizerSchema = (
 ) => {
   return z.object({
     name: stringSchema(t, "name", {
-      min: 5,
+      min: 2,
       max: 100,
     }),
-    type: z.nativeEnum(FertilizerType, {
-      message: t("type.enum"),
-    }),
+    type: z
+      .nativeEnum(FertilizerType, {
+        message: t("type.enum"),
+      })
+      .nullish(),
     nutrientOfNPK: stringSchema(t, "nutrientOfNPK", {
-      min: 3,
       max: 100,
-    }),
+      required: false,
+    }).nullish(),
     composition: stringSchema(t, "composition", {
       max: 255,
       required: false,
@@ -595,9 +599,11 @@ export const PesticideSchema = (
       min: 3,
       max: 100,
     }),
-    type: z.nativeEnum(PesticideType, {
-      message: t("type.enum"),
-    }),
+    type: z
+      .nativeEnum(PesticideType, {
+        message: t("type.enum"),
+      })
+      .nullish(),
     ingredient: stringSchema(t, "ingredient", {
       max: 255,
       required: false,
@@ -631,7 +637,7 @@ export const CropSchema = (
 ) => {
   return z.object({
     name: stringSchema(t, "name", {
-      min: 5,
+      min: 2,
       max: 100,
     }),
     dateRange: z.object({
@@ -641,7 +647,9 @@ export const CropSchema = (
       }),
       endDate: z.date().nullable(),
     }),
-    fieldId: z.string(),
+    fieldId: z.string({
+      required_error: t("fieldId.required_error"),
+    }),
     plantId: z.string({
       required_error: t("plantId.required_error"),
     }),

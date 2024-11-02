@@ -30,6 +30,7 @@ import {
   Trash,
   User,
   Users,
+  Vegan,
 } from "lucide-react";
 
 import Link from "next/link";
@@ -70,6 +71,13 @@ export const AdminSidebar = () => {
           active={isActive(pathname, "/admin/dashboard")}
           icon={LayoutGrid}
           title={t("dashboard")}
+        />
+
+        <SidebarItem
+          href="/admin/crops"
+          active={isActive(pathname, "/admin/crops")}
+          icon={Vegan}
+          title={t("crops")}
         />
         <SidebarItem
           href="/admin/activities"

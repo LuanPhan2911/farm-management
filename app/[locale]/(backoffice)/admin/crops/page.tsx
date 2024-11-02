@@ -4,10 +4,8 @@ import { parseToDate, parseToNumber } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CropCreateButton } from "./_components/crop-create-button";
 import { getTranslations } from "next-intl/server";
+import { auth } from "@clerk/nextjs/server";
 interface CropsPageProps {
-  params: {
-    fieldId: string;
-  };
   searchParams: {
     plantId?: string;
     page?: string;
@@ -25,14 +23,15 @@ export async function generateMetadata() {
     title: t("title"),
   };
 }
-const CropsPage = async ({ params, searchParams }: CropsPageProps) => {
+const CropsPage = async ({ searchParams }: CropsPageProps) => {
+  const { orgId } = auth();
   const { query: name, orderBy, plantId, filterNumber } = searchParams;
   const startDate = parseToDate(searchParams!.begin);
   const endDate = parseToDate(searchParams!.end);
   const page = parseToNumber(searchParams!.page, 1);
   const t = await getTranslations("crops.page");
   const { data, totalPage } = await getCropsOnField({
-    fieldId: params!.fieldId,
+    orgId,
     page,
     orderBy,
     filterNumber,

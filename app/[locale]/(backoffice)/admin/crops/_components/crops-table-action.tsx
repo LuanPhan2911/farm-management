@@ -11,12 +11,15 @@ import { CropTable } from "@/types";
 import { MoreHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { CropEditButton } from "./crop-edit-button";
-import { CropDeleteButton } from "./crop-delete-button";
+import { DestroyButton } from "@/components/buttons/destroy-button";
+import { destroy } from "@/actions/crop";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 interface CropsTableActionProps {
   data: CropTable;
 }
 export const CropsTableAction = ({ data }: CropsTableActionProps) => {
   const t = useTranslations("crops.form");
+  const { isSuperAdmin: canUpdate } = useCurrentStaffRole();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -29,7 +32,13 @@ export const CropsTableAction = ({ data }: CropsTableActionProps) => {
           <CropEditButton data={data} label={t("edit.label")} />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <CropDeleteButton data={data} label={t("destroy.label")} />
+          <DestroyButton
+            destroyFn={destroy}
+            id={data.id}
+            inltKey="crops"
+            className="w-full"
+            disabled={!canUpdate}
+          />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

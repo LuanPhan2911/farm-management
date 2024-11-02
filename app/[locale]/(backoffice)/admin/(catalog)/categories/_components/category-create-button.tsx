@@ -62,6 +62,7 @@ export const CategoryCreateButton = () => {
         .then(({ message, ok }) => {
           if (ok) {
             toast.success(message);
+            form.reset();
             setOpen(false);
           } else {
             toast.error(message);

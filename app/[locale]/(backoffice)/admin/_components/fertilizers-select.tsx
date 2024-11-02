@@ -73,6 +73,26 @@ export const FertilizersSelect = (props: FertilizersSelectProps) => {
                 </FormItem>
               </div>
             </div>
+            <div className="grid grid-cols-2 gap-2">
+              <FormItem>
+                <FormLabel>{tSchema("type.label")}</FormLabel>
+                <InputDisabled
+                  placeholder={tSchema("type.placeholder")}
+                  value={
+                    item.type ? tSchema(`type.options.${item.type}`) : undefined
+                  }
+                  defaultValue={tSchema("type.options.default")}
+                />
+              </FormItem>
+              <FormItem>
+                <FormLabel>{tSchema("nutrientOfNPK.label")}</FormLabel>
+                <InputDisabled
+                  placeholder={tSchema("nutrientOfNPK.placeholder")}
+                  value={item.nutrientOfNPK}
+                  defaultValue={tSchema("nutrientOfNPK.options.default")}
+                />
+              </FormItem>
+            </div>
             <FormItem>
               <FormLabel>{tSchema("frequencyOfUse.label")}</FormLabel>
               <InputDisabled

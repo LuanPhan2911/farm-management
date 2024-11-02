@@ -10,7 +10,7 @@ import {
 import { PlantTable } from "@/types";
 import { MoreHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { PlantDetailButton } from "./plant-detail-button";
+import { DetailButton } from "@/components/buttons/detail-button";
 
 interface PlantsTableActionProps {
   data: PlantTable;
@@ -26,7 +26,11 @@ export const PlantsTableAction = ({ data }: PlantsTableActionProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
-          <PlantDetailButton label={t("viewDetail.label")} data={data} />
+          <DetailButton
+            href={`plants/detail/${data.id}`}
+            label={t("viewDetail.label")}
+            className="w-full"
+          />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

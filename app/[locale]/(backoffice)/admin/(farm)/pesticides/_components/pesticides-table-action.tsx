@@ -11,12 +11,15 @@ import { PesticideTable } from "@/types";
 import { MoreHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { PesticideEditButton } from "./pesticide-edit-button";
-import { PesticideDeleteButton } from "./pesticide-delete-button";
+import { DestroyButton } from "@/components/buttons/destroy-button";
+import { destroy } from "@/actions/pesticide";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 interface PesticidesTableActionProps {
   data: PesticideTable;
 }
 export const PesticidesTableAction = ({ data }: PesticidesTableActionProps) => {
   const t = useTranslations("pesticides.form");
+  const { isSuperAdmin: canDelete } = useCurrentStaffRole();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -29,7 +32,13 @@ export const PesticidesTableAction = ({ data }: PesticidesTableActionProps) => {
           <PesticideEditButton data={data} label={t("edit.label")} />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <PesticideDeleteButton data={data} label={t("destroy.label")} />
+          <DestroyButton
+            destroyFn={destroy}
+            id={data.id}
+            inltKey="pesticides"
+            disabled={!canDelete}
+            className="w-full"
+          />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

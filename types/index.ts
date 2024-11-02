@@ -223,7 +223,8 @@ export type FertilizerFrequencyCount = {
 export type FertilizerSelect = {
   id: string;
   name: string;
-  type: FertilizerType;
+  type: FertilizerType | null;
+  nutrientOfNPK: string | null;
   frequencyOfUse: Frequency | null;
   applicationMethod: string | null;
   recommendedDosage: FloatUnitTable | null;
@@ -244,9 +245,10 @@ export type PesticideToxicityLevelCount = {
 export type PesticideSelect = {
   id: string;
   name: string;
-  type: PesticideType;
+  type: PesticideType | null;
   toxicityLevel: ToxicityLevel | null;
   applicationMethod: string | null;
+  withdrawalPeriod: IntUnitTable | null;
   recommendedDosage: FloatUnitTable | null;
 };
 

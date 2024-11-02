@@ -133,6 +133,11 @@ export const getFieldById = async (id: string) => {
 export const getFieldsSelect = async (): Promise<FieldSelect[]> => {
   try {
     const fields = await db.field.findMany({
+      where: {
+        orgId: {
+          not: null,
+        },
+      },
       select: {
         id: true,
         name: true,

@@ -113,8 +113,8 @@
         "description": "Description"
       },
       "trow": {
-        "type": "...",
-        "description": "..."
+        "type": "",
+        "description": ""
       }
     },
     "search": {
@@ -305,7 +305,7 @@
         "status": "Status"
       },
       "trow": {
-        "note": "..."
+        "note": ""
       }
     },
     "search": {
@@ -1193,10 +1193,10 @@
         "confirmedBy": "ConfirmedBy"
       },
       "trow": {
-        "temperature": "...",
-        "humidity": "...",
-        "atmosphericPressure": "...",
-        "rainfall": "...",
+        "temperature": "",
+        "humidity": "",
+        "atmosphericPressure": "",
+        "rainfall": "",
         "confirmedAt": "No confirmed",
         "confirmedBy": "No confirmed"
       }
@@ -1624,10 +1624,11 @@
       },
       "trow": {
         "season": "Any season",
-        "idealTemperature": "...",
-        "idealHumidity": "...",
-        "waterRequirement": "...",
-        "growDuration": "days"
+        "fertilizerType": "",
+        "idealTemperature": "",
+        "idealHumidity": "",
+        "waterRequirement": "",
+        "growDuration": ""
       }
     },
     "tabs": {
@@ -1820,9 +1821,11 @@
         "manufacturer": "Manufacturer"
       },
       "trow": {
-        "manufacturer": "...",
-        "applicationMethod": "...",
-        "frequencyOfUse": "..."
+        "manufacturer": "",
+        "applicationMethod": "",
+        "frequencyOfUse": "",
+        "nutrientOfNPK": "",
+        "type": ""
       }
     },
     "search": {
@@ -1877,14 +1880,16 @@
           "ORGANIC": "Organic",
           "INORGANIC": "Inorganic",
           "BIO": "Bio"
-        }
+        },
+        "default": "No filled"
       },
       "nutrientOfNPK": {
         "label": "NPK ratio",
         "placeholder": "1/2/1 mean 25% nitrogen, 50% potassium, 25% phosphorus",
         "required_error": "NPK ratio is required!",
         "min": "Min NPK ratio length is {min} characters",
-        "max": "Max NPK ratio's length is {max} characters"
+        "max": "Max NPK ratio's length is {max} characters",
+        "default": "No filled"
       },
       "composition": {
         "label": "Composition",
@@ -1962,9 +1967,10 @@
         "manufacturer": "Manufacturer"
       },
       "trow": {
-        "toxicityLevel": "...",
-        "manufacturer": "...",
-        "applicationMethod": "..."
+        "type": "",
+        "toxicityLevel": "",
+        "manufacturer": "",
+        "applicationMethod": ""
       }
     },
     "search": {
@@ -2016,7 +2022,8 @@
           "PESTICIDE": "Pesticide",
           "HERBICIDE": "Herbicide",
           "FUNGICIDE": "Fungicide"
-        }
+        },
+        "default": "No filled"
       },
       "ingredient": {
         "label": "Ingredient",
@@ -2034,14 +2041,16 @@
           "placeholder": "Unit",
           "error": "Fail load units",
           "notFound": "Units not found",
-          "label": "Unit"
+          "label": "Unit",
+          "default": "No selected"
         },
         "value": {
           "required_error": "Withdrawal period value is required",
           "invalid_type_error": "Withdrawal period value must be number",
           "int": "Withdrawal period value must be integer",
           "min": "Min Withdrawal period value is {min}",
-          "max": "Max Withdrawal period value is {max}"
+          "max": "Max Withdrawal period value is {max}",
+          "default": "No filled"
         },
         "label": "Withdrawal period",
         "placeholder": "Eg: 3 months"
@@ -2115,11 +2124,11 @@
         "note": "Note"
       },
       "trow": {
-        "dosage": "...",
+        "dosage": "",
         "fertilizer": {
-          "recommendedDosage": "..."
+          "recommendedDosage": ""
         },
-        "note": "..."
+        "note": ""
       }
     },
     "search": {},
@@ -2214,11 +2223,11 @@
         "note": "Note"
       },
       "trow": {
-        "dosage": "...",
+        "dosage": "",
         "pesticide": {
-          "recommendedDosage": "..."
+          "recommendedDosage": ""
         },
-        "note": "..."
+        "note": ""
       }
     },
     "search": {},
@@ -3201,10 +3210,10 @@
         "status": "Status"
       },
       "trow": {
-        "endDate": "...",
-        "estimatedYield": "...",
-        "actualYield": "...",
-        "status": "..."
+        "endDate": "",
+        "estimatedYield": "",
+        "actualYield": "",
+        "status": ""
       }
     },
     "search": {
@@ -3252,6 +3261,13 @@
         "required_error": "Plant is required",
         "notFound": "Plant not found",
         "error": "Fail load plant"
+      },
+      "fieldId": {
+        "label": "Field",
+        "placeholder": "Select field...",
+        "required_error": "Field is required",
+        "notFound": "Field not found",
+        "error": "Fail load field"
       },
 
       "estimatedYield": {
@@ -3718,7 +3734,6 @@
     "/admin/fields": "Field",
     "/admin/fields/detail": "Detail",
     "/admin/fields/detail/danger": "Danger",
-    "/admin/fields/detail/crops": "Crops",
     "/admin/fields/detail/weathers": "Weathers",
     "/admin/fields/detail/soils": "Soils",
     "/admin/plants": "Plants",
@@ -3740,6 +3755,8 @@
     "/admin/materials/detail": "Info",
     "/admin/materials/detail/danger": "Danger",
     "/admin/materials/detail/usages": "Usages",
+
+    "/admin/crops": "Crops",
     "/admin/activities": "Activities",
     "/admin/activities/create": "Create",
     "/admin/activities/detail": "Info",
@@ -3765,9 +3782,16 @@
     "/farmer/fields": "Field",
     "/farmer/fields/detail": "Detail",
     "/farmer/fields/detail/danger": "Danger",
-    "/farmer/fields/detail/crops": "Crops",
     "/farmer/fields/detail/weathers": "Weathers",
-    "/farmer/fields/detail/soils": "Soils"
+    "/farmer/fields/detail/soils": "Soils",
+
+    "/farmer/plants": "Plants",
+    "/farmer/plants/detail": "Detail",
+    "/farmer/plants/detail/danger": "Danger",
+    "/farmer/plants/detail/fertilizers": "Plant Fertilizers",
+    "/farmer/plants/detail/pesticides": "Plant Pesticides",
+    "/farmer/fertilizers": "Fertilizer",
+    "/farmer/pesticides": "Pesticide"
   },
   "sidebar": {
     "farm": "Farm",
@@ -3779,6 +3803,7 @@
     "storage": "Storage",
     "dashboard": "Dashboard",
     "activities": "Activities",
+    "crops": "Crops",
     "users": "Users",
     "staffs": "Staffs",
     "organizations": "Organizations",

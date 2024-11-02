@@ -34,6 +34,8 @@ import { DateRange } from "react-day-picker";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { FieldsSelect } from "../../_components/fields-select";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 export const CropCreateButton = () => {
   const tSchema = useTranslations("crops.schema");
@@ -41,14 +43,11 @@ export const CropCreateButton = () => {
   const formSchema = CropSchema(tSchema);
   const [isPending, startTransition] = useTransition();
 
-  const params = useParams<{
-    fieldId: string;
-  }>();
+  const { isSuperAdmin: canCreate } = useCurrentStaffRole();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      fieldId: params!.fieldId,
       dateRange: {
         startDate: new Date(),
         endDate: null,
@@ -86,7 +85,7 @@ export const CropCreateButton = () => {
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size={"sm"} variant={"success"}>
+        <Button size={"sm"} variant={"success"} disabled={!canCreate}>
           <Plus className="h-4 w-4 mr-2" />{" "}
           <span className="text-sm font-semibold">
             {t("form.create.label")}
@@ -121,6 +120,30 @@ export const CropCreateButton = () => {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="dateRange"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("dateRange.label")}</FormLabel>
+                  <FormControl>
+                    <DatePickerWithRange
+                      placeholder={tSchema("dateRange.placeholder")}
+                      handleChange={(dateRange: DateRange | undefined) => {
+                        handleChangeDate(dateRange);
+                      }}
+                      date={{
+                        from: field.value.startDate,
+                        to: field.value.endDate || undefined,
+                      }}
+                      disabled={isPending}
+                      className="lg:w-full"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <div className="grid lg:grid-cols-2 gap-2">
               <FormField
                 control={form.control}
@@ -149,24 +172,25 @@ export const CropCreateButton = () => {
               />
               <FormField
                 control={form.control}
-                name="dateRange"
+                name="fieldId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{tSchema("dateRange.label")}</FormLabel>
+                    <FormLabel>{tSchema("fieldId.label")}</FormLabel>
+
                     <FormControl>
-                      <DatePickerWithRange
-                        placeholder={tSchema("dateRange.placeholder")}
-                        handleChange={(dateRange: DateRange | undefined) => {
-                          handleChangeDate(dateRange);
-                        }}
-                        date={{
-                          from: field.value.startDate,
-                          to: field.value.endDate || undefined,
-                        }}
+                      <FieldsSelect
+                        error={tSchema("fieldId.error")}
+                        placeholder={tSchema("fieldId.placeholder")}
+                        notFound={tSchema("fieldId.notFound")}
+                        onChange={field.onChange}
                         disabled={isPending}
-                        className="lg:w-full"
+                        appearance={{
+                          button: "lg:w-full",
+                          content: "lg:w-[350px]",
+                        }}
                       />
                     </FormControl>
+
                     <FormMessage />
                   </FormItem>
                 )}

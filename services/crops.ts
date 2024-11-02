@@ -3,6 +3,8 @@ import { db } from "@/lib/db";
 import { getObjectFilterNumber, getObjectSortOrder } from "@/lib/utils";
 import { CropTable, PaginatedResponse } from "@/types";
 import { UnitValue, upsertFloatUnit } from "./units";
+import { getCurrentStaff } from "./staffs";
+import { isFarmer, isOnlyAdmin, isSuperAdmin } from "@/lib/permission";
 
 type CropParams = {
   name: string;
@@ -80,7 +82,7 @@ export const deleteCrop = async (id: string) => {
   return crop;
 };
 type CropQuery = {
-  fieldId: string;
+  orgId?: string | null;
   plantId?: string;
   name?: string;
   page?: number;
@@ -90,7 +92,7 @@ type CropQuery = {
   filterNumber?: string;
 };
 export const getCropsOnField = async ({
-  fieldId,
+  orgId,
   endDate,
   filterNumber,
   name,
@@ -100,10 +102,38 @@ export const getCropsOnField = async ({
   startDate,
 }: CropQuery): Promise<PaginatedResponse<CropTable>> => {
   try {
+    let fields;
+    const currentStaff = await getCurrentStaff();
+    if (!currentStaff) {
+      throw new Error("Unauthorized");
+    }
+    if (!orgId && isOnlyAdmin(currentStaff.role)) {
+      fields = await db.field.findMany({
+        select: {
+          id: true,
+        },
+      });
+    }
+    if (!orgId && isFarmer(currentStaff.role)) {
+      throw new Error("No field id to get crops");
+    }
+    if (orgId) {
+      fields = await db.field.findMany({
+        where: {
+          orgId,
+        },
+        select: {
+          id: true,
+        },
+      });
+    }
+
     const [crops, count] = await db.$transaction([
       db.crop.findMany({
         where: {
-          fieldId,
+          fieldId: {
+            in: fields?.map((item) => item.id),
+          },
           AND: [
             {
               startDate: {
@@ -160,7 +190,9 @@ export const getCropsOnField = async ({
       }),
       db.crop.count({
         where: {
-          fieldId,
+          fieldId: {
+            in: fields?.map((item) => item.id),
+          },
           AND: [
             {
               startDate: {

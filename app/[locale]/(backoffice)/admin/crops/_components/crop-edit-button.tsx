@@ -30,6 +30,7 @@ import { edit } from "@/actions/crop";
 import { PlantsSelect } from "@/app/[locale]/(backoffice)/admin/_components/plants-select";
 import { DatePickerWithRange } from "@/components/form/date-picker-with-range";
 import { DateRange } from "react-day-picker";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface CropEditButtonProps {
   data: CropTable;
@@ -38,6 +39,7 @@ interface CropEditButtonProps {
 
 export const CropEditButton = ({ data, label }: CropEditButtonProps) => {
   const { onOpen } = useDialog();
+  const { isSuperAdmin: canEdit } = useCurrentStaffRole();
   return (
     <Button
       className="w-full"
@@ -49,6 +51,7 @@ export const CropEditButton = ({ data, label }: CropEditButtonProps) => {
       }}
       size={"sm"}
       variant={"edit"}
+      disabled={!canEdit}
     >
       <Edit className="w-4 h-4 mr-2" />
       {label}
@@ -67,6 +70,7 @@ export const CropEditDialog = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+  const { isSuperAdmin: canEdit } = useCurrentStaffRole();
   const [id, setId] = useState("");
   useEffect(() => {
     if (data?.crop) {
@@ -132,7 +136,7 @@ export const CropEditDialog = () => {
                     value={field.value ?? undefined}
                     onChange={field.onChange}
                     placeholder={tSchema("name.placeholder")}
-                    disabled={isPending}
+                    disabled={isPending || !canEdit}
                   />
                 </FormControl>
 
@@ -154,7 +158,7 @@ export const CropEditDialog = () => {
                       placeholder={tSchema("plantId.placeholder")}
                       notFound={tSchema("plantId.notFound")}
                       onChange={field.onChange}
-                      disabled={isPending}
+                      disabled={isPending || !canEdit}
                       defaultValue={field.value}
                       appearance={{
                         button: "lg:w-full",
@@ -181,7 +185,7 @@ export const CropEditDialog = () => {
                         from: field.value.startDate,
                         to: field.value.endDate || undefined,
                       }}
-                      disabled={isPending}
+                      disabled={isPending || !canEdit}
                       className="lg:w-full"
                     />
                   </FormControl>
@@ -205,7 +209,7 @@ export const CropEditDialog = () => {
                           placeholder={tSchema("estimatedYield.placeholder")}
                           value={field.value ?? undefined}
                           onChange={field.onChange}
-                          disabled={isPending}
+                          disabled={isPending || !canEdit}
                           type="number"
                         />
                       </FormControl>
@@ -229,7 +233,7 @@ export const CropEditDialog = () => {
                           "estimatedYield.unitId.placeholder"
                         )}
                         unitType={UnitType.WEIGHT}
-                        disabled={isPending}
+                        disabled={isPending || !canEdit}
                         className="w-full"
                         error={tSchema("estimatedYield.unitId.error")}
                         notFound={tSchema("estimatedYield.unitId.notFound")}
@@ -255,7 +259,7 @@ export const CropEditDialog = () => {
                           value={field.value ?? undefined}
                           onChange={field.onChange}
                           placeholder={tSchema("actualYield.placeholder")}
-                          disabled={isPending}
+                          disabled={isPending || !canEdit}
                           type="number"
                         />
                       </FormControl>
@@ -275,7 +279,7 @@ export const CropEditDialog = () => {
                         onChange={field.onChange}
                         placeholder={tSchema("actualYield.unitId.placeholder")}
                         unitType={UnitType.WEIGHT}
-                        disabled={isPending}
+                        disabled={isPending || !canEdit}
                         className="w-full"
                         error={tSchema("actualYield.unitId.error")}
                         notFound={tSchema("actualYield.unitId.notFound")}
@@ -301,14 +305,14 @@ export const CropEditDialog = () => {
                     placeholder={tSchema("status.placeholder")}
                     value={field.value ?? undefined}
                     onChange={field.onChange}
-                    disabled={isPending}
+                    disabled={isPending || !canEdit}
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <DynamicDialogFooter disabled={isPending} />
+          <DynamicDialogFooter disabled={isPending || !canEdit} />
         </form>
       </Form>
     </DynamicDialog>

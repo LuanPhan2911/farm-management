@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { FertilizerSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FertilizerType, Frequency, UnitType } from "@prisma/client";
@@ -40,11 +41,12 @@ export const FertilizerCreateButton = () => {
   const formSchema = FertilizerSchema(tSchema);
   const [isPending, startTransition] = useTransition();
   const [isOpen, setOpen] = useState(false);
+
+  const { isOnlyAdmin: canCreate } = useCurrentStaffRole();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      nutrientOfNPK: "",
     },
   });
   const onSubmit = (values: z.infer<typeof formSchema>) => {
@@ -67,14 +69,14 @@ export const FertilizerCreateButton = () => {
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size={"sm"} variant={"success"}>
+        <Button size={"sm"} variant={"success"} disabled={!canCreate}>
           <Plus className="h-4 w-4 mr-2" />{" "}
           <span className="text-sm font-semibold">
             {t("form.create.label")}
           </span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-3xl overflow-y-auto max-h-screen">
+      <DialogContent className="max-w-6xl">
         <DialogHeader>
           <DialogTitle>{t("form.create.title")}</DialogTitle>
           <DialogDescription>{t("form.create.description")}</DialogDescription>
@@ -82,43 +84,46 @@ export const FertilizerCreateButton = () => {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("name.label")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={tSchema("name.placeholder")}
-                      value={field.value ?? undefined}
-                      onChange={field.onChange}
-                      disabled={isPending}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="nutrientOfNPK"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("nutrientOfNPK.label")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={tSchema("nutrientOfNPK.placeholder")}
-                      value={field.value ?? undefined}
-                      onChange={field.onChange}
-                      disabled={isPending}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <div className="grid lg:grid-cols-2 gap-2">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("name.label")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={tSchema("name.placeholder")}
+                        value={field.value ?? undefined}
+                        onChange={field.onChange}
+                        disabled={isPending || !canCreate}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="manufacturer"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("manufacturer.label")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={tSchema("manufacturer.placeholder")}
+                        value={field.value ?? undefined}
+                        onChange={field.onChange}
+                        disabled={isPending || !canCreate}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid lg:grid-cols-3 gap-2">
               <FormField
                 control={form.control}
                 name="type"
@@ -135,7 +140,32 @@ export const FertilizerCreateButton = () => {
                             value: item,
                           };
                         })}
-                        disabled={isPending}
+                        defaultValue={field.value}
+                        disabled={isPending || !canCreate}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="frequencyOfUse"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("frequencyOfUse.label")}</FormLabel>
+                    <FormControl>
+                      <SelectOptions
+                        placeholder={tSchema("frequencyOfUse.placeholder")}
+                        onChange={field.onChange}
+                        options={Object.keys(Frequency).map((item) => {
+                          return {
+                            label: tSchema(`frequencyOfUse.options.${item}`),
+                            value: item,
+                          };
+                        })}
+                        defaultValue={field.value}
+                        disabled={isPending || !canCreate}
                       />
                     </FormControl>
                     <FormMessage />
@@ -159,7 +189,7 @@ export const FertilizerCreateButton = () => {
                             )}
                             value={field.value ?? undefined}
                             onChange={field.onChange}
-                            disabled={isPending}
+                            disabled={isPending || !canCreate}
                             type="number"
                           />
                         </FormControl>
@@ -183,12 +213,13 @@ export const FertilizerCreateButton = () => {
                             "recommendedDosage.unitId.placeholder"
                           )}
                           unitType={UnitType.VOLUME}
-                          disabled={isPending}
+                          disabled={isPending || !canCreate}
                           className="w-full"
                           error={tSchema("recommendedDosage.unitId.error")}
                           notFound={tSchema(
                             "recommendedDosage.unitId.notFound"
                           )}
+                          defaultValue={field.value}
                         />
                       </FormControl>
 
@@ -199,7 +230,25 @@ export const FertilizerCreateButton = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+            <div className="grid lg:grid-cols-2 gap-2">
+              <FormField
+                control={form.control}
+                name="nutrientOfNPK"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("nutrientOfNPK.label")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={tSchema("nutrientOfNPK.placeholder")}
+                        value={field.value ?? undefined}
+                        onChange={field.onChange}
+                        disabled={isPending || !canCreate}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="applicationMethod"
@@ -211,31 +260,7 @@ export const FertilizerCreateButton = () => {
                         placeholder={tSchema("applicationMethod.placeholder")}
                         value={field.value ?? undefined}
                         onChange={field.onChange}
-                        disabled={isPending}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="frequencyOfUse"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{tSchema("frequencyOfUse.label")}</FormLabel>
-                    <FormControl>
-                      <SelectOptions
-                        placeholder={tSchema("frequencyOfUse.placeholder")}
-                        onChange={field.onChange}
-                        options={Object.keys(Frequency).map((item) => {
-                          return {
-                            label: tSchema(`frequencyOfUse.options.${item}`),
-                            value: item,
-                          };
-                        })}
-                        disabled={isPending}
+                        disabled={isPending || !canCreate}
                       />
                     </FormControl>
                     <FormMessage />
@@ -255,7 +280,7 @@ export const FertilizerCreateButton = () => {
                       <Textarea
                         value={field.value ?? undefined}
                         onChange={field.onChange}
-                        disabled={isPending}
+                        disabled={isPending || !canCreate}
                         placeholder={tSchema("composition.placeholder")}
                       />
                     </FormControl>
@@ -265,26 +290,7 @@ export const FertilizerCreateButton = () => {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="manufacturer"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("manufacturer.label")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={tSchema("manufacturer.placeholder")}
-                      value={field.value ?? undefined}
-                      onChange={field.onChange}
-                      disabled={isPending}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <DynamicDialogFooter disabled={isPending} />
+            <DynamicDialogFooter disabled={isPending || !canCreate} />
           </form>
         </Form>
       </DialogContent>

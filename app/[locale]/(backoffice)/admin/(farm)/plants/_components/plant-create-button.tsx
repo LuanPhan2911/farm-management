@@ -28,21 +28,22 @@ import { Link } from "@/navigation";
 import { UploadImage } from "@/components/form/upload-image";
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 export const PlantCreateButton = () => {
+  const { isOnlyAdmin: canCreate } = useCurrentStaffRole();
   const t = useTranslations("plants.form");
   return (
-    <Link href={"/admin/plants/create"}>
-      <Button size={"sm"} variant={"success"}>
+    <Button size={"sm"} variant={"success"} disabled={!canCreate} asChild>
+      <Link href={"/admin/plants/create"}>
         <Plus className="h-4 w-4 mr-2" />{" "}
         <span className="text-sm font-semibold">{t("create.label")}</span>
-      </Button>
-    </Link>
+      </Link>
+    </Button>
   );
 };
 export const PlantCreateForm = () => {
   const tSchema = useTranslations("plants.schema");
-  const t = useTranslations("plants");
   const { push } = useRouterWithRole();
   const formSchema = PlantSchema(tSchema);
   const [isPending, startTransition] = useTransition();
@@ -50,9 +51,9 @@ export const PlantCreateForm = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      growthDuration: "",
     },
   });
+  const { isOnlyAdmin: canCreate } = useCurrentStaffRole();
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       create(values)
@@ -75,7 +76,7 @@ export const PlantCreateForm = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4 max-w-4xl"
+        className="space-y-4 max-w-5xl"
       >
         <FormField
           control={form.control}
@@ -87,7 +88,7 @@ export const PlantCreateForm = () => {
                 <UploadImage
                   onChange={field.onChange}
                   defaultValue={field.value}
-                  disabled={isPending}
+                  disabled={isPending || !canCreate}
                 />
               </FormControl>
               <FormMessage />
@@ -106,7 +107,7 @@ export const PlantCreateForm = () => {
                     placeholder={tSchema("name.placeholder")}
                     value={field.value ?? undefined}
                     onChange={field.onChange}
-                    disabled={isPending}
+                    disabled={isPending || !canCreate}
                   />
                 </FormControl>
 
@@ -147,7 +148,7 @@ export const PlantCreateForm = () => {
                   placeholder={tSchema("growthDuration.placeholder")}
                   value={field.value ?? undefined}
                   onChange={field.onChange}
-                  disabled={isPending}
+                  disabled={isPending || !canCreate}
                 />
               </FormControl>
               <FormMessage />
@@ -165,7 +166,7 @@ export const PlantCreateForm = () => {
                   <SelectOptions
                     placeholder={tSchema("fertilizerType.placeholder")}
                     onChange={field.onChange}
-                    disabled={isPending}
+                    disabled={isPending || !canCreate}
                     options={Object.values(FertilizerType).map((item) => {
                       return {
                         label: tSchema(`fertilizerType.options.${item}`),
@@ -189,7 +190,7 @@ export const PlantCreateForm = () => {
                   <SelectOptions
                     placeholder={tSchema("season.placeholder")}
                     onChange={field.onChange}
-                    disabled={isPending}
+                    disabled={isPending || !canCreate}
                     options={Object.values(Season).map((item) => {
                       return {
                         label: tSchema(`season.options.${item}`),
@@ -218,7 +219,7 @@ export const PlantCreateForm = () => {
                         placeholder={tSchema("idealTemperature.placeholder")}
                         value={field.value ?? undefined}
                         onChange={field.onChange}
-                        disabled={isPending}
+                        disabled={isPending || !canCreate}
                         type="number"
                       />
                     </FormControl>
@@ -243,7 +244,7 @@ export const PlantCreateForm = () => {
                           "idealTemperature.unitId.placeholder"
                         )}
                         unitType={UnitType.TEMPERATURE}
-                        disabled={isPending}
+                        disabled={isPending || !canCreate}
                         className="w-full"
                         error={tSchema("idealTemperature.unitId.error")}
                         notFound={tSchema("idealTemperature.unitId.notFound")}
@@ -269,7 +270,7 @@ export const PlantCreateForm = () => {
                         placeholder={tSchema("idealHumidity.placeholder")}
                         value={field.value ?? undefined}
                         onChange={field.onChange}
-                        disabled={isPending}
+                        disabled={isPending || !canCreate}
                         type="number"
                       />
                     </FormControl>
@@ -294,7 +295,7 @@ export const PlantCreateForm = () => {
                           "idealHumidity.unitId.placeholder"
                         )}
                         unitType={UnitType.PERCENT}
-                        disabled={isPending}
+                        disabled={isPending || !canCreate}
                         className="w-full"
                         error={tSchema("idealHumidity.unitId.error")}
                         notFound={tSchema("idealHumidity.unitId.notFound")}
@@ -320,7 +321,7 @@ export const PlantCreateForm = () => {
                         placeholder={tSchema("waterRequirement.placeholder")}
                         value={field.value ?? undefined}
                         onChange={field.onChange}
-                        disabled={isPending}
+                        disabled={isPending || !canCreate}
                         type="number"
                       />
                     </FormControl>
@@ -345,7 +346,7 @@ export const PlantCreateForm = () => {
                           "waterRequirement.unitId.placeholder"
                         )}
                         unitType={UnitType.RAINFALL}
-                        disabled={isPending}
+                        disabled={isPending || !canCreate}
                         className="w-full"
                         error={tSchema("waterRequirement.unitId.error")}
                         notFound={tSchema("waterRequirement.unitId.notFound")}
@@ -360,7 +361,10 @@ export const PlantCreateForm = () => {
           </div>
         </div>
 
-        <DynamicDialogFooter disabled={isPending} closeButton={false} />
+        <DynamicDialogFooter
+          disabled={isPending || !canCreate}
+          closeButton={false}
+        />
       </form>
     </Form>
   );

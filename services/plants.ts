@@ -7,8 +7,8 @@ import { PlantSelect } from "@/types";
 type PlantParams = {
   name: string;
   categoryId: string;
-  growthDuration: string;
-  fertilizerType: FertilizerType;
+  growthDuration?: string | null;
+  fertilizerType?: FertilizerType | null;
   imageUrl?: string | null;
   season?: Season | null;
   idealTemperature?: Partial<UnitValue> | null;

@@ -20,28 +20,6 @@ export const PlantsDataTable = ({ data }: PlantsDataTableProps) => {
   const router = useRouterWithRole();
   const columns: ColumnDef<PlantTable>[] = [
     {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
-    {
       accessorKey: "imageUrl",
       header: t("table.thead.imageUrl"),
       cell: ({ row }) => {
@@ -111,8 +89,15 @@ export const PlantsDataTable = ({ data }: PlantsDataTableProps) => {
       },
       cell: ({ row }) => {
         const data = row.original;
+        if (!data.fertilizerType) {
+          return t(`table.trow.fertilizerType`);
+        }
         return t(`schema.fertilizerType.options.${data.fertilizerType}`);
       },
+    },
+    {
+      accessorKey: "growthDuration",
+      header: t("table.thead.growthDuration"),
     },
 
     {

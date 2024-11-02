@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { PlantFertilizerSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UnitType } from "@prisma/client";
@@ -42,6 +43,8 @@ export const PlantFertilizerCreateButton = () => {
   const { plantId } = useParams<{
     plantId: string;
   }>()!;
+
+  const { isOnlyAdmin: canCreate } = useCurrentStaffRole();
   const [isPending, startTransition] = useTransition();
   const [isOpen, setOpen] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -71,7 +74,7 @@ export const PlantFertilizerCreateButton = () => {
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size={"sm"} variant={"success"}>
+        <Button size={"sm"} variant={"success"} disabled={!canCreate}>
           <Plus className="h-4 w-4 mr-2" />{" "}
           <span className="text-sm font-semibold">
             {t("form.create.label")}
@@ -99,7 +102,7 @@ export const PlantFertilizerCreateButton = () => {
                           placeholder={tSchema("fertilizerId.placeholder")}
                           error={tSchema("fertilizerId.error")}
                           notFound={tSchema("fertilizerId.notFound")}
-                          disabled={isPending}
+                          disabled={isPending || !canCreate}
                           onChange={field.onChange}
                           appearance={{
                             button: "lg:w-full h-12",
@@ -123,7 +126,7 @@ export const PlantFertilizerCreateButton = () => {
                           placeholder={tSchema("stage.placeholder")}
                           value={field.value ?? undefined}
                           onChange={field.onChange}
-                          disabled={isPending}
+                          disabled={isPending || !canCreate}
                         />
                       </FormControl>
                       <FormMessage />
@@ -144,7 +147,7 @@ export const PlantFertilizerCreateButton = () => {
                               placeholder={tSchema("dosage.placeholder")}
                               value={field.value ?? undefined}
                               onChange={field.onChange}
-                              disabled={isPending}
+                              disabled={isPending || !canCreate}
                               type="number"
                             />
                           </FormControl>
@@ -164,7 +167,7 @@ export const PlantFertilizerCreateButton = () => {
                             onChange={field.onChange}
                             placeholder={tSchema("dosage.unitId.placeholder")}
                             unitType={UnitType.VOLUME}
-                            disabled={isPending}
+                            disabled={isPending || !canCreate}
                             className="w-full"
                             error={tSchema("dosage.unitId.error")}
                             notFound={tSchema("dosage.unitId.notFound")}
@@ -187,7 +190,7 @@ export const PlantFertilizerCreateButton = () => {
                           placeholder={tSchema("note.placeholder")}
                           value={field.value ?? undefined}
                           onChange={field.onChange}
-                          disabled={isPending}
+                          disabled={isPending || !canCreate}
                         />
                       </FormControl>
                       <FormMessage />
@@ -197,7 +200,7 @@ export const PlantFertilizerCreateButton = () => {
               </div>
             </div>
 
-            <DynamicDialogFooter disabled={isPending} />
+            <DynamicDialogFooter disabled={isPending || !canCreate} />
           </form>
         </Form>
       </DialogContent>

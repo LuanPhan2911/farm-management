@@ -3,7 +3,6 @@ import {
   CustomNavigationMenu,
   NavigationMenuData,
 } from "@/components/custom-navigation-menu";
-import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { usePrefix } from "@/hooks/use-prefix";
 import { FieldTable } from "@/types";
 import { useTranslations } from "next-intl";
@@ -30,11 +29,6 @@ export const FieldNavigationMenu = ({ data }: FieldNavigationMenuProps) => {
     {
       href: `${getHref}`,
       label: t("info.label"),
-    },
-    {
-      href: `${getHref}/crops`,
-      label: t("crops.label"),
-      disabled,
     },
     {
       href: `${getHref}/weathers`,

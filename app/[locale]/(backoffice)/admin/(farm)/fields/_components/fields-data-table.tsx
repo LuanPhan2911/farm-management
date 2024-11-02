@@ -47,7 +47,7 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
       header: t("table.thead.orgId"),
       cell: ({ row }) => {
         const data = row.original;
-        return data.orgId ? "O" : "U";
+        return data.orgId ? "Unused" : "Usage";
       },
     },
     {

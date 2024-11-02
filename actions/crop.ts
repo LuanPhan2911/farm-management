@@ -22,7 +22,7 @@ export const create = async (
   try {
     const crop = await createCrop(validatedFields.data);
 
-    revalidatePath(`/admin/fields/detail/${crop.fieldId}/crops`);
+    revalidatePath(`/admin/crops`);
     return successResponse(tStatus("success.create"));
   } catch (error) {
     return errorResponse(tStatus("failure.create"));
@@ -43,7 +43,7 @@ export const edit = async (
   try {
     const crop = await updateCrop(id, validatedFields.data);
 
-    revalidatePath(`/admin/fields/detail/${crop.fieldId}/crops`);
+    revalidatePath(`/admin/crops`);
 
     return successResponse(tStatus("success.edit"));
   } catch (error) {
@@ -55,7 +55,7 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
   try {
     const crop = await deleteCrop(id);
 
-    revalidatePath(`/admin/fields/detail/${crop.fieldId}/crops`);
+    revalidatePath(`/admin/crops`);
     return successResponse(tStatus("success.destroy"));
   } catch (error) {
     return errorResponse(tStatus("failure.destroy"));
