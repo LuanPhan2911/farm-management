@@ -14,7 +14,7 @@ import { FieldSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { OrgsSelect } from "../../../_components/orgs-select";
@@ -33,16 +33,19 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useAuth } from "@clerk/nextjs";
-interface FieldCreateButtonProps {
-  disabled?: boolean;
-}
-export const FieldCreateButton = ({ disabled }: FieldCreateButtonProps) => {
-  const { orgId } = useAuth();
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+interface FieldCreateButtonProps {}
+export const FieldCreateButton = ({}: FieldCreateButtonProps) => {
+  const { orgId, has } = useAuth();
+
   const t = useTranslations("fields.form");
   const tSchema = useTranslations("fields.schema");
   const formSchema = FieldSchema(tSchema);
   const [isPending, startTransition] = useTransition();
   const [isOpen, setOpen] = useState(false);
+  const { isSuperAdmin } = useCurrentStaffRole();
+  const canManageField =
+    has?.({ permission: "org:field:manage" }) || isSuperAdmin;
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -50,12 +53,16 @@ export const FieldCreateButton = ({ disabled }: FieldCreateButtonProps) => {
       orgId,
     },
   });
+  useEffect(() => {
+    form.setValue("orgId", orgId);
+  }, [orgId, form]);
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       create(values)
         .then(({ message, ok }) => {
           if (ok) {
             toast.success(message);
+            setOpen(false);
           } else {
             toast.error(message);
           }
@@ -68,7 +75,7 @@ export const FieldCreateButton = ({ disabled }: FieldCreateButtonProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={"success"} size={"sm"} disabled={disabled}>
+        <Button variant={"success"} size={"sm"} disabled={!canManageField}>
           <Plus className="mr-2" />
           {t("create.label")}
         </Button>
@@ -89,7 +96,7 @@ export const FieldCreateButton = ({ disabled }: FieldCreateButtonProps) => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("name.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />
@@ -108,7 +115,7 @@ export const FieldCreateButton = ({ disabled }: FieldCreateButtonProps) => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("location.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />
@@ -119,7 +126,7 @@ export const FieldCreateButton = ({ disabled }: FieldCreateButtonProps) => {
               )}
             />
 
-            <div className="grid lg:grid-cols-3 gap-2">
+            <div className="grid lg:grid-cols-2 gap-2">
               <FormField
                 control={form.control}
                 name="orgId"
@@ -128,12 +135,12 @@ export const FieldCreateButton = ({ disabled }: FieldCreateButtonProps) => {
                     <FormLabel>{tSchema("orgId.label")}</FormLabel>
                     <FormControl>
                       <OrgsSelect
-                        defaultValue={field.value || undefined}
+                        defaultValue={field.value ?? undefined}
                         onChange={field.onChange}
                         error={tSchema("orgId.error")}
                         placeholder={tSchema("orgId.placeholder")}
                         notFound={tSchema("orgId.notFound")}
-                        disabled={true}
+                        disabled={isPending}
                         appearance={{
                           button: "lg:w-full",
                           content: "lg:w-[480px]",
@@ -169,6 +176,8 @@ export const FieldCreateButton = ({ disabled }: FieldCreateButtonProps) => {
                   </FormItem>
                 )}
               />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="unitId"
@@ -191,48 +200,6 @@ export const FieldCreateButton = ({ disabled }: FieldCreateButtonProps) => {
                   </FormItem>
                 )}
               />
-            </div>
-            <div className="grid grid-cols-3 gap-4">
-              <FormField
-                control={form.control}
-                name="height"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{tSchema("height.label")}</FormLabel>
-
-                    <FormControl>
-                      <Input
-                        value={field.value || undefined}
-                        onChange={field.onChange}
-                        type="number"
-                        placeholder={tSchema("height.placeholder")}
-                      />
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="width"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{tSchema("width.label")}</FormLabel>
-
-                    <FormControl>
-                      <Input
-                        value={field.value || undefined}
-                        onChange={field.onChange}
-                        type="number"
-                        placeholder={tSchema("width.placeholder")}
-                      />
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="area"
@@ -242,7 +209,7 @@ export const FieldCreateButton = ({ disabled }: FieldCreateButtonProps) => {
 
                     <FormControl>
                       <Input
-                        value={field.value || undefined}
+                        value={field.value ?? undefined}
                         onChange={field.onChange}
                         type="number"
                         placeholder={tSchema("area.placeholder")}
@@ -263,7 +230,26 @@ export const FieldCreateButton = ({ disabled }: FieldCreateButtonProps) => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("shape.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
+                      onChange={field.onChange}
+                      disabled={isPending}
+                    />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="note"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("note.label")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={tSchema("note.placeholder")}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />

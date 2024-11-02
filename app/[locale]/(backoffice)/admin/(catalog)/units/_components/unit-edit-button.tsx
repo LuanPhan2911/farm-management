@@ -107,7 +107,7 @@ export const UnitEditDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("name.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />
@@ -151,7 +151,7 @@ export const UnitEditDialog = () => {
                 <FormControl>
                   <Textarea
                     placeholder={tSchema("description.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />

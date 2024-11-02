@@ -5,7 +5,6 @@ import {
 import { notFound } from "next/navigation";
 
 import { getTranslations } from "next-intl/server";
-import { getCurrentStaff } from "@/services/staffs";
 import { OrgTabs } from "@/app/[locale]/(backoffice)/admin/(account)/organizations/_components/org-tabs";
 
 interface OrganizationDetailPageProps {
@@ -24,11 +23,11 @@ const OrganizationDetailPage = async ({
   params,
 }: OrganizationDetailPageProps) => {
   const org = await getOrganizationById(params.orgId);
-  const currentStaff = await getCurrentStaff();
+
   const orgMember = await getOrganizationMembership({
     orgId: params.orgId,
   });
-  if (!org || !currentStaff || !orgMember.length) {
+  if (!org || !orgMember.length) {
     notFound();
   }
 
@@ -37,7 +36,6 @@ const OrganizationDetailPage = async ({
       <OrgTabs
         org={structuredClone(org)}
         orgMember={structuredClone(orgMember)}
-        currentStaff={currentStaff}
       />
     </div>
   );

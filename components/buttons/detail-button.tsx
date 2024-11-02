@@ -23,21 +23,20 @@ export const DetailButton = ({
 }: DetailButtonProps) => {
   const prefix = usePrefix();
   return (
-    <Link
-      href={prefix ? `${prefix}/${href}` : href}
+    <Button
+      variant={variant || "cyan"}
+      size={size || "sm"}
+      disabled={disabled}
       className={cn(className)}
-      onClick={(e) => {
-        e.stopPropagation();
-      }}
     >
-      <Button
-        variant={variant || "cyan"}
-        size={size || "sm"}
-        disabled={disabled}
+      <Link
+        href={prefix ? `${prefix}/${href}` : href}
         className={cn(className)}
-      >
-        {label}
-      </Button>
-    </Link>
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      ></Link>
+      {label}
+    </Button>
   );
 };

@@ -19,9 +19,8 @@ import { DetailButton } from "@/components/buttons/detail-button";
 
 interface OrgMessages {
   org: Organization;
-  currentStaff: Staff;
 }
-export const OrgMessages = ({ org, currentStaff }: OrgMessages) => {
+export const OrgMessages = ({ org }: OrgMessages) => {
   const t = useTranslations("organizations.tabs");
 
   return (
@@ -49,7 +48,6 @@ export const OrgMessages = ({ org, currentStaff }: OrgMessages) => {
         <ChatMessages
           chatId={org.id}
           apiUrl="/api/messages"
-          currentStaff={currentStaff}
           paramKey="orgId"
           paramValue={org.id}
           socketUrl="/api/socket/messages"

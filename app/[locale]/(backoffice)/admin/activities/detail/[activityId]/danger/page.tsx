@@ -62,8 +62,7 @@ const ActivityDangerPage = async ({ params }: ActivityDangerPageProps) => {
             destroyFn={destroy}
             id={data.id}
             inltKey="activities"
-            redirectHref="/admin/activities"
-            disabled={!canUpdate}
+            redirectHref="activities"
           />
         </CardContent>
       </Card>

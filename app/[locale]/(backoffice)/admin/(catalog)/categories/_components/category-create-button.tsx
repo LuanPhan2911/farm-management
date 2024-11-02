@@ -97,7 +97,7 @@ export const CategoryCreateButton = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("name.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />
@@ -116,7 +116,7 @@ export const CategoryCreateButton = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("slug.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />
@@ -160,7 +160,7 @@ export const CategoryCreateButton = () => {
                   <FormControl>
                     <Textarea
                       placeholder={tSchema("description.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />

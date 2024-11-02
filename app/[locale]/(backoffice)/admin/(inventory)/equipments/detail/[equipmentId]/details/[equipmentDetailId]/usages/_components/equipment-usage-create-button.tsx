@@ -107,7 +107,7 @@ export const EquipmentUsageCreateButton = ({
                         disabled={isPending}
                         error={tSchema("activityId.error")}
                         notFound={tSchema("activityId.notFound")}
-                        defaultValue={field.value || undefined}
+                        defaultValue={field.value ?? undefined}
                         appearance={{
                           button: "lg:w-full h-12",
                           content: "lg:w-[400px]",
@@ -128,7 +128,7 @@ export const EquipmentUsageCreateButton = ({
                     <FormControl>
                       <StaffsSelect
                         onChange={field.onChange}
-                        defaultValue={field.value || undefined}
+                        defaultValue={field.value ?? undefined}
                         placeholder={tSchema("operatorId.placeholder")}
                         disabled={isPending}
                         error={tSchema("operatorId.error")}
@@ -177,7 +177,7 @@ export const EquipmentUsageCreateButton = ({
                     <FormControl>
                       <Input
                         placeholder={tSchema("duration.placeholder")}
-                        value={field.value || undefined}
+                        value={field.value ?? undefined}
                         onChange={field.onChange}
                         disabled={isPending}
                       />
@@ -197,7 +197,7 @@ export const EquipmentUsageCreateButton = ({
                   <FormControl>
                     <Textarea
                       placeholder={tSchema("note.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />

@@ -14,21 +14,22 @@ import { useFormatter, useTranslations } from "next-intl";
 import { SoilCreateButton, SoilCreateManyButton } from "./soil-create-button";
 import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-with-value";
 import { SoilTable } from "@/types";
-import { SoilsTableAction } from "./soils-table-action";
 import {
   SoilConfirmButton,
+  SoilDeleteManyUnConfirmedButton,
+  SoilPinnedButton,
   SoilsConfirmedAllButton,
-} from "./soil-confirm-button";
+  SoilsExportButton,
+  SoilsTableAction,
+} from "./soils-table-action";
 
 import { OrderByButton } from "@/components/buttons/order-by-button";
 import { DatePickerWithRangeButton } from "@/components/buttons/date-picker-range-button";
 import { SoilsTableFaceted } from "./soils-table-faceted";
 import { SelectItemContent } from "@/components/form/select-item";
-import { SoilPinnedButton } from "./soil-pinned-button";
+
 import { cn } from "@/lib/utils";
 import { useDialog } from "@/stores/use-dialog";
-import { SoilsExportButton } from "./soils-export-button";
-import { SoilDeleteManyUnConfirmedButton } from "./soil-delete-button";
 
 interface SoilsTableProps {
   data: SoilTable[];
@@ -44,9 +45,10 @@ export const SoilsTable = ({ data, totalPage }: SoilsTableProps) => {
   return (
     <div className="flex flex-col gap-y-2 p-4 border rounded-lg my-4">
       <div className="flex lg:justify-end gap-1.5 flex-wrap">
+        <SoilCreateButton />
         <SoilCreateManyButton />
         <SoilsExportButton />
-        <SoilCreateButton />
+
         <SoilsConfirmedAllButton />
         <SoilDeleteManyUnConfirmedButton />
       </div>

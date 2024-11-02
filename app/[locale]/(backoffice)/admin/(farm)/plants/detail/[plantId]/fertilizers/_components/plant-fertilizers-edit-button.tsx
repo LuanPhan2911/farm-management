@@ -139,7 +139,7 @@ export const PlantFertilizerEditDialog = () => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("stage.placeholder")}
-                        value={field.value || undefined}
+                        value={field.value ?? undefined}
                         onChange={field.onChange}
                         disabled={isPending}
                       />
@@ -160,7 +160,7 @@ export const PlantFertilizerEditDialog = () => {
                         <FormControl>
                           <Input
                             placeholder={tSchema("dosage.placeholder")}
-                            value={field.value || undefined}
+                            value={field.value ?? undefined}
                             onChange={field.onChange}
                             disabled={isPending}
                             type="number"
@@ -204,7 +204,7 @@ export const PlantFertilizerEditDialog = () => {
                     <FormControl>
                       <Textarea
                         placeholder={tSchema("note.placeholder")}
-                        value={field.value || undefined}
+                        value={field.value ?? undefined}
                         onChange={field.onChange}
                         disabled={isPending}
                       />

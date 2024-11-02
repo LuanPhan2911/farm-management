@@ -16,21 +16,24 @@ import {
 } from "./weather-create-button";
 import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-with-value";
 import { WeatherTable } from "@/types";
-import { WeathersTableAction } from "./weathers-table-action";
 import {
   WeatherConfirmButton,
+  WeatherDeleteManyUnConfirmedButton,
+  WeatherPinnedButton,
   WeathersConfirmedAllButton,
-} from "./weather-confirm-button";
+  WeathersExportButton,
+  WeathersTableAction,
+} from "./weathers-table-action";
+
 import { WeatherStatusValue } from "./weather-status-value";
 
 import { OrderByButton } from "@/components/buttons/order-by-button";
 import { DatePickerWithRangeButton } from "@/components/buttons/date-picker-range-button";
 import { WeatherTableFaceted } from "./weathers-table-faceted";
 import { SelectItemContent } from "@/components/form/select-item";
-import { WeatherDeleteManyUnConfirmedButton } from "./weather-delete-button";
-import { WeathersExportButton } from "./weathers-export-button";
+
 import { useDialog } from "@/stores/use-dialog";
-import { WeatherPinnedButton } from "./weather-pinned-button";
+
 import { cn } from "@/lib/utils";
 interface WeathersTableProps {
   data: WeatherTable[];
@@ -47,9 +50,9 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
   return (
     <div className="flex flex-col gap-y-4 p-4 border rounded-lg my-4">
       <div className="flex lg:justify-end gap-1.5 flex-wrap">
+        <WeatherCreateButton />
         <WeatherCreateManyButton />
         <WeathersExportButton />
-        <WeatherCreateButton />
         <WeathersConfirmedAllButton />
         <WeatherDeleteManyUnConfirmedButton />
       </div>

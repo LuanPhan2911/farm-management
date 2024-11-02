@@ -100,7 +100,7 @@ export const EquipmentCreateForm = () => {
               <FormControl>
                 <Input
                   placeholder={tSchema("name.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
                   disabled={isPending}
                 />
@@ -120,7 +120,7 @@ export const EquipmentCreateForm = () => {
               <FormControl>
                 <Input
                   placeholder={tSchema("brand.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
                   disabled={isPending}
                 />
@@ -186,7 +186,7 @@ export const EquipmentCreateForm = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("purchasePrice.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                       type="number"
@@ -229,7 +229,7 @@ export const EquipmentCreateForm = () => {
               <FormControl>
                 <Textarea
                   placeholder={tSchema("description.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
                   disabled={isPending}
                 />
@@ -250,7 +250,7 @@ export const EquipmentCreateForm = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("energyType.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />
@@ -269,7 +269,7 @@ export const EquipmentCreateForm = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("fuelConsumption.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                     type="number"

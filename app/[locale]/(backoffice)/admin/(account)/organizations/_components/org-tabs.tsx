@@ -28,7 +28,6 @@ import { useRouterWithRole } from "@/hooks/use-router-with-role";
 interface OrgTabsProps {
   org: Organization;
   orgMember: OrganizationMembership[];
-  currentStaff: Staff;
 }
 
 export const OrgContext = createContext<{
@@ -44,7 +43,7 @@ export const OrgContext = createContext<{
   isCreated: () => false,
   isSelf: () => false,
 });
-export const OrgTabs = ({ org, orgMember, currentStaff }: OrgTabsProps) => {
+export const OrgTabs = ({ org, orgMember }: OrgTabsProps) => {
   const t = useTranslations("organizations.tabs");
   const { has, userId, orgId } = useAuth();
   const { isSuperAdmin } = useCurrentStaffRole();
@@ -90,7 +89,7 @@ export const OrgTabs = ({ org, orgMember, currentStaff }: OrgTabsProps) => {
           <OrgMember data={orgMember} />
         </TabsContent>
         <TabsContent value="messages">
-          <OrgMessages org={org} currentStaff={currentStaff} />
+          <OrgMessages org={org} />
         </TabsContent>
         <TabsContent value="danger">
           <OrgDanger data={org} />
@@ -170,7 +169,7 @@ export const OrgDanger = ({ data }: OrgDangerProps) => {
           destroyFn={destroy}
           id={data.id}
           inltKey="organizations"
-          redirectHref="/admin/organizations"
+          redirectHref="organizations"
           disabled={disabled}
         />
       </CardContent>

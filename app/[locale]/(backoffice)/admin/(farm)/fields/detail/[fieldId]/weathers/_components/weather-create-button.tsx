@@ -31,6 +31,19 @@ import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { useCallback, useState } from "react";
+
+import {
+  Mode,
+  type Content,
+  type OnChangeStatus,
+  type JSONContent,
+} from "vanilla-jsoneditor";
+import { JSONEditorReact } from "@/components/vanila-json-editor";
+import { parseUploadedJSONFile } from "@/lib/utils";
+import { Textarea } from "@/components/ui/textarea";
+import { DatePickerWithTime } from "@/components/form/date-picker-with-time";
+import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 
 export const WeatherCreateButton = () => {
   const tSchema = useTranslations("weathers.schema");
@@ -46,7 +59,7 @@ export const WeatherCreateButton = () => {
     defaultValues: {
       fieldId: params!.fieldId,
       createdAt: new Date(),
-      note: null,
+      status: "SUNNY",
     },
   });
   const [isOpen, setOpen] = useState(false);
@@ -146,7 +159,7 @@ export const WeatherCreateButton = () => {
                         <FormControl>
                           <Input
                             placeholder={tSchema("temperature.placeholder")}
-                            value={field.value || undefined}
+                            value={field.value ?? undefined}
                             onChange={field.onChange}
                             disabled={isPending}
                             type="number"
@@ -195,7 +208,7 @@ export const WeatherCreateButton = () => {
                         <FormControl>
                           <Input
                             placeholder={tSchema("humidity.placeholder")}
-                            value={field.value || undefined}
+                            value={field.value ?? undefined}
                             onChange={field.onChange}
                             disabled={isPending}
                             type="number"
@@ -246,7 +259,7 @@ export const WeatherCreateButton = () => {
                             placeholder={tSchema(
                               "atmosphericPressure.placeholder"
                             )}
-                            value={field.value || undefined}
+                            value={field.value ?? undefined}
                             onChange={field.onChange}
                             disabled={isPending}
                             type="number"
@@ -297,7 +310,7 @@ export const WeatherCreateButton = () => {
                         <FormControl>
                           <Input
                             placeholder={tSchema("rainfall.placeholder")}
-                            value={field.value || undefined}
+                            value={field.value ?? undefined}
                             onChange={field.onChange}
                             disabled={isPending}
                             type="number"
@@ -341,7 +354,7 @@ export const WeatherCreateButton = () => {
                   <div className="flex gap-x-2">
                     <FormControl>
                       <Textarea
-                        value={field.value || undefined}
+                        value={field.value ?? undefined}
                         onChange={field.onChange}
                         disabled={isPending}
                         placeholder={tSchema("note.placeholder")}
@@ -360,20 +373,6 @@ export const WeatherCreateButton = () => {
     </Dialog>
   );
 };
-
-import { useCallback, useState } from "react";
-
-import {
-  Mode,
-  type Content,
-  type OnChangeStatus,
-  type JSONContent,
-} from "vanilla-jsoneditor";
-import { JSONEditorReact } from "@/components/vanila-json-editor";
-import { parseUploadedJSONFile } from "@/lib/utils";
-import { Textarea } from "@/components/ui/textarea";
-import { DatePickerWithTime } from "@/components/form/date-picker-with-time";
-import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 
 export const WeatherCreateManyButton = () => {
   const params = useParams<{
@@ -398,8 +397,8 @@ export const WeatherCreateManyButton = () => {
         value: 0,
       },
       status: "SUNNY",
-      fieldId: params!.fieldId || "f20cfcc8-eb88-4d23-9451-79e2c94c842e",
-      createdAt: "2024-08-01T12:00:00Z",
+      fieldId: params!.fieldId,
+      createdAt: new Date().toISOString(),
     },
   ];
   const [jsonContent, setJsonContent] = useState<Content>({

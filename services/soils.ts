@@ -172,13 +172,13 @@ export const getSoilsOnField = async ({
           ...(filterNumber && getObjectFilterNumber(filterNumber)),
         },
         orderBy: [
-          ...(orderBy ? getObjectSortOrder(orderBy) : []),
           {
             pinned: "desc",
           },
           {
             confirmed: "asc",
           },
+          ...(orderBy ? getObjectSortOrder(orderBy) : []),
         ],
         include: {
           confirmedBy: true,

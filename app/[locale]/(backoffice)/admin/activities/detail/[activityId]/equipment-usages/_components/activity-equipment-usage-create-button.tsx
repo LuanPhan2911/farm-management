@@ -130,7 +130,7 @@ export const ActivityEquipmentUsageCreateButton = ({
                     <FormControl>
                       <StaffsSelect
                         onChange={field.onChange}
-                        defaultValue={field.value || undefined}
+                        defaultValue={field.value ?? undefined}
                         placeholder={tSchema("operatorId.placeholder")}
                         disabled={isPending || disabled}
                         error={tSchema("operatorId.error")}
@@ -179,7 +179,7 @@ export const ActivityEquipmentUsageCreateButton = ({
                     <FormControl>
                       <Input
                         placeholder={tSchema("duration.placeholder")}
-                        value={field.value || undefined}
+                        value={field.value ?? undefined}
                         onChange={field.onChange}
                         disabled={isPending || disabled}
                       />
@@ -199,7 +199,7 @@ export const ActivityEquipmentUsageCreateButton = ({
                   <FormControl>
                     <Textarea
                       placeholder={tSchema("note.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending || disabled}
                     />

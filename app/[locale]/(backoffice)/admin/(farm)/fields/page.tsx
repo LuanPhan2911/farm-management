@@ -16,12 +16,10 @@ interface FieldPageProps {}
 const FieldPage = async ({}: FieldPageProps) => {
   const t = await getTranslations("fields.page");
   const { orgId } = auth();
+
   const fields = await getFields({
     orgId: orgId || null,
   });
-  const { has } = auth();
-
-  const canManageField = has({ permission: "org:field:manage" });
 
   return (
     <div className="flex flex-col gap-y-4 py-4 h-full">
@@ -31,7 +29,7 @@ const FieldPage = async ({}: FieldPageProps) => {
         </CardHeader>
         <CardContent>
           <div className="flex justify-end">
-            <FieldCreateButton disabled={!canManageField} />
+            <FieldCreateButton />
           </div>
           <FieldsDataTable data={fields} />
         </CardContent>

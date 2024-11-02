@@ -102,7 +102,7 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
               <FormControl>
                 <Input
                   placeholder={tSchema("name.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
                   disabled={isPending || !canManageOrg}
                 />
@@ -121,7 +121,7 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
               <FormControl>
                 <Input
                   placeholder={tSchema("slug.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
                   disabled={isPending || !canManageOrg}
                 />

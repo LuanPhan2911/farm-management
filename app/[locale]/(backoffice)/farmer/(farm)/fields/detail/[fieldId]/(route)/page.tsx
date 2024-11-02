@@ -10,6 +10,10 @@ import {
 } from "@/components/ui/card";
 import { getTranslations } from "next-intl/server";
 import { FieldEditForm } from "@/app/[locale]/(backoffice)/admin/(farm)/fields/_components/field-edit-button";
+import { auth } from "@clerk/nextjs/server";
+import { getCurrentStaff } from "@/services/staffs";
+import { isOnlyAdmin } from "@/lib/permission";
+import { canGetField } from "@/lib/role";
 
 interface FieldDetailPageProps {
   params: {
@@ -31,11 +35,12 @@ export async function generateStaticParams() {
   });
 }
 const FieldDetailPage = async ({ params }: FieldDetailPageProps) => {
-  const data = await getFieldById(params!.fieldId);
-  const t = await getTranslations("fields.tabs");
+  const data = await canGetField(params.fieldId);
   if (!data) {
     notFound();
   }
+
+  const t = await getTranslations("fields.tabs");
   return (
     <div className="flex flex-col gap-y-4 py-4 h-full">
       <Card className="grid grid-cols-1 lg:grid-cols-5 p-6">

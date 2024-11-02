@@ -5,7 +5,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useTranslations } from "next-intl";
 import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/field";
 import { getFieldById } from "@/services/fields";
@@ -36,8 +35,8 @@ const FieldDangerPage = async ({ params }: FieldDangerPageProps) => {
         <DestroyButton
           destroyFn={destroy}
           id={data.id}
-          inltKey="organizations"
-          redirectHref="/admin/organizations"
+          inltKey="fields"
+          redirectHref="fields"
           disabled={!isAdminOrg}
         />
       </CardContent>

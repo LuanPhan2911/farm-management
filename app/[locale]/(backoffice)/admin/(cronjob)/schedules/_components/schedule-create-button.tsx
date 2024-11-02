@@ -117,7 +117,7 @@ export const ScheduleCreateButton = ({
                   <FormControl>
                     <Input
                       placeholder={tSchema("name.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />
@@ -136,7 +136,7 @@ export const ScheduleCreateButton = ({
                   <FormControl>
                     <Textarea
                       placeholder={tSchema("description.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />
@@ -157,7 +157,7 @@ export const ScheduleCreateButton = ({
                       <div className="col-span-3">
                         <Input
                           placeholder={tSchema("cron.placeholder")}
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
                           disabled={isPending}
                         />
@@ -165,7 +165,7 @@ export const ScheduleCreateButton = ({
                       <ScheduleSelectCron
                         onChange={field.onChange}
                         placeholder="Custom"
-                        defaultValue={field.value || undefined}
+                        defaultValue={field.value ?? undefined}
                         disabled={isPending}
                       />
                     </div>
@@ -192,7 +192,7 @@ export const ScheduleCreateButton = ({
                   <FormControl>
                     <Input
                       placeholder={tSchema("request.url.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />

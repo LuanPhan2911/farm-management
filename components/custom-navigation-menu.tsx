@@ -10,10 +10,12 @@ import {
   navigationMenuTriggerStyle,
 } from "./ui/navigation-menu";
 import { cn } from "@/lib/utils";
+import { Button } from "./ui/button";
 
 export type NavigationMenuItem = {
   href: string;
   label: string;
+  disabled?: boolean;
 };
 export type NavigationMenuData = NavigationMenuItem & {
   subData?: NavigationMenuItem[];
@@ -27,7 +29,7 @@ export const CustomNavigationMenu = ({ data }: CustomNavigationMenuProps) => {
   return (
     <NavigationMenu className="border rounded-md">
       <NavigationMenuList>
-        {data.map(({ href, label, subData }) => {
+        {data.map(({ href, label, subData, disabled }) => {
           return (
             <NavigationMenuItem key={href}>
               {!subData?.length ? (
@@ -35,18 +37,20 @@ export const CustomNavigationMenu = ({ data }: CustomNavigationMenuProps) => {
                   href={href}
                   label={label}
                   isActive={href === pathname}
+                  disabled={disabled}
                 />
               ) : (
                 <>
                   <NavigationMenuTrigger> {label}</NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    {subData.map(({ href, label }) => {
+                    {subData.map(({ href, label, disabled }) => {
                       return (
                         <NavigationLink
                           href={href}
                           label={label}
                           isActive={href === pathname}
                           key={href}
+                          disabled={disabled}
                         />
                       );
                     })}
@@ -65,19 +69,29 @@ interface NavigationLinkProps {
   href: string;
   label: string;
   isActive: boolean;
+  disabled?: boolean;
 }
-const NavigationLink = ({ href, isActive, label }: NavigationLinkProps) => {
+const NavigationLink = ({
+  href,
+  isActive,
+  label,
+  disabled,
+}: NavigationLinkProps) => {
   return (
-    <Link
-      href={href}
+    <Button
+      size={"sm"}
+      variant={"ghost"}
+      disabled={disabled}
       className={cn(
         navigationMenuTriggerStyle(),
         isActive && "border-l-4 border-l-green-500 "
       )}
     >
-      <span className={cn(isActive && "text-green-500 hover:text-green-400")}>
-        {label}
-      </span>
-    </Link>
+      <Link href={href}>
+        <span className={cn(isActive && "text-green-500 hover:text-green-400")}>
+          {label}
+        </span>
+      </Link>
+    </Button>
   );
 };

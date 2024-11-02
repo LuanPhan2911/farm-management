@@ -43,6 +43,14 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
       },
     },
     {
+      accessorKey: "orgId",
+      header: t("table.thead.orgId"),
+      cell: ({ row }) => {
+        const data = row.original;
+        return data.orgId ? "O" : "U";
+      },
+    },
+    {
       accessorKey: "soilType",
       header: ({ column }) => {
         return (
@@ -63,36 +71,7 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
         return t(`schema.soilType.options.${data.soilType}`);
       },
     },
-    {
-      accessorKey: "height",
-      header: ({ column }) => {
-        return (
-          <DataTableColumnHeader
-            column={column}
-            title={t("table.thead.height")}
-          />
-        );
-      },
-      cell: ({ row }) => {
-        const data = row.original;
-        return <UnitWithValue value={data.height} unit={data.unit?.name} />;
-      },
-    },
-    {
-      accessorKey: "width",
-      header: ({ column }) => {
-        return (
-          <DataTableColumnHeader
-            column={column}
-            title={t("table.thead.width")}
-          />
-        );
-      },
-      cell: ({ row }) => {
-        const data = row.original;
-        return <UnitWithValue value={data.width} unit={data.unit?.name} />;
-      },
-    },
+
     {
       accessorKey: "area",
       header: ({ column }) => {
@@ -108,6 +87,14 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
         const unit = data.unit?.name ? `${data.unit.name}2` : "";
         return <UnitWithValue value={data.area} unit={unit} />;
       },
+    },
+    {
+      accessorKey: "shape",
+      header: t("table.thead.shape"),
+    },
+    {
+      accessorKey: "note",
+      header: t("table.thead.note"),
     },
     {
       id: "actions",

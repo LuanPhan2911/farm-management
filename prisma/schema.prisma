@@ -269,14 +269,12 @@ model Field {
   orgId    String?
 
   //manage width, height, area, shape
-  width  Float?
-  height Float?
-  area   Float?
-  unitId String?
-  unit   Unit?   @relation(fields: [unitId], references: [id], onDelete: SetNull)
-  shape  String?
-
+  area     Float?
+  unitId   String?
+  unit     Unit?     @relation(fields: [unitId], references: [id], onDelete: SetNull)
+  shape    String?
   soilType SoilType?
+  note     String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

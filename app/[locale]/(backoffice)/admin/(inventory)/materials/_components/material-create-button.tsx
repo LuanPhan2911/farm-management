@@ -104,7 +104,7 @@ export const MaterialCreateForm = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("name.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />
@@ -150,7 +150,7 @@ export const MaterialCreateForm = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("quantityInStock.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                       type="number"
@@ -193,7 +193,7 @@ export const MaterialCreateForm = () => {
               <FormControl>
                 <Textarea
                   placeholder={tSchema("description.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
                   disabled={isPending}
                 />

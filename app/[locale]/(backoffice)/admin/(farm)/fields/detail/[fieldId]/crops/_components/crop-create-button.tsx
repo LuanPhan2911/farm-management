@@ -110,7 +110,7 @@ export const CropCreateButton = () => {
 
                   <FormControl>
                     <Input
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       placeholder={tSchema("name.placeholder")}
                       disabled={isPending}
@@ -184,7 +184,7 @@ export const CropCreateButton = () => {
                         <FormControl>
                           <Input
                             placeholder={tSchema("estimatedYield.placeholder")}
-                            value={field.value || undefined}
+                            value={field.value ?? undefined}
                             onChange={field.onChange}
                             disabled={isPending}
                             type="number"
@@ -232,7 +232,7 @@ export const CropCreateButton = () => {
                         <FormLabel>{tSchema("actualYield.label")}</FormLabel>
                         <FormControl>
                           <Input
-                            value={field.value || undefined}
+                            value={field.value ?? undefined}
                             onChange={field.onChange}
                             placeholder={tSchema("actualYield.placeholder")}
                             disabled={isPending}
@@ -282,7 +282,7 @@ export const CropCreateButton = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("status.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />

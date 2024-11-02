@@ -24,11 +24,10 @@ const OrganizationDetailPage = async ({
   params,
 }: OrganizationDetailPageProps) => {
   const org = await getOrganizationById(params.orgId);
-  const currentStaff = await getCurrentStaff();
   const orgMember = await getOrganizationMembership({
     orgId: params.orgId,
   });
-  if (!org || !currentStaff || !orgMember.length) {
+  if (!org || !orgMember.length) {
     notFound();
   }
 
@@ -37,7 +36,6 @@ const OrganizationDetailPage = async ({
       <OrgTabs
         org={structuredClone(org)}
         orgMember={structuredClone(orgMember)}
-        currentStaff={currentStaff}
       />
     </div>
   );

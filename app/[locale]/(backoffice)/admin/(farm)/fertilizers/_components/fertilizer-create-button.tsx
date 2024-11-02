@@ -91,7 +91,7 @@ export const FertilizerCreateButton = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("name.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />
@@ -109,7 +109,7 @@ export const FertilizerCreateButton = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("nutrientOfNPK.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />
@@ -157,7 +157,7 @@ export const FertilizerCreateButton = () => {
                             placeholder={tSchema(
                               "recommendedDosage.placeholder"
                             )}
-                            value={field.value || undefined}
+                            value={field.value ?? undefined}
                             onChange={field.onChange}
                             disabled={isPending}
                             type="number"
@@ -209,7 +209,7 @@ export const FertilizerCreateButton = () => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("applicationMethod.placeholder")}
-                        value={field.value || undefined}
+                        value={field.value ?? undefined}
                         onChange={field.onChange}
                         disabled={isPending}
                       />
@@ -253,7 +253,7 @@ export const FertilizerCreateButton = () => {
                   <div className="flex gap-x-2">
                     <FormControl>
                       <Textarea
-                        value={field.value || undefined}
+                        value={field.value ?? undefined}
                         onChange={field.onChange}
                         disabled={isPending}
                         placeholder={tSchema("composition.placeholder")}
@@ -274,7 +274,7 @@ export const FertilizerCreateButton = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("manufacturer.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />

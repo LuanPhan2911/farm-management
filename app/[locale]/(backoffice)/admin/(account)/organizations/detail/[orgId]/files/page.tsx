@@ -4,6 +4,8 @@ import { getTranslations } from "next-intl/server";
 import { getMessageFiles } from "@/services/files";
 import { parseToNumber } from "@/lib/utils";
 import { FilesTable } from "@/app/[locale]/(backoffice)/admin/(files)/_components/files-table";
+import { getOrganizationMembership } from "@/services/organizations";
+import { notFound } from "next/navigation";
 
 export async function generateMetadata() {
   const t = await getTranslations("messages.page.files");
@@ -29,6 +31,12 @@ const OrgMessageFilesPage = async ({
   const { query, orderBy } = searchParams;
   const page = parseToNumber(searchParams.page, 1);
   const { orgId } = params;
+  const orgMembers = await getOrganizationMembership({
+    orgId,
+  });
+  if (!orgMembers.length) {
+    notFound();
+  }
   const { data, totalPage } = await getMessageFiles({
     orgId,
     page,

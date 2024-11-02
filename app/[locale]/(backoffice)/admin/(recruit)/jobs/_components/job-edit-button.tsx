@@ -103,7 +103,7 @@ export const JobEditForm = ({ job }: JobEditFormProps) => {
               <FormControl>
                 <Input
                   placeholder={tSchema("name.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
                   disabled={isPending}
                 />
@@ -148,7 +148,7 @@ export const JobEditForm = ({ job }: JobEditFormProps) => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("quantity.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                     type="number"
@@ -240,7 +240,7 @@ export const JobEditForm = ({ job }: JobEditFormProps) => {
               <FormControl>
                 <Input
                   placeholder={tSchema("workingTime.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
                   disabled={isPending}
                 />
@@ -259,7 +259,7 @@ export const JobEditForm = ({ job }: JobEditFormProps) => {
               <FormControl>
                 <Input
                   placeholder={tSchema("wage.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
                   disabled={isPending}
                 />

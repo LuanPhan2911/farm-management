@@ -103,14 +103,14 @@ const SoilsFacetedNutrientPotassium = () => {
       },
     },
     {
-      label: "1.5< N <=2",
+      label: "1.5< K <=2",
       value: {
         gt: 1.5,
         lte: 2,
       },
     },
     {
-      label: ">2",
+      label: "K>2",
       value: {
         gt: 2,
       },

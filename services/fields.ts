@@ -3,17 +3,18 @@ import { FieldSelect } from "@/types";
 import { clerkClient } from "@clerk/nextjs/server";
 import { SoilType } from "@prisma/client";
 import { getCurrentStaff } from "./staffs";
+import { isAdmin, isFarmer, isOnlyAdmin, isSuperAdmin } from "@/lib/permission";
+import { getUserInOrganization } from "./organizations";
 
 type FieldParams = {
   name: string;
   location?: string | null;
   orgId?: string | null;
-  height?: number | null;
-  width?: number | null;
   area?: number | null;
   unitId?: string | null;
   shape?: string | null;
   soilType?: SoilType | null;
+  note?: string | null;
 };
 export const createField = async (params: FieldParams) => {
   const field = await db.field.create({
@@ -56,6 +57,9 @@ export const deleteField = async (id: string) => {
 type FieldQuery = {
   orgId: string | null;
 };
+// superadmin get all
+// admin get in org and null org
+// farmer get in org
 export const getFields = async ({ orgId }: FieldQuery) => {
   try {
     // check user in org
@@ -63,20 +67,33 @@ export const getFields = async ({ orgId }: FieldQuery) => {
     if (!currentStaff) {
       return [];
     }
-
-    if (orgId === null && currentStaff.role !== "superadmin") {
+    if (orgId === null && isFarmer(currentStaff.role)) {
       return [];
     }
-    if (orgId !== null && currentStaff.role !== "superadmin") {
-      const { data } =
-        await clerkClient().organizations.getOrganizationMembershipList({
-          organizationId: orgId,
-          limit: 100,
-        });
-      const currentStaffInOrg = data.find(
-        (item) => item.publicUserData?.userId === currentStaff.externalId
-      );
-      if (!currentStaffInOrg) {
+    if (orgId === null && isSuperAdmin(currentStaff.role)) {
+      return await db.field.findMany({
+        include: {
+          unit: true,
+        },
+      });
+    }
+    if (orgId === null && isAdmin(currentStaff.role)) {
+      return await db.field.findMany({
+        where: {
+          orgId: null,
+        },
+        include: {
+          unit: true,
+        },
+      });
+    }
+
+    if (
+      orgId !== null &&
+      (isFarmer(currentStaff.role) || isAdmin(currentStaff.role))
+    ) {
+      const userInOrg = getUserInOrganization(orgId, currentStaff.externalId);
+      if (!userInOrg) {
         return [];
       }
     }
@@ -97,6 +114,8 @@ export const getFields = async ({ orgId }: FieldQuery) => {
     return [];
   }
 };
+// superadmin edit
+// admin
 
 export const getFieldById = async (id: string) => {
   try {

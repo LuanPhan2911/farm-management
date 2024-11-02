@@ -5,11 +5,15 @@ import {
 } from "@/components/custom-navigation-menu";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { usePrefix } from "@/hooks/use-prefix";
+import { FieldTable } from "@/types";
 import { useTranslations } from "next-intl";
 
 import { useParams } from "next/navigation";
 
-export const FieldNavigationMenu = () => {
+interface FieldNavigationMenuProps {
+  data?: FieldTable | null;
+}
+export const FieldNavigationMenu = ({ data }: FieldNavigationMenuProps) => {
   const params = useParams<{
     fieldId: string;
   }>()!;
@@ -20,7 +24,9 @@ export const FieldNavigationMenu = () => {
   }
 
   const getHref = `${prefix}/fields/detail/${params.fieldId}`;
-  const data: NavigationMenuData[] = [
+  const disabled = (data && data.orgId === null) || false;
+
+  const navigationMenu: NavigationMenuData[] = [
     {
       href: `${getHref}`,
       label: t("info.label"),
@@ -28,19 +34,22 @@ export const FieldNavigationMenu = () => {
     {
       href: `${getHref}/crops`,
       label: t("crops.label"),
+      disabled,
     },
     {
       href: `${getHref}/weathers`,
       label: t("weathers.label"),
+      disabled,
     },
     {
       href: `${getHref}/soils`,
       label: t("soils.label"),
+      disabled,
     },
     {
       href: `${getHref}/danger`,
       label: t("danger.label"),
     },
   ];
-  return <CustomNavigationMenu data={data} />;
+  return <CustomNavigationMenu data={navigationMenu} />;
 };

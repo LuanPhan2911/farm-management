@@ -38,7 +38,7 @@ export const StaffsTableAction = ({ data }: StaffsTableActionProps) => {
             inltKey="staffs"
             className="w-full"
             disabled={isSuperAdminRole || !canDelete}
-            redirectHref="/admin/staffs"
+            redirectHref="staffs"
           />
         </DropdownMenuItem>
       </DropdownMenuContent>

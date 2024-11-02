@@ -121,7 +121,7 @@ export const PlantPesticideCreateButton = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("stage.placeholder")}
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
                           disabled={isPending}
                         />
@@ -142,7 +142,7 @@ export const PlantPesticideCreateButton = () => {
                           <FormControl>
                             <Input
                               placeholder={tSchema("dosage.placeholder")}
-                              value={field.value || undefined}
+                              value={field.value ?? undefined}
                               onChange={field.onChange}
                               disabled={isPending}
                               type="number"
@@ -185,7 +185,7 @@ export const PlantPesticideCreateButton = () => {
                       <FormControl>
                         <Textarea
                           placeholder={tSchema("note.placeholder")}
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
                           disabled={isPending}
                         />

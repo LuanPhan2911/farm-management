@@ -255,7 +255,7 @@ export const ChatMessageCreateFileFromCLoud = ({
                         notFound={tSchema("fileUrl.notFound")}
                         onChange={field.onChange}
                         disabled={isPending}
-                        defaultValue={field.value || undefined}
+                        defaultValue={field.value ?? undefined}
                         appearance={{
                           button: "lg:w-full",
                           content: "lg:w-[480px]",

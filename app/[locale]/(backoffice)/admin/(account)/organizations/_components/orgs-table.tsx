@@ -17,7 +17,7 @@ import { UserAvatar } from "@/components/user-avatar";
 
 import { OrgsTableSortBy } from "./orgs-table-sort-by";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
-import { useOrganizationList } from "@clerk/nextjs";
+import { useAuth, useOrganizationList } from "@clerk/nextjs";
 import { toast } from "sonner";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
 
@@ -31,12 +31,28 @@ export const OrgsTable = ({ orgs, totalPage }: OrgsTableProps) => {
   const { push } = useRouterWithRole();
   const { isSuperAdmin } = useCurrentStaffRole();
   const { setActive } = useOrganizationList();
+  const { orgId } = useAuth();
   const handleClick = (org: Organization) => {
-    setActive?.({ organization: org.id }).catch(() => {
-      setActive?.({ organization: null });
-      toast.warning(t("other.setActive"));
+    if (orgId === org.id) {
+      push(`organizations/detail/${org.id}`);
+      return;
+    }
+    if (isSuperAdmin) {
+      setActive?.({ organization: org.id })
+        .then(() => {
+          push(`organizations/detail/${org.id}`);
+        })
+        .catch(() => {
+          setActive?.({ organization: null }).then(() => {
+            push(`organizations/detail/${org.id}`);
+            toast.warning(t("other.setActive"));
+          });
+        });
+      return;
+    }
+    setActive?.({ organization: org.id }).then(() => {
+      push(`organizations/detail/${org.id}`);
     });
-    push(`organizations/detail/${org.id}`);
   };
 
   return (

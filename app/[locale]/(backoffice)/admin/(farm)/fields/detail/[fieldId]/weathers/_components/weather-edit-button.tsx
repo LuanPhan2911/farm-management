@@ -10,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { UnitType, WeatherStatus } from "@prisma/client";
 import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -27,9 +27,9 @@ import { SelectOptions } from "@/components/form/select-options";
 import { WeatherTable } from "@/types";
 import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { edit } from "@/actions/weather";
-import { convertNullToUndefined } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { useAuth } from "@clerk/nextjs";
 
 interface WeatherEditButtonProps {
   data: WeatherTable;
@@ -38,8 +38,10 @@ interface WeatherEditButtonProps {
 
 export const WeatherEditButton = ({ data, label }: WeatherEditButtonProps) => {
   const { onOpen } = useDialog();
-  const { isFarmer } = useCurrentStaffRole();
-  const disabled = data.confirmed && isFarmer;
+  const { isSuperAdmin } = useCurrentStaffRole();
+  const { has } = useAuth();
+  const isAdminOrg = has?.({ role: "org:field" }) || false;
+  const canEdit = !data.confirmed || isAdminOrg || isSuperAdmin;
   return (
     <Button
       className="w-full"
@@ -51,7 +53,7 @@ export const WeatherEditButton = ({ data, label }: WeatherEditButtonProps) => {
       }}
       size={"sm"}
       variant={"edit"}
-      disabled={disabled}
+      disabled={!canEdit}
     >
       <Edit className="w-4 h-4 mr-2" />
       {label}
@@ -145,7 +147,7 @@ export const WeatherEditDialog = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("temperature.placeholder")}
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
                           disabled={isPending}
                           type="number"
@@ -191,7 +193,7 @@ export const WeatherEditDialog = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("humidity.placeholder")}
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
                           disabled={isPending}
                           type="number"
@@ -243,7 +245,7 @@ export const WeatherEditDialog = () => {
                           placeholder={tSchema(
                             "atmosphericPressure.placeholder"
                           )}
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
                           disabled={isPending}
                           type="number"
@@ -295,7 +297,7 @@ export const WeatherEditDialog = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("rainfall.placeholder")}
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
                           disabled={isPending}
                           type="number"
@@ -340,7 +342,7 @@ export const WeatherEditDialog = () => {
                 <div className="flex gap-x-2">
                   <FormControl>
                     <Textarea
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                       placeholder={tSchema("note.placeholder")}

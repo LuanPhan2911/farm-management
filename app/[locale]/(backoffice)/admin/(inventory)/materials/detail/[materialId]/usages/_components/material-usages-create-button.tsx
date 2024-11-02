@@ -102,7 +102,7 @@ export const MaterialUsageCreateButton = ({
                       disabled={isPending}
                       error={tSchema("activityId.error")}
                       notFound={tSchema("activityId.notFound")}
-                      defaultValue={field.value || undefined}
+                      defaultValue={field.value ?? undefined}
                       appearance={{
                         button: "lg:w-full h-12",
                         content: "lg:w-[400px]",
@@ -125,7 +125,7 @@ export const MaterialUsageCreateButton = ({
                       <FormControl>
                         <Input
                           placeholder={tSchema("quantityUsed.placeholder")}
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
                           disabled={isPending}
                           type="number"

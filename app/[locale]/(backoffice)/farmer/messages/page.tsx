@@ -11,14 +11,13 @@ import { getCurrentStaff } from "@/services/staffs";
 
 import { notFound } from "next/navigation";
 import { SocketIndicator } from "@/components/socket-indicator";
-import { Link } from "@/navigation";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { DropdownMenuButton } from "@/components/buttons/dropdown-menu-button";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { ChatMessages } from "../../../admin/(account)/messages/_components/chat-messages";
-import { ChatMessageCreateForm } from "../../../admin/(account)/messages/_components/chat-message-create-button";
+
 import { DetailButton } from "@/components/buttons/detail-button";
+import { ChatMessages } from "../../admin/(account)/messages/_components/chat-messages";
+import { ChatMessageCreateForm } from "../../admin/(account)/messages/_components/chat-message-create-button";
 
 export async function generateMetadata() {
   const t = await getTranslations("messages.page");
@@ -51,7 +50,6 @@ const MessagesPage = async () => {
           <ChatMessages
             chatId={"all"}
             apiUrl="/api/messages"
-            currentStaff={currentStaff}
             socketUrl="/api/socket/messages"
             socketQuery={{
               orgId: "all",

@@ -79,7 +79,7 @@ export const ActivityEditForm = ({ data, disabled }: ActivityEditFormProps) => {
               <FormControl>
                 <Input
                   placeholder={tSchema("name.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
                   disabled={isPending || disabled}
                 />
@@ -98,7 +98,7 @@ export const ActivityEditForm = ({ data, disabled }: ActivityEditFormProps) => {
               <FormControl>
                 <Textarea
                   placeholder={tSchema("description.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
                   disabled={isPending || disabled}
                 />
@@ -196,7 +196,7 @@ export const ActivityEditForm = ({ data, disabled }: ActivityEditFormProps) => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("estimatedDuration.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={true}
                   />
@@ -215,7 +215,7 @@ export const ActivityEditForm = ({ data, disabled }: ActivityEditFormProps) => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("actualDuration.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending || disabled}
                   />
@@ -288,7 +288,7 @@ export const ActivityEditForm = ({ data, disabled }: ActivityEditFormProps) => {
               <FormControl>
                 <Textarea
                   placeholder={tSchema("note.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
                   disabled={isPending || disabled}
                 />

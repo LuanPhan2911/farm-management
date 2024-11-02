@@ -112,7 +112,7 @@ export const PesticideEditDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("name.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />
@@ -183,7 +183,7 @@ export const PesticideEditDialog = () => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("recommendedDosage.placeholder")}
-                        value={field.value || undefined}
+                        value={field.value ?? undefined}
                         onChange={field.onChange}
                         disabled={isPending}
                         type="number"
@@ -233,7 +233,7 @@ export const PesticideEditDialog = () => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("withdrawalPeriod.placeholder")}
-                        value={field.value || undefined}
+                        value={field.value ?? undefined}
                         onChange={field.onChange}
                         disabled={isPending}
                         type="number"
@@ -282,7 +282,7 @@ export const PesticideEditDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("applicationMethod.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />
@@ -300,7 +300,7 @@ export const PesticideEditDialog = () => {
                 <div className="flex gap-x-2">
                   <FormControl>
                     <Textarea
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                       placeholder={tSchema("ingredient.placeholder")}
@@ -321,7 +321,7 @@ export const PesticideEditDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("manufacturer.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />

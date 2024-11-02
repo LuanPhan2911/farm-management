@@ -1021,12 +1021,16 @@
       "thead": {
         "name": "Name",
         "location": "Location",
+        "orgId": "Set OrgId",
         "soilType": "Soil type",
-        "height": "Height",
-        "width": "Width",
-        "area": "Area"
+        "area": "Area",
+        "shape": "Shape",
+        "note": "Note"
       },
-      "trow": { "soilType": "..." }
+      "trow": {
+        "orgId": "No set",
+        "soilType": "No set"
+      }
     },
     "tabs": {
       "info": {
@@ -1116,22 +1120,7 @@
         "error": "Fail load organizations",
         "notFound": "Organization not found"
       },
-      "width": {
-        "label": "Width",
-        "placeholder": "Width of field",
-        "required_error": "Width is required",
-        "invalid_type_error": "Width value must be number",
-        "min": "Width value must be at least {min}",
-        "max": "Width value must be less than {max}"
-      },
-      "height": {
-        "label": "Height",
-        "placeholder": "Height of field",
-        "required_error": "Height is required",
-        "invalid_type_error": "Height value must be number",
-        "min": "Height value must be at least {min}",
-        "max": "Height value must be less than {max}"
-      },
+
       "area": {
         "label": "Area",
         "placeholder": "Area of field",
@@ -1151,6 +1140,11 @@
         "label": "Shape",
         "placeholder": "Shape of field eg:circle, square...",
         "max": "Shape must be less than {max} characters"
+      },
+      "note": {
+        "label": "Note",
+        "placeholder": "Note",
+        "max": "Note length must be less than {max} characters"
       },
       "soilType": {
         "label": "Soil type",

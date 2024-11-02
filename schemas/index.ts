@@ -384,16 +384,6 @@ export const FieldSchema = (
     orgId: stringSchema(t, "orgId", {
       required: false,
     }).nullish(),
-    height: numberSchema(t, "height", {
-      min: 0,
-      max: 100_000,
-      required: false,
-    }).nullish(),
-    width: numberSchema(t, "width", {
-      min: 0,
-      max: 100_000,
-      required: false,
-    }).nullish(),
 
     area: numberSchema(t, "area", {
       min: 0,
@@ -405,11 +395,16 @@ export const FieldSchema = (
       max: 100,
       required: false,
     }).nullish(),
+
     soilType: z
       .nativeEnum(SoilType, {
         message: t("soilType.enum"),
       })
       .nullish(),
+    note: stringSchema(t, "note", {
+      max: 255,
+      required: false,
+    }).nullish(),
   });
 };
 export const WeatherSchema = (

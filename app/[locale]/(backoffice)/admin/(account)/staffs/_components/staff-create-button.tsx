@@ -106,7 +106,7 @@ export const StaffCreateDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("name.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />
@@ -125,7 +125,7 @@ export const StaffCreateDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("email.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />
@@ -145,7 +145,7 @@ export const StaffCreateDialog = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("password.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />
@@ -167,7 +167,7 @@ export const StaffCreateDialog = () => {
                 <FormLabel>{tSchema("role.label")}</FormLabel>
                 <FormControl>
                   <StaffSelectRole
-                    defaultValue={field.value || undefined}
+                    defaultValue={field.value ?? undefined}
                     onChange={field.onChange}
                     placeholder={tSchema("role.placeholder")}
                     disabled={isPending}
@@ -193,7 +193,7 @@ export const StaffCreateDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("receiverEmail.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />

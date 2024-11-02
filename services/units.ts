@@ -65,6 +65,10 @@ export const getUnitsByType = async (type: UnitType): Promise<UnitSelect[]> => {
         id: true,
         name: true,
       },
+      cacheStrategy: {
+        swr: 60,
+        ttl: 60,
+      },
     });
     return units;
   } catch (error) {

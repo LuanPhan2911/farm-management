@@ -129,7 +129,7 @@ export const CropEditDialog = () => {
 
                 <FormControl>
                   <Input
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     placeholder={tSchema("name.placeholder")}
                     disabled={isPending}
@@ -203,7 +203,7 @@ export const CropEditDialog = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("estimatedYield.placeholder")}
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
                           disabled={isPending}
                           type="number"
@@ -233,7 +233,7 @@ export const CropEditDialog = () => {
                         className="w-full"
                         error={tSchema("estimatedYield.unitId.error")}
                         notFound={tSchema("estimatedYield.unitId.notFound")}
-                        defaultValue={field.value || undefined}
+                        defaultValue={field.value ?? undefined}
                       />
                     </FormControl>
 
@@ -252,7 +252,7 @@ export const CropEditDialog = () => {
                       <FormLabel>{tSchema("actualYield.label")}</FormLabel>
                       <FormControl>
                         <Input
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
                           placeholder={tSchema("actualYield.placeholder")}
                           disabled={isPending}
@@ -279,7 +279,7 @@ export const CropEditDialog = () => {
                         className="w-full"
                         error={tSchema("actualYield.unitId.error")}
                         notFound={tSchema("actualYield.unitId.notFound")}
-                        defaultValue={field.value || undefined}
+                        defaultValue={field.value ?? undefined}
                       />
                     </FormControl>
 
@@ -299,7 +299,7 @@ export const CropEditDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("status.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />

@@ -96,7 +96,7 @@ export const ActivityCreateForm = ({
               <FormControl>
                 <Input
                   placeholder={tSchema("name.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
                   disabled={isPending}
                 />
@@ -115,7 +115,7 @@ export const ActivityCreateForm = ({
               <FormControl>
                 <Textarea
                   placeholder={tSchema("description.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
                   disabled={isPending}
                 />
@@ -183,7 +183,7 @@ export const ActivityCreateForm = ({
                 <FormControl>
                   <Input
                     placeholder={tSchema("estimatedDuration.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />
@@ -202,7 +202,7 @@ export const ActivityCreateForm = ({
                 <FormControl>
                   <Input
                     placeholder={tSchema("actualDuration.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />
@@ -224,7 +224,7 @@ export const ActivityCreateForm = ({
                   <StaffsSelect
                     placeholder={tSchema("assignedToId.placeholder")}
                     onChange={field.onChange}
-                    defaultValue={field.value || undefined}
+                    defaultValue={field.value ?? undefined}
                     error={tSchema("assignedToId.error")}
                     notFound={tSchema("assignedToId.notFound")}
                     disabled={isPending}
@@ -275,7 +275,7 @@ export const ActivityCreateForm = ({
               <FormControl>
                 <Textarea
                   placeholder={tSchema("note.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
                   disabled={isPending}
                 />

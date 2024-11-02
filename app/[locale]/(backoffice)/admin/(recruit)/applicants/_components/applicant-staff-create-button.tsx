@@ -130,7 +130,7 @@ export const ApplicantStaffCreateDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("name.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />
@@ -149,7 +149,7 @@ export const ApplicantStaffCreateDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("email.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />
@@ -169,7 +169,7 @@ export const ApplicantStaffCreateDialog = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("password.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />
@@ -222,7 +222,7 @@ export const ApplicantStaffCreateDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("receiverEmail.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />

@@ -136,7 +136,7 @@ export const EquipmentUsageEditDialog = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("duration.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />
@@ -156,7 +156,7 @@ export const EquipmentUsageEditDialog = () => {
                 <FormControl>
                   <Textarea
                     placeholder={tSchema("note.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />

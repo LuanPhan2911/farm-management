@@ -104,7 +104,7 @@ export const PlantCreateForm = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("name.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />
@@ -145,7 +145,7 @@ export const PlantCreateForm = () => {
               <FormControl>
                 <Input
                   placeholder={tSchema("growthDuration.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
                   disabled={isPending}
                 />
@@ -216,7 +216,7 @@ export const PlantCreateForm = () => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("idealTemperature.placeholder")}
-                        value={field.value || undefined}
+                        value={field.value ?? undefined}
                         onChange={field.onChange}
                         disabled={isPending}
                         type="number"
@@ -267,7 +267,7 @@ export const PlantCreateForm = () => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("idealHumidity.placeholder")}
-                        value={field.value || undefined}
+                        value={field.value ?? undefined}
                         onChange={field.onChange}
                         disabled={isPending}
                         type="number"
@@ -318,7 +318,7 @@ export const PlantCreateForm = () => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("waterRequirement.placeholder")}
-                        value={field.value || undefined}
+                        value={field.value ?? undefined}
                         onChange={field.onChange}
                         disabled={isPending}
                         type="number"

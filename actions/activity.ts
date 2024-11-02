@@ -84,9 +84,7 @@ export const edit = async (
     if (error instanceof ActivityExistError) {
       return errorResponse(tSchema("errors.existActivity"));
     }
-    if (error instanceof ActivityUpdateStatusError) {
-      return errorResponse(tSchema("errors.invalidActivityStatus"));
-    }
+
     if (error instanceof ActivityUpdatePermissionError) {
       return errorResponse(tSchema("errors.updatePermission"));
     }
@@ -106,9 +104,6 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
     }
     if (error instanceof ActivityExistError) {
       return errorResponse(tSchema("errors.existActivity"));
-    }
-    if (error instanceof ActivityUpdateStatusError) {
-      return errorResponse(tSchema("errors.invalidActivityStatus"));
     }
     if (error instanceof ActivityUpdatePermissionError) {
       return errorResponse(tSchema("errors.updatePermission"));

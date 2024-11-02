@@ -121,7 +121,7 @@ export const ActivityMaterialUsageCreateButton = ({
                       <FormControl>
                         <Input
                           placeholder={tSchema("quantityUsed.placeholder")}
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
                           disabled={isPending || disabled}
                           type="number"

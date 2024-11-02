@@ -2,7 +2,6 @@
 
 import { Link } from "@/navigation";
 import { Button } from "@/components/ui/button";
-import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { usePrefix } from "@/hooks/use-prefix";
 
 interface NotFoundPageProps {

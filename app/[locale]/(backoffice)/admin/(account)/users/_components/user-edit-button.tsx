@@ -76,7 +76,7 @@ export const UserEditForm = ({ data }: UserEditFormProps) => {
               <FormControl>
                 <Input
                   placeholder={tSchema("email.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
                   disabled={true}
                 />
@@ -95,7 +95,7 @@ export const UserEditForm = ({ data }: UserEditFormProps) => {
               <FormControl>
                 <Input
                   placeholder={tSchema("firstName.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
                   disabled={isPending || disabled}
                 />
@@ -114,7 +114,7 @@ export const UserEditForm = ({ data }: UserEditFormProps) => {
               <FormControl>
                 <Input
                   placeholder={tSchema("lastName.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
                   disabled={isPending || disabled}
                 />
@@ -133,7 +133,7 @@ export const UserEditForm = ({ data }: UserEditFormProps) => {
               <FormControl>
                 <Input
                   placeholder={tSchema("address.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
                   disabled={isPending || disabled}
                 />
@@ -152,7 +152,7 @@ export const UserEditForm = ({ data }: UserEditFormProps) => {
               <FormControl>
                 <Input
                   placeholder={tSchema("phone.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
                   disabled={isPending || disabled}
                 />

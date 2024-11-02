@@ -224,7 +224,6 @@ export const deleteWeather = async (id: string) => {
   const weather = await db.weather.delete({
     where: {
       id,
-      confirmed: false,
     },
   });
   return weather;
@@ -348,14 +347,13 @@ export const getWeathersOnField = async ({
           ...(filterNumber && getObjectFilterNumber(filterNumber)),
         },
         orderBy: [
-          ...(orderBy ? getObjectSortOrder(orderBy) : []),
-
           {
             pinned: "desc",
           },
           {
             confirmed: "asc",
           },
+          ...(orderBy ? getObjectSortOrder(orderBy) : []),
         ],
         include: {
           confirmedBy: true,

@@ -112,7 +112,7 @@ export const FertilizerEditDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("name.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />
@@ -130,7 +130,7 @@ export const FertilizerEditDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("nutrientOfNPK.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />
@@ -177,7 +177,7 @@ export const FertilizerEditDialog = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("recommendedDosage.placeholder")}
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
                           disabled={isPending}
                           type="number"
@@ -227,7 +227,7 @@ export const FertilizerEditDialog = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("applicationMethod.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />
@@ -272,7 +272,7 @@ export const FertilizerEditDialog = () => {
                 <div className="flex gap-x-2">
                   <FormControl>
                     <Textarea
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                       placeholder={tSchema("composition.placeholder")}
@@ -293,7 +293,7 @@ export const FertilizerEditDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("manufacturer.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />

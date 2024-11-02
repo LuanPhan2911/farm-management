@@ -3,7 +3,7 @@ import { UserAvatar } from "@/components/user-avatar";
 import { ChatParamKey, useChatQuery } from "@/hooks/use-chat-query";
 import { useChatSocket } from "@/hooks/use-chat-socket";
 import { MessageWithStaff } from "@/types";
-import { File, Staff } from "@prisma/client";
+import { File } from "@prisma/client";
 import { FileJson, FileText, Loader2, ServerCrash } from "lucide-react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useFormatter, useTranslations } from "next-intl";
@@ -27,10 +27,11 @@ import { StaffMetadataRole } from "../../../_components/staff-metadata-role";
 import { Separator } from "@/components/ui/separator";
 import { useScrollToBottom } from "@/hooks/use-scroll-bottom";
 import { isAdmin } from "@/lib/permission";
+import { useCurrentStaff } from "@/hooks/use-current-staff";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface ChatMessagesProps {
   chatId: string;
-  currentStaff: Staff;
   apiUrl: string;
   paramKey?: ChatParamKey;
   paramValue?: string;
@@ -39,7 +40,6 @@ interface ChatMessagesProps {
 }
 export const ChatMessages = ({
   chatId,
-  currentStaff,
   apiUrl,
   paramKey,
   paramValue,
@@ -140,7 +140,6 @@ export const ChatMessages = ({
                     message={message}
                     socketUrl={socketUrl}
                     socketQuery={socketQuery}
-                    currentStaff={currentStaff}
                   />
                 );
               })}
@@ -164,26 +163,20 @@ interface ChatItemProps {
   message: MessageWithStaff;
   socketQuery: Record<string, any>;
   socketUrl: string;
-  currentStaff: Staff;
 }
-const ChatItem = ({
-  message,
-  socketUrl,
-  socketQuery,
-  currentStaff,
-}: ChatItemProps) => {
-  const isAdminRole = isAdmin(message.staff.role);
+const ChatItem = ({ message, socketUrl, socketQuery }: ChatItemProps) => {
   const { relativeTime } = useFormatter();
 
   const [isEditing, setEditing] = useState(false);
-
-  const isOwner = currentStaff.id === message.staffId;
+  const { currentStaff } = useCurrentStaff();
+  const { isSuperAdmin } = useCurrentStaffRole();
+  const isOwner = currentStaff?.id === message.staffId;
 
   const { deleted, staff, createdAt, updatedAt, files, content } = message;
   const isUpdated = createdAt !== updatedAt;
   const hasFiles = !!files && files.length > 0;
 
-  const canDeleteMessage = !deleted && (isAdminRole || isOwner);
+  const canDeleteMessage = !deleted && (isSuperAdmin || isOwner);
   const canEditMessage = !deleted && isOwner;
 
   return (

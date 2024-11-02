@@ -82,7 +82,7 @@ export const EquipmentDetailEditDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("name.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />
@@ -127,7 +127,7 @@ export const EquipmentDetailEditDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("location.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />
@@ -146,7 +146,7 @@ export const EquipmentDetailEditDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("maintenanceSchedule.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />
@@ -166,7 +166,7 @@ export const EquipmentDetailEditDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("operatingHours.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                     type="number"

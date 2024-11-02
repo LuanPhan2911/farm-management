@@ -63,9 +63,7 @@ const checkUpdateActivity = async (id: string) => {
   if (!activity) {
     throw new ActivityExistError();
   }
-  if (!canUpdateActivityStatus(activity.status)) {
-    throw new ActivityUpdateStatusError();
-  }
+
   const { assignedToId, createdById } = activity;
   if (
     !canStaffUpdateActivity({

@@ -236,3 +236,15 @@ export const getOrganizationMemberSelect = async (
     return [];
   }
 };
+
+export const getUserInOrganization = async (orgId: string, userId: string) => {
+  const { data } =
+    await clerkClient().organizations.getOrganizationMembershipList({
+      organizationId: orgId,
+      limit: 100,
+    });
+  const currentStaffInOrg = data.find(
+    (item) => item.publicUserData?.userId === userId
+  );
+  return currentStaffInOrg || null;
+};

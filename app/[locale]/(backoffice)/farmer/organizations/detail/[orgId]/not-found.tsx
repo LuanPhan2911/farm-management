@@ -1,9 +1,8 @@
-"use client";
 import { NotFoundPage } from "@/components/not-found-page";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
-const OrgNotFoundPage = () => {
-  const t = useTranslations("organizations.notFound");
+const OrgNotFoundPage = async () => {
+  const t = await getTranslations("organizations.notFound");
   return (
     <NotFoundPage
       title={t("title")}

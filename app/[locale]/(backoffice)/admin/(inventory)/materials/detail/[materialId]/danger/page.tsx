@@ -49,7 +49,7 @@ const MaterialDangerPage = async ({ params }: MaterialDangerPageProps) => {
           destroyFn={destroy}
           id={data.id}
           inltKey="materials"
-          redirectHref="/admin/materials"
+          redirectHref="materials"
         />
       </CardContent>
     </Card>
