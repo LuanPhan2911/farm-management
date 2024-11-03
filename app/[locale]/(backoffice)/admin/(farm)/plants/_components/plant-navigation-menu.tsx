@@ -4,6 +4,7 @@ import {
   CustomNavigationMenu,
   NavigationMenuData,
 } from "@/components/custom-navigation-menu";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { usePrefix } from "@/hooks/use-prefix";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
@@ -14,6 +15,7 @@ export const PlantNavigationMenu = () => {
   }>();
   const t = useTranslations("plants.tabs");
   const prefix = usePrefix();
+  const { isFarmer } = useCurrentStaffRole();
   if (!prefix) {
     return null;
   }
@@ -35,6 +37,7 @@ export const PlantNavigationMenu = () => {
     {
       href: `${getHref}/danger`,
       label: t("danger.label"),
+      disabled: isFarmer,
     },
   ];
   return <CustomNavigationMenu data={menuData} />;

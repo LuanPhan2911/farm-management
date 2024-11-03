@@ -26,35 +26,28 @@ import { edit } from "@/actions/material-usage";
 import { Input } from "@/components/ui/input";
 import { MaterialUsageTable } from "@/types";
 import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
+import { EditButton } from "@/components/buttons/edit-button";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface MaterialUsageEditButtonProps {
   data: MaterialUsageTable;
-  label: string;
   disabled?: boolean;
 }
 
 export const MaterialUsageEditButton = ({
   data,
-  label,
   disabled,
 }: MaterialUsageEditButtonProps) => {
-  const { onOpen } = useDialog();
   return (
-    <Button
+    <EditButton
+      inltKey="materialUsages"
+      type="materialUsage.edit"
       className="w-full"
-      onClick={(e) => {
-        e.stopPropagation();
-        onOpen("materialUsage.edit", {
-          materialUsage: data,
-        });
+      data={{
+        materialUsage: data,
       }}
-      size={"sm"}
-      variant={"edit"}
       disabled={disabled}
-    >
-      <Edit className="w-4 h-4 mr-2" />
-      {label}
-    </Button>
+    />
   );
 };
 export const MaterialUsageEditDialog = () => {
@@ -69,6 +62,8 @@ export const MaterialUsageEditDialog = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+
+  const { isOnlyAdmin: canEdit } = useCurrentStaffRole();
   const [id, setId] = useState("");
   useEffect(() => {
     if (data?.materialUsage) {
@@ -116,7 +111,7 @@ export const MaterialUsageEditDialog = () => {
                         placeholder={tSchema("quantityUsed.placeholder")}
                         value={field.value ?? undefined}
                         onChange={field.onChange}
-                        disabled={isPending}
+                        disabled={isPending || !canEdit}
                         type="number"
                       />
                     </FormControl>
@@ -149,7 +144,7 @@ export const MaterialUsageEditDialog = () => {
               )}
             />
           </div>
-          <DynamicDialogFooter disabled={isPending} />
+          <DynamicDialogFooter disabled={isPending || !canEdit} />
         </form>
       </Form>
     </DynamicDialog>

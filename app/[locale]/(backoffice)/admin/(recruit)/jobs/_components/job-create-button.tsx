@@ -1,9 +1,7 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
 import { z } from "zod";
 import { JobSchema } from "@/schemas";
 import { useForm } from "react-hook-form";
@@ -34,19 +32,20 @@ import { Gender, JobExperience, JobWorkingState } from "@prisma/client";
 import { RadioOptions } from "@/components/form/radio-options";
 
 import { addDays } from "date-fns";
-import { useRouter } from "@/navigation";
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
+import { LinkButton } from "@/components/buttons/link-button";
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
 
 export const JobCreateButton = () => {
-  const t = useTranslations("jobs.form.create");
+  const t = useTranslations("jobs.form");
 
   return (
-    <Link href={"/admin/jobs/create"}>
-      <Button size={"sm"} variant={"success"}>
-        <Plus className="h-4 w-4 mr-2" />{" "}
-        <span className="text-sm font-semibold">{t("label")}</span>
-      </Button>
-    </Link>
+    <LinkButton
+      href="jobs/create"
+      label={t("create.label")}
+      icon={Plus}
+      variant={"success"}
+    />
   );
 };
 export const JobCreateForm = () => {
@@ -74,14 +73,14 @@ export const JobCreateForm = () => {
       workingTime: "",
     },
   });
-  const router = useRouter();
+  const router = useRouterWithRole();
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       create(values)
         .then(({ message, ok }) => {
           if (ok) {
-            router.push("/admin/jobs");
+            router.push("jobs");
             form.reset();
             toast.success(message);
           } else {

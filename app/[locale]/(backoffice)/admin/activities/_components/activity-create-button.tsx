@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Link, useRouter } from "@/navigation";
+import { Link } from "@/navigation";
 import { ActivitySchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ActivityPriority, Staff } from "@prisma/client";
@@ -29,6 +29,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { StaffsSelect } from "../../_components/staffs-select";
 import { FieldsSelect } from "../../_components/fields-select";
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
 
 export const ActivityCreateButton = () => {
   const t = useTranslations("activities.form");
@@ -51,7 +52,7 @@ export const ActivityCreateForm = ({
   const tSchema = useTranslations("activities.schema");
   const formSchema = ActivitySchema(tSchema);
   const [isPending, startTransition] = useTransition();
-  const router = useRouter();
+  const router = useRouterWithRole();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -70,7 +71,7 @@ export const ActivityCreateForm = ({
         .then(({ message, ok }) => {
           if (ok) {
             toast.success(message);
-            router.push("/admin/activities");
+            router.push("activities");
           } else {
             toast.error(message);
           }

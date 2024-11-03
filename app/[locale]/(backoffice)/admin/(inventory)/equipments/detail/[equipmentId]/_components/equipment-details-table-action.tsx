@@ -11,7 +11,8 @@ import { EquipmentDetailTable } from "@/types";
 import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/material-usage";
 import { EditButton } from "@/components/buttons/edit-button";
-import { DetailButton } from "@/components/buttons/detail-button";
+import { LinkButton } from "@/components/buttons/link-button";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 interface EquipmentDetailsTableActionProps {
   data: EquipmentDetailTable;
 }
@@ -19,6 +20,9 @@ export const EquipmentDetailsTableAction = ({
   data,
 }: EquipmentDetailsTableActionProps) => {
   const t = useTranslations("equipmentDetails.form");
+  const { isOnlyAdmin: canEdit, isSuperAdmin: canDelete } =
+    useCurrentStaffRole();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -28,16 +32,18 @@ export const EquipmentDetailsTableAction = ({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-fit">
         <DropdownMenuItem>
-          <DetailButton
+          <LinkButton
             href={`equipments/detail/${data.equipmentId}/details/${data.id}/usages`}
             className="w-full"
             label={t("viewUsage.label")}
+            disabled={!canEdit}
           />
         </DropdownMenuItem>
         <DropdownMenuItem>
           <EditButton
             inltKey="equipmentDetails"
             type="equipmentDetail.edit"
+            disabled={!canEdit}
             data={{
               equipmentDetail: data,
             }}
@@ -50,6 +56,7 @@ export const EquipmentDetailsTableAction = ({
             id={data.id}
             inltKey="equipmentDetails"
             className="w-full"
+            disabled={!canDelete}
           />
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -12,9 +12,10 @@ import { MoreHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { MaterialUsageEditButton } from "./material-usages-edit-button";
 import { canUpdateActivityStatus } from "@/lib/permission";
-import { DetailButton } from "@/components/buttons/detail-button";
+import { LinkButton } from "@/components/buttons/link-button";
 import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/material-usage";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface MaterialUsagesTableActionProps {
   data: MaterialUsageTable;
@@ -23,9 +24,12 @@ export const MaterialUsagesTableAction = ({
   data,
 }: MaterialUsagesTableActionProps) => {
   const t = useTranslations("materialUsages.form");
-
-  const canUpdate =
+  const { isSuperAdmin, isOnlyAdmin } = useCurrentStaffRole();
+  const canEdit =
     !data.activity || canUpdateActivityStatus(data.activity.status);
+  const canUpdate = canEdit && isOnlyAdmin;
+  const canDelete = canEdit && isSuperAdmin;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -35,24 +39,20 @@ export const MaterialUsagesTableAction = ({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-fit">
         <DropdownMenuItem>
-          <MaterialUsageEditButton
-            data={data}
-            label={t("edit.label")}
-            disabled={!canUpdate}
-          />
+          <MaterialUsageEditButton data={data} disabled={!canUpdate} />
         </DropdownMenuItem>
         <DropdownMenuItem>
           <DestroyButton
             destroyFn={destroy}
             id={data.id}
             inltKey="materialUsages"
-            disabled={!canUpdate}
+            disabled={!canDelete}
             className="w-full"
           />
         </DropdownMenuItem>
         {data.activity && (
           <DropdownMenuItem>
-            <DetailButton
+            <LinkButton
               href={`activities/detail/${data.activity.id}`}
               label={t("detailActivity.label")}
             />

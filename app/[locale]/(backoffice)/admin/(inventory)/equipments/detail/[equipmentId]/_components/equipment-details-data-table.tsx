@@ -6,11 +6,10 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/datatable/datatable-column-header";
 import { EquipmentDetailsTableAction } from "./equipment-details-table-action";
 
-import { useDialog } from "@/stores/use-dialog";
 import { EquipmentDetailTable } from "@/types";
 import { UserAvatar } from "@/components/user-avatar";
 import { EquipmentDetailStatusValue } from "./equipment-detail-status-value";
-import { useRouter } from "@/navigation";
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
 
 interface EquipmentDetailsTableProps {
   data: EquipmentDetailTable[];
@@ -18,11 +17,11 @@ interface EquipmentDetailsTableProps {
 export const EquipmentDetailsTable = ({ data }: EquipmentDetailsTableProps) => {
   const t = useTranslations("equipmentDetails");
 
-  const router = useRouter();
+  const router = useRouterWithRole();
   const { dateTime } = useFormatter();
   const handleViewUsage = (data: EquipmentDetailTable) => {
     router.push(
-      `/admin/equipments/detail/${data.equipmentId}/details/${data.id}/usages`
+      `equipments/detail/${data.equipmentId}/details/${data.id}/usages`
     );
   };
 
@@ -122,7 +121,7 @@ export const EquipmentDetailsTable = ({ data }: EquipmentDetailsTableProps) => {
         if (!data.lastMaintenanceDate) {
           return t("table.trow.lastMaintenanceDate");
         }
-        return dateTime(data.lastMaintenanceDate);
+        return dateTime(data.lastMaintenanceDate, "short");
       },
     },
     {

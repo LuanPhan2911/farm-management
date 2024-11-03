@@ -36,6 +36,7 @@ import { DatePickerWithTime } from "@/components/form/date-picker-with-time";
 import { StaffsSelect } from "@/app/[locale]/(backoffice)/admin/_components/staffs-select";
 import { Staff } from "@prisma/client";
 import { Textarea } from "@/components/ui/textarea";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface EquipmentUsageCreateButtonProps {
   currentOperator: Staff;
@@ -48,6 +49,9 @@ export const EquipmentUsageCreateButton = ({
   const params = useParams<{
     equipmentDetailId: string;
   }>();
+
+  const { isOnlyAdmin: canCreate } = useCurrentStaffRole();
+
   const formSchema = EquipmentUsageSchema(tSchema);
   const [isPending, startTransition] = useTransition();
   const [isOpen, setOpen] = useState(false);
@@ -80,7 +84,7 @@ export const EquipmentUsageCreateButton = ({
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size={"sm"} variant={"success"}>
+        <Button size={"sm"} variant={"success"} disabled={!canCreate}>
           <Plus className="h-4 w-4 mr-2" />{" "}
           <span className="text-sm font-semibold">{t("create.label")}</span>
         </Button>
@@ -104,7 +108,7 @@ export const EquipmentUsageCreateButton = ({
                       <ActivitiesSelect
                         onChange={field.onChange}
                         placeholder={tSchema("activityId.placeholder")}
-                        disabled={isPending}
+                        disabled={isPending || !canCreate}
                         error={tSchema("activityId.error")}
                         notFound={tSchema("activityId.notFound")}
                         defaultValue={field.value ?? undefined}
@@ -130,7 +134,7 @@ export const EquipmentUsageCreateButton = ({
                         onChange={field.onChange}
                         defaultValue={field.value ?? undefined}
                         placeholder={tSchema("operatorId.placeholder")}
-                        disabled={isPending}
+                        disabled={isPending || !canCreate}
                         error={tSchema("operatorId.error")}
                         notFound={tSchema("operatorId.notFound")}
                         appearance={{
@@ -156,7 +160,7 @@ export const EquipmentUsageCreateButton = ({
                       <DatePickerWithTime
                         onChange={field.onChange}
                         placeholder={tSchema("usageStartTime.placeholder")}
-                        disabled={isPending}
+                        disabled={isPending || !canCreate}
                         value={field.value}
                         disabledDateRange={{
                           before: new Date(),
@@ -179,7 +183,7 @@ export const EquipmentUsageCreateButton = ({
                         placeholder={tSchema("duration.placeholder")}
                         value={field.value ?? undefined}
                         onChange={field.onChange}
-                        disabled={isPending}
+                        disabled={isPending || !canCreate}
                       />
                     </FormControl>
                     <FormMessage />
@@ -199,7 +203,7 @@ export const EquipmentUsageCreateButton = ({
                       placeholder={tSchema("note.placeholder")}
                       value={field.value ?? undefined}
                       onChange={field.onChange}
-                      disabled={isPending}
+                      disabled={isPending || !canCreate}
                     />
                   </FormControl>
                   <FormMessage />
@@ -207,7 +211,7 @@ export const EquipmentUsageCreateButton = ({
               )}
             />
 
-            <DynamicDialogFooter disabled={isPending} />
+            <DynamicDialogFooter disabled={isPending || !canCreate} />
           </form>
         </Form>
       </DialogContent>

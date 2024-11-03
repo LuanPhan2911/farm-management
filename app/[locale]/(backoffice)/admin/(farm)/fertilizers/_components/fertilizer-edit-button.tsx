@@ -3,12 +3,10 @@ import {
   DynamicDialog,
   DynamicDialogFooter,
 } from "@/components/dialog/dynamic-dialog";
-import { Button } from "@/components/ui/button";
 import { FertilizerSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FertilizerType, Frequency, UnitType } from "@prisma/client";
-import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -29,34 +27,24 @@ import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units
 import { edit } from "@/actions/fertilizer";
 import { Textarea } from "@/components/ui/textarea";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { EditButton } from "@/components/buttons/edit-button";
 
 interface FertilizerEditButtonProps {
   data: FertilizerTable;
-  label: string;
 }
 
-export const FertilizerEditButton = ({
-  data,
-  label,
-}: FertilizerEditButtonProps) => {
-  const { onOpen } = useDialog();
+export const FertilizerEditButton = ({ data }: FertilizerEditButtonProps) => {
   const { isOnlyAdmin: canEdit } = useCurrentStaffRole();
   return (
-    <Button
+    <EditButton
+      inltKey="fertilizers"
+      type="fertilizer.edit"
       className="w-full"
-      onClick={(e) => {
-        e.stopPropagation();
-        onOpen("fertilizer.edit", {
-          fertilizer: data,
-        });
+      data={{
+        fertilizer: data,
       }}
-      size={"sm"}
-      variant={"edit"}
       disabled={!canEdit}
-    >
-      <Edit className="w-4 h-4 mr-2" />
-      {label}
-    </Button>
+    />
   );
 };
 export const FertilizerEditDialog = () => {

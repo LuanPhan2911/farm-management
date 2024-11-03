@@ -35,6 +35,7 @@ import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units
 import { UnitType } from "@prisma/client";
 import { ActivitiesSelect } from "@/app/[locale]/(backoffice)/admin/_components/activities-select";
 import { MaterialTable } from "@/types";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface MaterialUsageCreateButtonProps {
   material?: MaterialTable;
@@ -48,6 +49,8 @@ export const MaterialUsageCreateButton = ({
   const params = useParams<{ materialId: string }>();
   const [isPending, startTransition] = useTransition();
   const [isOpen, setOpen] = useState(false);
+
+  const { isOnlyAdmin: canCreate } = useCurrentStaffRole();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -99,7 +102,7 @@ export const MaterialUsageCreateButton = ({
                     <ActivitiesSelect
                       onChange={field.onChange}
                       placeholder={tSchema("activityId.placeholder")}
-                      disabled={isPending}
+                      disabled={isPending || !canCreate}
                       error={tSchema("activityId.error")}
                       notFound={tSchema("activityId.notFound")}
                       defaultValue={field.value ?? undefined}
@@ -127,7 +130,7 @@ export const MaterialUsageCreateButton = ({
                           placeholder={tSchema("quantityUsed.placeholder")}
                           value={field.value ?? undefined}
                           onChange={field.onChange}
-                          disabled={isPending}
+                          disabled={isPending || !canCreate}
                           type="number"
                         />
                       </FormControl>
@@ -147,7 +150,7 @@ export const MaterialUsageCreateButton = ({
                         onChange={field.onChange}
                         placeholder={tSchema("unitId.placeholder")}
                         unitType={UnitType.QUANTITY}
-                        disabled={isPending}
+                        disabled={isPending || !canCreate}
                         className="w-full"
                         error={tSchema("unitId.error")}
                         notFound={tSchema("unitId.notFound")}
@@ -161,7 +164,7 @@ export const MaterialUsageCreateButton = ({
               />
             </div>
 
-            <DynamicDialogFooter disabled={isPending} />
+            <DynamicDialogFooter disabled={isPending || !canCreate} />
           </form>
         </Form>
       </DialogContent>

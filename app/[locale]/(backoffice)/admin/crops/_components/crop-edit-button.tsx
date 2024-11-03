@@ -31,31 +31,24 @@ import { PlantsSelect } from "@/app/[locale]/(backoffice)/admin/_components/plan
 import { DatePickerWithRange } from "@/components/form/date-picker-with-range";
 import { DateRange } from "react-day-picker";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { EditButton } from "@/components/buttons/edit-button";
 
 interface CropEditButtonProps {
   data: CropTable;
-  label: string;
 }
 
-export const CropEditButton = ({ data, label }: CropEditButtonProps) => {
-  const { onOpen } = useDialog();
+export const CropEditButton = ({ data }: CropEditButtonProps) => {
   const { isSuperAdmin: canEdit } = useCurrentStaffRole();
   return (
-    <Button
+    <EditButton
+      inltKey="crops"
+      type="crop.edit"
       className="w-full"
-      onClick={(e) => {
-        e.stopPropagation();
-        onOpen("crop.edit", {
-          crop: data,
-        });
+      data={{
+        crop: data,
       }}
-      size={"sm"}
-      variant={"edit"}
       disabled={!canEdit}
-    >
-      <Edit className="w-4 h-4 mr-2" />
-      {label}
-    </Button>
+    />
   );
 };
 export const CropEditDialog = () => {

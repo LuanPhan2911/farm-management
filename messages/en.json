@@ -170,7 +170,9 @@
         "placeholder": "Select type...",
         "enum": "Please choose category type in list",
         "options": {
-          "PLANT": "Plant"
+          "PLANT": "Plant",
+          "SEED": "Seed",
+          "default": "No selected"
         }
       },
       "description": {
@@ -260,7 +262,8 @@
           "VOLUME": "Volume",
           "NUTRIENT": "Nutrient",
           "DATE": "Date",
-          "MONEY": "Finance"
+          "MONEY": "Finance",
+          "default": "No selected"
         }
       },
       "description": {
@@ -1154,7 +1157,8 @@
           "SAND": "Sand",
           "CLAY": "Clay",
           "ALLUVIUM": "Alluvium",
-          "LOAM": "Loam"
+          "LOAM": "Loam",
+          "default": "No selected"
         }
       }
     },
@@ -1879,9 +1883,9 @@
         "options": {
           "ORGANIC": "Organic",
           "INORGANIC": "Inorganic",
-          "BIO": "Bio"
-        },
-        "default": "No filled"
+          "BIO": "Bio",
+          "default": "No filled"
+        }
       },
       "nutrientOfNPK": {
         "label": "NPK ratio",
@@ -2021,7 +2025,8 @@
         "options": {
           "PESTICIDE": "Pesticide",
           "HERBICIDE": "Herbicide",
-          "FUNGICIDE": "Fungicide"
+          "FUNGICIDE": "Fungicide",
+          "default": "No selected"
         },
         "default": "No filled"
       },
@@ -2764,12 +2769,12 @@
       "create": {
         "label": "Add",
         "title": "Add material",
-        "description": "Add material"
+        "description": "Add material use in farm"
       },
-      "edit": {
-        "label": "Edit",
-        "title": "Edit material",
-        "description": "Update of material"
+      "detail": {
+        "label": "Detail",
+        "title": "Material detail",
+        "description": "Material detail"
       },
       "destroy": {
         "label": "Delete",
@@ -2786,7 +2791,13 @@
         "placeholder": "Material name",
         "required_error": "Material name is required!",
         "min": "Min name length is {min} characters",
-        "max": "Name's length must be less than {max} characters"
+        "max": "Name's length must be less than {max} characters",
+        "select": {
+          "label": "Select material name",
+          "error": "Fail load material name",
+          "notFound": "Material name not found",
+          "placeholder": "Select name..."
+        }
       },
       "type": {
         "label": "Material type",
@@ -3763,6 +3774,7 @@
     "/admin/activities/detail/equipment-usages": "Equipment Usages",
     "/admin/activities/detail/material-usages": "Material Usages",
     "/admin/activities/detail/danger": "Danger",
+
     "/admin/tasks": "Tasks",
     "/admin/schedules": "Schedules",
     "/admin/messages": "All messages",
@@ -3781,17 +3793,23 @@
     "/farmer/messages/files": "Uploaded files",
     "/farmer/fields": "Field",
     "/farmer/fields/detail": "Detail",
-    "/farmer/fields/detail/danger": "Danger",
     "/farmer/fields/detail/weathers": "Weathers",
     "/farmer/fields/detail/soils": "Soils",
 
     "/farmer/plants": "Plants",
     "/farmer/plants/detail": "Detail",
-    "/farmer/plants/detail/danger": "Danger",
     "/farmer/plants/detail/fertilizers": "Plant Fertilizers",
     "/farmer/plants/detail/pesticides": "Plant Pesticides",
     "/farmer/fertilizers": "Fertilizer",
-    "/farmer/pesticides": "Pesticide"
+    "/farmer/pesticides": "Pesticide",
+
+    "/farmer/equipments": "Equipment",
+    "/farmer/equipments/detail": "Info",
+    "/farmer/equipments/detail/details": "Details",
+    "/farmer/equipments/detail/details/usages": "Usages",
+    "/farmer/materials": "Material",
+    "/farmer/materials/detail": "Info",
+    "/farmer/materials/detail/usages": "Usages"
   },
   "sidebar": {
     "farm": "Farm",

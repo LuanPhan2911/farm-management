@@ -20,7 +20,7 @@ import { SearchBar } from "@/components/search-bar";
 import { useSearchParams } from "next/navigation";
 import { includeString } from "@/lib/utils";
 import { UserAvatar } from "@/components/user-avatar";
-import { useRouter } from "@/navigation";
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
 
 interface EquipmentsTableProps {
   data: EquipmentTable[];
@@ -28,7 +28,7 @@ interface EquipmentsTableProps {
 }
 export const EquipmentsTable = ({ data, totalPage }: EquipmentsTableProps) => {
   const searchParams = useSearchParams();
-  const router = useRouter();
+  const router = useRouterWithRole();
   const query = searchParams!.get("query");
 
   if (query) {
@@ -36,7 +36,7 @@ export const EquipmentsTable = ({ data, totalPage }: EquipmentsTableProps) => {
   }
   const t = useTranslations("equipments");
   const handleViewDetail = (row: EquipmentTable) => {
-    router.push(`/admin/equipments/detail/${row.id}`);
+    router.push(`equipments/detail/${row.id}`);
   };
 
   return (

@@ -114,15 +114,7 @@ export const SchedulesDataTable = ({ data }: ScheduleDataTableProps) => {
           return "-";
         }
         return (
-          <Hint
-            label={dateTime(scheduleFor, {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-          >
+          <Hint label={dateTime(scheduleFor, "long")}>
             {relativeTime(scheduleFor)}
           </Hint>
         );
@@ -145,15 +137,7 @@ export const SchedulesDataTable = ({ data }: ScheduleDataTableProps) => {
           return "-";
         }
         return (
-          <Hint
-            label={dateTime(createdAt, {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-          >
+          <Hint label={dateTime(createdAt, "long")}>
             {relativeTime(createdAt)}
           </Hint>
         );

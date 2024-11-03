@@ -33,7 +33,6 @@ interface WeathersTableActionProps {
   data: WeatherTable;
 }
 export const WeathersTableAction = ({ data }: WeathersTableActionProps) => {
-  const t = useTranslations("weathers.form");
   const { isSuperAdmin } = useCurrentStaffRole();
   const { has } = useAuth();
   const isAdminOrg = has?.({ role: "org:field" }) || false;
@@ -50,7 +49,7 @@ export const WeathersTableAction = ({ data }: WeathersTableActionProps) => {
           <WeatherPinnedButton data={data} isButton className="w-full" />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <WeatherEditButton data={data} label={t("edit.label")} />
+          <WeatherEditButton data={data} />
         </DropdownMenuItem>
         <DropdownMenuItem>
           <WeatherConfirmButton data={data} isButton disabled={!canUpdate} />

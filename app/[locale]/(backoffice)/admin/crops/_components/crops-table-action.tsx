@@ -18,7 +18,6 @@ interface CropsTableActionProps {
   data: CropTable;
 }
 export const CropsTableAction = ({ data }: CropsTableActionProps) => {
-  const t = useTranslations("crops.form");
   const { isSuperAdmin: canUpdate } = useCurrentStaffRole();
   return (
     <DropdownMenu>
@@ -29,7 +28,7 @@ export const CropsTableAction = ({ data }: CropsTableActionProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-fit">
         <DropdownMenuItem>
-          <CropEditButton data={data} label={t("edit.label")} />
+          <CropEditButton data={data} />
         </DropdownMenuItem>
         <DropdownMenuItem>
           <DestroyButton

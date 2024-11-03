@@ -3,12 +3,10 @@ import {
   DynamicDialog,
   DynamicDialogFooter,
 } from "@/components/dialog/dynamic-dialog";
-import { Button } from "@/components/ui/button";
 import { WeatherSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UnitType, WeatherStatus } from "@prisma/client";
-import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -30,34 +28,27 @@ import { edit } from "@/actions/weather";
 import { Textarea } from "@/components/ui/textarea";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { useAuth } from "@clerk/nextjs";
+import { EditButton } from "@/components/buttons/edit-button";
 
 interface WeatherEditButtonProps {
   data: WeatherTable;
-  label: string;
 }
 
-export const WeatherEditButton = ({ data, label }: WeatherEditButtonProps) => {
-  const { onOpen } = useDialog();
+export const WeatherEditButton = ({ data }: WeatherEditButtonProps) => {
   const { isSuperAdmin } = useCurrentStaffRole();
   const { has } = useAuth();
   const isAdminOrg = has?.({ role: "org:field" }) || false;
   const canEdit = !data.confirmed || isAdminOrg || isSuperAdmin;
   return (
-    <Button
+    <EditButton
+      inltKey="weathers"
+      type="weather.edit"
       className="w-full"
-      onClick={(e) => {
-        e.stopPropagation();
-        onOpen("weather.edit", {
-          weather: data,
-        });
+      data={{
+        weather: data,
       }}
-      size={"sm"}
-      variant={"edit"}
       disabled={!canEdit}
-    >
-      <Edit className="w-4 h-4 mr-2" />
-      {label}
-    </Button>
+    />
   );
 };
 export const WeatherEditDialog = () => {

@@ -18,19 +18,19 @@ import { OrderByButton } from "@/components/buttons/order-by-button";
 
 import { SearchBar } from "@/components/search-bar";
 import { UserAvatar } from "@/components/user-avatar";
-import { useRouter } from "@/navigation";
 import { MaterialsTableFaceted } from "./materials-table-faceted";
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
 
 interface MaterialsTableProps {
   data: MaterialTable[];
   totalPage: number;
 }
 export const MaterialsTable = ({ data, totalPage }: MaterialsTableProps) => {
-  const router = useRouter();
+  const router = useRouterWithRole();
 
   const t = useTranslations("materials");
   const handleViewDetail = (row: MaterialTable) => {
-    router.push(`/admin/materials/detail/${row.id}`);
+    router.push(`materials/detail/${row.id}`);
   };
 
   return (
@@ -44,7 +44,7 @@ export const MaterialsTable = ({ data, totalPage }: MaterialsTableProps) => {
         <TableHeader>
           <TableRow>
             <TableHead>{t("table.thead.imageUrl")}</TableHead>
-            <TableHead className="lg:w-[350px]">
+            <TableHead className="lg:w-[200px]">
               <OrderByButton column="name" label={t("table.thead.name")} />
             </TableHead>
             <TableHead>
@@ -77,9 +77,7 @@ export const MaterialsTable = ({ data, totalPage }: MaterialsTableProps) => {
                   />
                 </TableCell>
                 <TableCell>{item.name}</TableCell>
-                <TableCell className="text-center">
-                  {t(`schema.type.options.${item.type}`)}
-                </TableCell>
+                <TableCell>{t(`schema.type.options.${item.type}`)}</TableCell>
 
                 <TableCell className="text-center">
                   {item.quantityInStock}

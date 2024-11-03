@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { CategoryEditButton } from "./category-edit-button";
 import { MoreHorizontal } from "lucide-react";
 
-import { useTranslations } from "next-intl";
 import { CategoryTable } from "@/types";
 import { destroy } from "@/actions/category";
 import { DestroyButton } from "@/components/buttons/destroy-button";
@@ -16,7 +15,6 @@ interface CategoriesTableActionProps {
   data: CategoryTable;
 }
 export const CategoriesTableAction = ({ data }: CategoriesTableActionProps) => {
-  const t = useTranslations("categories.form");
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -26,7 +24,7 @@ export const CategoriesTableAction = ({ data }: CategoriesTableActionProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
         <DropdownMenuItem>
-          <CategoryEditButton data={data} label={t("edit.label")} />
+          <CategoryEditButton data={data} />
         </DropdownMenuItem>
         <DropdownMenuItem>
           <DestroyButton

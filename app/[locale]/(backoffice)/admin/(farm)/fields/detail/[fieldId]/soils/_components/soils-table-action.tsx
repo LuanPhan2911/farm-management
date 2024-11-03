@@ -38,7 +38,6 @@ interface SoilsTableActionProps {
   data: SoilTable;
 }
 export const SoilsTableAction = ({ data }: SoilsTableActionProps) => {
-  const t = useTranslations("soils.form");
   const { isSuperAdmin } = useCurrentStaffRole();
   const { has } = useAuth();
   const isAdminOrg = has?.({ role: "org:field" }) || false;
@@ -55,7 +54,7 @@ export const SoilsTableAction = ({ data }: SoilsTableActionProps) => {
           <SoilPinnedButton data={data} isButton className="w-full" />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <SoilEditButton data={data} label={t("edit.label")} />
+          <SoilEditButton data={data} />
         </DropdownMenuItem>
         <DropdownMenuItem>
           <SoilConfirmButton data={data} isButton disabled={!canUpdate} />

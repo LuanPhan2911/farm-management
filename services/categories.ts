@@ -81,6 +81,7 @@ export const getCategoriesByType = async (
       select: {
         name: true,
         id: true,
+        description: true,
       },
       cacheStrategy: {
         swr: 60,

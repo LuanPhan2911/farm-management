@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { PlantPesticideTable } from "@/types";
 import { MoreHorizontal } from "lucide-react";
-import { useTranslations } from "next-intl";
 import { PlantPesticideEditButton } from "./plant-pesticides-edit-button";
 import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/plant-pesticide";
@@ -21,7 +20,6 @@ interface PlantPesticidesTableActionProps {
 export const PlantPesticidesTableAction = ({
   data,
 }: PlantPesticidesTableActionProps) => {
-  const t = useTranslations("plantPesticides.form");
   const { isSuperAdmin: canDelete } = useCurrentStaffRole();
   return (
     <DropdownMenu>
@@ -32,7 +30,7 @@ export const PlantPesticidesTableAction = ({
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
-          <PlantPesticideEditButton data={data} label={t("edit.label")} />
+          <PlantPesticideEditButton data={data} />
         </DropdownMenuItem>
         <DropdownMenuItem>
           <DestroyButton

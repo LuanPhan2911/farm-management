@@ -1,7 +1,6 @@
 "use client";
 
 import { create } from "@/actions/plant";
-import { Button } from "@/components/ui/button";
 
 import {
   Form,
@@ -24,22 +23,23 @@ import { CategoriesSelect } from "../../../_components/categories-select";
 import { CategoryType, FertilizerType, Season, UnitType } from "@prisma/client";
 import { SelectOptions } from "@/components/form/select-options";
 import { UnitsSelect } from "../../../_components/units-select";
-import { Link } from "@/navigation";
 import { UploadImage } from "@/components/form/upload-image";
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { LinkButton } from "@/components/buttons/link-button";
 
 export const PlantCreateButton = () => {
   const { isOnlyAdmin: canCreate } = useCurrentStaffRole();
   const t = useTranslations("plants.form");
   return (
-    <Button size={"sm"} variant={"success"} disabled={!canCreate} asChild>
-      <Link href={"/admin/plants/create"}>
-        <Plus className="h-4 w-4 mr-2" />{" "}
-        <span className="text-sm font-semibold">{t("create.label")}</span>
-      </Link>
-    </Button>
+    <LinkButton
+      href="plants/create"
+      label={t("create.label")}
+      icon={Plus}
+      disabled={!canCreate}
+      variant={"success"}
+    />
   );
 };
 export const PlantCreateForm = () => {
@@ -129,6 +129,10 @@ export const PlantCreateForm = () => {
                     onChange={field.onChange}
                     type={CategoryType.PLANT}
                     placeholder={tSchema("categoryId.placeholder")}
+                    appearance={{
+                      button: "lg:w-full h-10",
+                      content: "lg:w-[350px]",
+                    }}
                   />
                 </FormControl>
 

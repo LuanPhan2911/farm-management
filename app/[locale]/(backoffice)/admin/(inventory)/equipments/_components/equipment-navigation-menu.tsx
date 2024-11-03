@@ -3,7 +3,8 @@ import {
   CustomNavigationMenu,
   NavigationMenuData,
 } from "@/components/custom-navigation-menu";
-import { usePathname } from "@/navigation";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { usePrefix } from "@/hooks/use-prefix";
 import { useTranslations } from "next-intl";
 
 import { useParams } from "next/navigation";
@@ -14,9 +15,13 @@ export const EquipmentNavigationMenu = () => {
     equipmentDetailId: string;
   }>();
 
+  const { isFarmer } = useCurrentStaffRole();
   const t = useTranslations("equipments.tabs");
-
-  const getHref = `/admin/equipments/detail/${params?.equipmentId}`;
+  const prefix = usePrefix();
+  if (!prefix) {
+    return null;
+  }
+  const getHref = `${prefix}/equipments/detail/${params?.equipmentId}`;
   const data: NavigationMenuData[] = [
     {
       href: `${getHref}`,
@@ -37,6 +42,7 @@ export const EquipmentNavigationMenu = () => {
     {
       href: `${getHref}/danger`,
       label: t("danger.label"),
+      disabled: isFarmer,
     },
   ];
   return <CustomNavigationMenu data={data} />;

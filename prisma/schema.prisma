@@ -82,6 +82,7 @@ model IntUnit {
 
 enum CategoryType {
   PLANT
+  SEED
 }
 
 model Category {
@@ -466,8 +467,8 @@ model Equipment {
   id              String        @id @default(uuid())
   name            String
   type            EquipmentType
-  brand           String
-  purchaseDate    DateTime
+  brand           String?
+  purchaseDate    DateTime?
   purchasePriceId String?
   purchasePrice   FloatUnit?    @relation(name: "purchasePrice", fields: [purchasePriceId], references: [id], onDelete: SetNull)
   fuelConsumption Float? // Lượng nhiên liệu tiêu thụ

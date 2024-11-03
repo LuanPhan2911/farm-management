@@ -3,12 +3,10 @@ import {
   DynamicDialog,
   DynamicDialogFooter,
 } from "@/components/dialog/dynamic-dialog";
-import { Button } from "@/components/ui/button";
 import { SoilSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UnitType } from "@prisma/client";
-import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -30,34 +28,27 @@ import { edit } from "@/actions/soil";
 import { Textarea } from "@/components/ui/textarea";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { useAuth } from "@clerk/nextjs";
+import { EditButton } from "@/components/buttons/edit-button";
 
 interface SoilEditButtonProps {
   data: SoilTable;
-  label: string;
 }
 
-export const SoilEditButton = ({ data, label }: SoilEditButtonProps) => {
-  const { onOpen } = useDialog();
+export const SoilEditButton = ({ data }: SoilEditButtonProps) => {
   const { isSuperAdmin } = useCurrentStaffRole();
   const { has } = useAuth();
   const isAdminOrg = has?.({ role: "org:field" }) || false;
   const canEdit = !data.confirmed || isAdminOrg || isSuperAdmin;
   return (
-    <Button
+    <EditButton
+      inltKey="soils"
+      type="soil.edit"
       className="w-full"
-      onClick={(e) => {
-        e.stopPropagation();
-        onOpen("soil.edit", {
-          soil: data,
-        });
+      data={{
+        soil: data,
       }}
-      size={"sm"}
-      variant={"edit"}
       disabled={!canEdit}
-    >
-      <Edit className="w-4 h-4 mr-2" />
-      {label}
-    </Button>
+    />
   );
 };
 export const SoilEditDialog = () => {

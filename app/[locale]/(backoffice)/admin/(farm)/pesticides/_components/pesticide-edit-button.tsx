@@ -3,12 +3,10 @@ import {
   DynamicDialog,
   DynamicDialogFooter,
 } from "@/components/dialog/dynamic-dialog";
-import { Button } from "@/components/ui/button";
 import { PesticideSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PesticideType, UnitType, ToxicityLevel } from "@prisma/client";
-import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -29,34 +27,24 @@ import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units
 import { edit } from "@/actions/pesticide";
 import { Textarea } from "@/components/ui/textarea";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { EditButton } from "@/components/buttons/edit-button";
 
 interface PesticideEditButtonProps {
   data: PesticideTable;
-  label: string;
 }
 
-export const PesticideEditButton = ({
-  data,
-  label,
-}: PesticideEditButtonProps) => {
-  const { onOpen } = useDialog();
+export const PesticideEditButton = ({ data }: PesticideEditButtonProps) => {
   const { isOnlyAdmin: canEdit } = useCurrentStaffRole();
   return (
-    <Button
+    <EditButton
+      inltKey="pesticides"
+      type="pesticide.edit"
       className="w-full"
-      onClick={(e) => {
-        e.stopPropagation();
-        onOpen("pesticide.edit", {
-          pesticide: data,
-        });
+      data={{
+        pesticide: data,
       }}
-      size={"sm"}
-      variant={"edit"}
       disabled={!canEdit}
-    >
-      <Edit className="w-4 h-4 mr-2" />
-      {label}
-    </Button>
+    />
   );
 };
 export const PesticideEditDialog = () => {

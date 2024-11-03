@@ -17,8 +17,8 @@ import { UnitValue, upsertFloatUnit } from "./units";
 type EquipmentParams = {
   name: string;
   type: EquipmentType;
-  brand: string;
-  purchaseDate: Date;
+  brand?: string | null;
+  purchaseDate?: Date | null;
   purchasePrice?: Partial<UnitValue> | null;
   fuelConsumption?: number | null;
   energyType?: string | null;

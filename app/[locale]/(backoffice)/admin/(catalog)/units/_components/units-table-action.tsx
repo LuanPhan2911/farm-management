@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { UnitEditButton } from "./unit-edit-button";
 import { MoreHorizontal } from "lucide-react";
 
-import { useTranslations } from "next-intl";
 import { UnitTable } from "@/types";
 import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/unit";
@@ -16,7 +15,6 @@ interface UnitsTableActionProps {
   data: UnitTable;
 }
 export const UnitsTableAction = ({ data }: UnitsTableActionProps) => {
-  const t = useTranslations("units.form");
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -26,7 +24,7 @@ export const UnitsTableAction = ({ data }: UnitsTableActionProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-fit">
         <DropdownMenuItem>
-          <UnitEditButton data={data} label={t("edit.label")} />
+          <UnitEditButton data={data} />
         </DropdownMenuItem>
         <DropdownMenuItem>
           <DestroyButton

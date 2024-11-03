@@ -117,6 +117,10 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
                     type={CategoryType.PLANT}
                     placeholder={tSchema("categoryId.placeholder")}
                     defaultValue={field.value}
+                    appearance={{
+                      button: "lg:w-full h-10",
+                      content: "lg:w-[350px]",
+                    }}
                   />
                 </FormControl>
 

@@ -11,6 +11,8 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/material";
+import { getCurrentStaff } from "@/services/staffs";
+import { isSuperAdmin } from "@/lib/permission";
 
 interface MaterialDangerPageProps {
   params: {
@@ -33,11 +35,15 @@ export async function generateStaticParams() {
   });
 }
 const MaterialDangerPage = async ({ params }: MaterialDangerPageProps) => {
+  const data = await getMaterialById(params!.materialId);
+  const currentStaff = await getCurrentStaff();
+
   const t = await getTranslations("materials.form");
-  const data = await getMaterialById(params.materialId);
-  if (!data) {
+  if (!data || !currentStaff) {
     notFound();
   }
+  const canDelete =
+    !data._count.materialUsages && isSuperAdmin(currentStaff.role);
   return (
     <Card>
       <CardHeader>
@@ -50,6 +56,7 @@ const MaterialDangerPage = async ({ params }: MaterialDangerPageProps) => {
           id={data.id}
           inltKey="materials"
           redirectHref="materials"
+          disabled={!canDelete}
         />
       </CardContent>
     </Card>

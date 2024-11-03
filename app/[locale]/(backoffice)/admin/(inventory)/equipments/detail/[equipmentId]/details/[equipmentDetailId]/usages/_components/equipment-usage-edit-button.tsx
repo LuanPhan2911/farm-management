@@ -3,11 +3,9 @@ import {
   DynamicDialog,
   DynamicDialogFooter,
 } from "@/components/dialog/dynamic-dialog";
-import { Button } from "@/components/ui/button";
 import { EquipmentUsageSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -26,35 +24,30 @@ import { Input } from "@/components/ui/input";
 import { EquipmentUsageTable } from "@/types";
 import { DatePickerWithTime } from "@/components/form/date-picker-with-time";
 import { Textarea } from "@/components/ui/textarea";
+import { EditButton } from "@/components/buttons/edit-button";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface EquipmentUsageEditButtonProps {
   data: EquipmentUsageTable;
-  label: string;
+
   disabled?: boolean;
 }
 
 export const EquipmentUsageEditButton = ({
   data,
-  label,
+
   disabled,
 }: EquipmentUsageEditButtonProps) => {
-  const { onOpen } = useDialog();
   return (
-    <Button
+    <EditButton
+      inltKey="equipmentUsages"
+      type="equipmentUsage.edit"
       className="w-full"
-      onClick={(e) => {
-        e.stopPropagation();
-        onOpen("equipmentUsage.edit", {
-          equipmentUsage: data,
-        });
+      data={{
+        equipmentUsage: data,
       }}
-      size={"sm"}
-      variant={"edit"}
       disabled={disabled}
-    >
-      <Edit className="w-4 h-4 mr-2" />
-      {label}
-    </Button>
+    />
   );
 };
 export const EquipmentUsageEditDialog = () => {
@@ -69,6 +62,8 @@ export const EquipmentUsageEditDialog = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+
+  const { isOnlyAdmin: canEdit } = useCurrentStaffRole();
   const [id, setId] = useState("");
   useEffect(() => {
     if (data?.equipmentUsage) {
@@ -115,7 +110,7 @@ export const EquipmentUsageEditDialog = () => {
                     <DatePickerWithTime
                       onChange={field.onChange}
                       placeholder={tSchema("usageStartTime.placeholder")}
-                      disabled={isPending}
+                      disabled={isPending || !canEdit}
                       value={field.value}
                       disabledDateRange={{
                         before: new Date(),
@@ -138,7 +133,7 @@ export const EquipmentUsageEditDialog = () => {
                       placeholder={tSchema("duration.placeholder")}
                       value={field.value ?? undefined}
                       onChange={field.onChange}
-                      disabled={isPending}
+                      disabled={isPending || !canEdit}
                     />
                   </FormControl>
                   <FormMessage />
@@ -158,7 +153,7 @@ export const EquipmentUsageEditDialog = () => {
                     placeholder={tSchema("note.placeholder")}
                     value={field.value ?? undefined}
                     onChange={field.onChange}
-                    disabled={isPending}
+                    disabled={isPending || !canEdit}
                   />
                 </FormControl>
                 <FormMessage />
@@ -166,7 +161,7 @@ export const EquipmentUsageEditDialog = () => {
             )}
           />
 
-          <DynamicDialogFooter disabled={isPending} />
+          <DynamicDialogFooter disabled={isPending || !canEdit} />
         </form>
       </Form>
     </DynamicDialog>

@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { EquipmentDetailSchema } from "@/schemas";
 import { EquipmentTable } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,8 +35,14 @@ export const EquipmentDetailCreateButton = ({
 }: EquipmentDetailCreateButtonProps) => {
   const t = useTranslations("equipmentDetails.form");
   const [isOpen, setOpen] = useState(false);
+  const { isOnlyAdmin: canCreate } = useCurrentStaffRole();
   return (
-    <CreateButton label={t("create.label")} isOpen={isOpen} setOpen={setOpen}>
+    <CreateButton
+      label={t("create.label")}
+      isOpen={isOpen}
+      setOpen={setOpen}
+      disabled={!canCreate}
+    >
       <EquipmentDetailCreateForm data={data} onCreated={() => setOpen(false)} />
     </CreateButton>
   );
@@ -55,6 +62,8 @@ export const EquipmentDetailCreateForm = ({
   const params = useParams<{
     equipmentId: string;
   }>()!;
+
+  const { isOnlyAdmin: canCreate } = useCurrentStaffRole();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -97,7 +106,7 @@ export const EquipmentDetailCreateForm = ({
                   placeholder={tSchema("name.placeholder")}
                   value={field.value ?? undefined}
                   onChange={field.onChange}
-                  disabled={isPending}
+                  disabled={isPending || !canCreate}
                 />
               </FormControl>
 
@@ -122,7 +131,7 @@ export const EquipmentDetailCreateForm = ({
                       value: item,
                     };
                   })}
-                  disabled={isPending}
+                  disabled={isPending || !canCreate}
                   defaultValue={field.value}
                 />
               </FormControl>
@@ -142,7 +151,7 @@ export const EquipmentDetailCreateForm = ({
                   placeholder={tSchema("location.placeholder")}
                   value={field.value ?? undefined}
                   onChange={field.onChange}
-                  disabled={isPending}
+                  disabled={isPending || !canCreate}
                 />
               </FormControl>
 
@@ -161,7 +170,7 @@ export const EquipmentDetailCreateForm = ({
                   placeholder={tSchema("maintenanceSchedule.placeholder")}
                   value={field.value ?? undefined}
                   onChange={field.onChange}
-                  disabled={isPending}
+                  disabled={isPending || !canCreate}
                 />
               </FormControl>
 
@@ -181,7 +190,7 @@ export const EquipmentDetailCreateForm = ({
                   placeholder={tSchema("operatingHours.placeholder")}
                   value={field.value ?? undefined}
                   onChange={field.onChange}
-                  disabled={isPending}
+                  disabled={isPending || !canCreate}
                   type="number"
                 />
               </FormControl>
@@ -190,7 +199,10 @@ export const EquipmentDetailCreateForm = ({
           )}
         />
 
-        <DynamicDialogFooter disabled={isPending} closeButton={false} />
+        <DynamicDialogFooter
+          disabled={isPending || !canCreate}
+          closeButton={false}
+        />
       </form>
     </Form>
   );

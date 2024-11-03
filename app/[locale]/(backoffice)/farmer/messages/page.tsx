@@ -15,7 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import { DropdownMenuButton } from "@/components/buttons/dropdown-menu-button";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
-import { DetailButton } from "@/components/buttons/detail-button";
+import { LinkButton } from "@/components/buttons/link-button";
 import { ChatMessages } from "../../admin/(account)/messages/_components/chat-messages";
 import { ChatMessageCreateForm } from "../../admin/(account)/messages/_components/chat-message-create-button";
 
@@ -41,7 +41,7 @@ const MessagesPage = async () => {
           <CardDescription className="flex justify-end">
             <DropdownMenuButton>
               <DropdownMenuItem>
-                <DetailButton href={`messages/files`} label="Uploaded files" />
+                <LinkButton href={`messages/files`} label="Uploaded files" />
               </DropdownMenuItem>
             </DropdownMenuButton>
           </CardDescription>

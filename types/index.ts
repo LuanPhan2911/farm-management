@@ -86,6 +86,7 @@ export type CategoryTable = Category & {};
 export type CategorySelect = {
   id: string;
   name: string;
+  description: string | null;
 };
 export type JobTable = {
   id: string;

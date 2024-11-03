@@ -19,7 +19,6 @@ import {
 import { toast } from "sonner";
 import { edit } from "@/actions/job";
 import { Input } from "@/components/ui/input";
-import { useRouter } from "@/navigation";
 
 import { SelectOptions } from "@/components/form/select-options";
 import { DatePicker } from "@/components/form/date-picker";
@@ -29,6 +28,7 @@ import { Tiptap } from "@/components/tiptap";
 import { useTransition } from "react";
 import { JobTable } from "@/types";
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
 
 interface JobEditButtonProps {
   data: JobTable;
@@ -36,13 +36,13 @@ interface JobEditButtonProps {
 }
 
 export const JobEditButton = ({ data, label }: JobEditButtonProps) => {
-  const router = useRouter();
+  const router = useRouterWithRole();
   return (
     <Button
       className="w-full"
       onClick={(e) => {
         e.stopPropagation();
-        router.push(`/admin/jobs/edit/${data.id}`);
+        router.push(`jobs/edit/${data.id}`);
       }}
       size={"sm"}
       variant={"edit"}

@@ -1,5 +1,11 @@
 import { getTranslations } from "next-intl/server";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { MaterialCreateForm } from "../_components/material-create-button";
 export async function generateMetadata() {
   const t = await getTranslations("materials.page.create");
@@ -9,12 +15,14 @@ export async function generateMetadata() {
 }
 
 const MaterialCreatePage = async () => {
-  const t = await getTranslations("materials.page.create");
+  const t = await getTranslations("materials.form.create");
+
   return (
     <div className="flex flex-col gap-4 py-4 h-full">
       <Card>
         <CardHeader>
           <CardTitle>{t("title")}</CardTitle>
+          <CardDescription>{t("description")}</CardDescription>
         </CardHeader>
         <CardContent>
           <MaterialCreateForm />

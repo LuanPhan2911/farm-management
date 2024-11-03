@@ -11,6 +11,7 @@ interface CreateButtonProps extends PropsWithChildren {
   className?: string;
   isOpen: boolean;
   setOpen: (value: boolean) => void;
+  disabled?: boolean;
 }
 export const CreateButton = ({
   label,
@@ -18,11 +19,12 @@ export const CreateButton = ({
   children,
   isOpen,
   setOpen,
+  disabled,
 }: CreateButtonProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={"success"} size={"sm"}>
+        <Button variant={"success"} size={"sm"} disabled={disabled}>
           <Plus className="mr-2" />
           {label}
         </Button>

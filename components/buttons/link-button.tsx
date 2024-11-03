@@ -5,22 +5,26 @@ import { Button, buttonVariants } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { VariantProps } from "class-variance-authority";
 import { usePrefix } from "@/hooks/use-prefix";
+import { LucideIcon } from "lucide-react";
 
-interface DetailButtonProps extends VariantProps<typeof buttonVariants> {
+interface LinkButtonProps extends VariantProps<typeof buttonVariants> {
   label: string;
   disabled?: boolean;
   href: string;
   className?: string;
+  icon?: LucideIcon;
 }
-export const DetailButton = ({
+export const LinkButton = ({
   href,
   label,
   disabled,
   className,
   size,
   variant,
-}: DetailButtonProps) => {
+  icon,
+}: LinkButtonProps) => {
   const prefix = usePrefix();
+  const Icon = icon ? icon : null;
   return (
     <Button
       variant={variant || "cyan"}
@@ -36,6 +40,7 @@ export const DetailButton = ({
           e.stopPropagation();
         }}
       >
+        {Icon && <Icon className="w-4 h-4 mr-2" />}
         {label}
       </Link>
     </Button>

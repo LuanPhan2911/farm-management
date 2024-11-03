@@ -46,22 +46,15 @@ export const MaterialUsagesTable = ({
         <TableHeader>
           <TableRow>
             <TableHead>{t("table.thead.material.imageUrl")}</TableHead>
-            <TableHead className="lg:w-[200px]">
+            <TableHead>
               <OrderByButton
                 column="material.name"
                 label={t("table.thead.material.name")}
               />
             </TableHead>
             <TableHead>{t("table.thead.material.type")}</TableHead>
-            <TableHead className="lg:w-[200px]">
-              {t("table.thead.activity.name")}
-            </TableHead>
-            <TableHead>{t("table.thead.activity.status")}</TableHead>
 
-            <TableHead className="lg:w-[200px]">
-              {t("table.thead.material.quantityInStock")}
-            </TableHead>
-            <TableHead className="lg:w-[200px]">
+            <TableHead>
               <OrderByButton
                 column="quantityUsed"
                 label={t("table.thead.quantityUsed")}
@@ -86,20 +79,7 @@ export const MaterialUsagesTable = ({
                 <TableCell>
                   <MaterialTypeValue value={item.material.type} />
                 </TableCell>
-                <TableCell>
-                  {item.activity?.name || t("table.trow.activity.name")}
-                </TableCell>
-                <TableCell>
-                  {item.activity?.status ? (
-                    <ActivityStatusValue value={item.activity.status} />
-                  ) : (
-                    t("table.trow.activity.status")
-                  )}
-                </TableCell>
 
-                <TableCell className="text-center">
-                  {item.material.quantityInStock}
-                </TableCell>
                 <TableCell className="text-center">
                   {item.quantityUsed}
                 </TableCell>

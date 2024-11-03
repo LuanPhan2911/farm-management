@@ -92,15 +92,7 @@ export const FilesDeletedTable = ({
                     )}
                   </TableCell>
                   <TableCell>
-                    {item.deletedAt
-                      ? dateTime(item.deletedAt, {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })
-                      : "Null"}
+                    {item.deletedAt ? dateTime(item.deletedAt, "long") : "Null"}
                   </TableCell>
                   <TableCell>
                     <FilesDeletedTableAction data={item} />

@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { FertilizerTable } from "@/types";
 import { MoreHorizontal } from "lucide-react";
-import { useTranslations } from "next-intl";
 import { FertilizerEditButton } from "./fertilizer-edit-button";
 import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/fertilizer";
@@ -20,7 +19,6 @@ interface FertilizersTableActionProps {
 export const FertilizersTableAction = ({
   data,
 }: FertilizersTableActionProps) => {
-  const t = useTranslations("fertilizers.form");
   const { isSuperAdmin: canDelete } = useCurrentStaffRole();
   return (
     <DropdownMenu>
@@ -31,7 +29,7 @@ export const FertilizersTableAction = ({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-fit">
         <DropdownMenuItem>
-          <FertilizerEditButton data={data} label={t("edit.label")} />
+          <FertilizerEditButton data={data} />
         </DropdownMenuItem>
         <DropdownMenuItem>
           <DestroyButton

@@ -18,7 +18,6 @@ interface PesticidesTableActionProps {
   data: PesticideTable;
 }
 export const PesticidesTableAction = ({ data }: PesticidesTableActionProps) => {
-  const t = useTranslations("pesticides.form");
   const { isSuperAdmin: canDelete } = useCurrentStaffRole();
   return (
     <DropdownMenu>
@@ -29,7 +28,7 @@ export const PesticidesTableAction = ({ data }: PesticidesTableActionProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-fit">
         <DropdownMenuItem>
-          <PesticideEditButton data={data} label={t("edit.label")} />
+          <PesticideEditButton data={data} />
         </DropdownMenuItem>
         <DropdownMenuItem>
           <DestroyButton

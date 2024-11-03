@@ -65,7 +65,7 @@ export const JobCardDisplayItem = ({ data }: JobCardDisplayItemProps) => {
               <SmallCard
                 title={tJob("expiredAt.label")}
                 icon={Timer}
-                value={format.dateTime(data.expiredAt)}
+                value={format.dateTime(data.expiredAt, "short")}
               />
             </div>
           </div>

@@ -103,7 +103,7 @@ export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
                 <TableCell>{dateTime(item.startDate)}</TableCell>
                 <TableCell>
                   {item.endDate
-                    ? dateTime(item.endDate)
+                    ? dateTime(item.endDate, "short")
                     : t("table.trow.endDate")}
                 </TableCell>
                 <TableCell>{item.name}</TableCell>

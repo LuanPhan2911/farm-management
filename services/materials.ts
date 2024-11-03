@@ -42,17 +42,7 @@ export const deleteMaterial = async (id: string) => {
     where: { id },
   });
 };
-export const restockMaterial = async (id: string, quantityAdded: number) => {
-  const updatedMaterial = await db.material.update({
-    where: { id },
-    data: {
-      quantityInStock: {
-        increment: quantityAdded, // Add more stock
-      },
-    },
-  });
-  return updatedMaterial;
-};
+
 type MaterialQuery = {
   page?: number;
   query?: string;

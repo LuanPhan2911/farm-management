@@ -1,42 +1,36 @@
 "use client";
 
-import { ErrorButton } from "@/components/buttons/error-button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
+import {
+  ComboBoxCustom,
+  ComboBoxCustomAppearance,
+} from "@/components/form/combo-box";
+import { SelectItemContentWithoutImage } from "@/components/form/select-item";
 import { CategorySelect } from "@/types";
 import { CategoryType } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import queryString from "query-string";
-import Select from "react-select";
 
 interface CategoriesSelectProps {
   defaultValue?: string;
   type: CategoryType;
-  onChange: (value: string) => void;
+  onChange: (value: string | undefined) => void;
   placeholder: string;
   disabled?: boolean;
-  className?: string;
   error: string;
   notFound: string;
+  appearance?: ComboBoxCustomAppearance;
+  labelKey?: keyof CategorySelect;
+  valueKey?: keyof CategorySelect;
 }
-export const CategoriesSelect = ({
-  defaultValue,
-  type,
-  onChange,
-  placeholder,
-  disabled,
-  className,
-  error,
-  notFound,
-}: CategoriesSelectProps) => {
+export const CategoriesSelect = (props: CategoriesSelectProps) => {
   const { data, isPending, isError, refetch } = useQuery({
-    queryKey: ["categories_select", type],
+    queryKey: ["categories_select", props.type],
     queryFn: async () => {
       const url = queryString.stringifyUrl(
         {
           url: "/api/categories/select",
           query: {
-            type,
+            type: props.type,
           },
         },
         {
@@ -49,37 +43,21 @@ export const CategoriesSelect = ({
     },
   });
 
-  if (isPending) {
-    return <Skeleton className="w-full h-12" />;
-  }
-  if (isError) {
-    return <ErrorButton title={error} refresh={refetch} />;
-  }
-
-  const options = data.map((item) => {
-    return {
-      label: item.name,
-      value: item.id,
-    };
-  });
-  const option = options.find((item) => item.value === defaultValue);
-
   return (
-    <Select
-      placeholder={placeholder}
-      options={options}
-      onChange={(newValue) => {
-        if (newValue) {
-          onChange(newValue.value);
-        }
-      }}
-      value={option}
-      isDisabled={disabled}
-      className={cn("my-react-select-container", className)}
-      classNamePrefix="my-react-select"
-      noOptionsMessage={() => {
-        return notFound;
-      }}
+    <ComboBoxCustom
+      {...props}
+      isError={isError}
+      isPending={isPending}
+      refetch={refetch}
+      data={data}
+      valueKey={props.valueKey || "id"}
+      labelKey={props.labelKey || "name"}
+      renderItem={(item) => (
+        <SelectItemContentWithoutImage
+          title={item.name}
+          description={item.description}
+        />
+      )}
     />
   );
 };

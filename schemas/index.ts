@@ -676,13 +676,15 @@ export const EquipmentSchema = (
       message: t("type.enum"),
     }),
     brand: stringSchema(t, "brand", {
-      min: 3,
       max: 100,
-    }),
-    purchaseDate: z.date({
-      required_error: t("purchaseDate.required_error"),
-      invalid_type_error: t("purchaseDate.invalid_type_error"),
-    }),
+      required: false,
+    }).nullish(),
+    purchaseDate: z
+      .date({
+        required_error: t("purchaseDate.required_error"),
+        invalid_type_error: t("purchaseDate.invalid_type_error"),
+      })
+      .nullish(),
     purchasePrice: floatUnitSchema(t, "purchasePrice", {
       min: 0,
       max: 1_000_000_000,

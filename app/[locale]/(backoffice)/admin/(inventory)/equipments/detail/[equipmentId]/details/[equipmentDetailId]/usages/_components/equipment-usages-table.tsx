@@ -53,13 +53,7 @@ export const EquipmentUsagesTable = ({
               {t("table.thead.equipmentDetail.name")}
             </TableHead>
             <TableHead>{t("table.thead.equipmentDetail.status")}</TableHead>
-            <TableHead className="lg:w-[200px]">
-              <OrderByButton
-                column="activity.name"
-                label={t("table.thead.activity.name")}
-              />
-            </TableHead>
-            <TableHead>{t("table.thead.activity.status")}</TableHead>
+
             <TableHead className="lg:w-[200px]">
               <OrderByButton
                 column="usageStartTime"
@@ -91,24 +85,9 @@ export const EquipmentUsagesTable = ({
                     status={item.equipmentDetail.status}
                   />
                 </TableCell>
-                <TableCell>
-                  {item.activity?.name || t("table.trow.activity.name")}
-                </TableCell>
-                <TableCell>
-                  {item.activity ? (
-                    <ActivityStatusValue value={item.activity.status} />
-                  ) : (
-                    t("table.trow.activity.status")
-                  )}
-                </TableCell>
 
                 <TableCell className="text-center">
-                  {dateTime(item.usageStartTime, {
-                    month: "short",
-                    day: "2-digit",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
+                  {dateTime(item.usageStartTime, "long")}
                 </TableCell>
                 <TableCell>{item.duration}</TableCell>
                 <TableCell>

@@ -26,7 +26,7 @@ export const canUpdateEquipmentUsage = (status: EquipmentStatus) => {
   return status === "AVAILABLE";
 };
 
-export const canCreateActivity = (role: StaffRole) => isAdmin(role);
+export const canCreateActivity = (role: StaffRole) => isOnlyAdmin(role);
 
 export const canStaffUpdateActivity = ({
   assignedToId,

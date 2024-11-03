@@ -12,15 +12,10 @@ import {
   ActivityCreatePermissionError,
   ActivityExistError,
   ActivityUpdatePermissionError,
-  ActivityUpdateStatusError,
   StaffExistError,
   UnAuthorizedError,
 } from "@/errors";
-import {
-  canCreateActivity,
-  canStaffUpdateActivity,
-  canUpdateActivityStatus,
-} from "@/lib/permission";
+import { canCreateActivity, canStaffUpdateActivity } from "@/lib/permission";
 import { LIMIT } from "@/configs/paginationConfig";
 import {
   getObjectFilterNumber,

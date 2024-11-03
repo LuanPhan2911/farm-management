@@ -15,8 +15,8 @@ import { toast } from "sonner";
 import { JobTable } from "@/types";
 import { JobExpiredValue } from "./job-expired-value";
 import { JobExperience } from "@prisma/client";
-import { useRouter } from "next/navigation";
 import { ConfirmButton } from "@/components/buttons/confirm-button";
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
 
 interface JobsTableProps {
   data: JobTable[];
@@ -27,7 +27,7 @@ export const JobsTable = ({ data }: JobsTableProps) => {
 
   const { dateTime } = useFormatter();
   const { onOpen, onClose, setPending } = useAlertDialog();
-  const router = useRouter();
+  const router = useRouterWithRole();
 
   const handleConfirm = (rows: JobTable[]) => {
     setPending(true);
@@ -48,7 +48,7 @@ export const JobsTable = ({ data }: JobsTableProps) => {
       });
   };
   const handleEdit = (job: JobTable) => {
-    router.push(`/admin/jobs/edit/${job.id}`);
+    router.push(`jobs/edit/${job.id}`);
   };
   const columns: ColumnDef<JobTable>[] = [
     {
@@ -119,7 +119,7 @@ export const JobsTable = ({ data }: JobsTableProps) => {
       },
       cell: ({ row }) => {
         const data = row.original.expiredAt;
-        return dateTime(data);
+        return dateTime(data, "short");
       },
     },
     {

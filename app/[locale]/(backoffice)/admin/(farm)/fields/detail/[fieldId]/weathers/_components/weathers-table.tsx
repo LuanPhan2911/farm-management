@@ -119,15 +119,7 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
                     )}
                   />
                 </TableCell>
-                <TableCell>
-                  {dateTime(item.createdAt, {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                  })}
-                </TableCell>
+                <TableCell>{dateTime(item.createdAt, "long")}</TableCell>
                 <TableCell>
                   <WeatherStatusValue status={item.status} />
                 </TableCell>

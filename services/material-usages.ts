@@ -89,6 +89,7 @@ export const updateMaterialUsage = async (
     where: { id },
     select: {
       quantityUsed: true,
+      materialId: true,
       material: {
         select: {
           quantityInStock: true,
@@ -106,7 +107,7 @@ export const updateMaterialUsage = async (
     throw new MaterialUsageExistError();
   }
 
-  if (materialUsage.activity?.status) {
+  if (materialUsage.activity) {
     if (!canUpdateActivityStatus(materialUsage.activity.status)) {
       throw new ActivityUpdateStatusError();
     }
@@ -127,7 +128,7 @@ export const updateMaterialUsage = async (
       data: { quantityUsed: newQuantityUsed },
     }),
     db.material.update({
-      where: { id },
+      where: { id: materialUsage.materialId },
       data: {
         quantityInStock: {
           ...(quantityDifference > 0 && {

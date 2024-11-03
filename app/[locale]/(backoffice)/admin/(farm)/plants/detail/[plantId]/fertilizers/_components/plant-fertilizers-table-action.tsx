@@ -21,7 +21,6 @@ interface PlantFertilizersTableActionProps {
 export const PlantFertilizersTableAction = ({
   data,
 }: PlantFertilizersTableActionProps) => {
-  const t = useTranslations("plantFertilizers.form");
   const { isSuperAdmin: canDelete } = useCurrentStaffRole();
   return (
     <DropdownMenu>
@@ -32,7 +31,7 @@ export const PlantFertilizersTableAction = ({
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
-          <PlantFertilizerEditButton data={data} label={t("edit.label")} />
+          <PlantFertilizerEditButton data={data} />
         </DropdownMenuItem>
         <DropdownMenuItem>
           <DestroyButton

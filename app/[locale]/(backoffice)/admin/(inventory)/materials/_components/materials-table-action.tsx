@@ -9,8 +9,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MaterialTable } from "@/types";
 import { MoreHorizontal } from "lucide-react";
+import { LinkButton } from "@/components/buttons/link-button";
 import { useTranslations } from "next-intl";
-import { MaterialEditButton } from "./material-edit-button";
 interface MaterialsTableActionProps {
   data: MaterialTable;
 }
@@ -25,7 +25,11 @@ export const MaterialsTableAction = ({ data }: MaterialsTableActionProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-fit">
         <DropdownMenuItem>
-          <MaterialEditButton data={data} label={t("edit.label")} />
+          <LinkButton
+            href={`materials/detail/${data.id}`}
+            label={t("detail.label")}
+            className="w-full"
+          />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -7,7 +7,7 @@ import {
 import { OrganizationMembership } from "@clerk/nextjs/server";
 import { Ellipsis, Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { DetailButton } from "@/components/buttons/detail-button";
+import { LinkButton } from "@/components/buttons/link-button";
 import { ActionButton } from "@/components/buttons/action-button";
 import { destroyMember } from "@/actions/organization";
 import { useContext } from "react";
@@ -32,7 +32,7 @@ export const OrgMemberAction = ({ data }: OrgMemberActionProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
-          <DetailButton
+          <LinkButton
             href={`staffs/detail/${data.publicUserData.userId}`}
             label={t("viewProfile.label")}
             className="w-full"

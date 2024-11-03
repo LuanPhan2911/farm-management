@@ -9,11 +9,10 @@ import {
 import { ChatMessages } from "./_components/chat-messages";
 import { ChatMessageCreateForm } from "./_components/chat-message-create-button";
 import { SocketIndicator } from "@/components/socket-indicator";
-import { Link } from "@/navigation";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { DropdownMenuButton } from "@/components/buttons/dropdown-menu-button";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { LinkButton } from "@/components/buttons/link-button";
 
 export async function generateMetadata() {
   const t = await getTranslations("messages.page");
@@ -34,11 +33,7 @@ const MessagesPage = async () => {
           <CardDescription className="flex justify-end">
             <DropdownMenuButton>
               <DropdownMenuItem>
-                <Link href={"/admin/messages/files"}>
-                  <Button variant={"blue"} size={"sm"}>
-                    Uploaded files
-                  </Button>
-                </Link>
+                <LinkButton href={`messages/files`} label="Uploaded files" />
               </DropdownMenuItem>
             </DropdownMenuButton>
           </CardDescription>

@@ -17,22 +17,21 @@ import { ActivitiesTableAction } from "./activities-table-action";
 import { OrderByButton } from "@/components/buttons/order-by-button";
 
 import { SearchBar } from "@/components/search-bar";
-import { UserAvatar } from "@/components/user-avatar";
-import { useRouter } from "@/navigation";
 import { ActivityStatusValue } from "./activity-status-value";
 import { ActivityPriorityValue } from "./activity-priority-value";
 import { SelectItemContent } from "@/components/form/select-item";
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
 
 interface ActivitiesTableProps {
   data: ActivityTable[];
   totalPage: number;
 }
 export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
-  const router = useRouter();
+  const router = useRouterWithRole();
   const { dateTime } = useFormatter();
   const t = useTranslations("activities");
   const handleViewDetail = (row: ActivityTable) => {
-    router.push(`/admin/activities/detail/${row.id}`);
+    router.push(`activities/detail/${row.id}`);
   };
 
   return (

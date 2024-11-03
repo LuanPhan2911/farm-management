@@ -10,6 +10,7 @@ export async function generateMetadata() {
 
 const EquipmentCreatePage = async () => {
   const t = await getTranslations("equipments.page.create");
+
   return (
     <div className="flex flex-col gap-4 py-4 h-full">
       <Card>

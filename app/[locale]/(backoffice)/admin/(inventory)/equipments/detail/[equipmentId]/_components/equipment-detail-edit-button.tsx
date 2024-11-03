@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import { edit } from "@/actions/equipment-detail";
 import { Input } from "@/components/ui/input";
 import { SelectOptions } from "@/components/form/select-options";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 export const EquipmentDetailEditDialog = () => {
   const { isOpen, type, data, onClose } = useDialog();
@@ -36,6 +37,8 @@ export const EquipmentDetailEditDialog = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+
+  const { isOnlyAdmin: canEdit } = useCurrentStaffRole();
   const [id, setId] = useState("");
   useEffect(() => {
     if (data?.equipmentDetail) {
@@ -84,7 +87,7 @@ export const EquipmentDetailEditDialog = () => {
                     placeholder={tSchema("name.placeholder")}
                     value={field.value ?? undefined}
                     onChange={field.onChange}
-                    disabled={isPending}
+                    disabled={isPending || !canEdit}
                   />
                 </FormControl>
 
@@ -109,7 +112,7 @@ export const EquipmentDetailEditDialog = () => {
                         value: item,
                       };
                     })}
-                    disabled={isPending}
+                    disabled={isPending || !canEdit}
                     defaultValue={field.value}
                   />
                 </FormControl>
@@ -129,7 +132,7 @@ export const EquipmentDetailEditDialog = () => {
                     placeholder={tSchema("location.placeholder")}
                     value={field.value ?? undefined}
                     onChange={field.onChange}
-                    disabled={isPending}
+                    disabled={isPending || !canEdit}
                   />
                 </FormControl>
 
@@ -148,7 +151,7 @@ export const EquipmentDetailEditDialog = () => {
                     placeholder={tSchema("maintenanceSchedule.placeholder")}
                     value={field.value ?? undefined}
                     onChange={field.onChange}
-                    disabled={isPending}
+                    disabled={isPending || !canEdit}
                   />
                 </FormControl>
 
@@ -168,7 +171,7 @@ export const EquipmentDetailEditDialog = () => {
                     placeholder={tSchema("operatingHours.placeholder")}
                     value={field.value ?? undefined}
                     onChange={field.onChange}
-                    disabled={isPending}
+                    disabled={isPending || !canEdit}
                     type="number"
                   />
                 </FormControl>
@@ -177,7 +180,10 @@ export const EquipmentDetailEditDialog = () => {
             )}
           />
 
-          <DynamicDialogFooter disabled={isPending} closeButton={false} />
+          <DynamicDialogFooter
+            disabled={isPending || !canEdit}
+            closeButton={false}
+          />
         </form>
       </Form>
     </DynamicDialog>

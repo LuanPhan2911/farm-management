@@ -1,12 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+import { parseToNumber } from "@/lib/utils";
+import { getMaterialUsages } from "@/services/material-usages";
 import { getMaterialById, getMaterialsSelect } from "@/services/materials";
-import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { notFound } from "next/navigation";
 import { MaterialUsageCreateButton } from "./_components/material-usages-create-button";
 import { MaterialUsagesTable } from "./_components/material-usages-table";
-import { getMaterialUsages } from "@/services/material-usages";
-import { parseToNumber } from "@/lib/utils";
 export async function generateMetadata() {
   const t = await getTranslations("materials.page.detail.usages");
   return {
@@ -40,6 +40,7 @@ const MaterialUsagesPage = async ({
   const { query, orderBy } = searchParams;
   const page = parseToNumber(searchParams!.page, 1);
   const material = await getMaterialById(params.materialId);
+
   const { data: materialUsages, totalPage } = await getMaterialUsages({
     materialId: params.materialId,
     page,
