@@ -32,12 +32,14 @@ import { StaffsSelect } from "../../../_components/staffs-select";
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 import { useCurrentStaff } from "@/hooks/use-current-staff";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { useAuth } from "@clerk/nextjs";
 
 export const OrgCreateButton = () => {
   const t = useTranslations("organizations.form");
   const tSchema = useTranslations("organizations.schema");
   const formSchema = OrganizationSchema(tSchema);
 
+  const { orgId } = useAuth();
   const [isPending, startTransition] = useTransition();
   const { currentStaff } = useCurrentStaff();
   const { isOnlyAdmin } = useCurrentStaffRole();
@@ -145,21 +147,16 @@ export const OrgCreateButton = () => {
                 <FormItem>
                   <FormLabel>{tSchema("createdBy.label")}</FormLabel>
                   <FormControl>
-                    <div className="block">
-                      <StaffsSelect
-                        defaultValue={field.value}
-                        onChange={field.onChange}
-                        error={tSchema("createdBy.error")}
-                        placeholder={tSchema("createdBy.placeholder")}
-                        notFound={tSchema("createdBy.notFound")}
-                        disabled={isPending}
-                        adminOnly
-                        appearance={{
-                          button: "lg:w-full h-12",
-                          content: "lg:w-[350px]",
-                        }}
-                      />
-                    </div>
+                    <StaffsSelect
+                      orgId={orgId}
+                      defaultValue={field.value}
+                      onChange={field.onChange}
+                      error={tSchema("createdBy.error")}
+                      placeholder={tSchema("createdBy.placeholder")}
+                      notFound={tSchema("createdBy.notFound")}
+                      disabled={isPending}
+                      adminOnly
+                    />
                   </FormControl>
 
                   <FormMessage />

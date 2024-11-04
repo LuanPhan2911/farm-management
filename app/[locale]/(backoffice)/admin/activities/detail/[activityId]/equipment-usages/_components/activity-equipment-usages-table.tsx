@@ -47,18 +47,16 @@ export const ActivityEquipmentUsagesTable = ({
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>{t("table.thead.activity.usage")}</TableHead>
             <TableHead className="lg:w-[200px]">
               <OrderByButton
                 column="usageStartTime"
                 label={t("table.thead.usageStartTime")}
               />
             </TableHead>
-            <TableHead>{t("table.thead.activity.usage")}</TableHead>
-            <TableHead>{t("table.thead.equipmentDetail.imageUrl")}</TableHead>
             <TableHead className="lg:w-[200px]">
               {t("table.thead.equipmentDetail.name")}
             </TableHead>
-            <TableHead>{t("table.thead.equipmentDetail.status")}</TableHead>
 
             <TableHead>{t("table.thead.duration")}</TableHead>
             <TableHead>{t("table.thead.operator")}</TableHead>
@@ -74,29 +72,21 @@ export const ActivityEquipmentUsagesTable = ({
                 className="cursor-pointer"
                 onClick={() => handleEdit(item)}
               >
-                <TableCell className="text-center">
-                  {dateTime(item.usageStartTime, "short")}
-                </TableCell>
-                <TableCell>
+                <TableCell className="font-semibold">
                   {item.activity ? (
                     <span className="text-green-400">
                       {t("table.trow.activity.usage")}
                     </span>
                   ) : (
-                    t("table.trow.activity.unused")
+                    <span className="text-rose-400">
+                      {t("table.trow.activity.unused")}
+                    </span>
                   )}
                 </TableCell>
-                <TableCell>
-                  <UserAvatar
-                    src={item.equipmentDetail.equipment.imageUrl || undefined}
-                  />
+                <TableCell className="text-center">
+                  {dateTime(item.usageStartTime, "short")}
                 </TableCell>
                 <TableCell>{item.equipmentDetail.name}</TableCell>
-                <TableCell>
-                  <EquipmentDetailStatusValue
-                    status={item.equipmentDetail.status}
-                  />
-                </TableCell>
 
                 <TableCell>{item.duration}</TableCell>
                 <TableCell>

@@ -42,6 +42,7 @@ import { Label } from "@/components/ui/label";
 import { ClipboardButton } from "@/components/buttons/clipboard-button";
 import { ScheduleSelectCron } from "../../../_components/schedule-select-cron";
 import { Textarea } from "@/components/ui/textarea";
+import { useAuth } from "@clerk/nextjs";
 const initialBody = {
   receivers: ["example@gmail.com"],
   subject: "Email notification salary",
@@ -322,21 +323,24 @@ interface ScheduleEmailSelectProps {
   disabled?: boolean;
 }
 const ScheduleEmailSelect = ({ disabled }: ScheduleEmailSelectProps) => {
-  const [value, setValue] = useState("");
+  const [emails, setEmails] = useState<string[] | undefined>([]);
+  const { orgId } = useAuth();
   const t = useTranslations("schedules.search.select.staff");
   return (
     <div>
       <Label>{t("label")} </Label>
       <div className="flex gap-x-2 items-center">
         <StaffsSelectMultiple
+          orgId={orgId}
           error={t("error")}
-          label={t("placeholder")}
+          placeholder={t("placeholder")}
           notFound={t("notFound")}
           disabled={disabled}
-          onChange={setValue}
+          onChange={setEmails}
+          valueKey="email"
           className="w-full"
         />
-        <ClipboardButton value={value} />
+        <ClipboardButton value={JSON.stringify(emails)} />
       </div>
     </div>
   );

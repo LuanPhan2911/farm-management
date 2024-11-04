@@ -820,7 +820,7 @@ export const ActivitySchema = (
       max: 255,
       required: false,
     }).nullish(),
-    fieldId: stringSchema(t, "fieldId", {
+    cropId: stringSchema(t, "cropId", {
       required: true,
     }),
     activityDate: z.date({
@@ -841,16 +841,28 @@ export const ActivitySchema = (
       max: 100,
       required: false,
     }).nullish(),
-    note: stringSchema(t, "note", {
-      max: 255,
-      required: false,
-    }).nullish(),
+
     createdById: stringSchema(t, "createdById", {
       required: true,
     }),
-    assignedToId: stringSchema(t, "assignedToId", {
-      required: true,
-    }),
+    assignedTo: z
+      .array(z.string(), {
+        required_error: t("assignedTo.required_error"),
+      })
+      .min(1, t("assignedTo.min", { min: 1 })),
+  });
+};
+
+export const ActivityAssignedSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    activityId: z.string(),
+    assignedTo: z
+      .array(z.string(), {
+        required_error: t("assignedTo.required_error"),
+      })
+      .min(1, t("assignedTo.min", { min: 1 })),
   });
 };
 export const TaskSchema = (

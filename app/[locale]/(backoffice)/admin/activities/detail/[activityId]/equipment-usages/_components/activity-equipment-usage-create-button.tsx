@@ -32,17 +32,14 @@ import { toast } from "sonner";
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 import { useParams } from "next/navigation";
 import { DatePickerWithTime } from "@/components/form/date-picker-with-time";
-import { StaffsSelect } from "@/app/[locale]/(backoffice)/admin/_components/staffs-select";
-import { Staff } from "@prisma/client";
 import { Textarea } from "@/components/ui/textarea";
 import { EquipmentDetailsSelect } from "@/app/[locale]/(backoffice)/admin/_components/equipment-details-select";
+import { ActivityAssignedStaffsSelect } from "@/app/[locale]/(backoffice)/admin/_components/activity-assigned-staffs-select";
 
 interface ActivityEquipmentUsageCreateButtonProps {
-  currentOperator: Staff;
   disabled?: boolean;
 }
 export const ActivityEquipmentUsageCreateButton = ({
-  currentOperator,
   disabled,
 }: ActivityEquipmentUsageCreateButtonProps) => {
   const tSchema = useTranslations("equipmentUsages.schema");
@@ -57,11 +54,11 @@ export const ActivityEquipmentUsageCreateButton = ({
     resolver: zodResolver(formSchema),
     defaultValues: {
       activityId: params?.activityId,
-      operatorId: currentOperator.id,
       usageStartTime: new Date(),
       duration: "1 day",
     },
   });
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       create(values)
@@ -128,17 +125,14 @@ export const ActivityEquipmentUsageCreateButton = ({
                   <FormItem>
                     <FormLabel>{tSchema("operatorId.label")}</FormLabel>
                     <FormControl>
-                      <StaffsSelect
+                      <ActivityAssignedStaffsSelect
+                        activityId={params!.activityId}
                         onChange={field.onChange}
                         defaultValue={field.value ?? undefined}
                         placeholder={tSchema("operatorId.placeholder")}
                         disabled={isPending || disabled}
                         error={tSchema("operatorId.error")}
                         notFound={tSchema("operatorId.notFound")}
-                        appearance={{
-                          button: "lg:w-full h-12",
-                          content: "lg:w-[400px]",
-                        }}
                       />
                     </FormControl>
 

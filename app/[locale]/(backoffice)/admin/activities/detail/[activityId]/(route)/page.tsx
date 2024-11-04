@@ -46,7 +46,7 @@ const ActivityDetailPage = async ({ params }: ActivityDetailPageProps) => {
               disabled={!canUpdate}
             />
           </div>
-          <ActivityEditForm data={data} disabled={!canUpdate} />
+          <ActivityEditForm data={data} />
         </CardContent>
       </Card>
     </div>

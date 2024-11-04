@@ -12,10 +12,14 @@ import { DestroyButton } from "@/components/buttons/destroy-button";
 import { assign, destroy, revoke } from "@/actions/equipment-usage";
 import { EquipmentUsageTable } from "@/types";
 import { useTranslations } from "next-intl";
-import { canUpdateActivityStatus } from "@/lib/permission";
+import {
+  canUpdateActivityStatus,
+  canUpdateEquipmentUsage,
+} from "@/lib/permission";
 import { EquipmentUsageEditButton } from "@/app/[locale]/(backoffice)/admin/(inventory)/equipments/detail/[equipmentId]/details/[equipmentDetailId]/usages/_components/equipment-usage-edit-button";
 import { ActionButton } from "@/components/buttons/action-button";
 import { useParams } from "next/navigation";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface ActivityEquipmentUsagesTableActionProps {
   data: EquipmentUsageTable;
@@ -25,8 +29,14 @@ export const ActivityEquipmentUsagesTableAction = ({
 }: ActivityEquipmentUsagesTableActionProps) => {
   const t = useTranslations("equipmentUsages.form");
   const params = useParams<{ activityId: string }>()!;
-  const canUpdate =
-    !data.activity || canUpdateActivityStatus(data.activity.status);
+
+  const { isSuperAdmin, isOnlyAdmin } = useCurrentStaffRole();
+  const canEdit =
+    !data.activity ||
+    canUpdateActivityStatus(data.activity.status) ||
+    canUpdateEquipmentUsage(data.equipmentDetail.status);
+  const canUpdate = canEdit && isOnlyAdmin;
+  const canDelete = canEdit && isSuperAdmin;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -50,7 +60,7 @@ export const ActivityEquipmentUsagesTableAction = ({
           ) : (
             <ActionButton
               actionFn={() => {
-                return revoke(data.id, params.activityId);
+                return revoke(data.id);
               }}
               disabled={!canUpdate}
               label={t("revoke.label")}
@@ -61,18 +71,14 @@ export const ActivityEquipmentUsagesTableAction = ({
           )}
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <EquipmentUsageEditButton
-            data={data}
-            label={t("edit.label")}
-            disabled={!canUpdate}
-          />
+          <EquipmentUsageEditButton data={data} disabled={!canUpdate} />
         </DropdownMenuItem>
         <DropdownMenuItem>
           <DestroyButton
             destroyFn={destroy}
             id={data.id}
             inltKey="equipmentUsages"
-            disabled={!canUpdate}
+            disabled={!canDelete}
             className="w-full"
           />
         </DropdownMenuItem>

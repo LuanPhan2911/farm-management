@@ -18,7 +18,6 @@ import { SearchBar } from "@/components/search-bar";
 import { useDialog } from "@/stores/use-dialog";
 import { UserAvatar } from "@/components/user-avatar";
 
-import { ActivityStatusValue } from "@/app/[locale]/(backoffice)/admin/activities/_components/activity-status-value";
 import { MaterialTypeValue } from "@/app/[locale]/(backoffice)/admin/(inventory)/materials/_components/material-type-value";
 import { ActivityMaterialUsagesTableAction } from "./activity-material-usages-table-action";
 
@@ -51,6 +50,7 @@ export const ActivityMaterialUsagesTable = ({
                 label={t("table.thead.material.name")}
               />
             </TableHead>
+
             <TableHead>{t("table.thead.material.type")}</TableHead>
 
             <TableHead className="lg:w-[200px]">
@@ -80,14 +80,16 @@ export const ActivityMaterialUsagesTable = ({
                       {t("table.trow.activity.usage")}
                     </span>
                   ) : (
-                    t("table.trow.activity.unused")
+                    <span className="text-rose-400">
+                      {t("table.trow.activity.unused")}
+                    </span>
                   )}
                 </TableCell>
-
                 <TableCell>
                   <UserAvatar src={item.material.imageUrl || undefined} />
                 </TableCell>
                 <TableCell>{item.material.name}</TableCell>
+
                 <TableCell>
                   <MaterialTypeValue value={item.material.type} />
                 </TableCell>

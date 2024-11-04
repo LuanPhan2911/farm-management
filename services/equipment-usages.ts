@@ -1,13 +1,6 @@
-import {
-  ActivityExistError,
-  ActivityUpdateStatusError,
-  EquipmentDetailExistError,
-  EquipmentUsageExistError,
-  StaffExistError,
-} from "@/errors";
+import { ActivityUpdateStatusError, EquipmentUsageExistError } from "@/errors";
 import { canUpdateActivityStatus } from "@/lib/permission";
 import { db } from "@/lib/db";
-import { getStaffById } from "./staffs";
 import { LIMIT } from "@/configs/paginationConfig";
 import { getObjectSortOrder } from "@/lib/utils";
 import { EquipmentUsageTable, PaginatedResponse } from "@/types";
@@ -32,75 +25,7 @@ export const revalidatePathEquipmentUsage = ({
     revalidatePath(`/admin/activities/detail/${activityId}/equipment-usages`);
   }
 };
-const checkCreateEquipmentUsage = async ({
-  equipmentDetailId,
-  operatorId,
-  activityId,
-}: {
-  equipmentDetailId: string;
-  operatorId?: string | null;
-  activityId?: string | null;
-}) => {
-  const equipmentDetail = await db.equipmentDetail.findUnique({
-    where: {
-      id: equipmentDetailId,
-    },
-  });
-  if (!equipmentDetail) {
-    throw new EquipmentDetailExistError();
-  }
-  if (operatorId) {
-    const operator = await getStaffById(operatorId);
-    if (!operator) {
-      throw new StaffExistError();
-    }
-  }
-  if (activityId) {
-    const activity = await db.activity.findUnique({
-      where: { id: activityId },
-      select: {
-        status: true,
-        field: {
-          select: {
-            location: true,
-          },
-        },
-      },
-    });
-    if (!activity) {
-      throw new ActivityExistError();
-    }
-    if (!canUpdateActivityStatus(activity.status)) {
-      throw new ActivityUpdateStatusError();
-    }
-  }
-  return true;
-};
-const checkUpdateEquipmentUsage = async ({
-  equipmentUsageId,
-}: {
-  equipmentUsageId: string;
-}) => {
-  const equipmentUsage = await db.equipmentUsage.findUnique({
-    where: { id: equipmentUsageId },
-    select: {
-      activity: {
-        select: {
-          status: true,
-        },
-      },
-    },
-  });
-  if (!equipmentUsage) {
-    throw new EquipmentUsageExistError();
-  }
-  if (equipmentUsage.activity) {
-    if (!canUpdateActivityStatus(equipmentUsage.activity.status)) {
-      throw new ActivityUpdateStatusError();
-    }
-  }
-  return true;
-};
+
 type EquipmentUsageParams = {
   activityId?: string | null;
   equipmentDetailId: string;
@@ -111,17 +36,10 @@ type EquipmentUsageParams = {
 };
 
 export const createEquipmentUsage = async (params: EquipmentUsageParams) => {
-  const { activityId, operatorId, equipmentDetailId } = params;
-  await checkCreateEquipmentUsage({
-    equipmentDetailId,
-    activityId,
-    operatorId,
-  });
-
   const [updatedEquipmentDetail, equipmentUsage] = await db.$transaction([
     db.equipmentDetail.update({
       where: {
-        id: equipmentDetailId,
+        id: params.equipmentDetailId,
       },
       data: {
         status: "WORKING",
@@ -149,7 +67,6 @@ export const updateEquipmentUsage = async (
   id: string,
   params: EquipmentUsageUpdateParams
 ) => {
-  await checkUpdateEquipmentUsage({ equipmentUsageId: id });
   const updatedEquipmentUsage = await db.equipmentUsage.update({
     where: {
       id,
@@ -172,24 +89,6 @@ export const assignEquipmentUsage = async (
   id: string,
   { activityId }: { activityId: string }
 ) => {
-  const equipmentUsage = await db.equipmentUsage.findUnique({
-    where: {
-      id,
-      activityId: null,
-    },
-  });
-  if (!equipmentUsage) {
-    throw new EquipmentUsageExistError();
-  }
-  const activity = await db.activity.findUnique({
-    where: { id: activityId },
-  });
-  if (!activity) {
-    throw new ActivityExistError();
-  }
-  if (!canUpdateActivityStatus(activity.status)) {
-    throw new ActivityUpdateStatusError();
-  }
   const updatedEquipmentUsage = await db.equipmentUsage.update({
     where: {
       id,
@@ -207,23 +106,7 @@ export const assignEquipmentUsage = async (
   });
   return updatedEquipmentUsage;
 };
-export const revokeEquipmentUsage = async (
-  id: string,
-  { activityId }: { activityId: string }
-) => {
-  const equipmentUsage = await db.equipmentUsage.findUnique({
-    where: { id, activityId },
-  });
-  if (!equipmentUsage) {
-    throw new EquipmentUsageExistError();
-  }
-  const activity = await db.activity.findUnique({ where: { id: activityId } });
-  if (!activity) {
-    throw new ActivityExistError();
-  }
-  if (!canUpdateActivityStatus(activity.status)) {
-    throw new ActivityUpdateStatusError();
-  }
+export const revokeEquipmentUsage = async (id: string) => {
   const updatedEquipmentUsage = await db.equipmentUsage.update({
     where: { id },
     data: {
@@ -341,7 +224,6 @@ export const getEquipmentUsages = async ({
               createdBy: true,
               assignedTo: true,
               activityDate: true,
-              note: true,
             },
           },
           operator: true,
@@ -429,7 +311,6 @@ export const getEquipmentUsagesByActivityId = async ({
             createdBy: true,
             assignedTo: true,
             activityDate: true,
-            note: true,
           },
         },
         operator: true,

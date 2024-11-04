@@ -17,7 +17,6 @@ import { OrderByButton } from "@/components/buttons/order-by-button";
 
 import { SearchBar } from "@/components/search-bar";
 
-import { ActivityStatusValue } from "@/app/[locale]/(backoffice)/admin/activities/_components/activity-status-value";
 import { useDialog } from "@/stores/use-dialog";
 import { SelectItemContent } from "@/components/form/select-item";
 import { EquipmentUsagesTableAction } from "./equipment-usages-table-action";

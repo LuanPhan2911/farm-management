@@ -51,10 +51,9 @@ export default async function RootLayout({
             formats={{
               dateTime: {
                 short: {
+                  year: "numeric",
                   day: "2-digit",
-                  month: "short",
-                  hour: "2-digit",
-                  minute: "2-digit",
+                  month: "2-digit",
                 },
                 long: {
                   day: "2-digit",

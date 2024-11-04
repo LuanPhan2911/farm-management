@@ -717,10 +717,12 @@
       "title": "All staffs",
       "thead": {
         "name": "Staff",
+        "email": "Email",
         "role": "Role",
         "lastSignedInAt": "Last signed in",
         "lastActiveAt": "Last active at",
-        "joinedAt": "Joined at"
+        "joinedAt": "Joined at",
+        "createdAt": "CreateAt"
       },
       "trow": {
         "lastActiveAt": "Never active",
@@ -2599,7 +2601,7 @@
         "activity": {
           "name": "Activity name",
           "status": "Activity Status",
-          "usage": "Usage"
+          "usage": "Activity Usage"
         },
         "usageStartTime": "Created date",
         "duration": "Duration",
@@ -2862,14 +2864,12 @@
     "table": {
       "thead": {
         "activity": {
-          "name": "Activity name",
-          "status": "Activity Status",
-          "usage": "Usage"
+          "usage": "Activity Usage"
         },
         "material": {
-          "imageUrl": "Material image",
-          "name": "Material name",
-          "type": "Material type",
+          "imageUrl": "Image",
+          "name": "Name",
+          "type": "Type",
           "quantityInStock": "Quantity in stock"
         },
         "quantityUsed": "Quantity used",
@@ -2985,6 +2985,9 @@
       },
       "detail": {
         "title": "Activity info",
+        "staffs": {
+          "title": "Staffs"
+        },
         "equipment-usages": {
           "title": "Equipment usages"
         },
@@ -3000,11 +3003,14 @@
       "info": {
         "label": "Info"
       },
+      "staffs": {
+        "label": "Staffs"
+      },
       "equipment-usages": {
-        "label": "Equipment usages"
+        "label": "Equipments"
       },
       "material-usages": {
-        "label": "Material usages"
+        "label": "Materials"
       },
       "danger": {
         "label": "Danger"
@@ -3052,15 +3058,12 @@
     },
     "table": {
       "thead": {
-        "activityDate": "Activity date",
-        "name": "Activity name",
-        "status": "Activity Status",
-        "priority": "Activity Priority",
+        "activityDate": "CreateAt",
+        "name": "Name",
+        "status": "Status",
+        "priority": "Priority",
         "estimatedDuration": "Estimated duration",
-        "createdBy": "CreatedBy",
-        "assignedTo": "AssignedTo",
-        "countEquipmentUsage": "Count equipment",
-        "countMaterialUsage": "Count material"
+        "createdBy": "CreatedBy"
       },
       "trow": {
         "estimatedDuration": "No filled"
@@ -3097,6 +3100,11 @@
         "label": "Cancel Activity",
         "title": "Cancel activity?",
         "description": "Are you absolutely sure? This action can not be undone!"
+      },
+      "deleteAssigned": {
+        "label": "Delete",
+        "title": "Delete activity assigned",
+        "description": "Don't assign this staff to activity"
       }
     },
     "schema": {
@@ -3121,12 +3129,12 @@
         "placeholder": "Activity description",
         "max": "Description's length must be less than {max} characters"
       },
-      "fieldId": {
-        "label": "Field",
-        "placeholder": "Select field",
-        "required_error": "Required field id",
-        "error": "Fail load fields",
-        "notFound": "Fields not found"
+      "cropId": {
+        "label": "Crop",
+        "placeholder": "Select crop...",
+        "required_error": "Required crop id",
+        "error": "Fail load crops",
+        "notFound": "Crops not found"
       },
       "activityDate": {
         "label": "Start date",
@@ -3168,20 +3176,17 @@
         "placeholder": "Actual duration",
         "max": "Actual duration's length must be less than {max} characters"
       },
-      "note": {
-        "label": "Note",
-        "placeholder": "Note",
-        "max": "Note's length must be less than {max} characters"
-      },
+
       "createdById": {
         "required_error": "Created by id required"
       },
-      "assignedToId": {
+      "assignedTo": {
         "label": "Assigned to",
         "placeholder": "Select assigned to",
         "required_error": "Assigned to is required",
         "error": "Fail load staffs",
-        "notFound": "Staffs not found"
+        "notFound": "Staffs not found",
+        "min": "At least {min} staff in activity"
       }
     },
     "status": {
@@ -3190,14 +3195,18 @@
         "edit": "Activity edited!",
         "destroy": "Activity deleted!",
         "complete": "Activity completed!",
-        "cancel": "Activity cancelled!"
+        "cancel": "Activity cancelled!",
+        "upsertAssigned": "Activity assigned created!",
+        "deleteAssigned": "Activity assigned deleted"
       },
       "failure": {
         "create": "Something went wrong while creating activity!",
         "edit": "Something went wrong while editing activity!",
         "destroy": "Something went wrong while deleting activity!",
         "complete": "Fail completed",
-        "cancel": "Fail cancelled"
+        "cancel": "Fail cancelled",
+        "upsertAssigned": "Fail create assigned",
+        "deleteAssigned": "Fail delete assigned!"
       }
     },
     "notFound": {
@@ -3208,7 +3217,27 @@
   },
   "crops": {
     "page": {
-      "title": "Manage crops"
+      "title": "Manage crops",
+      "detail": {
+        "title": "Crop detail",
+        "activities": {
+          "title": "Crop activities"
+        },
+        "danger": {
+          "title": "Crop danger"
+        }
+      }
+    },
+    "tabs": {
+      "info": {
+        "label": "Info"
+      },
+      "activities": {
+        "label": "Activities"
+      },
+      "danger": {
+        "label": "Danger"
+      }
     },
     "table": {
       "thead": {
@@ -3245,6 +3274,11 @@
         "label": "Delete",
         "title": "Delete crop?",
         "description": "Are you absolutely sure? This action can not be undone!"
+      },
+      "detail": {
+        "label": "Detail",
+        "title": "Crop detail",
+        "description": "Crop detail information"
       }
     },
     "schema": {
@@ -3768,9 +3802,13 @@
     "/admin/materials/detail/usages": "Usages",
 
     "/admin/crops": "Crops",
+    "/admin/crops/detail": "Crop detail",
+    "/admin/crops/detail/activities": "Crop activities",
+    "/admin/crops/detail/danger": "Crop danger",
     "/admin/activities": "Activities",
     "/admin/activities/create": "Create",
     "/admin/activities/detail": "Info",
+    "/admin/activities/detail/staffs": "Staffs",
     "/admin/activities/detail/equipment-usages": "Equipment Usages",
     "/admin/activities/detail/material-usages": "Material Usages",
     "/admin/activities/detail/danger": "Danger",
@@ -3809,7 +3847,13 @@
     "/farmer/equipments/detail/details/usages": "Usages",
     "/farmer/materials": "Material",
     "/farmer/materials/detail": "Info",
-    "/farmer/materials/detail/usages": "Usages"
+    "/farmer/materials/detail/usages": "Usages",
+    "/farmer/activities": "Activities",
+
+    "/farmer/activities/detail": "Info",
+    "/farmer/activities/detail/staffs": "Staffs",
+    "/farmer/activities/detail/equipment-usages": "Equipment Usages",
+    "/farmer/activities/detail/material-usages": "Material Usages"
   },
   "sidebar": {
     "farm": "Farm",

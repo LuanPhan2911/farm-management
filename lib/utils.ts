@@ -379,6 +379,8 @@ export function isPDF(type: string): boolean {
 export function isJson(type: string): boolean {
   return type === "application/json";
 }
-export function dateToString(date: Date | undefined): string | undefined {
-  return date ? `${format(date, "yyy-MM-dd")}` : undefined;
+export function dateToString(
+  date: Date | undefined | null
+): string | undefined {
+  return date ? `${format(date, "yyyy-MM-dd")}` : undefined;
 }

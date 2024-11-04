@@ -1,5 +1,6 @@
 import {
   Activity,
+  ActivityAssigned,
   ActivityPriority,
   ActivityStatus,
   ApplicantStatus,
@@ -253,14 +254,6 @@ export type PesticideSelect = {
   recommendedDosage: FloatUnitTable | null;
 };
 
-export type CropTable = Crop & {
-  actualYield: FloatUnitTable | null;
-  estimatedYield: FloatUnitTable | null;
-  plant: {
-    id: string;
-    name: string;
-  };
-};
 export type TaskStatus = "queued" | "working" | "success" | "failure";
 export type TaskResponse = {
   id: string;
@@ -387,11 +380,27 @@ export type EquipmentUsageTable = EquipmentUsage & {
   activity: ActivitySelect | null;
   operator: Staff | null;
 };
-
+export type CropTable = Crop & {
+  actualYield: FloatUnitTable | null;
+  estimatedYield: FloatUnitTable | null;
+  plant: {
+    id: string;
+    name: string;
+  };
+};
+export type CropSelect = {
+  id: string;
+  name: string;
+  startDate: Date;
+  endDate: Date | null;
+};
+export type ActivityAssignedStaff = ActivityAssigned & {
+  staff: Staff;
+};
 export type ActivityTable = Activity & {
-  assignedTo: Staff;
+  assignedTo: ActivityAssignedStaff[];
   createdBy: Staff;
-  field: FieldSelect;
+  crop: CropSelect;
   _count: {
     equipmentUseds: number;
     materialUseds: number;
@@ -402,10 +411,7 @@ export type ActivitySelect = {
   name: string;
   status: ActivityStatus;
   priority: ActivityPriority;
-  createdBy: Staff;
-  assignedTo: Staff;
   activityDate: Date;
-  note: string | null;
 };
 export type ActivityStatusCount = {
   status: ActivityStatus;

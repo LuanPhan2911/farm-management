@@ -21,6 +21,7 @@ import { SearchBar } from "@/components/search-bar";
 import { PlantsSelect } from "@/app/[locale]/(backoffice)/admin/_components/plants-select";
 import { useUpdateSearchParam } from "@/hooks/use-update-search-param";
 import { useDialog } from "@/stores/use-dialog";
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
 
 interface CropsTableProps {
   data: CropTable[];
@@ -31,11 +32,9 @@ export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
   const { dateTime } = useFormatter();
   const { updateSearchParam, initialParam: plantId } =
     useUpdateSearchParam("plantId");
-  const { onOpen } = useDialog();
+  const { push } = useRouterWithRole();
   const handleEdit = (row: CropTable) => {
-    onOpen("crop.edit", {
-      crop: row,
-    });
+    push(`crops/detail/${row.id}`);
   };
 
   return (
@@ -100,7 +99,7 @@ export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
                 className="cursor-pointer"
                 onClick={() => handleEdit(item)}
               >
-                <TableCell>{dateTime(item.startDate)}</TableCell>
+                <TableCell>{dateTime(item.startDate, "short")}</TableCell>
                 <TableCell>
                   {item.endDate
                     ? dateTime(item.endDate, "short")

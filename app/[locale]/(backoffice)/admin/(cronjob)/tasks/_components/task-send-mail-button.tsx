@@ -41,6 +41,7 @@ import { EmailTemplate } from "@/components/mail/email-template";
 import { StaffsSelectMultiple } from "../../../_components/staffs-select";
 import { Label } from "@/components/ui/label";
 import { ClipboardButton } from "@/components/buttons/clipboard-button";
+import { useAuth } from "@clerk/nextjs";
 const initialBody = {
   receivers: ["example@gmail.com"],
   subject: "Email notification salary",
@@ -284,21 +285,24 @@ interface TaskEmailSelectProps {
   disabled?: boolean;
 }
 const TaskEmailSelect = ({ disabled }: TaskEmailSelectProps) => {
-  const [value, setValue] = useState("");
+  const [emails, setEmails] = useState<string[] | undefined>([]);
   const t = useTranslations("tasks.search.select.staff");
+  const { orgId } = useAuth();
   return (
     <div>
       <Label>{t("label")} </Label>
       <div className="flex gap-x-2 items-center">
         <StaffsSelectMultiple
+          orgId={orgId}
           error={t("error")}
-          label={t("placeholder")}
+          placeholder={t("placeholder")}
           notFound={t("notFound")}
           disabled={disabled}
-          onChange={setValue}
+          onChange={setEmails}
           className="w-full"
+          valueKey="email"
         />
-        <ClipboardButton value={value} />
+        <ClipboardButton value={JSON.stringify(emails)} />
       </div>
     </div>
   );

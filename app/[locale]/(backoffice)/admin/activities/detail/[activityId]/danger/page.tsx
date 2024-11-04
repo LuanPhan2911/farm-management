@@ -13,7 +13,7 @@ import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/activity";
 import { getCurrentStaff } from "@/services/staffs";
 import { ActivityCancelButton } from "../../../_components/activity-edit-status-button";
-import { canUpdateActivityStatus } from "@/lib/permission";
+import { canUpdateActivityStatus, isSuperAdmin } from "@/lib/permission";
 
 interface ActivityDangerPageProps {
   params: {
@@ -40,7 +40,8 @@ const ActivityDangerPage = async ({ params }: ActivityDangerPageProps) => {
   if (!data) {
     notFound();
   }
-  const canUpdate = canUpdateActivityStatus(data.status);
+  const canUpdate =
+    canUpdateActivityStatus(data.status) && isSuperAdmin(currentStaff.role);
   return (
     <>
       <Card>

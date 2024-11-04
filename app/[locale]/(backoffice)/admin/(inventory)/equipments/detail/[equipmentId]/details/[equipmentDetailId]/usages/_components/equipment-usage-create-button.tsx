@@ -37,6 +37,7 @@ import { StaffsSelect } from "@/app/[locale]/(backoffice)/admin/_components/staf
 import { Staff } from "@prisma/client";
 import { Textarea } from "@/components/ui/textarea";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { useAuth } from "@clerk/nextjs";
 
 interface EquipmentUsageCreateButtonProps {
   currentOperator: Staff;
@@ -64,6 +65,7 @@ export const EquipmentUsageCreateButton = ({
       duration: "1 day",
     },
   });
+  const { orgId } = useAuth();
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       create(values)
@@ -131,16 +133,13 @@ export const EquipmentUsageCreateButton = ({
                     <FormLabel>{tSchema("operatorId.label")}</FormLabel>
                     <FormControl>
                       <StaffsSelect
+                        orgId={orgId}
                         onChange={field.onChange}
                         defaultValue={field.value ?? undefined}
                         placeholder={tSchema("operatorId.placeholder")}
                         disabled={isPending || !canCreate}
                         error={tSchema("operatorId.error")}
                         notFound={tSchema("operatorId.notFound")}
-                        appearance={{
-                          button: "lg:w-full h-12",
-                          content: "lg:w-[400px]",
-                        }}
                       />
                     </FormControl>
 

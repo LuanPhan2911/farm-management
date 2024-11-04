@@ -20,7 +20,6 @@ import { MaterialUsagesTableAction } from "./material-usages-table-action";
 import { useDialog } from "@/stores/use-dialog";
 import { UserAvatar } from "@/components/user-avatar";
 import { MaterialTypeValue } from "../../../../_components/material-type-value";
-import { ActivityStatusValue } from "@/app/[locale]/(backoffice)/admin/activities/_components/activity-status-value";
 
 interface MaterialUsagesTableProps {
   data: MaterialUsageTable[];
@@ -80,9 +79,7 @@ export const MaterialUsagesTable = ({
                   <MaterialTypeValue value={item.material.type} />
                 </TableCell>
 
-                <TableCell className="text-center">
-                  {item.quantityUsed}
-                </TableCell>
+                <TableCell>{item.quantityUsed}</TableCell>
                 <TableCell>{item.unit.name}</TableCell>
                 <TableCell>
                   <MaterialUsagesTableAction data={item} />

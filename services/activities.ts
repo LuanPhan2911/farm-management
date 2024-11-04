@@ -6,16 +6,7 @@ import {
   ActivityTable,
   PaginatedResponse,
 } from "@/types";
-import { ActivityPriority, ActivityStatus } from "@prisma/client";
-import { getCurrentStaff, getStaffById } from "./staffs";
-import {
-  ActivityCreatePermissionError,
-  ActivityExistError,
-  ActivityUpdatePermissionError,
-  StaffExistError,
-  UnAuthorizedError,
-} from "@/errors";
-import { canCreateActivity, canStaffUpdateActivity } from "@/lib/permission";
+import { ActivityPriority, ActivityStatus, Staff } from "@prisma/client";
 import { LIMIT } from "@/configs/paginationConfig";
 import {
   getObjectFilterNumber,
@@ -23,66 +14,17 @@ import {
   getObjectSortOrder,
 } from "@/lib/utils";
 
-const checkCreateActivity = async ({
-  createdById,
-  assignedToId,
-}: {
-  createdById: string;
-  assignedToId: string;
-}) => {
-  const createdBy = await getCurrentStaff();
-  // check create by exist
-  if (!createdBy || createdBy.id !== createdById) {
-    throw new UnAuthorizedError();
-  }
-  // check created by role
-  if (!canCreateActivity(createdBy.role)) {
-    throw new ActivityCreatePermissionError();
-  }
-  const assignedTo = await getStaffById(assignedToId);
-  if (!assignedTo) {
-    throw new StaffExistError();
-  }
-  return true;
-};
-const checkUpdateActivity = async (id: string) => {
-  const currentStaff = await getCurrentStaff();
-  if (!currentStaff) {
-    throw new UnAuthorizedError();
-  }
-  const activity = await db.activity.findUnique({
-    where: {
-      id,
-    },
-  });
-  if (!activity) {
-    throw new ActivityExistError();
-  }
-
-  const { assignedToId, createdById } = activity;
-  if (
-    !canStaffUpdateActivity({
-      assignedToId,
-      createdById,
-      currentStaff,
-    })
-  ) {
-    throw new ActivityUpdatePermissionError();
-  }
-  return true;
-};
 type ActivityParams = {
   name: string;
   description?: string | null;
-  fieldId: string;
+  cropId: string;
   activityDate: Date;
   status: ActivityStatus;
   priority: ActivityPriority;
   estimatedDuration?: string | null;
   actualDuration?: string | null;
-  note?: string | null;
   createdById: string;
-  assignedToId: string;
+  assignedTo: string[];
 };
 /**
  * only admin or super admin have permission to create activity
@@ -91,15 +33,21 @@ type ActivityParams = {
  * @param params
  */
 export const createActivity = async (params: ActivityParams) => {
-  const { createdById, assignedToId } = params;
-  await checkCreateActivity({
-    assignedToId,
-    createdById,
-  });
+  const { assignedTo, ...other } = params;
 
   const activity = await db.activity.create({
     data: {
-      ...params,
+      ...other,
+      assignedTo: {
+        createMany: {
+          data: assignedTo.map((staffId) => {
+            return {
+              staffId,
+            };
+          }),
+          skipDuplicates: true,
+        },
+      },
     },
   });
   return activity;
@@ -108,10 +56,12 @@ export const createActivity = async (params: ActivityParams) => {
 type ActivityUpdateParams = {
   name: string;
   description?: string | null;
+  activityDate: Date;
   status: ActivityStatus;
   priority: ActivityPriority;
+  estimatedDuration?: string | null;
   actualDuration?: string | null;
-  note?: string | null;
+  assignedTo: string[];
 };
 /**
  * update activity
@@ -126,12 +76,27 @@ export const updateActivity = async (
   id: string,
   params: ActivityUpdateParams
 ) => {
-  await checkUpdateActivity(id);
+  const { assignedTo, ...other } = params;
 
   const updatedActivity = await db.activity.update({
     where: { id },
     data: {
-      ...params,
+      ...other,
+      assignedTo: {
+        createMany: {
+          data: assignedTo.map((staffId) => {
+            return {
+              staffId,
+            };
+          }),
+          skipDuplicates: true,
+        },
+        deleteMany: {
+          staffId: {
+            notIn: assignedTo,
+          },
+        },
+      },
     },
   });
   return updatedActivity;
@@ -144,7 +109,6 @@ export const updateActivity = async (
  * @returns
  */
 export const deleteActivity = async (id: string) => {
-  await checkUpdateActivity(id);
   const deletedActivity = await db.activity.delete({
     where: {
       id,
@@ -158,7 +122,6 @@ export const updateActivityStatus = async (
   id: string,
   status: "COMPLETED" | "CANCELLED"
 ) => {
-  await checkUpdateActivity(id);
   const equipmentDetails = await db.equipmentUsage.findMany({
     where: {
       activityId: id,
@@ -216,7 +179,19 @@ export const getActivities = async ({
         take: LIMIT,
         skip: (page - 1) * LIMIT,
         where: {
-          OR: [{ assignedToId: staffId }, { createdById: staffId }],
+          OR: [
+            {
+              createdById: staffId,
+            },
+            {
+              assignedTo: {
+                some: {
+                  staffId,
+                },
+              },
+            },
+          ],
+
           name: {
             contains: query,
             mode: "insensitive",
@@ -227,13 +202,18 @@ export const getActivities = async ({
         },
         orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
         include: {
-          assignedTo: true,
+          assignedTo: {
+            include: {
+              staff: true,
+            },
+          },
           createdBy: true,
-          field: {
+          crop: {
             select: {
               id: true,
               name: true,
-              location: true,
+              startDate: true,
+              endDate: true,
             },
           },
           _count: {
@@ -246,7 +226,18 @@ export const getActivities = async ({
       }),
       db.activity.count({
         where: {
-          OR: [{ assignedToId: staffId }, { createdById: staffId }],
+          OR: [
+            {
+              createdById: staffId,
+            },
+            {
+              assignedTo: {
+                some: {
+                  staffId,
+                },
+              },
+            },
+          ],
           name: {
             contains: query,
             mode: "insensitive",
@@ -268,20 +259,28 @@ export const getActivities = async ({
     };
   }
 };
+
+type ActivitiesCropQuery = {
+  page?: number;
+  query?: string;
+  orderBy?: string;
+  filterString?: string;
+  filterNumber?: string;
+  cropId: string;
+};
+export const getActivitiesByCropId = async ({}: ActivitiesCropQuery) => {};
+
 export const getActivitiesSelect = async ({
   staffId,
 }: ActivitySelectQuery): Promise<ActivitySelect[]> => {
   try {
     return await db.activity.findMany({
       where: {
-        OR: [
-          {
-            createdById: staffId,
+        assignedTo: {
+          some: {
+            staffId,
           },
-          {
-            assignedToId: staffId,
-          },
-        ],
+        },
         status: {
           in: ["NEW", "IN_PROGRESS"],
         },
@@ -291,10 +290,7 @@ export const getActivitiesSelect = async ({
         name: true,
         status: true,
         priority: true,
-        createdBy: true,
-        assignedTo: true,
         activityDate: true,
-        note: true,
       },
     });
   } catch (error) {
@@ -318,18 +314,27 @@ export const getActivityById = async ({
             createdById: staffId,
           },
           {
-            assignedToId: staffId,
+            assignedTo: {
+              some: {
+                staffId,
+              },
+            },
           },
         ],
       },
       include: {
-        assignedTo: true,
+        assignedTo: {
+          include: {
+            staff: true,
+          },
+        },
         createdBy: true,
-        field: {
+        crop: {
           select: {
             id: true,
             name: true,
-            location: true,
+            startDate: true,
+            endDate: true,
           },
         },
         _count: {
@@ -405,6 +410,67 @@ export const getCountActivityPriority = async ({
         _count: item._count._all,
       };
     });
+  } catch (error) {
+    return [];
+  }
+};
+
+type ActivityAssignedParams = {
+  activityId: string;
+  assignedTo: string[];
+};
+export const upsertActivityAssigned = async (
+  params: ActivityAssignedParams
+) => {
+  return await db.$transaction([
+    db.activityAssigned.createMany({
+      data: params.assignedTo.map((staffId) => {
+        return {
+          staffId,
+          activityId: params.activityId,
+        };
+      }),
+      skipDuplicates: true,
+    }),
+    db.activityAssigned.deleteMany({
+      where: {
+        staffId: {
+          notIn: params.assignedTo,
+        },
+      },
+    }),
+  ]);
+};
+
+export const deleteActivityAssigned = async ({
+  activityId,
+  staffId,
+}: {
+  activityId: string;
+  staffId: string;
+}) => {
+  return await db.activityAssigned.delete({
+    where: {
+      activityId_staffId: {
+        activityId,
+        staffId,
+      },
+    },
+  });
+};
+export const getActivityAssignedStaffs = async (
+  activityId: string
+): Promise<Staff[]> => {
+  try {
+    const activityAssigned = await db.activityAssigned.findMany({
+      where: {
+        activityId,
+      },
+      include: {
+        staff: true,
+      },
+    });
+    return activityAssigned.map((item) => item.staff);
   } catch (error) {
     return [];
   }

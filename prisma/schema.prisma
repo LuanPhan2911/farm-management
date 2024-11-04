@@ -162,8 +162,8 @@ model Staff {
   soilConfirmations    Soil[]
   messages             Message[]
   files                File[]
-  activityCreatedBy    Activity[]       @relation(name: "createdBy")
-  activityAssignedTo   Activity[]       @relation(name: "assignedTo")
+  activityCreatedBy    Activity[]         @relation(name: "createdBy")
+  activityAssinged     ActivityAssigned[]
   equipmentUsages      EquipmentUsage[]
 }
 
@@ -280,10 +280,9 @@ model Field {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  crops      Crop[]
-  weathers   Weather[]
-  soils      Soil[]
-  activities Activity[]
+  crops    Crop[]
+  weathers Weather[]
+  soils    Soil[]
 }
 
 enum Season {
@@ -607,28 +606,40 @@ model Crop {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  activities Activity[]
+}
+
+model ActivityAssigned {
+  id         String   @id @default(uuid())
+  activityId String
+  staffId    String
+  assignedAt DateTime @default(now())
+
+  activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  staff    Staff    @relation(fields: [staffId], references: [id], onDelete: Cascade)
+
+  @@unique([activityId, staffId])
 }
 
 model Activity {
   id                String           @id @default(uuid())
   name              String
   description       String?
-  fieldId           String
+  cropId            String
   activityDate      DateTime // Scheduled or actual date of the activity
   status            ActivityStatus   @default(NEW)
   priority          ActivityPriority @default(LOW) // Enum: "Low", "Medium", "High", "Urgent"
   estimatedDuration String? // Estimated duration in hours
   actualDuration    String? // Actual duration in hours
-  note              String?
   createdById       String
-  assignedToId      String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   equipmentUseds EquipmentUsage[] // Relation to equipment used
   materialUseds  MaterialUsage[]
-  createdBy      Staff            @relation(name: "createdBy", fields: [createdById], references: [id])
-  assignedTo     Staff            @relation(name: "assignedTo", fields: [assignedToId], references: [id])
-  field          Field            @relation(fields: [fieldId], references: [id])
+  createdBy      Staff              @relation(name: "createdBy", fields: [createdById], references: [id])
+  crop           Crop               @relation(fields: [cropId], references: [id])
+  assignedTo     ActivityAssigned[]
 }

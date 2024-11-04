@@ -55,11 +55,9 @@ export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
             </TableHead>
             <TableHead>{t("table.thead.status")}</TableHead>
             <TableHead>{t("table.thead.priority")}</TableHead>
+
             <TableHead>{t("table.thead.estimatedDuration")}</TableHead>
             <TableHead>{t("table.thead.createdBy")}</TableHead>
-            <TableHead>{t("table.thead.assignedTo")}</TableHead>
-            <TableHead>{t("table.thead.countEquipmentUsage")}</TableHead>
-            <TableHead>{t("table.thead.countMaterialUsage")}</TableHead>
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>
@@ -71,15 +69,15 @@ export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
                 className="cursor-pointer"
                 onClick={() => handleViewDetail(item)}
               >
-                <TableCell>{dateTime(item.activityDate, "short")}</TableCell>
-                <TableCell className="lg:w-[350px]">{item.name}</TableCell>
+                <TableCell>{dateTime(item.activityDate, "long")}</TableCell>
+                <TableCell>{item.name}</TableCell>
                 <TableCell>
                   <ActivityStatusValue value={item.status} />
                 </TableCell>
-
                 <TableCell>
                   <ActivityPriorityValue value={item.priority} />
                 </TableCell>
+
                 <TableCell>
                   {item.estimatedDuration || t("table.trow.estimatedDuration")}
                 </TableCell>
@@ -90,15 +88,7 @@ export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
                     description={item.createdBy.email}
                   />
                 </TableCell>
-                <TableCell>
-                  <SelectItemContent
-                    imageUrl={item.assignedTo.imageUrl}
-                    title={item.assignedTo.name}
-                    description={item.assignedTo.email}
-                  />
-                </TableCell>
-                <TableCell>{item._count.equipmentUseds}</TableCell>
-                <TableCell>{item._count.materialUseds}</TableCell>
+
                 <TableCell>
                   <ActivitiesTableAction data={item} />
                 </TableCell>

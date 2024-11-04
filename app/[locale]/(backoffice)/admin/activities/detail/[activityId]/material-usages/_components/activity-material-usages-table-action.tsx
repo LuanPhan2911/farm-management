@@ -17,6 +17,7 @@ import { assign, destroy, revoke } from "@/actions/material-usage";
 import { MaterialUsageEditButton } from "@/app/[locale]/(backoffice)/admin/(inventory)/materials/detail/[materialId]/usages/_components/material-usages-edit-button";
 import { ActionButton } from "@/components/buttons/action-button";
 import { useParams } from "next/navigation";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface ActivityMaterialUsagesTableActionProps {
   data: MaterialUsageTable;
@@ -28,8 +29,12 @@ export const ActivityMaterialUsagesTableAction = ({
   const params = useParams<{
     activityId: string;
   }>()!;
-  const canUpdate =
+  const { isSuperAdmin, isOnlyAdmin } = useCurrentStaffRole();
+  const canEdit =
     !data.activity || canUpdateActivityStatus(data.activity.status);
+  const canUpdate = canEdit && isOnlyAdmin;
+  const canDelete = canEdit && isSuperAdmin;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -64,11 +69,7 @@ export const ActivityMaterialUsagesTableAction = ({
           )}
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <MaterialUsageEditButton
-            data={data}
-            label={t("edit.label")}
-            disabled={!canUpdate}
-          />
+          <MaterialUsageEditButton data={data} disabled={!canUpdate} />
         </DropdownMenuItem>
 
         <DropdownMenuItem>
@@ -76,7 +77,7 @@ export const ActivityMaterialUsagesTableAction = ({
             destroyFn={destroy}
             id={data.id}
             inltKey="materialUsages"
-            disabled={!canUpdate}
+            disabled={!canDelete}
             className="w-full"
           />
         </DropdownMenuItem>

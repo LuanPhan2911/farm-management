@@ -1,7 +1,7 @@
 import { LIMIT } from "@/configs/paginationConfig";
 import { db } from "@/lib/db";
 import { getObjectFilterNumber, getObjectSortOrder } from "@/lib/utils";
-import { CropTable, PaginatedResponse } from "@/types";
+import { CropSelect, CropTable, PaginatedResponse } from "@/types";
 import { UnitValue, upsertFloatUnit } from "./units";
 import { getCurrentStaff } from "./staffs";
 import { isFarmer, isOnlyAdmin, isSuperAdmin } from "@/lib/permission";
@@ -91,7 +91,7 @@ type CropQuery = {
   endDate?: Date;
   filterNumber?: string;
 };
-export const getCropsOnField = async ({
+export const getCrops = async ({
   orgId,
   endDate,
   filterNumber,
@@ -229,5 +229,91 @@ export const getCropsOnField = async ({
       data: [],
       totalPage: 0,
     };
+  }
+};
+
+export const getCropById = async (id: string) => {
+  try {
+    return await db.crop.findUnique({
+      where: { id },
+      include: {
+        actualYield: {
+          include: {
+            unit: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+        estimatedYield: {
+          include: {
+            unit: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+        plant: {
+          select: {
+            name: true,
+            id: true,
+          },
+        },
+      },
+    });
+  } catch (error) {
+    return null;
+  }
+};
+
+export const getCropsSelect = async (
+  orgId?: string | null
+): Promise<CropSelect[]> => {
+  try {
+    let fields;
+    const currentStaff = await getCurrentStaff();
+    if (!currentStaff) {
+      throw new Error("Unauthorized");
+    }
+    if (!orgId && isOnlyAdmin(currentStaff.role)) {
+      fields = await db.field.findMany({
+        select: {
+          id: true,
+        },
+      });
+    }
+    if (!orgId && isFarmer(currentStaff.role)) {
+      throw new Error("No field id to get crops");
+    }
+    if (orgId) {
+      fields = await db.field.findMany({
+        where: {
+          orgId,
+        },
+        select: {
+          id: true,
+        },
+      });
+    }
+    return await db.crop.findMany({
+      where: {
+        fieldId: {
+          in: fields?.map((item) => item.id),
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        startDate: true,
+        endDate: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  } catch (error) {
+    return [];
   }
 };

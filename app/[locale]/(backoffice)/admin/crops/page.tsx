@@ -1,4 +1,4 @@
-import { getCropsOnField } from "@/services/crops";
+import { getCrops } from "@/services/crops";
 import { CropsTable } from "./_components/crops-table";
 import { parseToDate, parseToNumber } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -30,7 +30,7 @@ const CropsPage = async ({ searchParams }: CropsPageProps) => {
   const endDate = parseToDate(searchParams!.end);
   const page = parseToNumber(searchParams!.page, 1);
   const t = await getTranslations("crops.page");
-  const { data, totalPage } = await getCropsOnField({
+  const { data, totalPage } = await getCrops({
     orgId,
     page,
     orderBy,

@@ -8,18 +8,21 @@ import {
   StaffExistError,
   UnAuthorizedError,
 } from "@/errors";
+import { db } from "@/lib/db";
 import { errorResponse, successResponse } from "@/lib/utils";
-import { ActivitySchema } from "@/schemas";
+import { ActivityAssignedSchema, ActivitySchema } from "@/schemas";
 import {
   createActivity,
   deleteActivity,
+  deleteActivityAssigned,
   updateActivity,
   updateActivityStatus,
+  upsertActivityAssigned,
 } from "@/services/activities";
 import { ActionResponse } from "@/types";
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
+import { string, z } from "zod";
 
 export const create = async (
   values: z.infer<ReturnType<typeof ActivitySchema>>
@@ -40,15 +43,6 @@ export const create = async (
     revalidatePath("/admin/activities");
     return successResponse(tStatus("success.create"), activity);
   } catch (error) {
-    if (error instanceof UnAuthorizedError) {
-      return errorResponse(tSchema("errors.unauthorized"));
-    }
-    if (error instanceof ActivityCreatePermissionError) {
-      return errorResponse(tSchema("errors.createPermission"));
-    }
-    if (error instanceof StaffExistError) {
-      return errorResponse(tSchema("errors.existStaff"));
-    }
     return errorResponse(tStatus("failure.create"));
   }
 };
@@ -65,29 +59,12 @@ export const edit = async (
     return errorResponse(tSchema("errors.parse"));
   }
   try {
-    const { name, priority, note, description, actualDuration, status } =
-      validatedFields.data;
     const updatedActivity = await updateActivity(id, {
-      name,
-      priority,
-      status,
-      actualDuration,
-      description,
-      note,
+      ...validatedFields.data,
     });
     revalidatePath("/admin/activities");
     return successResponse(tStatus("success.edit"));
   } catch (error) {
-    if (error instanceof UnAuthorizedError) {
-      return errorResponse(tSchema("errors.unauthorized"));
-    }
-    if (error instanceof ActivityExistError) {
-      return errorResponse(tSchema("errors.existActivity"));
-    }
-
-    if (error instanceof ActivityUpdatePermissionError) {
-      return errorResponse(tSchema("errors.updatePermission"));
-    }
     return errorResponse(tStatus("failure.edit"));
   }
 };
@@ -99,15 +76,6 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
     revalidatePath("/admin/activities");
     return successResponse(tStatus("success.destroy"));
   } catch (error) {
-    if (error instanceof UnAuthorizedError) {
-      return errorResponse(tSchema("errors.unauthorized"));
-    }
-    if (error instanceof ActivityExistError) {
-      return errorResponse(tSchema("errors.existActivity"));
-    }
-    if (error instanceof ActivityUpdatePermissionError) {
-      return errorResponse(tSchema("errors.updatePermission"));
-    }
     return errorResponse(tStatus("failure.destroy"));
   }
 };
@@ -123,18 +91,6 @@ export const completeActivity = async (
     revalidatePath("/admin/activities");
     return successResponse(tStatus("success.complete"));
   } catch (error) {
-    if (error instanceof UnAuthorizedError) {
-      return errorResponse(tSchema("errors.unauthorized"));
-    }
-    if (error instanceof ActivityExistError) {
-      return errorResponse(tSchema("errors.existActivity"));
-    }
-    if (error instanceof ActivityUpdateStatusError) {
-      return errorResponse(tSchema("errors.invalidActivityStatus"));
-    }
-    if (error instanceof ActivityUpdatePermissionError) {
-      return errorResponse(tSchema("errors.updatePermission"));
-    }
     return errorResponse(tStatus("failure.complete"));
   }
 };
@@ -149,18 +105,47 @@ export const cancelActivity = async (
     revalidatePath("/admin/activities");
     return successResponse(tStatus("success.cancel"));
   } catch (error) {
-    if (error instanceof UnAuthorizedError) {
-      return errorResponse(tSchema("errors.unauthorized"));
-    }
-    if (error instanceof ActivityExistError) {
-      return errorResponse(tSchema("errors.existActivity"));
-    }
-    if (error instanceof ActivityUpdateStatusError) {
-      return errorResponse(tSchema("errors.invalidActivityStatus"));
-    }
-    if (error instanceof ActivityUpdatePermissionError) {
-      return errorResponse(tSchema("errors.updatePermission"));
-    }
     return errorResponse(tStatus("failure.cancel"));
+  }
+};
+
+export const upsertAssigned = async (
+  values: z.infer<ReturnType<typeof ActivityAssignedSchema>>
+): Promise<ActionResponse> => {
+  const tSchema = await getTranslations("activities.schema");
+  const tStatus = await getTranslations("activities.status");
+  const paramsSchema = ActivityAssignedSchema(tSchema);
+  const validatedFields = paramsSchema.safeParse(values);
+
+  if (!validatedFields.success) {
+    return errorResponse(tSchema("errors.parse"));
+  }
+  try {
+    await upsertActivityAssigned({
+      ...validatedFields.data,
+    });
+    revalidatePath(
+      `/admin/activities/detail/${validatedFields.data.activityId}/staffs`
+    );
+    return successResponse(tStatus("success.upsertAssigned"));
+  } catch (error) {
+    return errorResponse(tStatus("failure.upsertAssigned"));
+  }
+};
+export const deleteAssigned = async (
+  activityId: string,
+  staffId: string
+): Promise<ActionResponse> => {
+  const tStatus = await getTranslations("activities.status");
+
+  try {
+    await deleteActivityAssigned({
+      activityId,
+      staffId,
+    });
+    revalidatePath(`/admin/activities/detail/${activityId}/staffs`);
+    return successResponse(tStatus("success.deleteAssigned"));
+  } catch (error) {
+    return errorResponse(tStatus("failure.deleteAssigned"));
   }
 };

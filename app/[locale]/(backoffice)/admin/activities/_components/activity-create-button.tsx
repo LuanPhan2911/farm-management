@@ -4,7 +4,6 @@ import { create } from "@/actions/activity";
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 import { DatePickerWithTime } from "@/components/form/date-picker-with-time";
 import { SelectOptions } from "@/components/form/select-options";
-import { Button } from "@/components/ui/button";
 
 import {
   Form,
@@ -16,7 +15,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Link } from "@/navigation";
 import { ActivitySchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ActivityPriority, Staff } from "@prisma/client";
@@ -27,19 +25,21 @@ import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { StaffsSelect } from "../../_components/staffs-select";
-import { FieldsSelect } from "../../_components/fields-select";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
+import { LinkButton } from "@/components/buttons/link-button";
+import { CropsSelect } from "../../_components/crops-select";
+import { useAuth } from "@clerk/nextjs";
+import { StaffsSelectMultiple } from "../../_components/staffs-select";
 
 export const ActivityCreateButton = () => {
   const t = useTranslations("activities.form");
   return (
-    <Link href={"/admin/activities/create"}>
-      <Button variant={"success"} size={"sm"}>
-        <Plus className="mr-2" />
-        {t("create.label")}
-      </Button>
-    </Link>
+    <LinkButton
+      href="activities/create"
+      label={t("create.label")}
+      icon={Plus}
+      variant={"success"}
+    />
   );
 };
 
@@ -53,6 +53,7 @@ export const ActivityCreateForm = ({
   const formSchema = ActivitySchema(tSchema);
   const [isPending, startTransition] = useTransition();
   const router = useRouterWithRole();
+  const { orgId } = useAuth();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -88,45 +89,26 @@ export const ActivityCreateForm = ({
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4 max-w-6xl"
       >
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{tSchema("name.label")}</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder={tSchema("name.placeholder")}
-                  value={field.value ?? undefined}
-                  onChange={field.onChange}
-                  disabled={isPending}
-                />
-              </FormControl>
+        <div className="grid lg:grid-cols-2 gap-2">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("name.label")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={tSchema("name.placeholder")}
+                    value={field.value ?? undefined}
+                    onChange={field.onChange}
+                    disabled={isPending}
+                  />
+                </FormControl>
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{tSchema("description.label")}</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder={tSchema("description.placeholder")}
-                  value={field.value ?? undefined}
-                  onChange={field.onChange}
-                  disabled={isPending}
-                />
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="grid lg:grid-cols-4 gap-2">
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="activityDate"
@@ -149,6 +131,54 @@ export const ActivityCreateForm = ({
               </FormItem>
             )}
           />
+        </div>
+        <div className="grid lg:grid-cols-2 gap-2">
+          <FormField
+            control={form.control}
+            name="cropId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("cropId.label")}</FormLabel>
+                <FormControl>
+                  <CropsSelect
+                    orgId={orgId}
+                    defaultValue={field.value}
+                    onChange={field.onChange}
+                    error={tSchema("cropId.error")}
+                    notFound={tSchema("cropId.notFound")}
+                    placeholder={tSchema("cropId.placeholder")}
+                    disabled={isPending}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="assignedTo"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("assignedTo.label")}</FormLabel>
+                <FormControl>
+                  <StaffsSelectMultiple
+                    orgId={orgId}
+                    onChange={field.onChange}
+                    defaultValue={field.value}
+                    error={tSchema("assignedTo.error")}
+                    placeholder={tSchema("assignedTo.placeholder")}
+                    notFound={tSchema("assignedTo.notFound")}
+                    disabled={isPending}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="grid lg:grid-cols-3 gap-2">
           <FormField
             control={form.control}
             name="priority"
@@ -214,68 +244,15 @@ export const ActivityCreateForm = ({
             )}
           />
         </div>
-        <div className="grid lg:grid-cols-2 gap-2">
-          <FormField
-            control={form.control}
-            name="assignedToId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("assignedToId.label")}</FormLabel>
-                <FormControl>
-                  <StaffsSelect
-                    placeholder={tSchema("assignedToId.placeholder")}
-                    onChange={field.onChange}
-                    defaultValue={field.value ?? undefined}
-                    error={tSchema("assignedToId.error")}
-                    notFound={tSchema("assignedToId.notFound")}
-                    disabled={isPending}
-                    appearance={{
-                      button: "lg:w-full h-12",
-                      content: "lg:w-[450px]",
-                    }}
-                  />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="fieldId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("fieldId.label")}</FormLabel>
-                <FormControl>
-                  <FieldsSelect
-                    defaultValue={field.value}
-                    onChange={field.onChange}
-                    error={tSchema("fieldId.error")}
-                    notFound={tSchema("fieldId.notFound")}
-                    placeholder={tSchema("fieldId.placeholder")}
-                    disabled={isPending}
-                    appearance={{
-                      button: "lg:w-full h-12",
-                      content: "lg:w-[450px]",
-                    }}
-                  />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
         <FormField
           control={form.control}
-          name="note"
+          name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{tSchema("note.label")}</FormLabel>
+              <FormLabel>{tSchema("description.label")}</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder={tSchema("note.placeholder")}
+                  placeholder={tSchema("description.placeholder")}
                   value={field.value ?? undefined}
                   onChange={field.onChange}
                   disabled={isPending}
@@ -286,6 +263,7 @@ export const ActivityCreateForm = ({
             </FormItem>
           )}
         />
+
         <DynamicDialogFooter disabled={isPending} closeButton={false} />
       </form>
     </Form>

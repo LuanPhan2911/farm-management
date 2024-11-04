@@ -15,7 +15,7 @@ export async function generateMetadata() {
   };
 }
 
-interface EquipmentUsagesPageProps {
+interface ActivityEquipmentUsagesPageProps {
   params: {
     activityId: string;
   };
@@ -27,7 +27,7 @@ interface EquipmentUsagesPageProps {
 const ActivityEquipmentUsagesPage = async ({
   params,
   searchParams,
-}: EquipmentUsagesPageProps) => {
+}: ActivityEquipmentUsagesPageProps) => {
   const t = await getTranslations("activities.page.detail.equipment-usages");
   const { query, orderBy } = searchParams;
   const currentStaff = await getCurrentStaff();
@@ -54,10 +54,7 @@ const ActivityEquipmentUsagesPage = async ({
       </CardHeader>
       <CardContent>
         <div className="flex justify-end">
-          <ActivityEquipmentUsageCreateButton
-            currentOperator={currentStaff}
-            disabled={!canUpdate}
-          />
+          <ActivityEquipmentUsageCreateButton disabled={!canUpdate} />
         </div>
         <ActivityEquipmentUsagesTable data={data} />
       </CardContent>

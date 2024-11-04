@@ -1,9 +1,10 @@
 import { LIMIT } from "@/configs/paginationConfig";
 import { db } from "@/lib/db";
 import { clerkClient, currentUser, getAuth } from "@clerk/nextjs/server";
-import { StaffRole } from "@prisma/client";
+import { Staff, StaffRole } from "@prisma/client";
 import { UserOrderBy } from "./users";
 import { NextApiRequest } from "next";
+import { getOrganizationMembership } from "./organizations";
 
 type StaffParams = {
   email: string;
@@ -115,14 +116,37 @@ export const getStaffsTable = async ({
 
 type StaffSelectQuery = {
   adminOnly?: boolean;
+  farmerOnly?: boolean;
+  orgId?: string | null;
 };
 export const getStaffsSelect = async (params?: StaffSelectQuery) => {
   try {
+    let staffExternalIds;
+    if (params?.orgId) {
+      const staffInOrg = await getOrganizationMembership({
+        orgId: params.orgId,
+      });
+
+      staffExternalIds = staffInOrg
+        .map((item) => item.publicUserData?.userId)
+        .filter((item) => item !== undefined);
+    }
+
     const staffs = await db.staff.findMany({
       where: {
+        ...(staffExternalIds && {
+          externalId: {
+            in: staffExternalIds,
+          },
+        }),
         ...(params?.adminOnly && {
           role: {
             in: ["superadmin", "admin"],
+          },
+        }),
+        ...(params?.farmerOnly && {
+          role: {
+            in: ["farmer"],
           },
         }),
       },

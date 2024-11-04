@@ -141,10 +141,6 @@ export const FieldCreateButton = ({}: FieldCreateButtonProps) => {
                         placeholder={tSchema("orgId.placeholder")}
                         notFound={tSchema("orgId.notFound")}
                         disabled={isPending}
-                        appearance={{
-                          button: "lg:w-full",
-                          content: "lg:w-[480px]",
-                        }}
                       />
                     </FormControl>
 
