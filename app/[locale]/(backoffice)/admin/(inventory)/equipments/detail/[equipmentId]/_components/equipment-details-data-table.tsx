@@ -38,9 +38,7 @@ export const EquipmentDetailsTable = ({ data }: EquipmentDetailsTableProps) => {
       },
       cell: ({ row }) => {
         const data = row.original;
-        return (
-          <UserAvatar src={data.equipment.imageUrl || undefined} size={"lg"} />
-        );
+        return <UserAvatar src={data.equipment.imageUrl || undefined} />;
       },
     },
     {

@@ -22,10 +22,6 @@ export const canUpdateActivityStatus = (status: ActivityStatus) => {
   return status === "NEW" || status === "IN_PROGRESS" || status === "PENDING";
 };
 
-export const canUpdateEquipmentUsage = (status: EquipmentStatus) => {
-  return status === "AVAILABLE";
-};
-
 export const canCreateActivity = (role: StaffRole) => isOnlyAdmin(role);
 
 export const canStaffUpdateActivity = ({

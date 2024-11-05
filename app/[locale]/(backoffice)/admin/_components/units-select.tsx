@@ -63,7 +63,7 @@ export const UnitsSelect = ({
     } catch (error) {}
   };
   if (isPending) {
-    return <Skeleton className="w-full h-12" />;
+    return <Skeleton className="w-full h-10" />;
   }
   if (isError) {
     return <ErrorButton title={error} refresh={refetch} />;

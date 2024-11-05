@@ -17,31 +17,33 @@ export const Navbar = () => {
   return (
     <div
       className={cn(
-        "flex items-center justify-between py-4 px-6 h-16 shadow-md backdrop-blur-sm",
+        "flex items-center gap-x-2 justify-between py-4 px-6 h-16 shadow-md backdrop-blur-sm",
         "fixed top-0 z-50 transition-all w-full right-0 border-r border-t border-b rounded-sm",
 
         isOpen && "sm:left-60 left-0 w-auto"
       )}
     >
-      <div className="flex gap-x-4 items-center">
-        <div className="flex gap-x-2">
-          <Button
-            size={"icon"}
-            variant={"outline"}
-            onClick={() => onToggle(isOpen)}
-          >
-            <Menu />
-          </Button>
-        </div>
+      <div className="flex gap-x-2 items-center">
+        <Button
+          size={"icon"}
+          variant={"outline"}
+          onClick={() => onToggle(isOpen)}
+        >
+          <Menu />
+        </Button>
+
         <div className="hidden lg:block">
           <BreadcrumbResponsive />
         </div>
       </div>
-      <div className="flex gap-x-4">
+      <div className="flex gap-x-2">
         <Notification />
         <LocaleSwitcher />
         <ModeToggle />
-        <Button variant={"outline"} className="dark:bg-slate-300">
+        <Button
+          variant={"outline"}
+          className="dark:bg-slate-300 lg:block hidden"
+        >
           <OrganizationSwitcher
             skipInvitationScreen
             appearance={{

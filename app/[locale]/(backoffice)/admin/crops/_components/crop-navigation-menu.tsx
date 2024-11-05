@@ -15,6 +15,7 @@ export const CropNavigationMenu = () => {
   const t = useTranslations("crops.tabs");
   const params = useParams<{
     cropId: string;
+    activityId: string;
   }>()!;
   if (!prefix) {
     return null;
@@ -28,6 +29,30 @@ export const CropNavigationMenu = () => {
     {
       href: `${getHref}/activities`,
       label: t("activities.label"),
+      ...(params.activityId && {
+        subData: [
+          {
+            href: `${getHref}/activities/detail/${params.activityId}`,
+            label: t("activities.info.label"),
+          },
+          {
+            href: `${getHref}/activities/detail/${params.activityId}/staffs`,
+            label: t("activities.staffs.label"),
+          },
+          {
+            href: `${getHref}/activities/detail/${params.activityId}/equipment-usages`,
+            label: t("activities.equipment-usages.label"),
+          },
+          {
+            href: `${getHref}/activities/detail/${params.activityId}/material-usages`,
+            label: t("activities.material-usages.label"),
+          },
+          {
+            href: `${getHref}/activities/detail/${params.activityId}/danger`,
+            label: t("activities.danger.label"),
+          },
+        ],
+      }),
     },
     {
       href: `${getHref}/danger`,

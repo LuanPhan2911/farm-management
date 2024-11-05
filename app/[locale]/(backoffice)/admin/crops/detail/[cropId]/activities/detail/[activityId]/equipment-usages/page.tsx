@@ -2,11 +2,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { getTranslations } from "next-intl/server";
 import { getEquipmentUsagesByActivityId } from "@/services/equipment-usages";
-import { ActivityEquipmentUsageCreateButton } from "./_components/activity-equipment-usage-create-button";
-import { ActivityEquipmentUsagesTable } from "./_components/activity-equipment-usages-table";
+
+import { getCurrentStaff } from "@/services/staffs";
 import { notFound } from "next/navigation";
 import { getActivityById } from "@/services/activities";
 import { canUpdateActivityStatus } from "@/lib/permission";
+import { ActivityEquipmentUsageCreateButton } from "@/app/[locale]/(backoffice)/admin/activities/detail/[activityId]/equipment-usages/_components/activity-equipment-usage-create-button";
+import { ActivityEquipmentUsagesTable } from "@/app/[locale]/(backoffice)/admin/activities/detail/[activityId]/equipment-usages/_components/activity-equipment-usages-table";
 export async function generateMetadata() {
   const t = await getTranslations("activities.page.detail.equipment-usages");
   return {
@@ -27,7 +29,9 @@ const ActivityEquipmentUsagesPage = async ({
   params,
   searchParams,
 }: ActivityEquipmentUsagesPageProps) => {
-  const t = await getTranslations("activities.page.detail.equipment-usages");
+  const t = await getTranslations(
+    "crops.page.detail.activities.detail.equipment-usages"
+  );
   const { query, orderBy } = searchParams;
 
   const data = await getEquipmentUsagesByActivityId({

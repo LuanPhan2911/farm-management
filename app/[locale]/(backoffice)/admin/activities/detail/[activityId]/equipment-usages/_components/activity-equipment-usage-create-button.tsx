@@ -107,10 +107,6 @@ export const ActivityEquipmentUsageCreateButton = ({
                         error={tSchema("equipmentDetailId.error")}
                         notFound={tSchema("equipmentDetailId.notFound")}
                         defaultValue={field.value}
-                        appearance={{
-                          button: "lg:w-full h-12",
-                          content: "lg:w-[400px]",
-                        }}
                       />
                     </FormControl>
 

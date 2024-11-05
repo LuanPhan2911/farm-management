@@ -63,7 +63,8 @@ export const EquipmentUsageEditDialog = () => {
     resolver: zodResolver(formSchema),
   });
 
-  const { isOnlyAdmin: canEdit } = useCurrentStaffRole();
+  const { isOnlyAdmin } = useCurrentStaffRole();
+
   const [id, setId] = useState("");
   useEffect(() => {
     if (data?.equipmentUsage) {
@@ -90,6 +91,9 @@ export const EquipmentUsageEditDialog = () => {
         });
     });
   };
+
+  const canEdit = isOnlyAdmin && data.equipmentUsage?.activityId === null;
+
   return (
     <DynamicDialog
       isOpen={isOpenDialog}

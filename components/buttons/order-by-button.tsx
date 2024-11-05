@@ -38,13 +38,13 @@ export const OrderByButton = ({
     setValue(toggleValue);
   };
   return (
-    <Button size={"sm"} variant={"ghost"} onClick={handleClick}>
-      {value === "desc" ? (
-        <ArrowDown className="h-4 w-4 mr-2" />
-      ) : (
-        <ArrowUp className="h-4 w-4 mr-2" />
-      )}
+    <Button size={"sm"} variant={"ghost"} onClick={handleClick} className="p-0">
       {label}
+      {value === "desc" ? (
+        <ArrowDown className="h-4 w-4 ml-2" />
+      ) : (
+        <ArrowUp className="h-4 w-4 ml-2" />
+      )}
     </Button>
   );
 };

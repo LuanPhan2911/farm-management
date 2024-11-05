@@ -13,10 +13,6 @@ import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/equipment-usage";
 import { EquipmentUsageTable } from "@/types";
 import { useTranslations } from "next-intl";
-import {
-  canUpdateActivityStatus,
-  canUpdateEquipmentUsage,
-} from "@/lib/permission";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface EquipmentUsagesTableActionProps {
@@ -27,12 +23,9 @@ export const EquipmentUsagesTableAction = ({
 }: EquipmentUsagesTableActionProps) => {
   const t = useTranslations("equipmentUsages.form");
   const { isSuperAdmin, isOnlyAdmin } = useCurrentStaffRole();
-  const canEdit =
-    !data.activity ||
-    canUpdateActivityStatus(data.activity.status) ||
-    canUpdateEquipmentUsage(data.equipmentDetail.status);
-  const canUpdate = canEdit && isOnlyAdmin;
-  const canDelete = canEdit && isSuperAdmin;
+
+  const canUpdate = data.activityId === null && isOnlyAdmin;
+  const canDelete = data.activity === null && isSuperAdmin;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

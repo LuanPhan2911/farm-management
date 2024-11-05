@@ -12,19 +12,20 @@ import { getTranslations } from "next-intl/server";
 import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/activity";
 import { getCurrentStaff } from "@/services/staffs";
+import { canUpdateActivityStatus, isSuperAdmin } from "@/lib/permission";
 import {
   ActivityCancelButton,
   ActivityCompletedButton,
-} from "../../../_components/activity-edit-status-button";
-import { canUpdateActivityStatus, isSuperAdmin } from "@/lib/permission";
+} from "@/app/[locale]/(backoffice)/admin/activities/_components/activity-edit-status-button";
 
 interface ActivityDangerPageProps {
   params: {
+    cropId: string;
     activityId: string;
   };
 }
 export async function generateMetadata() {
-  const t = await getTranslations("activities.page.detail.danger");
+  const t = await getTranslations("crops.page.detail.activities.detail.danger");
   return {
     title: t("title"),
   };
@@ -40,6 +41,7 @@ const ActivityDangerPage = async ({ params }: ActivityDangerPageProps) => {
   }
   const canUpdate =
     canUpdateActivityStatus(data.status) && isSuperAdmin(currentStaff.role);
+  const canDelete = isSuperAdmin(currentStaff.role);
   return (
     <>
       <Card>
@@ -60,6 +62,7 @@ const ActivityDangerPage = async ({ params }: ActivityDangerPageProps) => {
           <ActivityCancelButton activityId={data.id} disabled={!canUpdate} />
         </CardContent>
       </Card>
+
       <Card>
         <CardHeader>
           <CardTitle>{t("destroy.title")}</CardTitle>
@@ -70,7 +73,8 @@ const ActivityDangerPage = async ({ params }: ActivityDangerPageProps) => {
             destroyFn={destroy}
             id={data.id}
             inltKey="activities"
-            redirectHref="activities"
+            redirectHref={`crops/detail/${params.cropId}/activities`}
+            disabled={!canDelete}
           />
         </CardContent>
       </Card>

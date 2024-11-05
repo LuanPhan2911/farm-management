@@ -2,7 +2,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { getTranslations } from "next-intl/server";
 import { getEquipmentUsagesByActivityId } from "@/services/equipment-usages";
-import { getCurrentStaff } from "@/services/staffs";
 import { notFound } from "next/navigation";
 import { getActivityById } from "@/services/activities";
 import { canUpdateActivityStatus } from "@/lib/permission";
@@ -29,19 +28,14 @@ const ActivityEquipmentUsagesPage = async ({
 }: ActivityEquipmentUsagesPageProps) => {
   const t = await getTranslations("activities.page.detail.equipment-usages");
   const { query, orderBy } = searchParams;
-  const currentStaff = await getCurrentStaff();
+
   const data = await getEquipmentUsagesByActivityId({
     activityId: params.activityId,
     orderBy,
     query,
   });
-  if (!currentStaff) {
-    notFound();
-  }
-  const activity = await getActivityById({
-    activityId: params.activityId,
-    staffId: currentStaff.id,
-  });
+
+  const activity = await getActivityById(params.activityId);
   if (!activity) {
     notFound();
   }

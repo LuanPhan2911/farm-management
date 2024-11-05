@@ -138,6 +138,10 @@ export type FieldSelect = {
   id: string;
   name: string;
   location: string | null;
+  area: number | null;
+  unit: {
+    name: string;
+  } | null;
 };
 
 export type WeatherTable = Weather & {
@@ -387,6 +391,10 @@ export type CropTable = Crop & {
     id: string;
     name: string;
   };
+  field: FieldSelect;
+  _count: {
+    activities: number;
+  };
 };
 export type CropSelect = {
   id: string;
@@ -400,7 +408,10 @@ export type ActivityAssignedStaff = ActivityAssigned & {
 export type ActivityTable = Activity & {
   assignedTo: ActivityAssignedStaff[];
   createdBy: Staff;
-  crop: CropSelect;
+  crop: CropSelect & {
+    field: FieldSelect;
+    plant: PlantSelect;
+  };
   _count: {
     equipmentUseds: number;
     materialUseds: number;

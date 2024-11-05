@@ -1,10 +1,8 @@
 "use client";
 
-import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 
 import queryString from "query-string";
-import { ErrorButton } from "@/components/buttons/error-button";
 import {
   ComboBoxCustom,
   ComboBoxCustomAppearance,
@@ -61,7 +59,6 @@ const ActivitiesSelectItem = ({
   name,
   priority,
   status,
-  note,
 }: ActivitiesSelectItemProps) => {
   const { relativeTime } = useFormatter();
   return (

@@ -172,6 +172,8 @@
         "options": {
           "PLANT": "Plant",
           "SEED": "Seed",
+          "ACTIVITY": "Activity",
+          "PLANT_STAGE": "Plant stage",
           "default": "No selected"
         }
       },
@@ -2594,14 +2596,15 @@
     "table": {
       "thead": {
         "equipmentDetail": {
-          "name": "Equipment name",
-          "status": "Equipment status",
-          "imageUrl": "Equipment image"
+          "name": "Name",
+          "status": "Status",
+          "imageUrl": "Image",
+          "location": "Location"
         },
         "activity": {
           "name": "Activity name",
           "status": "Activity Status",
-          "usage": "Activity Usage"
+          "usage": "Usage"
         },
         "usageStartTime": "Created date",
         "duration": "Duration",
@@ -2613,6 +2616,9 @@
           "status": "No used",
           "usage": "Usage",
           "unused": "Unused"
+        },
+        "equipmentDetail": {
+          "location": "Unknown"
         },
         "operator": "No operator"
       }
@@ -3062,8 +3068,17 @@
         "name": "Name",
         "status": "Status",
         "priority": "Priority",
-        "estimatedDuration": "Estimated duration",
-        "createdBy": "CreatedBy"
+        "estimatedDuration": "Duration",
+        "createdBy": "CreatedBy",
+        "actualDuration": "Actual duration",
+        "crop": {
+          "field": {
+            "name": "Field name"
+          },
+          "plant": {
+            "name": "Plant name"
+          }
+        }
       },
       "trow": {
         "estimatedDuration": "No filled"
@@ -3122,7 +3137,13 @@
         "placeholder": "Activity name",
         "required_error": "Activity name is required!",
         "min": "Min name length is {min} characters",
-        "max": "Name's length must be less than {max} characters"
+        "max": "Name's length must be less than {max} characters",
+        "select": {
+          "error": "Fail load name",
+          "label": "Select",
+          "placeholder": "Select",
+          "notFound": "Name not found"
+        }
       },
       "description": {
         "label": "Activity description",
@@ -3221,7 +3242,22 @@
       "detail": {
         "title": "Crop detail",
         "activities": {
-          "title": "Crop activities"
+          "title": "Crop activities",
+          "detail": {
+            "title": "Activity info",
+            "staffs": {
+              "title": "Staffs"
+            },
+            "equipment-usages": {
+              "title": "Equipment usages"
+            },
+            "material-usages": {
+              "title": "Material usages"
+            },
+            "danger": {
+              "title": "Activity Danger"
+            }
+          }
         },
         "danger": {
           "title": "Crop danger"
@@ -3233,7 +3269,22 @@
         "label": "Info"
       },
       "activities": {
-        "label": "Activities"
+        "label": "Activities",
+        "info": {
+          "label": "Activity Info"
+        },
+        "staffs": {
+          "label": "Staffs"
+        },
+        "equipment-usages": {
+          "label": "Equipment usages"
+        },
+        "material-usages": {
+          "label": "Material usages"
+        },
+        "danger": {
+          "label": "Activity danger"
+        }
       },
       "danger": {
         "label": "Danger"
@@ -3247,13 +3298,20 @@
         "plant": "Plant",
         "estimatedYield": "Estimated Yield",
         "actualYield": "Actual Yield",
-        "status": "Status"
+        "status": "Status",
+        "field": {
+          "name": "Field name",
+          "area": "Field area"
+        }
       },
       "trow": {
-        "endDate": "",
+        "endDate": "No filled",
         "estimatedYield": "",
         "actualYield": "",
-        "status": ""
+        "status": "No filled",
+        "field": {
+          "area": "No filled"
+        }
       }
     },
     "search": {
@@ -3273,7 +3331,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete crop?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "Crop can only delete when no activities. This action cannot be undone!"
       },
       "detail": {
         "label": "Detail",
@@ -3804,6 +3862,11 @@
     "/admin/crops": "Crops",
     "/admin/crops/detail": "Crop detail",
     "/admin/crops/detail/activities": "Crop activities",
+    "/admin/crops/detail/activities/detail": "Activity Info",
+    "/admin/crops/detail/activities/detail/staffs": "Staffs",
+    "/admin/crops/detail/activities/detail/material-usages": "Material usages",
+    "/admin/crops/detail/activities/detail/equipment-usages": "Equipment usages",
+    "/admin/crops/detail/activities/detail/danger": "Activity Danger",
     "/admin/crops/detail/danger": "Crop danger",
     "/admin/activities": "Activities",
     "/admin/activities/create": "Create",

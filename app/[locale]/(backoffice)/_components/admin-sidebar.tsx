@@ -47,6 +47,7 @@ export const AdminSidebar = () => {
   const { isOpen, onClose } = useDashboardSidebar();
   const { isMobile } = useMedia();
   const pathname = usePathname();
+
   const t = useTranslations("sidebar");
   useEffect(() => {
     if (isMobile) {

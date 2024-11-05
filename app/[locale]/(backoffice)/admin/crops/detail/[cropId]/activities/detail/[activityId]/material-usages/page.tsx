@@ -3,8 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getTranslations } from "next-intl/server";
 import { getMaterialUsagesByActivityId } from "@/services/material-usages";
 import { getActivityById } from "@/services/activities";
+import { getCurrentStaff } from "@/services/staffs";
 import { notFound } from "next/navigation";
 import { canUpdateActivityStatus } from "@/lib/permission";
+import { ActivityMaterialUsageCreateButton } from "@/app/[locale]/(backoffice)/admin/activities/detail/[activityId]/material-usages/_components/activity-material-usage-create-button";
 import { ActivityMaterialUsagesTable } from "@/app/[locale]/(backoffice)/admin/activities/detail/[activityId]/material-usages/_components/activity-material-usages-table";
 export async function generateMetadata() {
   const t = await getTranslations("activities.page.detail.material-usages");
@@ -45,6 +47,9 @@ const ActivityMaterialUsagesPage = async ({
         <CardTitle>{t("title")}</CardTitle>
       </CardHeader>
       <CardContent>
+        <div className="flex justify-end">
+          <ActivityMaterialUsageCreateButton disabled={!canUpdate} />
+        </div>
         <ActivityMaterialUsagesTable data={materials} />
       </CardContent>
     </Card>

@@ -56,11 +56,7 @@ export const UsersTable = ({ data, totalPage }: UsersTableProps) => {
                 onClick={() => handleClick(user.id)}
               >
                 <TableCell>
-                  <UserAvatar
-                    src={user.imageUrl}
-                    size={"default"}
-                    className="rounded-full"
-                  />
+                  <UserAvatar src={user.imageUrl} className="rounded-full" />
                 </TableCell>
                 <TableCell>
                   <div className="ml-4 space-y-1">

@@ -19,14 +19,7 @@ interface ActivityDetailPageProps {
   };
 }
 const ActivityDetailPage = async ({ params }: ActivityDetailPageProps) => {
-  const currentStaff = await getCurrentStaff();
-  if (!currentStaff) {
-    notFound();
-  }
-  const data = await getActivityById({
-    activityId: params.activityId,
-    staffId: currentStaff.id,
-  });
+  const data = await getActivityById(params.activityId);
   const t = await getTranslations("activities.page.detail");
   if (!data) {
     notFound();

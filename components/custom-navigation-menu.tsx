@@ -51,6 +51,7 @@ export const CustomNavigationMenu = ({ data }: CustomNavigationMenuProps) => {
                           isActive={href === pathname}
                           key={href}
                           disabled={disabled}
+                          className="w-full justify-start"
                         />
                       );
                     })}
@@ -70,12 +71,14 @@ interface NavigationLinkProps {
   label: string;
   isActive: boolean;
   disabled?: boolean;
+  className?: string;
 }
 const NavigationLink = ({
   href,
   isActive,
   label,
   disabled,
+  className,
 }: NavigationLinkProps) => {
   return (
     <Button
@@ -84,8 +87,10 @@ const NavigationLink = ({
       disabled={disabled}
       className={cn(
         navigationMenuTriggerStyle(),
-        isActive && "border-l-4 border-l-green-500 "
+        isActive && "border-l-4 border-l-green-500 ",
+        className
       )}
+      asChild
     >
       <Link href={href}>
         <span className={cn(isActive && "text-green-500 hover:text-green-400")}>

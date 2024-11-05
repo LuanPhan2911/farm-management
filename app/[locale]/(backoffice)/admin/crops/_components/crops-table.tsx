@@ -13,15 +13,15 @@ import {
 import { useFormatter, useTranslations } from "next-intl";
 import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-with-value";
 import { CropTable } from "@/types";
-import { CropsTableAction } from "./crops-table-action";
 
 import { OrderByButton } from "@/components/buttons/order-by-button";
 import { DatePickerWithRangeButton } from "@/components/buttons/date-picker-range-button";
 import { SearchBar } from "@/components/search-bar";
 import { PlantsSelect } from "@/app/[locale]/(backoffice)/admin/_components/plants-select";
 import { useUpdateSearchParam } from "@/hooks/use-update-search-param";
-import { useDialog } from "@/stores/use-dialog";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
+import { FieldsSelect } from "../../_components/fields-select";
+import { SelectItemContentWithoutImage } from "@/components/form/select-item";
 
 interface CropsTableProps {
   data: CropTable[];
@@ -30,8 +30,10 @@ interface CropsTableProps {
 export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
   const t = useTranslations("crops");
   const { dateTime } = useFormatter();
-  const { updateSearchParam, initialParam: plantId } =
+  const { updateSearchParam: updatePlantId, initialParam: plantId } =
     useUpdateSearchParam("plantId");
+  const { updateSearchParam: updateFieldId, initialParam: fieldId } =
+    useUpdateSearchParam("fieldId");
   const { push } = useRouterWithRole();
   const handleEdit = (row: CropTable) => {
     push(`crops/detail/${row.id}`);
@@ -46,12 +48,23 @@ export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
           error={t("schema.plantId.error")}
           placeholder={t("schema.plantId.placeholder")}
           notFound={t("schema.plantId.notFound")}
-          onChange={updateSearchParam}
+          onChange={updatePlantId}
           appearance={{
             button: "lg:w-[250px] w-full",
-            content: "lg:w-[250px]",
+            content: "lg:w-[350px]",
           }}
           defaultValue={plantId}
+        />
+        <FieldsSelect
+          error={t("schema.fieldId.error")}
+          placeholder={t("schema.fieldId.placeholder")}
+          notFound={t("schema.fieldId.notFound")}
+          onChange={updateFieldId}
+          appearance={{
+            button: "lg:w-[250px] w-full",
+            content: "lg:w-[350px]",
+          }}
+          defaultValue={fieldId}
         />
       </div>
 
@@ -71,24 +84,15 @@ export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
                 label={t("table.thead.endDate")}
               />
             </TableHead>
-            <TableHead>
+            <TableHead className="w-[250px]">
               <OrderByButton column="name" label={t("table.thead.name")} />
             </TableHead>
             <TableHead>{t("table.thead.plant")}</TableHead>
-            <TableHead>
-              <OrderByButton
-                column="estimatedYield.value"
-                label={t("table.thead.estimatedYield")}
-              />
+            <TableHead className="w-[250px]">
+              {t("table.thead.field.name")}
             </TableHead>
-            <TableHead>
-              <OrderByButton
-                column="actualYield.value"
-                label={t("table.thead.actualYield")}
-              />
-            </TableHead>
+            <TableHead>{t("table.thead.field.area")}</TableHead>
             <TableHead>{t("table.thead.status")}</TableHead>
-            <TableHead></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -108,29 +112,22 @@ export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
                 <TableCell>{item.name}</TableCell>
                 <TableCell>{item.plant.name}</TableCell>
                 <TableCell>
-                  {!!item.estimatedYield ? (
-                    <UnitWithValue
-                      value={item.estimatedYield.value}
-                      unit={item.estimatedYield.unit?.name}
-                    />
-                  ) : (
-                    t("table.trow.actualYield")
-                  )}
+                  <SelectItemContentWithoutImage
+                    title={item.field.name}
+                    description={item.field.location}
+                  />
                 </TableCell>
                 <TableCell>
-                  {!!item.actualYield ? (
+                  {!!item.field.area ? (
                     <UnitWithValue
-                      value={item.actualYield.value}
-                      unit={item.actualYield.unit?.name}
+                      value={item.field.area}
+                      unit={item.field.unit?.name}
                     />
                   ) : (
-                    t("table.trow.actualYield")
+                    t("table.trow.field.area")
                   )}
                 </TableCell>
                 <TableCell>{item.status || t("table.trow.status")}</TableCell>
-                <TableCell>
-                  <CropsTableAction data={item} />
-                </TableCell>
               </TableRow>
             );
           })}

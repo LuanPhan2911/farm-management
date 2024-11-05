@@ -57,11 +57,7 @@ export const StaffsTable = ({ data, totalPage }: StaffsTableProps) => {
                 onClick={() => handleClick(staff.id)}
               >
                 <TableCell>
-                  <UserAvatar
-                    src={staff.imageUrl}
-                    size={"default"}
-                    className="rounded-full"
-                  />
+                  <UserAvatar src={staff.imageUrl} className="rounded-full" />
                 </TableCell>
                 <TableCell>{getEmailAddress(staff)}</TableCell>
                 <TableCell>

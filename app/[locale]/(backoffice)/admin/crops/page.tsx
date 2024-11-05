@@ -8,9 +8,9 @@ import { auth } from "@clerk/nextjs/server";
 interface CropsPageProps {
   searchParams: {
     plantId?: string;
+    fieldId?: string;
     page?: string;
     orderBy?: string;
-    filterString?: string;
     filterNumber?: string;
     begin?: string;
     end?: string;
@@ -25,7 +25,7 @@ export async function generateMetadata() {
 }
 const CropsPage = async ({ searchParams }: CropsPageProps) => {
   const { orgId } = auth();
-  const { query: name, orderBy, plantId, filterNumber } = searchParams;
+  const { query: name, orderBy, plantId, filterNumber, fieldId } = searchParams;
   const startDate = parseToDate(searchParams!.begin);
   const endDate = parseToDate(searchParams!.end);
   const page = parseToNumber(searchParams!.page, 1);
@@ -39,6 +39,7 @@ const CropsPage = async ({ searchParams }: CropsPageProps) => {
     endDate,
     name,
     plantId,
+    fieldId,
   });
 
   return (

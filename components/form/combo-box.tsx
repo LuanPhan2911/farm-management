@@ -120,6 +120,7 @@ interface ComboBoxCustomProps<T extends Record<string, any>> {
   data: T[] | undefined;
   isPending: boolean;
   isError: boolean;
+  hidden?: boolean;
   refetch: (
     options?: RefetchOptions
   ) => Promise<QueryObserverResult<T[], Error>>;
@@ -138,6 +139,7 @@ interface ComboBoxCustomProps<T extends Record<string, any>> {
 }
 export const ComboBoxCustom = <T extends Record<string, any>>({
   data: options,
+  hidden,
   labelKey,
   valueKey,
   placeholder,
@@ -149,7 +151,7 @@ export const ComboBoxCustom = <T extends Record<string, any>>({
   isPending,
   isError,
   appearance = {
-    button: "lg:w-full h-12",
+    button: "lg:w-full h-10",
     content: "lg:w-[350px]",
   },
   refetch,
@@ -177,14 +179,14 @@ export const ComboBoxCustom = <T extends Record<string, any>>({
 
   if (isPending) {
     return (
-      <Skeleton className={cn("lg:w-full h-12", appearance?.button)}></Skeleton>
+      <Skeleton className={cn("lg:w-full h-10", appearance?.button)}></Skeleton>
     );
   }
   if (isError) {
     return <ErrorButton title={error} refresh={refetch} />;
   }
   return (
-    <div className="flex flex-col gap-y-2">
+    <>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -197,7 +199,7 @@ export const ComboBoxCustom = <T extends Record<string, any>>({
             )}
             disabled={disabled}
           >
-            {selectedItem ? renderItem(selectedItem) : placeholder}
+            {selectedItem && !hidden ? renderItem(selectedItem) : placeholder}
 
             <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
           </Button>
@@ -240,6 +242,6 @@ export const ComboBoxCustom = <T extends Record<string, any>>({
         </div>
       )}
       {selectedItem && renderItemDetail && renderItemDetail(selectedItem)}
-    </div>
+    </>
   );
 };

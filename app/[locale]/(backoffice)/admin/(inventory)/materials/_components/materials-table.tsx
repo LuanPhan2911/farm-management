@@ -71,10 +71,7 @@ export const MaterialsTable = ({ data, totalPage }: MaterialsTableProps) => {
                 onClick={() => handleViewDetail(item)}
               >
                 <TableCell>
-                  <UserAvatar
-                    src={item.imageUrl || undefined}
-                    size={"default"}
-                  />
+                  <UserAvatar src={item.imageUrl || undefined} />
                 </TableCell>
                 <TableCell>{item.name}</TableCell>
                 <TableCell>{t(`schema.type.options.${item.type}`)}</TableCell>

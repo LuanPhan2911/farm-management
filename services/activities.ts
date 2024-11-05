@@ -13,6 +13,7 @@ import {
   getObjectFilterString,
   getObjectSortOrder,
 } from "@/lib/utils";
+import { getCurrentStaff } from "./staffs";
 
 type ActivityParams = {
   name: string;
@@ -164,6 +165,8 @@ type ActivityQuery = {
   filterString?: string;
   filterNumber?: string;
   staffId: string;
+  type?: "createdBy" | "assignedTo";
+  cropId?: string;
 };
 export const getActivities = async ({
   filterNumber,
@@ -172,6 +175,8 @@ export const getActivities = async ({
   page = 1,
   query,
   staffId,
+  type = "assignedTo",
+  cropId,
 }: ActivityQuery): Promise<PaginatedResponse<ActivityTable>> => {
   try {
     const [data, count] = await db.$transaction([
@@ -179,19 +184,19 @@ export const getActivities = async ({
         take: LIMIT,
         skip: (page - 1) * LIMIT,
         where: {
-          OR: [
-            {
-              createdById: staffId,
-            },
-            {
-              assignedTo: {
-                some: {
-                  staffId,
-                },
+          ...(cropId && {
+            cropId,
+          }),
+          ...(type === "createdBy" && {
+            createdById: staffId,
+          }),
+          ...(type === "assignedTo" && {
+            assignedTo: {
+              some: {
+                staffId,
               },
             },
-          ],
-
+          }),
           name: {
             contains: query,
             mode: "insensitive",
@@ -214,6 +219,26 @@ export const getActivities = async ({
               name: true,
               startDate: true,
               endDate: true,
+              field: {
+                select: {
+                  id: true,
+                  name: true,
+                  location: true,
+                  area: true,
+                  unit: {
+                    select: {
+                      name: true,
+                    },
+                  },
+                },
+              },
+              plant: {
+                select: {
+                  id: true,
+                  name: true,
+                  imageUrl: true,
+                },
+              },
             },
           },
           _count: {
@@ -226,18 +251,19 @@ export const getActivities = async ({
       }),
       db.activity.count({
         where: {
-          OR: [
-            {
-              createdById: staffId,
-            },
-            {
-              assignedTo: {
-                some: {
-                  staffId,
-                },
+          ...(cropId && {
+            cropId,
+          }),
+          ...(type === "createdBy" && {
+            createdById: staffId,
+          }),
+          ...(type === "assignedTo" && {
+            assignedTo: {
+              some: {
+                staffId,
               },
             },
-          ],
+          }),
           name: {
             contains: query,
             mode: "insensitive",
@@ -260,27 +286,24 @@ export const getActivities = async ({
   }
 };
 
-type ActivitiesCropQuery = {
-  page?: number;
-  query?: string;
-  orderBy?: string;
-  filterString?: string;
-  filterNumber?: string;
-  cropId: string;
-};
-export const getActivitiesByCropId = async ({}: ActivitiesCropQuery) => {};
-
 export const getActivitiesSelect = async ({
   staffId,
 }: ActivitySelectQuery): Promise<ActivitySelect[]> => {
   try {
     return await db.activity.findMany({
       where: {
-        assignedTo: {
-          some: {
-            staffId,
+        OR: [
+          {
+            assignedTo: {
+              some: {
+                staffId,
+              },
+            },
           },
-        },
+          {
+            createdById: staffId,
+          },
+        ],
         status: {
           in: ["NEW", "IN_PROGRESS"],
         },
@@ -298,25 +321,25 @@ export const getActivitiesSelect = async ({
   }
 };
 
-export const getActivityById = async ({
-  staffId,
-  activityId,
-}: {
-  staffId: string;
-  activityId: string;
-}): Promise<ActivityTable | null> => {
+export const getActivityById = async (
+  activityId: string
+): Promise<ActivityTable | null> => {
   try {
+    const currentStaff = await getCurrentStaff();
+    if (!currentStaff) {
+      return null;
+    }
     return await db.activity.findUnique({
       where: {
         id: activityId,
         OR: [
           {
-            createdById: staffId,
+            createdById: currentStaff.id,
           },
           {
             assignedTo: {
               some: {
-                staffId,
+                staffId: currentStaff.id,
               },
             },
           },
@@ -335,6 +358,26 @@ export const getActivityById = async ({
             name: true,
             startDate: true,
             endDate: true,
+            field: {
+              select: {
+                id: true,
+                name: true,
+                location: true,
+                area: true,
+                unit: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+            },
+            plant: {
+              select: {
+                id: true,
+                name: true,
+                imageUrl: true,
+              },
+            },
           },
         },
         _count: {

@@ -84,6 +84,7 @@ export const deleteCrop = async (id: string) => {
 type CropQuery = {
   orgId?: string | null;
   plantId?: string;
+  fieldId?: string;
   name?: string;
   page?: number;
   orderBy?: string;
@@ -100,6 +101,7 @@ export const getCrops = async ({
   page = 1,
   plantId,
   startDate,
+  fieldId,
 }: CropQuery): Promise<PaginatedResponse<CropTable>> => {
   try {
     let fields;
@@ -131,9 +133,15 @@ export const getCrops = async ({
     const [crops, count] = await db.$transaction([
       db.crop.findMany({
         where: {
-          fieldId: {
-            in: fields?.map((item) => item.id),
-          },
+          ...(fieldId
+            ? {
+                fieldId,
+              }
+            : {
+                fieldId: {
+                  in: fields?.map((item) => item.id),
+                },
+              }),
           AND: [
             {
               startDate: {
@@ -186,13 +194,37 @@ export const getCrops = async ({
               id: true,
             },
           },
+          field: {
+            select: {
+              id: true,
+              name: true,
+              location: true,
+              area: true,
+              unit: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+          _count: {
+            select: {
+              activities: true,
+            },
+          },
         },
       }),
       db.crop.count({
         where: {
-          fieldId: {
-            in: fields?.map((item) => item.id),
-          },
+          ...(fieldId
+            ? {
+                fieldId,
+              }
+            : {
+                fieldId: {
+                  in: fields?.map((item) => item.id),
+                },
+              }),
           AND: [
             {
               startDate: {
@@ -232,7 +264,7 @@ export const getCrops = async ({
   }
 };
 
-export const getCropById = async (id: string) => {
+export const getCropById = async (id: string): Promise<CropTable | null> => {
   try {
     return await db.crop.findUnique({
       where: { id },
@@ -259,6 +291,24 @@ export const getCropById = async (id: string) => {
           select: {
             name: true,
             id: true,
+          },
+        },
+        field: {
+          select: {
+            id: true,
+            name: true,
+            location: true,
+            area: true,
+            unit: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+        _count: {
+          select: {
+            activities: true,
           },
         },
       },

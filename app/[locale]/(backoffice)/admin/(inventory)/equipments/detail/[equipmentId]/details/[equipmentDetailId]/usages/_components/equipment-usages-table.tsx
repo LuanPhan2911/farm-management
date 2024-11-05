@@ -21,7 +21,6 @@ import { useDialog } from "@/stores/use-dialog";
 import { SelectItemContent } from "@/components/form/select-item";
 import { EquipmentUsagesTableAction } from "./equipment-usages-table-action";
 import { EquipmentDetailStatusValue } from "../../../../_components/equipment-detail-status-value";
-import { UserAvatar } from "@/components/user-avatar";
 
 interface EquipmentUsagesTableProps {
   data: EquipmentUsageTable[];
@@ -47,21 +46,22 @@ export const EquipmentUsagesTable = ({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{t("table.thead.equipmentDetail.imageUrl")}</TableHead>
-            <TableHead className="lg:w-[200px]">
-              {t("table.thead.equipmentDetail.name")}
-            </TableHead>
-            <TableHead>{t("table.thead.equipmentDetail.status")}</TableHead>
-
-            <TableHead className="lg:w-[200px]">
+            <TableHead>{t("table.thead.activity.usage")}</TableHead>
+            <TableHead>
               <OrderByButton
                 column="usageStartTime"
                 label={t("table.thead.usageStartTime")}
               />
             </TableHead>
+            <TableHead className="w-[250px]">
+              {t("table.thead.equipmentDetail.name")}
+            </TableHead>
+            <TableHead>{t("table.thead.equipmentDetail.status")}</TableHead>
+            <TableHead className="w-[250px]">
+              {t("table.thead.equipmentDetail.location")}
+            </TableHead>
             <TableHead>{t("table.thead.duration")}</TableHead>
             <TableHead>{t("table.thead.operator")}</TableHead>
-
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>
@@ -73,22 +73,30 @@ export const EquipmentUsagesTable = ({
                 className="cursor-pointer"
                 onClick={() => handleEdit(item)}
               >
-                <TableCell>
-                  <UserAvatar
-                    src={item.equipmentDetail.equipment.imageUrl || undefined}
-                  />
+                <TableCell className="font-semibold">
+                  {item.activity ? (
+                    <span className="text-green-400">
+                      {t("table.trow.activity.usage")}
+                    </span>
+                  ) : (
+                    <span className="text-rose-400">
+                      {t("table.trow.activity.unused")}
+                    </span>
+                  )}
                 </TableCell>
+                <TableCell>{dateTime(item.usageStartTime, "long")}</TableCell>
                 <TableCell>{item.equipmentDetail.name}</TableCell>
                 <TableCell>
                   <EquipmentDetailStatusValue
                     status={item.equipmentDetail.status}
                   />
                 </TableCell>
-
-                <TableCell className="text-center">
-                  {dateTime(item.usageStartTime, "long")}
+                <TableCell>
+                  {item.equipmentDetail.location ||
+                    t("table.trow.equipmentDetail.location")}
                 </TableCell>
                 <TableCell>{item.duration}</TableCell>
+
                 <TableCell>
                   <SelectItemContent
                     imageUrl={item.operator?.imageUrl || null}

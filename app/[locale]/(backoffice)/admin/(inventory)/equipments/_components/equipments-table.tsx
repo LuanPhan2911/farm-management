@@ -73,7 +73,7 @@ export const EquipmentsTable = ({ data, totalPage }: EquipmentsTableProps) => {
                 onClick={() => handleViewDetail(item)}
               >
                 <TableCell>
-                  <UserAvatar src={item.imageUrl || undefined} size={"lg"} />
+                  <UserAvatar src={item.imageUrl || undefined} />
                 </TableCell>
                 <TableCell>{item.name}</TableCell>
                 <TableCell>{t(`schema.type.options.${item.type}`)}</TableCell>

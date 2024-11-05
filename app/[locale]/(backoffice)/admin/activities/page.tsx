@@ -14,6 +14,7 @@ interface ActivitiesPageProps {
     filterString?: string;
     filterNumber?: string;
     query?: string;
+    type?: string;
   };
 }
 export async function generateMetadata() {
@@ -26,7 +27,7 @@ export async function generateMetadata() {
 const ActivitiesPage = async ({ searchParams }: ActivitiesPageProps) => {
   const page = parseToNumber(searchParams!.page, 1);
   const t = await getTranslations("activities.page");
-  const { orderBy, filterNumber, filterString, query } = searchParams;
+  const { orderBy, filterNumber, filterString, query, type } = searchParams;
   const currentStaff = await getCurrentStaff();
   if (!currentStaff) {
     notFound();
@@ -38,6 +39,7 @@ const ActivitiesPage = async ({ searchParams }: ActivitiesPageProps) => {
     page,
     query,
     staffId: currentStaff.id,
+    type: type === "createdBy" ? "createdBy" : undefined,
   });
   return (
     <div className="flex flex-col gap-4 py-4 h-full">

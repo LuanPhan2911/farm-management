@@ -48,19 +48,21 @@ export const ActivityEquipmentUsagesTable = ({
         <TableHeader>
           <TableRow>
             <TableHead>{t("table.thead.activity.usage")}</TableHead>
-            <TableHead className="lg:w-[200px]">
+            <TableHead>
               <OrderByButton
                 column="usageStartTime"
                 label={t("table.thead.usageStartTime")}
               />
             </TableHead>
-            <TableHead className="lg:w-[200px]">
+            <TableHead className="w-[250px]">
               {t("table.thead.equipmentDetail.name")}
             </TableHead>
-
+            <TableHead>{t("table.thead.equipmentDetail.status")}</TableHead>
+            <TableHead className="w-[250px]">
+              {t("table.thead.equipmentDetail.location")}
+            </TableHead>
             <TableHead>{t("table.thead.duration")}</TableHead>
             <TableHead>{t("table.thead.operator")}</TableHead>
-
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>
@@ -83,12 +85,19 @@ export const ActivityEquipmentUsagesTable = ({
                     </span>
                   )}
                 </TableCell>
-                <TableCell className="text-center">
-                  {dateTime(item.usageStartTime, "short")}
-                </TableCell>
+                <TableCell>{dateTime(item.usageStartTime, "long")}</TableCell>
                 <TableCell>{item.equipmentDetail.name}</TableCell>
-
+                <TableCell>
+                  <EquipmentDetailStatusValue
+                    status={item.equipmentDetail.status}
+                  />
+                </TableCell>
+                <TableCell>
+                  {item.equipmentDetail.location ||
+                    t("table.trow.equipmentDetail.location")}
+                </TableCell>
                 <TableCell>{item.duration}</TableCell>
+
                 <TableCell>
                   <SelectItemContent
                     imageUrl={item.operator?.imageUrl || null}

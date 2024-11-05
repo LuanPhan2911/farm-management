@@ -153,7 +153,7 @@ export const ScheduleCreateButton = ({
                 <FormItem>
                   <FormLabel>{tSchema("cron.label")}</FormLabel>
                   <FormControl>
-                    <div className="grid grid-cols-4 gap-2">
+                    <div className="grid grid-cols-4">
                       <div className="col-span-3">
                         <Input
                           placeholder={tSchema("cron.placeholder")}

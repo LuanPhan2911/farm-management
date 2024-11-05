@@ -21,6 +21,7 @@ interface CategoriesSelectProps {
   appearance?: ComboBoxCustomAppearance;
   labelKey?: keyof CategorySelect;
   valueKey?: keyof CategorySelect;
+  hidden?: boolean;
 }
 export const CategoriesSelect = (props: CategoriesSelectProps) => {
   const { data, isPending, isError, refetch } = useQuery({

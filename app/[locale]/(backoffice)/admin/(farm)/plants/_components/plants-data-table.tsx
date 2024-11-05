@@ -24,7 +24,7 @@ export const PlantsDataTable = ({ data }: PlantsDataTableProps) => {
       header: t("table.thead.imageUrl"),
       cell: ({ row }) => {
         const data = row.original;
-        return <UserAvatar src={data.imageUrl || undefined} size={"default"} />;
+        return <UserAvatar src={data.imageUrl || undefined} />;
       },
     },
     {

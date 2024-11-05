@@ -188,7 +188,6 @@ const ChatItem = ({ message, socketUrl, socketQuery }: ChatItemProps) => {
         <div className="cursor-pointer hover:drop-shadow-md transition">
           <UserAvatar
             src={staff.imageUrl || undefined}
-            size={"default"}
             className="rounded-full"
           />
         </div>

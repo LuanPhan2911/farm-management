@@ -30,6 +30,7 @@ import { LinkButton } from "@/components/buttons/link-button";
 import { CropsSelect } from "../../_components/crops-select";
 import { useAuth } from "@clerk/nextjs";
 import { StaffsSelectMultiple } from "../../_components/staffs-select";
+import { CategoriesSelect } from "../../_components/categories-select";
 
 export const ActivityCreateButton = () => {
   const t = useTranslations("activities.form");
@@ -45,9 +46,17 @@ export const ActivityCreateButton = () => {
 
 interface ActivityCreateFormProps {
   currentStaff: Staff;
+  cropId?: string;
+  onCreated?: () => void;
+  pushUrl?: string;
+  disabledField?: boolean;
 }
 export const ActivityCreateForm = ({
   currentStaff,
+  cropId,
+  pushUrl,
+  disabledField,
+  onCreated,
 }: ActivityCreateFormProps) => {
   const tSchema = useTranslations("activities.schema");
   const formSchema = ActivitySchema(tSchema);
@@ -64,6 +73,7 @@ export const ActivityCreateForm = ({
       activityDate: new Date(),
       estimatedDuration: "1 day",
       actualDuration: "1 day",
+      cropId,
     },
   });
   const onSubmit = (values: z.infer<typeof formSchema>) => {
@@ -72,7 +82,7 @@ export const ActivityCreateForm = ({
         .then(({ message, ok }) => {
           if (ok) {
             toast.success(message);
-            router.push("activities");
+            onCreated ? onCreated() : router.push(pushUrl || "activities");
           } else {
             toast.error(message);
           }
@@ -97,18 +107,33 @@ export const ActivityCreateForm = ({
               <FormItem>
                 <FormLabel>{tSchema("name.label")}</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder={tSchema("name.placeholder")}
-                    value={field.value ?? undefined}
-                    onChange={field.onChange}
-                    disabled={isPending}
-                  />
+                  <div className="grid grid-cols-4">
+                    <div className="col-span-3">
+                      <Input
+                        placeholder={tSchema("name.placeholder")}
+                        value={field.value ?? undefined}
+                        onChange={field.onChange}
+                        disabled={isPending}
+                      />
+                    </div>
+                    <CategoriesSelect
+                      error={tSchema("name.select.error")}
+                      notFound={tSchema("name.select.notFound")}
+                      placeholder={tSchema("name.select.placeholder")}
+                      type="ACTIVITY"
+                      disabled={isPending}
+                      onChange={field.onChange}
+                      valueKey="name"
+                      hidden
+                    />
+                  </div>
                 </FormControl>
 
                 <FormMessage />
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="activityDate"
@@ -147,7 +172,7 @@ export const ActivityCreateForm = ({
                     error={tSchema("cropId.error")}
                     notFound={tSchema("cropId.notFound")}
                     placeholder={tSchema("cropId.placeholder")}
-                    disabled={isPending}
+                    disabled={isPending || disabledField}
                   />
                 </FormControl>
 

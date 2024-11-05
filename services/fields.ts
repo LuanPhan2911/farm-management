@@ -1,9 +1,8 @@
 import { db } from "@/lib/db";
 import { FieldSelect } from "@/types";
-import { clerkClient } from "@clerk/nextjs/server";
 import { SoilType } from "@prisma/client";
 import { getCurrentStaff } from "./staffs";
-import { isAdmin, isFarmer, isOnlyAdmin, isSuperAdmin } from "@/lib/permission";
+import { isAdmin, isFarmer, isSuperAdmin } from "@/lib/permission";
 import { getUserInOrganization } from "./organizations";
 
 type FieldParams = {
@@ -142,6 +141,12 @@ export const getFieldsSelect = async (): Promise<FieldSelect[]> => {
         id: true,
         name: true,
         location: true,
+        area: true,
+        unit: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
     return fields;

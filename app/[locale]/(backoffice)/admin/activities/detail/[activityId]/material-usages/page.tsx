@@ -30,14 +30,8 @@ const ActivityMaterialUsagesPage = async ({
 }: MaterialUsagesPageProps) => {
   const t = await getTranslations("activities.page.detail.material-usages");
   const { query, orderBy } = searchParams;
-  const currentStaff = await getCurrentStaff();
-  if (!currentStaff) {
-    notFound();
-  }
-  const activity = await getActivityById({
-    activityId: params.activityId,
-    staffId: currentStaff.id,
-  });
+
+  const activity = await getActivityById(params.activityId);
   if (!activity) {
     notFound();
   }

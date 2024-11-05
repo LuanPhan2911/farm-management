@@ -50,7 +50,6 @@ export const OrgMemberTable = ({ data }: OrgMemberTableProps) => {
                 <TableCell>
                   <UserAvatar
                     src={publicUserData?.imageUrl || undefined}
-                    size={"default"}
                     className="rounded-full"
                   />
                 </TableCell>

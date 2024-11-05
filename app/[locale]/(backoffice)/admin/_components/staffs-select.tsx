@@ -30,11 +30,7 @@ export const StaffSelectItem = ({
 }: StaffSelectItemProps) => {
   return (
     <div className="flex items-center">
-      <UserAvatar
-        src={imageUrl || undefined}
-        size={"default"}
-        className="rounded-full"
-      />
+      <UserAvatar src={imageUrl || undefined} className="rounded-full" />
       <div className="ml-4">
         <div className="text-sm font-medium leading-none text-start">
           {name}
@@ -157,7 +153,7 @@ export const StaffsSelectMultiple = ({
     onChange(newValue.map((item) => item.value));
   };
   if (isPending) {
-    return <Skeleton className="lg:w-full h-12"></Skeleton>;
+    return <Skeleton className="lg:w-full h-10"></Skeleton>;
   }
   if (isError) {
     return <ErrorButton title={error} refresh={refetch} />;

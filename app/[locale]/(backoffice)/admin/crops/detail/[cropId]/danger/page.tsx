@@ -38,7 +38,8 @@ const ActivityDangerPage = async ({ params }: ActivityDangerPageProps) => {
   if (!data) {
     notFound();
   }
-  const canDelete = isSuperAdmin(currentStaff.role);
+  const canDelete =
+    isSuperAdmin(currentStaff.role) && data._count.activities === 0;
   return (
     <>
       <Card>
@@ -52,6 +53,7 @@ const ActivityDangerPage = async ({ params }: ActivityDangerPageProps) => {
             id={data.id}
             inltKey="crops"
             redirectHref="crops"
+            disabled={!canDelete}
           />
         </CardContent>
       </Card>
