@@ -1,11 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { getTranslations } from "next-intl/server";
-import { getMaterialUsagesByActivityId } from "@/services/material-usages";
-import { getActivityById } from "@/services/activities";
-import { notFound } from "next/navigation";
-import { canUpdateActivityStatus } from "@/lib/permission";
-import { ActivityMaterialUsagesTable } from "@/app/[locale]/(backoffice)/admin/activities/detail/[activityId]/material-usages/_components/activity-material-usages-table";
+
+import { getMaterialUsages } from "@/services/material-usages";
+import { MaterialUsagesTable } from "@/app/[locale]/(backoffice)/admin/(inventory)/materials/detail/[materialId]/usages/_components/material-usages-table";
+import { parseToNumber } from "@/lib/utils";
 export async function generateMetadata() {
   const t = await getTranslations("activities.page.detail.material-usages");
   return {
@@ -20,6 +19,7 @@ interface MaterialUsagesPageProps {
   searchParams: {
     query?: string;
     orderBy?: string;
+    page?: string;
   };
 }
 const ActivityMaterialUsagesPage = async ({
@@ -28,24 +28,22 @@ const ActivityMaterialUsagesPage = async ({
 }: MaterialUsagesPageProps) => {
   const t = await getTranslations("activities.page.detail.material-usages");
   const { query, orderBy } = searchParams;
+  const page = parseToNumber(searchParams!.page, 1);
 
-  const activity = await getActivityById(params.activityId);
-  if (!activity) {
-    notFound();
-  }
-  const materials = await getMaterialUsagesByActivityId({
+  const { data, totalPage } = await getMaterialUsages({
     activityId: params.activityId,
     orderBy,
     query,
+    page,
   });
-  const canUpdate = canUpdateActivityStatus(activity.status);
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>{t("title")}</CardTitle>
       </CardHeader>
       <CardContent>
-        <ActivityMaterialUsagesTable data={materials} />
+        <MaterialUsagesTable data={data} totalPage={totalPage} />
       </CardContent>
     </Card>
   );

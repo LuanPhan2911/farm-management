@@ -55,6 +55,14 @@ export const deleteManyUnit = async (ids: string[]) => {
   return count;
 };
 
+export const unitInclude = {
+  unit: {
+    select: {
+      name: true,
+    },
+  },
+};
+
 export const getUnitsByType = async (type: UnitType): Promise<UnitSelect[]> => {
   try {
     const units = await db.unit.findMany({

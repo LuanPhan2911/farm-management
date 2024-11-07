@@ -12,6 +12,7 @@ import {
   PaginatedResponse,
 } from "@/types";
 import { MaterialType } from "@prisma/client";
+import { materialSelect } from "./material-usages";
 
 type MaterialParam = {
   name: string;
@@ -134,17 +135,7 @@ export const getMaterialsSelect = async (): Promise<MaterialSelect[]> => {
   try {
     return await db.material.findMany({
       select: {
-        id: true,
-        name: true,
-        imageUrl: true,
-        quantityInStock: true,
-        unitId: true,
-        type: true,
-        unit: {
-          select: {
-            name: true,
-          },
-        },
+        ...materialSelect,
       },
     });
   } catch (error) {

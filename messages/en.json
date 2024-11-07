@@ -2487,17 +2487,15 @@
         "status": "Status",
         "location": "Location",
         "lastMaintenanceDate": "Last maintenance date",
-        "maintenanceSchedule": "Maintenance schedule",
         "operatingHours": "Operating hours",
+        "maxOperatingHours": "Max operating hours",
         "equipment": {
           "imageUrl": "Image"
         }
       },
       "trow": {
-        "location": "Unknown",
-        "lastMaintenanceDate": "Never",
-        "maintenanceSchedule": "Never",
-        "operatingHours": "Never"
+        "location": "No filled",
+        "lastMaintenanceDate": "Never"
       }
     },
     "search": {
@@ -2552,18 +2550,14 @@
           "AVAILABLE": "Available"
         }
       },
-      "maintenanceSchedule": {
-        "label": "Equipment maintenance Schedule",
-        "placeholder": "Eg: monthly, weekly... ",
-        "max": "Maintenance Schedule's length must be less than {max} characters"
-      },
-      "operatingHours": {
-        "label": "Equipment operating hour",
+      "maxOperatingHours": {
+        "label": "Equipment max operating hour",
         "placeholder": "Eg: 300 hours",
-        "invalid_type_error": "Operating hour value must be number",
-        "int": "Operating hour must be integer",
-        "min": "Operating hour  value is {min}",
-        "max": "Operating hour  value is {max}"
+        "invalid_type_error": "Max Operating hour value must be number",
+        "required_error": "Max operating hours is required",
+        "int": "Max Operating hour must be integer",
+        "min": "Max Operating hour  value is {min}",
+        "max": "Max Operating hour  value is {max}"
       },
       "location": {
         "label": "Equipment location",
@@ -2692,10 +2686,12 @@
         "required_error": "Start usage time is required!"
       },
       "duration": {
-        "label": "Duration",
+        "label": "Duration(hours)",
         "placeholder": "Duration usage",
-        "min": "Duration must be at least {min} characters long",
-        "max": "Duration must be at most {max} characters long.",
+        "min": "Min duration value must be greater than {min} hours",
+        "max": "Max duration value must be less than {max} hours",
+        "invalid_type_error": "Duration value must be number",
+        "int": "Duration value must be integer",
         "required_error": "Duration is required"
       },
       "note": {
@@ -2831,6 +2827,7 @@
         "invalid_type_error": "Quantity value must be number",
         "min": "Min Quantity value is {min}",
         "max": "Max Quantity value is {max}",
+        "int": "Quantity is integer number",
         "label": "Quantity in stock",
         "placeholder": "Quantity in stock"
       },
@@ -2870,14 +2867,15 @@
     "table": {
       "thead": {
         "activity": {
-          "usage": "Activity Usage"
+          "usage": "Usage"
         },
         "material": {
           "imageUrl": "Image",
           "name": "Name",
           "type": "Type",
-          "quantityInStock": "Quantity in stock"
+          "quantityInStock": "Quantity remained"
         },
+        "createdAt": "CreatedAt",
         "quantityUsed": "Quantity used",
         "unitId": "Unit"
       },
@@ -2957,6 +2955,7 @@
         "invalid_type_error": "Quantity value must be number",
         "min": "Min Quantity value is {min}",
         "max": "Max Quantity value is {max}",
+        "int": "Quantity is integer number",
         "label": "Quantity used",
         "placeholder": "Quantity used"
       }
@@ -3104,17 +3103,17 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete activity?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "Activity can only delete when no material used and no equipment used. Are you absolutely sure? This action can not be undone!"
       },
       "complete": {
         "label": "Finish",
         "title": "Finish activity?",
-        "description": "Update finish activity"
+        "description": "After marking finish this activity. This activity can not be updated! Are you absolutely sure? This action can not be undone!"
       },
       "cancel": {
         "label": "Cancel Activity",
         "title": "Cancel activity?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "After cancel, material usage will not restore, equipment used will be available. Are you absolutely sure? This action can not be undone!"
       },
       "deleteAssigned": {
         "label": "Delete",

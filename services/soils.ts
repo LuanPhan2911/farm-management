@@ -232,32 +232,6 @@ export const getSoilById = async (id: string) => {
   }
 };
 
-export const getSoilUnitForGenerateSoil = async () => {
-  return await db.$transaction(async (ctx) => {
-    const moistureUnit = await ctx.unit.findFirst({
-      where: {
-        type: "PERCENT",
-      },
-      select: {
-        id: true,
-      },
-    });
-    const nutrientUnit = await ctx.unit.findFirst({
-      where: {
-        type: "NUTRIENT",
-      },
-      select: {
-        id: true,
-      },
-    });
-    const soilUnits = {
-      moistureUnitId: moistureUnit?.id,
-      nutrientUnitId: nutrientUnit?.id,
-    };
-    return soilUnits;
-  });
-};
-
 export const getSoilsForChart = async ({
   fieldId,
   begin,

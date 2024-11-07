@@ -1,10 +1,17 @@
 import { LIMIT } from "@/configs/paginationConfig";
 import { db } from "@/lib/db";
 import { getObjectFilterNumber, getObjectSortOrder } from "@/lib/utils";
-import { CropSelect, CropTable, PaginatedResponse } from "@/types";
-import { UnitValue, upsertFloatUnit } from "./units";
+import {
+  CropSelect,
+  CropSelectWithField,
+  CropTable,
+  PaginatedResponse,
+} from "@/types";
+import { unitInclude, UnitValue, upsertFloatUnit } from "./units";
 import { getCurrentStaff } from "./staffs";
-import { isFarmer, isOnlyAdmin, isSuperAdmin } from "@/lib/permission";
+import { isFarmer, isOnlyAdmin } from "@/lib/permission";
+import { fieldSelect } from "./fields";
+import { plantSelect } from "./plants";
 
 type CropParams = {
   name: string;
@@ -172,39 +179,22 @@ export const getCrops = async ({
         include: {
           actualYield: {
             include: {
-              unit: {
-                select: {
-                  name: true,
-                },
-              },
+              ...unitInclude,
             },
           },
           estimatedYield: {
             include: {
-              unit: {
-                select: {
-                  name: true,
-                },
-              },
+              ...unitInclude,
             },
           },
           plant: {
             select: {
-              name: true,
-              id: true,
+              ...plantSelect,
             },
           },
           field: {
             select: {
-              id: true,
-              name: true,
-              location: true,
-              area: true,
-              unit: {
-                select: {
-                  name: true,
-                },
-              },
+              ...fieldSelect,
             },
           },
           _count: {
@@ -271,39 +261,22 @@ export const getCropById = async (id: string): Promise<CropTable | null> => {
       include: {
         actualYield: {
           include: {
-            unit: {
-              select: {
-                name: true,
-              },
-            },
+            ...unitInclude,
           },
         },
         estimatedYield: {
           include: {
-            unit: {
-              select: {
-                name: true,
-              },
-            },
+            ...unitInclude,
           },
         },
         plant: {
           select: {
-            name: true,
-            id: true,
+            ...plantSelect,
           },
         },
         field: {
           select: {
-            id: true,
-            name: true,
-            location: true,
-            area: true,
-            unit: {
-              select: {
-                name: true,
-              },
-            },
+            ...fieldSelect,
           },
         },
         _count: {
@@ -318,46 +291,22 @@ export const getCropById = async (id: string): Promise<CropTable | null> => {
   }
 };
 
-export const getCropsSelect = async (
-  orgId?: string | null
-): Promise<CropSelect[]> => {
+export const cropSelect = {
+  id: true,
+  name: true,
+  startDate: true,
+  endDate: true,
+};
+export const getCropsSelect = async (): Promise<CropSelectWithField[]> => {
   try {
-    let fields;
-    const currentStaff = await getCurrentStaff();
-    if (!currentStaff) {
-      throw new Error("Unauthorized");
-    }
-    if (!orgId && isOnlyAdmin(currentStaff.role)) {
-      fields = await db.field.findMany({
-        select: {
-          id: true,
-        },
-      });
-    }
-    if (!orgId && isFarmer(currentStaff.role)) {
-      throw new Error("No field id to get crops");
-    }
-    if (orgId) {
-      fields = await db.field.findMany({
-        where: {
-          orgId,
-        },
-        select: {
-          id: true,
-        },
-      });
-    }
     return await db.crop.findMany({
-      where: {
-        fieldId: {
-          in: fields?.map((item) => item.id),
-        },
-      },
       select: {
-        id: true,
-        name: true,
-        startDate: true,
-        endDate: true,
+        ...cropSelect,
+        field: {
+          select: {
+            ...fieldSelect,
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",

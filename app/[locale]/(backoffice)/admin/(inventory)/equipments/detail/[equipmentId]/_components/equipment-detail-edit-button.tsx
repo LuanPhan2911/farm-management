@@ -24,6 +24,7 @@ import { edit } from "@/actions/equipment-detail";
 import { Input } from "@/components/ui/input";
 import { SelectOptions } from "@/components/form/select-options";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { canUpdateEquipmentDetail } from "@/lib/permission";
 
 export const EquipmentDetailEditDialog = () => {
   const { isOpen, type, data, onClose } = useDialog();
@@ -38,7 +39,11 @@ export const EquipmentDetailEditDialog = () => {
     resolver: zodResolver(formSchema),
   });
 
-  const { isOnlyAdmin: canEdit } = useCurrentStaffRole();
+  const { isOnlyAdmin } = useCurrentStaffRole();
+  const canEdit =
+    isOnlyAdmin &&
+    data.equipmentDetail &&
+    canUpdateEquipmentDetail(data.equipmentDetail?.status);
   const [id, setId] = useState("");
   useEffect(() => {
     if (data?.equipmentDetail) {
@@ -114,6 +119,10 @@ export const EquipmentDetailEditDialog = () => {
                     })}
                     disabled={isPending || !canEdit}
                     defaultValue={field.value}
+                    disabledValues={[
+                      EquipmentStatus.WORKING,
+                      EquipmentStatus.MAINTENANCE,
+                    ]}
                   />
                 </FormControl>
 
@@ -140,35 +149,16 @@ export const EquipmentDetailEditDialog = () => {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="maintenanceSchedule"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("maintenanceSchedule.label")}</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={tSchema("maintenanceSchedule.placeholder")}
-                    value={field.value ?? undefined}
-                    onChange={field.onChange}
-                    disabled={isPending || !canEdit}
-                  />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
 
           <FormField
             control={form.control}
-            name="operatingHours"
+            name="maxOperatingHours"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{tSchema("operatingHours.label")}</FormLabel>
+                <FormLabel>{tSchema("maxOperatingHours.label")}</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder={tSchema("operatingHours.placeholder")}
+                    placeholder={tSchema("maxOperatingHours.placeholder")}
                     value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending || !canEdit}

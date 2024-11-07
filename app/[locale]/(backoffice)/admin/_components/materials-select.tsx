@@ -1,12 +1,11 @@
-import { ErrorButton } from "@/components/buttons/error-button";
 import {
   ComboBoxCustom,
   ComboBoxCustomAppearance,
 } from "@/components/form/combo-box";
 import { SelectItemContent } from "@/components/form/select-item";
-import { Skeleton } from "@/components/ui/skeleton";
 import { MaterialSelect } from "@/types";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 interface MaterialsSelectProps {
   onChange: (value: string | undefined) => void;
@@ -16,6 +15,7 @@ interface MaterialsSelectProps {
   notFound: string;
   error: string;
   appearance?: ComboBoxCustomAppearance;
+  onSelected?: (value: MaterialSelect) => void;
 }
 export const MaterialsSelect = (props: MaterialsSelectProps) => {
   const { data, isPending, isError, refetch } = useQuery({
@@ -25,6 +25,14 @@ export const MaterialsSelect = (props: MaterialsSelectProps) => {
       return (await res.json()) as MaterialSelect[];
     },
   });
+
+  useEffect(() => {
+    const selected = data?.find((item) => item.id === props.defaultValue);
+    if (!selected) {
+      return;
+    }
+    props.onSelected?.(selected);
+  }, [data, props]);
 
   return (
     <ComboBoxCustom
@@ -39,7 +47,7 @@ export const MaterialsSelect = (props: MaterialsSelectProps) => {
         <SelectItemContent
           imageUrl={item.imageUrl}
           title={item.name}
-          description={`Quantity in stock: ${item.quantityInStock} ${item.unit.name}`}
+          description={`Remain: ${item.quantityInStock} ${item.unit.name}`}
         />
       )}
     />

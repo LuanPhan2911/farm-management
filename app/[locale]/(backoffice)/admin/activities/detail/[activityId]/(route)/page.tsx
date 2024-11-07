@@ -3,8 +3,6 @@ import { getActivityById } from "@/services/activities";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { ActivityEditForm } from "../../../_components/activity-edit-button";
-import { getCurrentStaff } from "@/services/staffs";
-import { canUpdateActivityStatus } from "@/lib/permission";
 
 export async function generateMetadata() {
   const t = await getTranslations("activities.page.detail");
@@ -19,19 +17,12 @@ interface ActivityDetailPageProps {
   };
 }
 const ActivityDetailPage = async ({ params }: ActivityDetailPageProps) => {
-  const currentStaff = await getCurrentStaff();
-  if (!currentStaff) {
-    notFound();
-  }
-  const data = await getActivityById({
-    activityId: params.activityId,
-    staffId: currentStaff.id,
-  });
+  const data = await getActivityById(params.activityId);
   const t = await getTranslations("activities.page.detail");
   if (!data) {
     notFound();
   }
-  const canUpdate = canUpdateActivityStatus(data.status);
+
   return (
     <div className="flex flex-col gap-y-4 py-4 h-full">
       <Card>

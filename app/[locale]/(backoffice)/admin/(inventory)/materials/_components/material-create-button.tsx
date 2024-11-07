@@ -55,6 +55,7 @@ export const MaterialCreateForm = () => {
     defaultValues: {
       name: "",
       type: "OTHER",
+      quantityInStock: 1,
     },
   });
   const { isSuperAdmin: canCreate } = useCurrentStaffRole();
@@ -170,6 +171,7 @@ export const MaterialCreateForm = () => {
                           onChange={field.onChange}
                           disabled={isPending || !canCreate}
                           type="number"
+                          min={1}
                         />
                       </FormControl>
                       <FormMessage />

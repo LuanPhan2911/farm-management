@@ -355,23 +355,19 @@ export type EquipmentSelect = {
   imageUrl: string | null;
 };
 export type EquipmentDetailTable = EquipmentDetail & {
-  equipment: {
-    name: string;
-    type: EquipmentType;
-    imageUrl: string | null;
-  };
+  equipment: EquipmentSelect;
 };
+
 export type EquipmentDetailSelect = {
   id: string;
   name: string | null;
   equipmentId: string;
   status: EquipmentStatus;
   location: string | null;
-  equipment: {
-    name: string;
-    type: EquipmentType;
-    imageUrl: string | null;
-  };
+};
+
+export type EquipmentDetailSelectWithEquipment = EquipmentDetailSelect & {
+  equipment: EquipmentSelect;
 };
 
 export type EquipmentTypeCount = {
@@ -380,17 +376,14 @@ export type EquipmentTypeCount = {
 };
 
 export type EquipmentUsageTable = EquipmentUsage & {
-  equipmentDetail: EquipmentDetailSelect;
-  activity: ActivitySelect | null;
+  equipmentDetail: EquipmentDetailSelectWithEquipment;
+  activity: ActivitySelectWithCropAndField | null;
   operator: Staff | null;
 };
 export type CropTable = Crop & {
   actualYield: FloatUnitTable | null;
   estimatedYield: FloatUnitTable | null;
-  plant: {
-    id: string;
-    name: string;
-  };
+  plant: PlantSelect;
   field: FieldSelect;
   _count: {
     activities: number;
@@ -401,6 +394,9 @@ export type CropSelect = {
   name: string;
   startDate: Date;
   endDate: Date | null;
+};
+export type CropSelectWithField = CropSelect & {
+  field: FieldSelect;
 };
 export type ActivityAssignedStaff = ActivityAssigned & {
   staff: Staff;
@@ -423,6 +419,11 @@ export type ActivitySelect = {
   status: ActivityStatus;
   priority: ActivityPriority;
   activityDate: Date;
+};
+export type ActivitySelectWithCropAndField = ActivitySelect & {
+  crop: CropSelect & {
+    field: FieldSelect;
+  };
 };
 export type ActivityStatusCount = {
   status: ActivityStatus;

@@ -41,7 +41,10 @@ const ActivityDangerPage = async ({ params }: ActivityDangerPageProps) => {
   }
   const canUpdate =
     canUpdateActivityStatus(data.status) && isSuperAdmin(currentStaff.role);
-  const canDelete = isSuperAdmin(currentStaff.role);
+  const canDelete =
+    data._count.equipmentUseds === 0 &&
+    data._count.materialUseds === 0 &&
+    isSuperAdmin(currentStaff.role);
   return (
     <>
       <Card>

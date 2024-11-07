@@ -2,8 +2,6 @@ import { getActivities } from "@/services/activities";
 import { parseToNumber } from "@/lib/utils";
 import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getCurrentStaff } from "@/services/staffs";
-import { notFound } from "next/navigation";
 import { ActivitiesTable } from "../../admin/activities/_components/activities-table";
 interface ActivitiesPageProps {
   params: {};
@@ -27,17 +25,13 @@ const ActivitiesPage = async ({ searchParams }: ActivitiesPageProps) => {
   const page = parseToNumber(searchParams!.page, 1);
   const t = await getTranslations("activities.page");
   const { orderBy, filterNumber, filterString, query, type } = searchParams;
-  const currentStaff = await getCurrentStaff();
-  if (!currentStaff) {
-    notFound();
-  }
+
   const { data, totalPage } = await getActivities({
     filterNumber,
     filterString,
     orderBy,
     page,
     query,
-    staffId: currentStaff.id,
     type: type === "createdBy" ? "createdBy" : undefined,
   });
   return (

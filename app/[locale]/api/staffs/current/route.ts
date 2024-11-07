@@ -5,10 +5,10 @@ export const GET = async (req: NextRequest) => {
   try {
     const currentStaff = await getCurrentStaff();
     if (!currentStaff) {
-      return NextResponse.json("Unauthorized", { status: 401 });
+      return new NextResponse("Unauthorized", { status: 401 });
     }
     return NextResponse.json(currentStaff);
   } catch (error) {
-    return NextResponse.json("Internal Error", { status: 500 });
+    return new NextResponse("Internal Error", { status: 500 });
   }
 };

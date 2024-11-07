@@ -12,6 +12,7 @@ import { db } from "@/lib/db";
 import { getObjectSortOrder } from "@/lib/utils";
 import { MaterialUsageTable, PaginatedResponse } from "@/types";
 import { revalidatePath } from "next/cache";
+import { activitySelect } from "./activities";
 
 type RevalidatePathParam = {
   materialId: string;
@@ -254,16 +255,32 @@ export const deleteMaterialUsage = async (id: string) => {
 };
 
 type MaterialUsageQuery = {
-  materialId: string;
+  materialId?: string;
   page?: number;
   query?: string;
   orderBy?: string;
+  activityId?: string;
+};
+
+export const materialSelect = {
+  id: true,
+  unitId: true,
+  name: true,
+  imageUrl: true,
+  type: true,
+  quantityInStock: true,
+  unit: {
+    select: {
+      name: true,
+    },
+  },
 };
 export const getMaterialUsages = async ({
   page = 1,
   query,
   materialId,
   orderBy,
+  activityId,
 }: MaterialUsageQuery): Promise<PaginatedResponse<MaterialUsageTable>> => {
   try {
     const [data, count] = await db.$transaction([
@@ -271,7 +288,19 @@ export const getMaterialUsages = async ({
         take: LIMIT,
         skip: (page - 1) * LIMIT,
         where: {
-          materialId,
+          ...(materialId && {
+            materialId,
+          }),
+          ...(activityId && {
+            OR: [
+              {
+                activityId: null,
+              },
+              {
+                activityId,
+              },
+            ],
+          }),
           material: {
             name: {
               contains: query,
@@ -283,17 +312,7 @@ export const getMaterialUsages = async ({
         include: {
           material: {
             select: {
-              id: true,
-              unitId: true,
-              name: true,
-              imageUrl: true,
-              type: true,
-              quantityInStock: true,
-              unit: {
-                select: {
-                  name: true,
-                },
-              },
+              ...materialSelect,
             },
           },
           unit: {
@@ -303,13 +322,7 @@ export const getMaterialUsages = async ({
           },
           activity: {
             select: {
-              id: true,
-              name: true,
-              status: true,
-              priority: true,
-              createdBy: true,
-              assignedTo: true,
-              activityDate: true,
+              ...activitySelect,
             },
           },
         },
@@ -341,12 +354,18 @@ export const getMaterialUsages = async ({
   }
 };
 
-export const getMaterialUsageById = async (id: string) => {
+export const getMaterialUsageById = async (
+  id: string
+): Promise<MaterialUsageTable | null> => {
   try {
     return await db.materialUsage.findUnique({
       where: { id },
       include: {
-        material: true,
+        material: {
+          select: {
+            ...materialSelect,
+          },
+        },
         unit: {
           select: {
             name: true,
@@ -354,86 +373,12 @@ export const getMaterialUsageById = async (id: string) => {
         },
         activity: {
           select: {
-            id: true,
-            name: true,
-            status: true,
-            priority: true,
-            createdBy: true,
-            assignedTo: true,
-            activityDate: true,
+            ...activitySelect,
           },
         },
       },
     });
   } catch (error) {
     return null;
-  }
-};
-
-type MaterialUsageActivityQuery = {
-  activityId: string;
-  query?: string;
-  orderBy?: string;
-};
-export const getMaterialUsagesByActivityId = async ({
-  activityId,
-  orderBy,
-  query,
-}: MaterialUsageActivityQuery): Promise<MaterialUsageTable[]> => {
-  try {
-    return await db.materialUsage.findMany({
-      where: {
-        OR: [
-          {
-            activityId: null,
-          },
-          {
-            activityId,
-          },
-        ],
-        material: {
-          name: {
-            contains: query,
-            mode: "insensitive",
-          },
-        },
-      },
-      orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
-      include: {
-        material: {
-          select: {
-            id: true,
-            unitId: true,
-            name: true,
-            imageUrl: true,
-            type: true,
-            quantityInStock: true,
-            unit: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        },
-        unit: {
-          select: {
-            name: true,
-          },
-        },
-        activity: {
-          select: {
-            id: true,
-            name: true,
-            status: true,
-            priority: true,
-            createdBy: true,
-            assignedTo: true,
-            activityDate: true,
-          },
-        },
-      },
-    });
-  } catch (error) {
-    return [];
   }
 };

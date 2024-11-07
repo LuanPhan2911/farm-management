@@ -3,7 +3,7 @@ import {
   ComboBoxCustomAppearance,
 } from "@/components/form/combo-box";
 import { SelectItemContent } from "@/components/form/select-item";
-import { EquipmentDetailSelect } from "@/types";
+import { EquipmentDetailSelectWithEquipment } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 
 interface EquipmentDetailsSelectProps {
@@ -20,7 +20,7 @@ export const EquipmentDetailsSelect = (props: EquipmentDetailsSelectProps) => {
     queryKey: ["equipment-details-select"],
     queryFn: async () => {
       const res = await fetch("/api/equipment-details/select");
-      return (await res.json()) as EquipmentDetailSelect[];
+      return (await res.json()) as EquipmentDetailSelectWithEquipment[];
     },
   });
 

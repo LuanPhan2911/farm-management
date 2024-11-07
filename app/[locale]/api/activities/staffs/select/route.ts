@@ -11,6 +11,6 @@ export const GET = async (req: NextRequest) => {
     const result = await getActivityAssignedStaffs(activityId);
     return NextResponse.json(result);
   } catch (error) {
-    return NextResponse.json("Internal Error", { status: 500 });
+    return new NextResponse("Internal Error", { status: 500 });
   }
 };

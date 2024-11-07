@@ -14,7 +14,6 @@ import {
 } from "@/types";
 import { WeatherStatus } from "@prisma/client";
 import { UnitValue, upsertFloatUnit, upsertIntUnit } from "./units";
-import { openai } from "@/lib/openai";
 
 type WeatherParams = {
   fieldId: string;
@@ -445,114 +444,6 @@ export const getCountWeatherStatus = async ({
     });
   } catch (error) {
     return [];
-  }
-};
-
-export const getWeatherUnitsForGenerateWeather = async () => {
-  return await db.$transaction(async (ctx) => {
-    const temperatureUnit = await ctx.unit.findFirst({
-      where: {
-        type: "TEMPERATURE",
-      },
-      select: {
-        id: true,
-      },
-    });
-    const humidityUnit = await ctx.unit.findFirst({
-      where: {
-        type: "PERCENT",
-      },
-      select: {
-        id: true,
-      },
-    });
-    const atmosphericPressureUnit = await ctx.unit.findFirst({
-      where: {
-        type: "ATMOSPHERICPRESSURE",
-      },
-      select: {
-        id: true,
-      },
-    });
-    const rainfallUnit = await ctx.unit.findFirst({
-      where: {
-        type: "RAINFALL",
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    const weatherUnitIds = {
-      temperatureUnitId: temperatureUnit?.id,
-      humidityUnitId: humidityUnit?.id,
-      atmosphericPressureUnitId: atmosphericPressureUnit?.id,
-      rainfallUnitId: rainfallUnit?.id,
-    };
-    return weatherUnitIds;
-  });
-};
-
-export const getAnalyzeWeathers = async (weatherData: WeatherChart[]) => {
-  // Check if input data length is less than or equal to 5
-  if (weatherData.length <= 5) {
-    return "No enough data to analysis";
-  }
-
-  // Generate a weather summary for OpenAI prompt
-  const weatherSummary = weatherData
-    .map((data) => {
-      // const date = data.confirmedAt
-      //   ? data.confirmedAt.toLocaleDateString()
-      //   : data.createdAt.toLocaleDateString();
-      const date = data.createdAt.toLocaleDateString();
-      const temp = data.temperature
-        ? `${data.temperature.value}°${data.temperature.unit?.name}`
-        : "unknown temperature";
-      const humidity = data.humidity
-        ? `${data.humidity.value}${data.humidity.unit?.name}`
-        : "unknown humidity";
-      const pressure = data.atmosphericPressure
-        ? `${data.atmosphericPressure.value}${data.atmosphericPressure.unit?.name}`
-        : "unknown pressure";
-      const rainfall = data.rainfall
-        ? `${data.rainfall.value}${data.rainfall.unit?.name}`
-        : "no rainfall";
-
-      return `On ${date}, the weather status was "${data.status}", with ${temp}, ${humidity}, ${pressure}, and ${rainfall}.`;
-    })
-    .join(" ");
-
-  // Build prompt for OpenAI
-  const prompt = `
-    Based on the following weather data: ${weatherSummary},
-    provide a detailed analysis of weather trends and predictions.
-  `;
-
-  try {
-    // OpenAI API call (v4.63.0 syntax)
-    const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo", // Use a model of your choice
-      messages: [
-        {
-          role: "system",
-          content: prompt,
-        },
-      ],
-      max_tokens: 200, // Adjust as needed
-    });
-
-    // Extract the AI's response
-    const message = response.choices?.[0]?.message?.content?.trim();
-
-    if (!message) {
-      throw new Error("No response from OpenAI");
-    }
-
-    return message;
-  } catch (error) {
-    console.error("Error generating weather analysis:", error);
-    throw error;
   }
 };
 

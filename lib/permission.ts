@@ -22,18 +22,6 @@ export const canUpdateActivityStatus = (status: ActivityStatus) => {
   return status === "NEW" || status === "IN_PROGRESS" || status === "PENDING";
 };
 
-export const canCreateActivity = (role: StaffRole) => isOnlyAdmin(role);
-
-export const canStaffUpdateActivity = ({
-  assignedToId,
-  createdById,
-  currentStaff,
-}: {
-  createdById: string;
-  assignedToId: string;
-  currentStaff: Staff;
-}) => {
-  const isCreatedBy = currentStaff.id === createdById;
-  const isAssignedTo = currentStaff.id === assignedToId;
-  return isCreatedBy || isAssignedTo || isSuperAdmin(currentStaff.role);
+export const canUpdateEquipmentDetail = (status: EquipmentStatus) => {
+  return status !== "WORKING";
 };

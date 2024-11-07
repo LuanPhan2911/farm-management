@@ -129,6 +129,18 @@ export const getFieldById = async (id: string) => {
     return null;
   }
 };
+
+export const fieldSelect = {
+  id: true,
+  name: true,
+  location: true,
+  area: true,
+  unit: {
+    select: {
+      name: true,
+    },
+  },
+};
 export const getFieldsSelect = async (): Promise<FieldSelect[]> => {
   try {
     const fields = await db.field.findMany({
@@ -138,15 +150,7 @@ export const getFieldsSelect = async (): Promise<FieldSelect[]> => {
         },
       },
       select: {
-        id: true,
-        name: true,
-        location: true,
-        area: true,
-        unit: {
-          select: {
-            name: true,
-          },
-        },
+        ...fieldSelect,
       },
     });
     return fields;

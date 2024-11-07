@@ -724,16 +724,11 @@ export const EquipmentDetailSchema = (
     status: z.nativeEnum(EquipmentStatus, {
       message: t("status.enum"),
     }),
-    maintenanceSchedule: stringSchema(t, "maintenanceSchedule", {
-      max: 255,
-      required: false,
-    }).nullish(),
-    operatingHours: numberSchema(t, "operatingHours", {
+    maxOperatingHours: numberSchema(t, "maxOperatingHours", {
       min: 0,
       max: 1_000_000,
       int: true,
-      required: false,
-    }).nullish(),
+    }),
     location: stringSchema(t, "location", {
       max: 255,
       required: false,
@@ -750,10 +745,10 @@ export const EquipmentUsageSchema = (
       invalid_type_error: t("usageStartTime.invalid_type_error"),
       required_error: t("usageStartTime.required_error"),
     }),
-    duration: stringSchema(t, "duration", {
-      min: 1,
-      max: 100,
-      required: true,
+    duration: numberSchema(t, "duration", {
+      min: 0,
+      max: 10_000,
+      int: true,
     }),
     note: stringSchema(t, "note", {
       max: 255,
@@ -762,6 +757,7 @@ export const EquipmentUsageSchema = (
     operatorId: stringSchema(t, "operatorId", {
       required: false,
     }).nullish(),
+    location: z.string().nullish(),
   });
 };
 
@@ -774,9 +770,10 @@ export const MaterialSchema = (
       max: 100,
     }),
     quantityInStock: numberSchema(t, "quantityInStock", {
-      min: 0,
+      min: 1,
       max: 1_000_000_000,
       required: true,
+      int: true,
     }),
     unitId: stringSchema(t, "unitId", { required: true }),
     type: z.nativeEnum(MaterialType, {
@@ -800,9 +797,10 @@ export const MaterialUsageSchema = (
     materialId: stringSchema(t, "materialId", { required: true }),
     activityId: stringSchema(t, "activityId", { required: false }).nullish(),
     quantityUsed: numberSchema(t, "quantityUsed", {
-      min: 0,
+      min: 1,
       max: 1_000_000_000,
       required: true,
+      int: true,
     }),
   });
 };
@@ -828,7 +826,7 @@ export const ActivitySchema = (
       required_error: t("activityDate.required_error"),
     }),
     status: z.nativeEnum(ActivityStatus, {
-      message: t("priority.enum"),
+      message: t("status.enum"),
     }),
     priority: z.nativeEnum(ActivityPriority, {
       message: t("priority.enum"),

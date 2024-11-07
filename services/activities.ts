@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import {
   ActivityPriorityCount,
   ActivitySelect,
+  ActivitySelectWithCropAndField,
   ActivityStatusCount,
   ActivityTable,
   PaginatedResponse,
@@ -14,6 +15,10 @@ import {
   getObjectSortOrder,
 } from "@/lib/utils";
 import { getCurrentStaff } from "./staffs";
+import { truncateByDomain } from "recharts/types/util/ChartUtils";
+import { cropSelect } from "./crops";
+import { fieldSelect } from "./fields";
+import { plantSelect } from "./plants";
 
 type ActivityParams = {
   name: string;
@@ -119,40 +124,46 @@ export const deleteActivity = async (id: string) => {
   return deletedActivity;
 };
 
+/**
+ *
+ * @param id
+ * @param status
+ * 1. Update activity status to complete | cancelled
+ * 2. Update equipment detail used in activity, equipment usages duration will be add to operating hour
+ */
 export const updateActivityStatus = async (
   id: string,
   status: "COMPLETED" | "CANCELLED"
 ) => {
-  const equipmentDetails = await db.equipmentUsage.findMany({
-    where: {
-      activityId: id,
-    },
-    distinct: ["equipmentDetailId"],
-    select: {
-      equipmentDetailId: true,
-    },
-  });
-  const [updatedActivity, updatedEquipmentDetails] = await db.$transaction([
-    db.activity.update({
-      where: {
-        id,
+  return await db.$transaction(async (ctx) => {
+    const equipmentUseds = await ctx.equipmentUsage.findMany({
+      where: { activityId: id },
+      select: {
+        equipmentDetailId: true,
+        duration: true,
       },
+    });
+    const activity = await ctx.activity.update({
+      where: { id },
       data: {
         status,
       },
-    }),
-    db.equipmentDetail.updateMany({
-      where: {
-        id: {
-          in: equipmentDetails.map((item) => item.equipmentDetailId),
+    });
+
+    const updateEquipmentDetailPromises = equipmentUseds.map((item) => {
+      return ctx.equipmentDetail.update({
+        where: { id: item.equipmentDetailId },
+        data: {
+          operatingHours: {
+            increment: item.duration,
+          },
+          status: "AVAILABLE",
         },
-      },
-      data: {
-        status: "AVAILABLE",
-      },
-    }),
-  ]);
-  return { updatedActivity, updatedEquipmentDetails };
+      });
+    });
+    await Promise.all(updateEquipmentDetailPromises);
+    return activity;
+  });
 };
 
 type ActivitySelectQuery = {
@@ -164,7 +175,6 @@ type ActivityQuery = {
   orderBy?: string;
   filterString?: string;
   filterNumber?: string;
-  staffId: string;
   type?: "createdBy" | "assignedTo";
   cropId?: string;
 };
@@ -174,11 +184,14 @@ export const getActivities = async ({
   orderBy,
   page = 1,
   query,
-  staffId,
   type = "assignedTo",
   cropId,
 }: ActivityQuery): Promise<PaginatedResponse<ActivityTable>> => {
   try {
+    const currentStaff = await getCurrentStaff();
+    if (!currentStaff) {
+      throw new Error("Unauthorized");
+    }
     const [data, count] = await db.$transaction([
       db.activity.findMany({
         take: LIMIT,
@@ -188,12 +201,12 @@ export const getActivities = async ({
             cropId,
           }),
           ...(type === "createdBy" && {
-            createdById: staffId,
+            createdById: currentStaff.id,
           }),
           ...(type === "assignedTo" && {
             assignedTo: {
               some: {
-                staffId,
+                staffId: currentStaff.id,
               },
             },
           }),
@@ -215,28 +228,15 @@ export const getActivities = async ({
           createdBy: true,
           crop: {
             select: {
-              id: true,
-              name: true,
-              startDate: true,
-              endDate: true,
+              ...cropSelect,
               field: {
                 select: {
-                  id: true,
-                  name: true,
-                  location: true,
-                  area: true,
-                  unit: {
-                    select: {
-                      name: true,
-                    },
-                  },
+                  ...fieldSelect,
                 },
               },
               plant: {
                 select: {
-                  id: true,
-                  name: true,
-                  imageUrl: true,
+                  ...plantSelect,
                 },
               },
             },
@@ -255,12 +255,12 @@ export const getActivities = async ({
             cropId,
           }),
           ...(type === "createdBy" && {
-            createdById: staffId,
+            createdById: currentStaff.id,
           }),
           ...(type === "assignedTo" && {
             assignedTo: {
               some: {
-                staffId,
+                staffId: currentStaff.id,
               },
             },
           }),
@@ -286,9 +286,16 @@ export const getActivities = async ({
   }
 };
 
+export const activitySelect = {
+  id: true,
+  name: true,
+  status: true,
+  priority: true,
+  activityDate: true,
+};
 export const getActivitiesSelect = async ({
   staffId,
-}: ActivitySelectQuery): Promise<ActivitySelect[]> => {
+}: ActivitySelectQuery): Promise<ActivitySelectWithCropAndField[]> => {
   try {
     return await db.activity.findMany({
       where: {
@@ -305,15 +312,21 @@ export const getActivitiesSelect = async ({
           },
         ],
         status: {
-          in: ["NEW", "IN_PROGRESS"],
+          in: ["NEW", "IN_PROGRESS", "PENDING"],
         },
       },
       select: {
-        id: true,
-        name: true,
-        status: true,
-        priority: true,
-        activityDate: true,
+        ...activitySelect,
+        crop: {
+          select: {
+            ...cropSelect,
+            field: {
+              select: {
+                ...fieldSelect,
+              },
+            },
+          },
+        },
       },
     });
   } catch (error) {
@@ -354,28 +367,15 @@ export const getActivityById = async (
         createdBy: true,
         crop: {
           select: {
-            id: true,
-            name: true,
-            startDate: true,
-            endDate: true,
+            ...cropSelect,
             field: {
               select: {
-                id: true,
-                name: true,
-                location: true,
-                area: true,
-                unit: {
-                  select: {
-                    name: true,
-                  },
-                },
+                ...fieldSelect,
               },
             },
             plant: {
               select: {
-                id: true,
-                name: true,
-                imageUrl: true,
+                ...plantSelect,
               },
             },
           },

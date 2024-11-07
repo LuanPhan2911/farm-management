@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { MaterialUsageTable } from "@/types";
 
 import { OrderByButton } from "@/components/buttons/order-by-button";
@@ -20,6 +20,7 @@ import { MaterialUsagesTableAction } from "./material-usages-table-action";
 import { useDialog } from "@/stores/use-dialog";
 import { UserAvatar } from "@/components/user-avatar";
 import { MaterialTypeValue } from "../../../../_components/material-type-value";
+import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-with-value";
 
 interface MaterialUsagesTableProps {
   data: MaterialUsageTable[];
@@ -31,6 +32,7 @@ export const MaterialUsagesTable = ({
 }: MaterialUsagesTableProps) => {
   const { onOpen } = useDialog();
   const t = useTranslations("materialUsages");
+  const { dateTime } = useFormatter();
   const handleEdit = (row: MaterialUsageTable) => {
     onOpen("materialUsage.edit", { materialUsage: row });
   };
@@ -44,22 +46,21 @@ export const MaterialUsagesTable = ({
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>{t("table.thead.activity.usage")}</TableHead>
+            <TableHead>{t("table.thead.createdAt")}</TableHead>
             <TableHead>{t("table.thead.material.imageUrl")}</TableHead>
-            <TableHead>
+            <TableHead className="w-[250px]">
               <OrderByButton
                 column="material.name"
                 label={t("table.thead.material.name")}
               />
             </TableHead>
+
             <TableHead>{t("table.thead.material.type")}</TableHead>
 
-            <TableHead>
-              <OrderByButton
-                column="quantityUsed"
-                label={t("table.thead.quantityUsed")}
-              />
-            </TableHead>
-            <TableHead>{t("table.thead.unitId")}</TableHead>
+            <TableHead>{t("table.thead.material.quantityInStock")}</TableHead>
+            <TableHead>{t("table.thead.quantityUsed")}</TableHead>
+
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>
@@ -71,16 +72,40 @@ export const MaterialUsagesTable = ({
                 className="cursor-pointer"
                 onClick={() => handleEdit(item)}
               >
+                <TableCell className="font-semibold">
+                  {item.activity ? (
+                    <span className="text-green-400">
+                      {t("table.trow.activity.usage")}
+                    </span>
+                  ) : (
+                    <span className="text-rose-400">
+                      {t("table.trow.activity.unused")}
+                    </span>
+                  )}
+                </TableCell>
+                <TableCell>{dateTime(item.createdAt, "long")}</TableCell>
                 <TableCell>
                   <UserAvatar src={item.material.imageUrl || undefined} />
                 </TableCell>
                 <TableCell>{item.material.name}</TableCell>
+
                 <TableCell>
                   <MaterialTypeValue value={item.material.type} />
                 </TableCell>
 
-                <TableCell>{item.quantityUsed}</TableCell>
-                <TableCell>{item.unit.name}</TableCell>
+                <TableCell>
+                  <UnitWithValue
+                    value={item.material.quantityInStock}
+                    unit={item.unit.name}
+                  />
+                </TableCell>
+                <TableCell>
+                  <UnitWithValue
+                    value={item.quantityUsed}
+                    unit={item.unit.name}
+                  />
+                </TableCell>
+
                 <TableCell>
                   <MaterialUsagesTableAction data={item} />
                 </TableCell>

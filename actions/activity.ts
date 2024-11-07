@@ -84,10 +84,9 @@ export const completeActivity = async (
   id: string,
   status: "COMPLETED" | "CANCELLED"
 ): Promise<ActionResponse> => {
-  const tSchema = await getTranslations("activities.schema");
   const tStatus = await getTranslations("activities.status");
   try {
-    const { updatedActivity } = await updateActivityStatus(id, status);
+    await updateActivityStatus(id, status);
     revalidatePath("/admin/activities");
     return successResponse(tStatus("success.complete"));
   } catch (error) {
@@ -98,10 +97,9 @@ export const cancelActivity = async (
   id: string,
   status: "COMPLETED" | "CANCELLED"
 ): Promise<ActionResponse> => {
-  const tSchema = await getTranslations("activities.schema");
   const tStatus = await getTranslations("activities.status");
   try {
-    const { updatedActivity } = await updateActivityStatus(id, status);
+    await updateActivityStatus(id, status);
     revalidatePath("/admin/activities");
     return successResponse(tStatus("success.cancel"));
   } catch (error) {

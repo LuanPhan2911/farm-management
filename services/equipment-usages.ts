@@ -5,6 +5,11 @@ import { LIMIT } from "@/configs/paginationConfig";
 import { getObjectSortOrder } from "@/lib/utils";
 import { EquipmentUsageTable, PaginatedResponse } from "@/types";
 import { revalidatePath } from "next/cache";
+import { equipmentDetailSelect } from "./equipment-details";
+import { equipmentSelect } from "./equipments";
+import { activitySelect } from "./activities";
+import { cropSelect } from "./crops";
+import { fieldSelect } from "./fields";
 
 type RevalidateEquipmentUsageParam = {
   equipmentDetailId: string;
@@ -30,12 +35,14 @@ type EquipmentUsageParams = {
   activityId?: string | null;
   equipmentDetailId: string;
   usageStartTime: Date;
-  duration: string;
+  duration: number;
   operatorId?: string | null;
   note?: string | null;
+  location?: string | null;
 };
 
 export const createEquipmentUsage = async (params: EquipmentUsageParams) => {
+  const { location, ...other } = params;
   const [updatedEquipmentDetail, equipmentUsage] = await db.$transaction([
     db.equipmentDetail.update({
       where: {
@@ -43,10 +50,11 @@ export const createEquipmentUsage = async (params: EquipmentUsageParams) => {
       },
       data: {
         status: "WORKING",
+        location,
       },
     }),
     db.equipmentUsage.create({
-      data: { ...params },
+      data: { ...other },
       include: {
         equipmentDetail: {
           select: {
@@ -59,7 +67,7 @@ export const createEquipmentUsage = async (params: EquipmentUsageParams) => {
   return { updatedEquipmentDetail, equipmentUsage };
 };
 type EquipmentUsageUpdateParams = {
-  duration: string;
+  duration: number;
   note?: string | null;
   usageStartTime: Date;
 };
@@ -165,6 +173,7 @@ export const deleteEquipmentUsage = async (id: string) => {
         },
         data: {
           status: "AVAILABLE",
+          location: null,
         },
       }),
     ]
@@ -172,13 +181,15 @@ export const deleteEquipmentUsage = async (id: string) => {
   return { updatedEquipmentDetail, deletedEquipmentUsage };
 };
 type EquipmentUsageQuery = {
-  equipmentDetailId: string;
+  equipmentDetailId?: string;
   page?: number;
   query?: string;
   orderBy?: string;
+  activityId?: string;
 };
 export const getEquipmentUsages = async ({
   equipmentDetailId,
+  activityId,
   orderBy,
   page = 1,
   query,
@@ -189,7 +200,19 @@ export const getEquipmentUsages = async ({
         take: LIMIT,
         skip: (page - 1) * LIMIT,
         where: {
-          equipmentDetailId,
+          ...(equipmentDetailId && {
+            equipmentDetailId,
+          }),
+          ...(activityId && {
+            OR: [
+              {
+                activityId: null,
+              },
+              {
+                activityId,
+              },
+            ],
+          }),
           equipmentDetail: {
             name: {
               contains: query,
@@ -201,29 +224,27 @@ export const getEquipmentUsages = async ({
         include: {
           equipmentDetail: {
             select: {
-              id: true,
-              name: true,
-              equipmentId: true,
-              status: true,
-              location: true,
+              ...equipmentDetailSelect,
               equipment: {
                 select: {
-                  name: true,
-                  type: true,
-                  imageUrl: true,
+                  ...equipmentSelect,
                 },
               },
             },
           },
           activity: {
             select: {
-              id: true,
-              name: true,
-              status: true,
-              priority: true,
-              createdBy: true,
-              assignedTo: true,
-              activityDate: true,
+              ...activitySelect,
+              crop: {
+                select: {
+                  ...cropSelect,
+                  field: {
+                    select: {
+                      ...fieldSelect,
+                    },
+                  },
+                },
+              },
             },
           },
           operator: true,
@@ -253,71 +274,5 @@ export const getEquipmentUsages = async ({
       data: [],
       totalPage: 0,
     };
-  }
-};
-
-type ActivityEquipmentUsageQuery = {
-  activityId: string;
-  query?: string;
-  orderBy?: string;
-};
-export const getEquipmentUsagesByActivityId = async ({
-  activityId,
-  orderBy,
-  query,
-}: ActivityEquipmentUsageQuery): Promise<EquipmentUsageTable[]> => {
-  try {
-    return await db.equipmentUsage.findMany({
-      where: {
-        OR: [
-          {
-            activityId: null,
-          },
-          {
-            activityId,
-          },
-        ],
-        equipmentDetail: {
-          name: {
-            contains: query,
-            mode: "insensitive",
-          },
-        },
-      },
-
-      include: {
-        equipmentDetail: {
-          select: {
-            id: true,
-            name: true,
-            equipmentId: true,
-            status: true,
-            location: true,
-            equipment: {
-              select: {
-                name: true,
-                type: true,
-                imageUrl: true,
-              },
-            },
-          },
-        },
-        activity: {
-          select: {
-            id: true,
-            name: true,
-            status: true,
-            priority: true,
-            createdBy: true,
-            assignedTo: true,
-            activityDate: true,
-          },
-        },
-        operator: true,
-      },
-      orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
-    });
-  } catch (error) {
-    return [];
   }
 };

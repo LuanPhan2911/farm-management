@@ -1,12 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { getTranslations } from "next-intl/server";
-import { getEquipmentUsagesByActivityId } from "@/services/equipment-usages";
-import { ActivityEquipmentUsageCreateButton } from "./_components/activity-equipment-usage-create-button";
-import { ActivityEquipmentUsagesTable } from "./_components/activity-equipment-usages-table";
-import { notFound } from "next/navigation";
-import { getActivityById } from "@/services/activities";
-import { canUpdateActivityStatus } from "@/lib/permission";
+
+import { getEquipmentUsages } from "@/services/equipment-usages";
+import { EquipmentUsageCreateButton } from "../../../../(inventory)/equipments/detail/[equipmentId]/details/[equipmentDetailId]/usages/_components/equipment-usage-create-button";
+import { EquipmentUsagesTable } from "../../../../(inventory)/equipments/detail/[equipmentId]/details/[equipmentDetailId]/usages/_components/equipment-usages-table";
+import { parseToNumber } from "@/lib/utils";
 export async function generateMetadata() {
   const t = await getTranslations("activities.page.detail.equipment-usages");
   return {
@@ -21,6 +20,7 @@ interface ActivityEquipmentUsagesPageProps {
   searchParams: {
     query?: string;
     orderBy?: string;
+    page?: string;
   };
 }
 const ActivityEquipmentUsagesPage = async ({
@@ -29,18 +29,14 @@ const ActivityEquipmentUsagesPage = async ({
 }: ActivityEquipmentUsagesPageProps) => {
   const t = await getTranslations("activities.page.detail.equipment-usages");
   const { query, orderBy } = searchParams;
-
-  const data = await getEquipmentUsagesByActivityId({
+  const page = parseToNumber(searchParams!.page, 1);
+  const { data, totalPage } = await getEquipmentUsages({
     activityId: params.activityId,
     orderBy,
     query,
+    page,
   });
 
-  const activity = await getActivityById(params.activityId);
-  if (!activity) {
-    notFound();
-  }
-  const canUpdate = canUpdateActivityStatus(activity.status);
   return (
     <Card>
       <CardHeader>
@@ -48,9 +44,9 @@ const ActivityEquipmentUsagesPage = async ({
       </CardHeader>
       <CardContent>
         <div className="flex justify-end">
-          <ActivityEquipmentUsageCreateButton disabled={!canUpdate} />
+          <EquipmentUsageCreateButton />
         </div>
-        <ActivityEquipmentUsagesTable data={data} />
+        <EquipmentUsagesTable data={data} totalPage={totalPage} />
       </CardContent>
     </Card>
   );

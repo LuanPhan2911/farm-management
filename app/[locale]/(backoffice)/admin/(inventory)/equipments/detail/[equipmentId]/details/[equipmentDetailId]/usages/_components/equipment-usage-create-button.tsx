@@ -25,7 +25,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { create } from "@/actions/equipment-usage";
 import { toast } from "sonner";
 
@@ -34,38 +34,44 @@ import { useParams } from "next/navigation";
 import { ActivitiesSelect } from "@/app/[locale]/(backoffice)/admin/_components/activities-select";
 import { DatePickerWithTime } from "@/components/form/date-picker-with-time";
 import { StaffsSelect } from "@/app/[locale]/(backoffice)/admin/_components/staffs-select";
-import { Staff } from "@prisma/client";
 import { Textarea } from "@/components/ui/textarea";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { useAuth } from "@clerk/nextjs";
+import { EquipmentDetailsSelect } from "@/app/[locale]/(backoffice)/admin/_components/equipment-details-select";
+import { useCurrentStaff } from "@/hooks/use-current-staff";
 
-interface EquipmentUsageCreateButtonProps {
-  currentOperator: Staff;
-}
-export const EquipmentUsageCreateButton = ({
-  currentOperator,
-}: EquipmentUsageCreateButtonProps) => {
+export const EquipmentUsageCreateButton = () => {
   const tSchema = useTranslations("equipmentUsages.schema");
   const t = useTranslations("equipmentUsages.form");
+
   const params = useParams<{
     equipmentDetailId: string;
+    activityId: string;
   }>();
-
   const { isOnlyAdmin: canCreate } = useCurrentStaffRole();
+  const { currentStaff } = useCurrentStaff();
+  const { orgId } = useAuth();
 
   const formSchema = EquipmentUsageSchema(tSchema);
-  const [isPending, startTransition] = useTransition();
-  const [isOpen, setOpen] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       equipmentDetailId: params?.equipmentDetailId,
-      operatorId: currentOperator.id,
+      activityId: params?.activityId,
       usageStartTime: new Date(),
-      duration: "1 day",
+      duration: 1,
     },
   });
-  const { orgId } = useAuth();
+
+  useEffect(() => {
+    if (currentStaff) {
+      form.setValue("operatorId", currentStaff.id);
+    }
+  }, [form, currentStaff]);
+
+  const [isPending, startTransition] = useTransition();
+
+  const [isOpen, setOpen] = useState(false);
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       create(values)
@@ -86,7 +92,11 @@ export const EquipmentUsageCreateButton = ({
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size={"sm"} variant={"success"} disabled={!canCreate}>
+        <Button
+          size={"sm"}
+          variant={"success"}
+          disabled={isPending || !canCreate}
+        >
           <Plus className="h-4 w-4 mr-2" />{" "}
           <span className="text-sm font-semibold">{t("create.label")}</span>
         </Button>
@@ -99,21 +109,23 @@ export const EquipmentUsageCreateButton = ({
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid lg:grid-cols-2 gap-2">
+            <div className="grid lg:grid-cols-2 gap-x-2">
               <FormField
                 control={form.control}
-                name="activityId"
+                name="equipmentDetailId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{tSchema("activityId.label")}</FormLabel>
+                    <FormLabel>{tSchema("equipmentDetailId.label")}</FormLabel>
                     <FormControl>
-                      <ActivitiesSelect
+                      <EquipmentDetailsSelect
                         onChange={field.onChange}
-                        placeholder={tSchema("activityId.placeholder")}
-                        disabled={isPending || !canCreate}
-                        error={tSchema("activityId.error")}
-                        notFound={tSchema("activityId.notFound")}
-                        defaultValue={field.value ?? undefined}
+                        placeholder={tSchema("equipmentDetailId.placeholder")}
+                        disabled={
+                          isPending || !canCreate || !!params?.equipmentDetailId
+                        }
+                        error={tSchema("equipmentDetailId.error")}
+                        notFound={tSchema("equipmentDetailId.notFound")}
+                        defaultValue={field.value}
                       />
                     </FormControl>
 
@@ -147,6 +159,35 @@ export const EquipmentUsageCreateButton = ({
             <div className="grid lg:grid-cols-2 gap-2">
               <FormField
                 control={form.control}
+                name="activityId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("activityId.label")}</FormLabel>
+                    <FormControl>
+                      <ActivitiesSelect
+                        onChange={field.onChange}
+                        placeholder={tSchema("activityId.placeholder")}
+                        disabled={
+                          isPending || !canCreate || !!params?.activityId
+                        }
+                        error={tSchema("activityId.error")}
+                        notFound={tSchema("activityId.notFound")}
+                        defaultValue={field.value ?? undefined}
+                        onSelected={(selectedActivity) => {
+                          form.setValue(
+                            "location",
+                            selectedActivity.crop.field.location
+                          );
+                        }}
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="usageStartTime"
                 render={({ field }) => (
                   <FormItem>
@@ -167,6 +208,8 @@ export const EquipmentUsageCreateButton = ({
                   </FormItem>
                 )}
               />
+            </div>
+            <div className="grid lg:grid-cols-2 gap-2">
               <FormField
                 control={form.control}
                 name="duration"
@@ -179,6 +222,8 @@ export const EquipmentUsageCreateButton = ({
                         value={field.value ?? undefined}
                         onChange={field.onChange}
                         disabled={isPending || !canCreate}
+                        type="number"
+                        min={1}
                       />
                     </FormControl>
                     <FormMessage />

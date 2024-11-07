@@ -95,7 +95,7 @@ export const EquipmentUsagesTable = ({
                   {item.equipmentDetail.location ||
                     t("table.trow.equipmentDetail.location")}
                 </TableCell>
-                <TableCell>{item.duration}</TableCell>
+                <TableCell>{item.duration}h</TableCell>
 
                 <TableCell>
                   <SelectItemContent

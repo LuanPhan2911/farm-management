@@ -1,14 +1,18 @@
 import { db } from "@/lib/db";
-import { EquipmentDetailSelect, EquipmentDetailTable } from "@/types";
+import {
+  EquipmentDetailSelect,
+  EquipmentDetailSelectWithEquipment,
+  EquipmentDetailTable,
+} from "@/types";
 import { EquipmentStatus } from "@prisma/client";
+import { equipmentSelect } from "./equipments";
 
 type EquipmentDetailParams = {
   equipmentId: string;
   status: EquipmentStatus;
+  maxOperatingHours: number;
   lastMaintenanceDate?: Date | null;
   name?: string | null;
-  maintenanceSchedule?: string | null;
-  operatingHours?: number | null;
   location?: string | null;
 };
 
@@ -23,21 +27,27 @@ export const updateEquipmentDetail = async (
   id: string,
   params: EquipmentDetailParams
 ) => {
-  return await db.equipmentDetail.update({
+  const { status, ...other } = params;
+  const equipmentDetail = await db.equipmentDetail.findUnique({
     where: { id },
-    data: {
-      ...params,
-    },
   });
-};
-export const updateEquipmentDetailStatus = async (
-  id: string,
-  status: EquipmentStatus
-) => {
+
+  if (equipmentDetail?.status === "MAINTENANCE" && status === "AVAILABLE") {
+    return await db.equipmentDetail.update({
+      where: { id },
+      data: {
+        status,
+        operatingHours: 0,
+        lastMaintenanceDate: new Date(),
+        ...other,
+      },
+    });
+  }
   return await db.equipmentDetail.update({
     where: { id },
     data: {
       status,
+      ...other,
     },
   });
 };
@@ -46,12 +56,12 @@ export const deleteEquipmentDetail = async (id: string) => {
   return await db.equipmentDetail.delete({ where: { id } });
 };
 
-type EquipmentDetailEQuery = {
+type EquipmentDetailQuery = {
   equipmentId: string;
 };
 export const getEquipmentDetails = async ({
   equipmentId,
-}: EquipmentDetailEQuery): Promise<EquipmentDetailTable[]> => {
+}: EquipmentDetailQuery): Promise<EquipmentDetailTable[]> => {
   try {
     return await db.equipmentDetail.findMany({
       where: {
@@ -60,9 +70,7 @@ export const getEquipmentDetails = async ({
       include: {
         equipment: {
           select: {
-            name: true,
-            type: true,
-            imageUrl: true,
+            ...equipmentSelect,
           },
         },
       },
@@ -71,25 +79,27 @@ export const getEquipmentDetails = async ({
     return [];
   }
 };
+
+export const equipmentDetailSelect = {
+  id: true,
+  name: true,
+  equipmentId: true,
+  status: true,
+  location: true,
+};
 export const getEquipmentDetailsSelect = async (
   equipmentId: string
-): Promise<EquipmentDetailSelect[]> => {
+): Promise<EquipmentDetailSelectWithEquipment[]> => {
   try {
     return await db.equipmentDetail.findMany({
       where: {
         equipmentId,
       },
       select: {
-        id: true,
-        name: true,
-        equipmentId: true,
-        status: true,
-        location: true,
+        ...equipmentDetailSelect,
         equipment: {
           select: {
-            name: true,
-            type: true,
-            imageUrl: true,
+            ...equipmentSelect,
           },
         },
       },
@@ -109,9 +119,7 @@ export const getEquipmentDetailById = async (
       include: {
         equipment: {
           select: {
-            name: true,
-            type: true,
-            imageUrl: true,
+            ...equipmentSelect,
           },
         },
       },
@@ -130,16 +138,10 @@ export const getEquipmentDetailsSelectForActivity = async (): Promise<
         status: "AVAILABLE",
       },
       select: {
-        id: true,
-        name: true,
-        equipmentId: true,
-        location: true,
-        status: true,
+        ...equipmentDetailSelect,
         equipment: {
           select: {
-            name: true,
-            type: true,
-            imageUrl: true,
+            ...equipmentSelect,
           },
         },
       },
@@ -150,4 +152,34 @@ export const getEquipmentDetailsSelectForActivity = async (): Promise<
   } catch (error) {
     return [];
   }
+};
+
+// update status to maintain when operating hour greater or equal than max operating hour
+export const maintainEquipmentDetail = async () => {
+  // Fetch all equipment details not already in MAINTENANCE status
+  const equipmentDetails = await db.equipmentDetail.findMany({
+    where: {
+      status: {
+        not: "MAINTENANCE", // Only consider equipment not already in maintenance
+      },
+    },
+  });
+
+  // Filter equipment that needs maintenance based on operating hours
+  const equipmentToMaintain = equipmentDetails.filter(
+    (equipment) => equipment.operatingHours >= equipment.maxOperatingHours
+  );
+
+  // Update each filtered equipment status to MAINTENANCE
+  const updatePromises = equipmentToMaintain.map((equipment) =>
+    db.equipmentDetail.update({
+      where: { id: equipment.id },
+      data: {
+        status: "MAINTENANCE",
+      },
+    })
+  );
+
+  // Await all updates
+  return await Promise.all(updatePromises);
 };

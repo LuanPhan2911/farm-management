@@ -138,6 +138,8 @@ export const EquipmentUsageEditDialog = () => {
                       value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending || !canEdit}
+                      type="number"
+                      min={1}
                     />
                   </FormControl>
                   <FormMessage />

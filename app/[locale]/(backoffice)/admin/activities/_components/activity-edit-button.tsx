@@ -24,7 +24,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { SelectOptions } from "@/components/form/select-options";
 
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
-import { ActivityPriority } from "@prisma/client";
+import { ActivityPriority, ActivityStatus } from "@prisma/client";
 import { StaffsSelectMultiple } from "../../_components/staffs-select";
 import { DatePickerWithTime } from "@/components/form/date-picker-with-time";
 import { canUpdateActivityStatus } from "@/lib/permission";
@@ -127,7 +127,6 @@ export const ActivityEditForm = ({ data }: ActivityEditFormProps) => {
                 <FormLabel>{tSchema("cropId.label")}</FormLabel>
                 <FormControl>
                   <CropsSelect
-                    orgId={orgId}
                     defaultValue={field.value}
                     onChange={field.onChange}
                     error={tSchema("cropId.error")}
@@ -164,7 +163,36 @@ export const ActivityEditForm = ({ data }: ActivityEditFormProps) => {
             )}
           />
         </div>
-        <div className="grid lg:grid-cols-3 gap-2">
+        <div className="grid lg:grid-cols-4 gap-2">
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("status.label")}</FormLabel>
+                <FormControl>
+                  <SelectOptions
+                    placeholder={tSchema("status.placeholder")}
+                    onChange={field.onChange}
+                    options={Object.values(ActivityStatus).map((item) => {
+                      return {
+                        label: tSchema(`status.options.${item}`),
+                        value: item,
+                      };
+                    })}
+                    defaultValue={field.value}
+                    disabled={isPending}
+                    disabledValues={[
+                      ActivityStatus.CANCELLED,
+                      ActivityStatus.COMPLETED,
+                    ]}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="priority"

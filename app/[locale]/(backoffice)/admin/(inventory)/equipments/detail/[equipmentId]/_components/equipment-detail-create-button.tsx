@@ -70,6 +70,7 @@ export const EquipmentDetailCreateForm = ({
       equipmentId: params.equipmentId,
       name: `${data.name} (${data._count.equipmentDetails})`,
       status: "AVAILABLE",
+      maxOperatingHours: 100,
     },
   });
 
@@ -133,6 +134,10 @@ export const EquipmentDetailCreateForm = ({
                   })}
                   disabled={isPending || !canCreate}
                   defaultValue={field.value}
+                  disabledValues={[
+                    EquipmentStatus.WORKING,
+                    EquipmentStatus.MAINTENANCE,
+                  ]}
                 />
               </FormControl>
 
@@ -159,39 +164,21 @@ export const EquipmentDetailCreateForm = ({
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="maintenanceSchedule"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{tSchema("maintenanceSchedule.label")}</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder={tSchema("maintenanceSchedule.placeholder")}
-                  value={field.value ?? undefined}
-                  onChange={field.onChange}
-                  disabled={isPending || !canCreate}
-                />
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
         <FormField
           control={form.control}
-          name="operatingHours"
+          name="maxOperatingHours"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{tSchema("operatingHours.label")}</FormLabel>
+              <FormLabel>{tSchema("maxOperatingHours.label")}</FormLabel>
               <FormControl>
                 <Input
-                  placeholder={tSchema("operatingHours.placeholder")}
+                  placeholder={tSchema("maxOperatingHours.placeholder")}
                   value={field.value ?? undefined}
                   onChange={field.onChange}
                   disabled={isPending || !canCreate}
                   type="number"
+                  min={1}
                 />
               </FormControl>
               <FormMessage />

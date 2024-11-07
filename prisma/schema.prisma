@@ -496,8 +496,8 @@ model EquipmentDetail {
   status EquipmentStatus @default(AVAILABLE)
 
   lastMaintenanceDate DateTime?
-  maintenanceSchedule String?
-  operatingHours      Int? // Số giờ hoạt động
+  operatingHours      Int       @default(0) // Số giờ hoạt động
+  maxOperatingHours   Int
   location            String?
 
   equipmentId String
@@ -513,7 +513,7 @@ model EquipmentUsage {
   activityId        String?
   equipmentDetailId String
   usageStartTime    DateTime // Start time of equipment usage
-  duration          String
+  duration          Int // hour usage
   operatorId        String?
   note              String? // Additional notes
 
@@ -521,7 +521,7 @@ model EquipmentUsage {
   updatedAt DateTime @updatedAt
 
   equipmentDetail EquipmentDetail @relation(fields: [equipmentDetailId], references: [id])
-  activity        Activity?       @relation(fields: [activityId], references: [id], onDelete: SetNull)
+  activity        Activity?       @relation(fields: [activityId], references: [id])
   operator        Staff?          @relation(fields: [operatorId], references: [id]) // Operator
 }
 
@@ -557,7 +557,7 @@ model MaterialUsage {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  activity Activity? @relation(fields: [activityId], references: [id], onDelete: SetNull)
+  activity Activity? @relation(fields: [activityId], references: [id])
   material Material  @relation(fields: [materialId], references: [id])
   unit     Unit      @relation(fields: [unitId], references: [id])
 }

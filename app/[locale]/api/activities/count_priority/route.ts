@@ -14,6 +14,6 @@ export const GET = async (req: NextRequest) => {
     });
     return NextResponse.json(result);
   } catch (error) {
-    return NextResponse.json("Internal Error", { status: 500 });
+    return new NextResponse("Internal Error", { status: 500 });
   }
 };

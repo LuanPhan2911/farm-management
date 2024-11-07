@@ -86,24 +86,7 @@ export const EquipmentDetailsTable = ({ data }: EquipmentDetailsTableProps) => {
         return data.location;
       },
     },
-    {
-      accessorKey: "maintenanceSchedule",
-      header: ({ column }) => {
-        return (
-          <DataTableColumnHeader
-            column={column}
-            title={t("table.thead.maintenanceSchedule")}
-          />
-        );
-      },
-      cell: ({ row }) => {
-        const data = row.original;
-        if (!data.maintenanceSchedule) {
-          return t("table.trow.maintenanceSchedule");
-        }
-        return data.maintenanceSchedule;
-      },
-    },
+
     {
       accessorKey: "lastMaintenanceDate",
       header: ({ column }) => {
@@ -132,12 +115,16 @@ export const EquipmentDetailsTable = ({ data }: EquipmentDetailsTableProps) => {
           />
         );
       },
-      cell: ({ row }) => {
-        const data = row.original;
-        if (!data.operatingHours) {
-          return t("table.trow.operatingHours");
-        }
-        return data.operatingHours;
+    },
+    {
+      accessorKey: "maxOperatingHours",
+      header: ({ column }) => {
+        return (
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.thead.maxOperatingHours")}
+          />
+        );
       },
     },
 

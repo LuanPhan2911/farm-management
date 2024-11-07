@@ -7,10 +7,9 @@ import {
   ComboBoxCustom,
   ComboBoxCustomAppearance,
 } from "@/components/form/combo-box";
-import { ActivitySelect } from "@/types";
-import { useFormatter } from "next-intl";
-import { ActivityStatusValue } from "../activities/_components/activity-status-value";
-import { ActivityPriorityValue } from "../activities/_components/activity-priority-value";
+import { ActivitySelectWithCropAndField } from "@/types";
+import { SelectItemContentWithoutImage } from "@/components/form/select-item";
+import { useEffect } from "react";
 
 interface ActivitiesSelectProps {
   defaultValue?: string;
@@ -20,6 +19,7 @@ interface ActivitiesSelectProps {
   error: string;
   notFound: string;
   appearance?: ComboBoxCustomAppearance;
+  onSelected?: (value: ActivitySelectWithCropAndField) => void;
 }
 export const ActivitiesSelect = (props: ActivitiesSelectProps) => {
   const { data, isPending, isError, refetch } = useQuery({
@@ -34,9 +34,16 @@ export const ActivitiesSelect = (props: ActivitiesSelectProps) => {
         }
       );
       const res = await fetch(url);
-      return (await res.json()) as ActivitySelect[];
+      return (await res.json()) as ActivitySelectWithCropAndField[];
     },
   });
+  useEffect(() => {
+    const selected = data?.find((item) => item.id === props.defaultValue);
+    if (!selected) {
+      return;
+    }
+    props.onSelected?.(selected);
+  }, [data, props]);
 
   return (
     <ComboBoxCustom
@@ -48,29 +55,13 @@ export const ActivitiesSelect = (props: ActivitiesSelectProps) => {
       isPending={isPending}
       refetch={refetch}
       renderItem={(item) => {
-        return <ActivitiesSelectItem {...item} />;
+        return (
+          <SelectItemContentWithoutImage
+            title={item.name}
+            description={item.crop.name}
+          />
+        );
       }}
     />
-  );
-};
-interface ActivitiesSelectItemProps extends ActivitySelect {}
-const ActivitiesSelectItem = ({
-  activityDate,
-  name,
-  priority,
-  status,
-}: ActivitiesSelectItemProps) => {
-  const { relativeTime } = useFormatter();
-  return (
-    <div className="w-full flex flex-col gap-y-1">
-      <div className="text-sm font-medium leading-none text-start">{name}</div>
-      <div className=" flex items-center gap-x-1">
-        <ActivityStatusValue value={status} />
-        <ActivityPriorityValue value={priority} />
-        <p className="text-xs text-muted-foreground">
-          {relativeTime(activityDate)}
-        </p>
-      </div>
-    </div>
   );
 };

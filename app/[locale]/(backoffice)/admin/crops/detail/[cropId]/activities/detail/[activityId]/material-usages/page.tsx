@@ -1,13 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { getTranslations } from "next-intl/server";
-import { getMaterialUsagesByActivityId } from "@/services/material-usages";
-import { getActivityById } from "@/services/activities";
-import { getCurrentStaff } from "@/services/staffs";
-import { notFound } from "next/navigation";
-import { canUpdateActivityStatus } from "@/lib/permission";
-import { ActivityMaterialUsageCreateButton } from "@/app/[locale]/(backoffice)/admin/activities/detail/[activityId]/material-usages/_components/activity-material-usage-create-button";
-import { ActivityMaterialUsagesTable } from "@/app/[locale]/(backoffice)/admin/activities/detail/[activityId]/material-usages/_components/activity-material-usages-table";
+
+import { getMaterialUsages } from "@/services/material-usages";
+import { MaterialUsageCreateButton } from "@/app/[locale]/(backoffice)/admin/(inventory)/materials/detail/[materialId]/usages/_components/material-usages-create-button";
+import { MaterialUsagesTable } from "@/app/[locale]/(backoffice)/admin/(inventory)/materials/detail/[materialId]/usages/_components/material-usages-table";
+import { parseToNumber } from "@/lib/utils";
 export async function generateMetadata() {
   const t = await getTranslations("activities.page.detail.material-usages");
   return {
@@ -22,6 +20,7 @@ interface MaterialUsagesPageProps {
   searchParams: {
     query?: string;
     orderBy?: string;
+    page?: string;
   };
 }
 const ActivityMaterialUsagesPage = async ({
@@ -30,17 +29,14 @@ const ActivityMaterialUsagesPage = async ({
 }: MaterialUsagesPageProps) => {
   const t = await getTranslations("activities.page.detail.material-usages");
   const { query, orderBy } = searchParams;
-
-  const activity = await getActivityById(params.activityId);
-  if (!activity) {
-    notFound();
-  }
-  const materials = await getMaterialUsagesByActivityId({
+  const page = parseToNumber(searchParams!.page, 1);
+  const { data, totalPage } = await getMaterialUsages({
     activityId: params.activityId,
     orderBy,
     query,
+    page,
   });
-  const canUpdate = canUpdateActivityStatus(activity.status);
+
   return (
     <Card>
       <CardHeader>
@@ -48,9 +44,9 @@ const ActivityMaterialUsagesPage = async ({
       </CardHeader>
       <CardContent>
         <div className="flex justify-end">
-          <ActivityMaterialUsageCreateButton disabled={!canUpdate} />
+          <MaterialUsageCreateButton />
         </div>
-        <ActivityMaterialUsagesTable data={materials} />
+        <MaterialUsagesTable data={data} totalPage={totalPage} />
       </CardContent>
     </Card>
   );

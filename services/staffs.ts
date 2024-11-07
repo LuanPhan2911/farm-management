@@ -1,7 +1,7 @@
 import { LIMIT } from "@/configs/paginationConfig";
 import { db } from "@/lib/db";
 import { clerkClient, currentUser, getAuth } from "@clerk/nextjs/server";
-import { Staff, StaffRole } from "@prisma/client";
+import { StaffRole } from "@prisma/client";
 import { UserOrderBy } from "./users";
 import { NextApiRequest } from "next";
 import { getOrganizationMembership } from "./organizations";

@@ -30,19 +30,14 @@ import {
 interface ActivitiesTableProps {
   data: ActivityTable[];
   totalPage: number;
-  detailUrl?: (row: ActivityTable) => string;
 }
-export const ActivitiesTable = ({
-  data,
-  totalPage,
-  detailUrl,
-}: ActivitiesTableProps) => {
+export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
   const router = useRouterWithRole();
   const { dateTime } = useFormatter();
   const t = useTranslations("activities");
   const { isFarmer } = useCurrentStaffRole();
   const handleViewDetail = (row: ActivityTable) => {
-    router.push(detailUrl ? detailUrl(row) : `activities/detail/${row.id}`);
+    router.pushDetail(`detail/${row.id}`);
   };
   const { updateSearchParam, initialParam } = useUpdateSearchParam(
     "type",
