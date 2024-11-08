@@ -7,21 +7,26 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Ellipsis } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { User } from "@clerk/nextjs/server";
-import { StaffEditRoleButton } from "./staff-edit-role";
 import { isSuperAdmin } from "@/lib/permission";
-import { StaffRole } from "@prisma/client";
+import { Staff } from "@prisma/client";
 import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/staff";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { StaffEditButton } from "./staff-edit-button";
+import { useCurrentStaff } from "@/hooks/use-current-staff";
 interface StaffsTableActionProps {
-  data: User;
+  data: Staff;
 }
 export const StaffsTableAction = ({ data }: StaffsTableActionProps) => {
   const t = useTranslations("staffs.form");
-  const isSuperAdminRole = isSuperAdmin(data.publicMetadata.role as StaffRole);
-  const { isSuperAdmin: canDelete } = useCurrentStaffRole();
+  const { currentStaff } = useCurrentStaff();
+  const { isSuperAdmin: isSuperAdminRole } = useCurrentStaffRole();
 
+  const isOwner = currentStaff?.id === data.id;
+
+  const canEdit = isSuperAdminRole || isOwner;
+  const staffIsSuperAdmin = isSuperAdmin(data.role);
+  const canDelete = isSuperAdminRole && !staffIsSuperAdmin;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -29,7 +34,7 @@ export const StaffsTableAction = ({ data }: StaffsTableActionProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
-          <StaffEditRoleButton data={data} label={t("editRole.label")} />
+          <StaffEditButton data={data} disabled={!canEdit} />
         </DropdownMenuItem>
         <DropdownMenuItem>
           <DestroyButton
@@ -37,7 +42,7 @@ export const StaffsTableAction = ({ data }: StaffsTableActionProps) => {
             id={data.id}
             inltKey="staffs"
             className="w-full"
-            disabled={isSuperAdminRole || !canDelete}
+            disabled={!canDelete}
             redirectHref="staffs"
           />
         </DropdownMenuItem>

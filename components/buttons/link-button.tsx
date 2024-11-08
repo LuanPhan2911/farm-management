@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { VariantProps } from "class-variance-authority";
 import { usePrefix } from "@/hooks/use-prefix";
 import { LucideIcon } from "lucide-react";
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
 
 interface LinkButtonProps extends VariantProps<typeof buttonVariants> {
   label: string;
@@ -23,26 +24,21 @@ export const LinkButton = ({
   variant,
   icon,
 }: LinkButtonProps) => {
-  const prefix = usePrefix();
   const Icon = icon ? icon : null;
+  const router = useRouterWithRole();
   return (
     <Button
       variant={variant || "cyan"}
       size={size || "sm"}
       disabled={disabled}
       className={cn(className)}
-      asChild
+      onClick={(e) => {
+        e.stopPropagation();
+        router.push(href);
+      }}
     >
-      <Link
-        href={prefix ? `${prefix}/${href}` : href}
-        className={cn(className)}
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-      >
-        {Icon && <Icon className="w-4 h-4 mr-2" />}
-        {label}
-      </Link>
+      {Icon && <Icon className="w-4 h-4 mr-2" />}
+      {label}
     </Button>
   );
 };

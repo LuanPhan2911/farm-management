@@ -401,6 +401,15 @@ export type CropSelectWithField = CropSelect & {
 export type ActivityAssignedStaff = ActivityAssigned & {
   staff: Staff;
 };
+export type ActivityAssignedStaffWithActivitySelect = ActivityAssigned & {
+  activity: ActivitySelect;
+  staff: Staff;
+  actualCost: number | null;
+};
+export type ActivityAssignedStaffWithActivityAndCost = {
+  totalActualCost: number;
+  data: ActivityAssignedStaffWithActivitySelect[];
+};
 export type ActivityTable = Activity & {
   assignedTo: ActivityAssignedStaff[];
   createdBy: Staff;
@@ -419,6 +428,7 @@ export type ActivitySelect = {
   status: ActivityStatus;
   priority: ActivityPriority;
   activityDate: Date;
+  estimatedDuration: number;
 };
 export type ActivitySelectWithCropAndField = ActivitySelect & {
   crop: CropSelect & {

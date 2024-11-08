@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { JobSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Gender, Job, JobExperience, JobWorkingState } from "@prisma/client";
@@ -22,34 +21,34 @@ import { Input } from "@/components/ui/input";
 
 import { SelectOptions } from "@/components/form/select-options";
 import { DatePicker } from "@/components/form/date-picker";
-import { addDays } from "date-fns";
 import { RadioOptions } from "@/components/form/radio-options";
 import { Tiptap } from "@/components/tiptap";
 import { useTransition } from "react";
 import { JobTable } from "@/types";
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
-import { useRouterWithRole } from "@/hooks/use-router-with-role";
+import { LinkButton } from "@/components/buttons/link-button";
 
 interface JobEditButtonProps {
   data: JobTable;
   label: string;
+  disabled?: boolean;
 }
 
-export const JobEditButton = ({ data, label }: JobEditButtonProps) => {
-  const router = useRouterWithRole();
+export const JobEditButton = ({
+  data,
+  label,
+  disabled,
+}: JobEditButtonProps) => {
   return (
-    <Button
-      className="w-full"
-      onClick={(e) => {
-        e.stopPropagation();
-        router.push(`jobs/edit/${data.id}`);
-      }}
+    <LinkButton
+      href={`jobs/edit/${data.id}`}
       size={"sm"}
       variant={"edit"}
-    >
-      <Edit className="w-4 h-4 mr-2" />
-      {label}
-    </Button>
+      label={label}
+      className="w-full"
+      disabled={disabled}
+      icon={Edit}
+    ></LinkButton>
   );
 };
 interface JobEditFormProps {
@@ -59,7 +58,6 @@ export const JobEditForm = ({ job }: JobEditFormProps) => {
   const { id, ...other } = job;
   const tSchema = useTranslations("jobs.schema");
 
-  const t = useTranslations("jobs");
   const formSchema = JobSchema(tSchema);
 
   const [isPending, startTransition] = useTransition();
@@ -92,7 +90,7 @@ export const JobEditForm = ({ job }: JobEditFormProps) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4 max-w-4xl"
+        className="space-y-4 max-w-6xl"
       >
         <FormField
           control={form.control}
@@ -113,7 +111,90 @@ export const JobEditForm = ({ job }: JobEditFormProps) => {
             </FormItem>
           )}
         />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid lg:grid-cols-3 gap-4">
+          <FormField
+            control={form.control}
+            name="quantity"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("quantity.label")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={tSchema("quantity.placeholder")}
+                    value={field.value ?? undefined}
+                    onChange={field.onChange}
+                    disabled={isPending}
+                    type="number"
+                    min={1}
+                    max={10}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="wage"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("wage.label")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={tSchema("wage.placeholder")}
+                    value={field.value ?? undefined}
+                    onChange={field.onChange}
+                    disabled={isPending}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="workingTime"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("workingTime.label")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={tSchema("workingTime.placeholder")}
+                    value={field.value ?? undefined}
+                    onChange={field.onChange}
+                    disabled={isPending}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="grid lg:grid-cols-4 gap-4">
+          <FormField
+            control={form.control}
+            name="expiredAt"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("expiredAt.label")}</FormLabel>
+                <FormControl>
+                  <DatePicker
+                    value={field.value}
+                    onChange={field.onChange}
+                    disabled={isPending}
+                    disabledDateRange={{
+                      before: new Date(),
+                    }}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="experience"
@@ -139,49 +220,6 @@ export const JobEditForm = ({ job }: JobEditFormProps) => {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="quantity"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("quantity.label")}</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={tSchema("quantity.placeholder")}
-                    value={field.value ?? undefined}
-                    onChange={field.onChange}
-                    disabled={isPending}
-                    type="number"
-                  />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="expiredAt"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("expiredAt.label")}</FormLabel>
-                <FormControl>
-                  <DatePicker
-                    value={field.value}
-                    onChange={field.onChange}
-                    disabled={isPending}
-                    disabledDateRange={(date) => {
-                      return date < addDays(new Date(), -1);
-                    }}
-                  />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="gender"
@@ -231,44 +269,7 @@ export const JobEditForm = ({ job }: JobEditFormProps) => {
             )}
           />
         </div>
-        <FormField
-          control={form.control}
-          name="workingTime"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{tSchema("workingTime.label")}</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder={tSchema("workingTime.placeholder")}
-                  value={field.value ?? undefined}
-                  onChange={field.onChange}
-                  disabled={isPending}
-                />
-              </FormControl>
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="wage"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{tSchema("wage.label")}</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder={tSchema("wage.placeholder")}
-                  value={field.value ?? undefined}
-                  onChange={field.onChange}
-                  disabled={isPending}
-                />
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <FormField
           control={form.control}
           name="description"

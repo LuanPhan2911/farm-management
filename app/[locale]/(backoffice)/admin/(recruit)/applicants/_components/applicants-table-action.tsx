@@ -19,7 +19,8 @@ interface ApplicantsTableActionProps {
 export const ApplicantsTableAction = ({ data }: ApplicantsTableActionProps) => {
   const t = useTranslations("applicants.form");
   const { isSuperAdmin } = useCurrentStaffRole();
-  const disabled = !isSuperAdmin;
+  const canCreate = isSuperAdmin && data.status === "NEW";
+  const canDelete = isSuperAdmin;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -32,6 +33,7 @@ export const ApplicantsTableAction = ({ data }: ApplicantsTableActionProps) => {
           <ApplicantStaffCreateButton
             data={data}
             label={t("createStaff.label")}
+            disabled={!canCreate}
           />
         </DropdownMenuItem>
         <DropdownMenuItem>
@@ -40,7 +42,7 @@ export const ApplicantsTableAction = ({ data }: ApplicantsTableActionProps) => {
             id={data.id}
             inltKey="applicants"
             className="w-full"
-            disabled={disabled}
+            disabled={!canDelete}
           />
         </DropdownMenuItem>
       </DropdownMenuContent>

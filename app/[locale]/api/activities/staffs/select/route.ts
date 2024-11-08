@@ -1,4 +1,4 @@
-import { getActivityAssignedStaffs } from "@/services/activities";
+import { getActivityAssignedStaffsSelect } from "@/services/activities";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (req: NextRequest) => {
@@ -8,7 +8,7 @@ export const GET = async (req: NextRequest) => {
     if (!activityId) {
       return new NextResponse("No activity id", { status: 400 });
     }
-    const result = await getActivityAssignedStaffs(activityId);
+    const result = await getActivityAssignedStaffsSelect(activityId);
     return NextResponse.json(result);
   } catch (error) {
     return new NextResponse("Internal Error", { status: 500 });

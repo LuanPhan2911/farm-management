@@ -129,7 +129,7 @@
       "create": {
         "label": "Add",
         "title": "Add category",
-        "description": "Category use for classify in the farm"
+        "description": "Category use for categorizing everything in the farm"
       },
       "edit": {
         "label": "Edit",
@@ -160,7 +160,7 @@
       },
       "slug": {
         "label": "Slug",
-        "placeholder": "Slug will be automatically filled in according to name",
+        "placeholder": "Slug will be automatically generated from name",
         "required_error": "Slug is required!",
         "min": "Slug is required!",
         "max": "Slug's length must be less than {max} characters"
@@ -229,12 +229,12 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete unit?",
-        "description": "Are you absolutely sure? This action can not be undone! If unit in use, you cannot to delete."
+        "description": "Are you absolutely sure? This action can not be undone!"
       },
       "destroyMany": {
         "label": "Delete all",
         "title": "Delete all selected units?",
-        "description": "Are you absolutely sure? This action can not be undone! If unit in use, you cannot to delete."
+        "description": "Are you absolutely sure? This action can not be undone!"
       }
     },
     "schema": {
@@ -253,7 +253,6 @@
         "placeholder": "Select type...",
         "enum": "Please select type in list",
         "options": {
-          "AREA": "Area",
           "QUANTITY": "Quantity",
           "TEMPERATURE": "Temperature",
           "ATMOSPHERICPRESSURE": "Atmospheric pressure",
@@ -444,7 +443,7 @@
       "create": {
         "label": "Add",
         "title": "Add job",
-        "description": "Post job vacancies for farms"
+        "description": "Create job to find applicants"
       },
       "edit": {
         "label": "Edit",
@@ -475,7 +474,7 @@
         "label": "Name",
         "placeholder": "Job name",
         "required_error": "Job name is required!",
-        "min": "Job name is required!",
+        "min": "Min job name is {min} character",
         "max": "Job name's length must be less than {max} characters"
       },
       "experience": {
@@ -528,35 +527,32 @@
         "label": "Working Time",
         "placeholder": "Eg: Monday to Friday 8:30am to 5pm",
         "required_error": "Working time is required!",
-        "min": "Working time is required!",
+        "min": "Min working time length is {min} character",
         "max": "Job working time is maximum {max} characters"
       },
       "wage": {
         "label": "Wage",
         "placeholder": "Job's wage eg: 1000$ - 2000$",
         "required_error": "Job wage is required!",
-        "min": "Job wage is required!",
+        "min": "Min wage length is {min} character",
         "max": "Job wage's length must be less than {max} characters"
       },
       "description": {
         "label": "Job description",
         "placeholder": "Job's description",
         "required_error": "Job description is required!",
-        "min": "Job description is required!",
         "max": "Job description is maximum {max} characters"
       },
       "requirement": {
         "label": "Job requirement",
         "placeholder": "Job's requirement",
         "required_error": "Job requirement is required!",
-        "min": "Job requirement is required!",
         "max": "Job requirements is maximum {max} characters"
       },
       "rights": {
         "label": "Job rights",
         "placeholder": "Job's right",
         "required_error": "Job rights is required!",
-        "min": "Job rights is required!",
         "max": "Job right is maximum {max} characters"
       }
     },
@@ -613,8 +609,8 @@
       },
       "trow": {
         "name": "No filled",
-        "lastSignedInAt": "Never signed in",
-        "lastActiveAt": "Never active"
+        "lastSignedInAt": "Never",
+        "lastActiveAt": "Never"
       }
     },
     "search": {
@@ -721,28 +717,24 @@
         "name": "Staff",
         "email": "Email",
         "role": "Role",
-        "lastSignedInAt": "Last signed in",
-        "lastActiveAt": "Last active at",
-        "joinedAt": "Joined at",
-        "createdAt": "CreateAt"
+        "phone": "Phone number",
+        "address": "Address",
+        "baseHourlyWage": "Hourly wage",
+        "createdAt": "CreateAt",
+        "assignedAt": "AssignedAt",
+        "actualWork": "Actual work",
+        "hourlyWage": "Actual hourly wage"
       },
       "trow": {
-        "lastActiveAt": "Never active",
-        "lastSignedInAt": "Never signed"
+        "phone": "No filled",
+        "address": "No filled",
+        "baseHourlyWage": "No filled",
+        "actualWork": "No filled",
+        "hourlyWage": "No filled"
       }
     },
     "search": {
-      "placeholder": "Filter by staff name...",
-      "sortByDropdown": {
-        "label": "Sort by: ",
-        "placeholder": "Select sort by...",
-        "options": {
-          "email": "Email",
-          "createdAt": "Created at",
-          "lastSignInAt": "Last sign in at",
-          "lastActiveAt": "Last active at"
-        }
-      }
+      "placeholder": "Filter by staff name..."
     },
     "form": {
       "create": {
@@ -806,10 +798,32 @@
           "farmer": "Farmer"
         }
       },
+      "baseHourlyWage": {
+        "label": "Base hourly wage",
+        "placeholder": "Hourly wage: 5$/h",
+        "min": "Min hourly wage is {min}",
+        "max": "Max hourly wage is {max}",
+        "invalid_type_error": "Hourly wage must be number"
+      },
+      "phone": {
+        "label": "Phone number",
+        "placeholder": "Phone number",
+        "required_error": "Phone number is required!",
+        "min": "Phone number is required!",
+        "max": "Phone number must be less than {max} number",
+        "isPhone": "Phone number is invalid"
+      },
+      "address": {
+        "label": "Address",
+        "placeholder": "Address",
+        "required_error": "Address is required!",
+        "min": "Address is required!",
+        "max": "Address's length must be less than {max} characters"
+      },
       "receiverEmail": {
-        "label": "Receiver email",
-        "placeholder": "Receiver email",
-        "max": "Receiver email's length must be less than {max} characters"
+        "label": "Applicant email",
+        "placeholder": "Applicant email",
+        "max": "Applicant email's length must be less than {max} characters"
       }
     },
     "status": {
@@ -2691,7 +2705,6 @@
         "min": "Min duration value must be greater than {min} hours",
         "max": "Max duration value must be less than {max} hours",
         "invalid_type_error": "Duration value must be number",
-        "int": "Duration value must be integer",
         "required_error": "Duration is required"
       },
       "note": {
@@ -3114,11 +3127,6 @@
         "label": "Cancel Activity",
         "title": "Cancel activity?",
         "description": "After cancel, material usage will not restore, equipment used will be available. Are you absolutely sure? This action can not be undone!"
-      },
-      "deleteAssigned": {
-        "label": "Delete",
-        "title": "Delete activity assigned",
-        "description": "Don't assign this staff to activity"
       }
     },
     "schema": {
@@ -3187,14 +3195,20 @@
         "enum": "Please select priority in list"
       },
       "estimatedDuration": {
-        "label": "Estimated duration",
-        "placeholder": "Estimated duration",
-        "max": "Estimated duration's length must be less than {max} characters"
+        "label": "Estimate Duration(hours)",
+        "placeholder": "Estimate Duration",
+        "min": "Min duration value must be greater than {min} hours",
+        "max": "Max duration value must be less than {max} hours",
+        "invalid_type_error": "Duration value must be number",
+        "required_error": "Duration is required"
       },
       "actualDuration": {
-        "label": "Actual duration",
-        "placeholder": "Actual duration",
-        "max": "Actual duration's length must be less than {max} characters"
+        "label": "Actual Duration(hours)",
+        "placeholder": "Actual Duration",
+        "min": "Min duration value must be greater than {min} hours",
+        "max": "Max duration value must be less than {max} hours",
+        "invalid_type_error": "Duration value must be number",
+        "required_error": "Duration is required"
       },
 
       "createdById": {
@@ -3215,24 +3229,103 @@
         "edit": "Activity edited!",
         "destroy": "Activity deleted!",
         "complete": "Activity completed!",
-        "cancel": "Activity cancelled!",
-        "upsertAssigned": "Activity assigned created!",
-        "deleteAssigned": "Activity assigned deleted"
+        "cancel": "Activity cancelled!"
       },
       "failure": {
         "create": "Something went wrong while creating activity!",
         "edit": "Something went wrong while editing activity!",
         "destroy": "Something went wrong while deleting activity!",
         "complete": "Fail completed",
-        "cancel": "Fail cancelled",
-        "upsertAssigned": "Fail create assigned",
-        "deleteAssigned": "Fail delete assigned!"
+        "cancel": "Fail cancelled"
       }
     },
     "notFound": {
       "title": "Activity not found",
       "description": "Sorry, we couldn’t find the activity you’re looking for.",
       "backLabel": "Go to activities page"
+    }
+  },
+  "activityAssigned": {
+    "table": {
+      "title": "All assigned staffs",
+      "thead": {
+        "name": "Staff",
+        "email": "Email",
+        "role": "Role",
+        "baseHourlyWage": "Base hourly wage",
+        "assignedAt": "AssignedAt",
+        "actualWork": "Actual work",
+        "hourlyWage": "Actual hourly wage",
+        "actualCost": "Actual Cost"
+      },
+      "trow": {
+        "baseHourlyWage": "No filled",
+        "actualWork": "No filled",
+        "hourlyWage": "No filled",
+        "actualCost": "No value calculator"
+      },
+      "tfooter": {
+        "total": "Total actual cost"
+      }
+    },
+    "search": {
+      "placeholder": "Filter by staff name..."
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Assign staff to activity",
+        "description": "Assign staff to activity"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit assigned staff",
+        "description": "Update actual work and hourly wage "
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete assigned staff?",
+        "description": "Are you absolutely sure?"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid activity"
+      },
+      "assignedTo": {
+        "label": "Assigned to",
+        "placeholder": "Select assigned to",
+        "required_error": "Assigned to is required",
+        "error": "Fail load staffs",
+        "notFound": "Staffs not found",
+        "min": "At least {min} staff in activity"
+      },
+      "actualWork": {
+        "label": "Actual work(hours)",
+        "placeholder": "Actual work",
+        "min": "Min actual work value must be greater than {min} hours",
+        "max": "Max actual work value must be less than {max} hours",
+        "invalid_type_error": "Actual work value must be number"
+      },
+      "hourlyWage": {
+        "label": " Actual hourly wage",
+        "placeholder": "Hourly wage: 5$/h",
+        "min": "Min hourly wage is {min}",
+        "max": "Max hourly wage is {max}",
+        "invalid_type_error": "Hourly wage must be number"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Staff assigned!",
+        "edit": "Assigned staff edited!",
+        "destroy": "Assigned staff deleted!"
+      },
+      "failure": {
+        "create": "Something went wrong while creating staff!",
+        "edit": "Something went wrong while editing staff!",
+        "destroy": "Something went wrong while deleting staff!"
+      }
     }
   },
   "crops": {
@@ -3829,7 +3922,6 @@
     "/admin/users": "User",
     "/admin/users/detail": "Detail",
     "/admin/staffs": "Staff",
-    "/admin/staffs/detail": "Detail",
     "/admin/organizations": "Organization",
     "/admin/organizations/detail": "Detail",
     "/admin/organizations/detail/files": "Uploaded files",
@@ -3885,7 +3977,7 @@
 
     "/farmer": "Farmer",
     "/farmer/staffs": "Staffs",
-    "/farmer/staffs/detail": "Detail",
+
     "/farmer/organizations": "Organization",
     "/farmer/organizations/detail": "Detail",
     "/farmer/organizations/detail/files": "Uploaded files",

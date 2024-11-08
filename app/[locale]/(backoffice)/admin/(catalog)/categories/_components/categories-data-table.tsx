@@ -15,6 +15,7 @@ import { destroyMany } from "@/actions/category";
 import { toast } from "sonner";
 import { useDialog } from "@/stores/use-dialog";
 import { CategoryTable } from "@/types";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface CategoriesTableProps {
   data: CategoryTable[];
@@ -24,7 +25,7 @@ export const CategoriesTable = ({ data }: CategoriesTableProps) => {
 
   const { onOpen, onClose, setPending } = useAlertDialog();
   const { onOpen: onOpenEdit } = useDialog();
-
+  const { isSuperAdmin } = useCurrentStaffRole();
   const handleConfirm = (rows: CategoryTable[]) => {
     const ids = rows.map((row) => row.id);
     setPending(true);
@@ -145,6 +146,7 @@ export const CategoriesTable = ({ data }: CategoriesTableProps) => {
           onConfirm: () => handleConfirm(rows),
         });
       },
+      disabled: !isSuperAdmin,
     },
   ];
   const facetedFilters = [

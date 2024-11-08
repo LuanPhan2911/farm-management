@@ -9,14 +9,13 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { DataTableColumnHeader } from "@/components/datatable/datatable-column-header";
 import { JobsTableAction } from "./jobs-table-action";
-import { useAlertDialog } from "@/stores/use-alert-dialog";
-import { destroyMany, editPublished } from "@/actions/job";
-import { toast } from "sonner";
+import { editPublished } from "@/actions/job";
 import { JobTable } from "@/types";
 import { JobExpiredValue } from "./job-expired-value";
 import { JobExperience } from "@prisma/client";
 import { ConfirmButton } from "@/components/buttons/confirm-button";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface JobsTableProps {
   data: JobTable[];
@@ -25,54 +24,18 @@ export const JobsTable = ({ data }: JobsTableProps) => {
   const tSchema = useTranslations("jobs.schema");
   const t = useTranslations("jobs");
 
+  const { isSuperAdmin } = useCurrentStaffRole();
   const { dateTime } = useFormatter();
-  const { onOpen, onClose, setPending } = useAlertDialog();
+
   const router = useRouterWithRole();
 
-  const handleConfirm = (rows: JobTable[]) => {
-    setPending(true);
-    const ids = rows.map((row) => row.id);
-    destroyMany(ids)
-      .then(({ message, ok }) => {
-        if (ok) {
-          toast.success(message);
-        } else {
-          toast.error(message);
-        }
-      })
-      .catch((error: Error) => {
-        toast.error("Internal error");
-      })
-      .finally(() => {
-        onClose();
-      });
-  };
   const handleEdit = (job: JobTable) => {
+    if (!isSuperAdmin) {
+      return;
+    }
     router.push(`jobs/edit/${job.id}`);
   };
   const columns: ColumnDef<JobTable>[] = [
-    {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
     {
       accessorKey: "name",
       header: ({ column }) => {
@@ -85,8 +48,19 @@ export const JobsTable = ({ data }: JobsTableProps) => {
       },
     },
     {
-      accessorKey: "quantity",
-      header: t("table.thead.quantity"),
+      accessorKey: "expiredAt",
+      header: ({ column }) => {
+        return (
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.thead.expiredAt")}
+          />
+        );
+      },
+      cell: ({ row }) => {
+        const data = row.original.expiredAt;
+        return dateTime(data, "long");
+      },
     },
     {
       accessorKey: "experience",
@@ -108,21 +82,6 @@ export const JobsTable = ({ data }: JobsTableProps) => {
       },
     },
     {
-      accessorKey: "expiredAt",
-      header: ({ column }) => {
-        return (
-          <DataTableColumnHeader
-            column={column}
-            title={t("table.thead.expiredAt")}
-          />
-        );
-      },
-      cell: ({ row }) => {
-        const data = row.original.expiredAt;
-        return dateTime(data, "short");
-      },
-    },
-    {
       accessorKey: "status",
       header: t("table.thead.status"),
       cell: ({ row }) => {
@@ -130,6 +89,15 @@ export const JobsTable = ({ data }: JobsTableProps) => {
         return <JobExpiredValue expiredAt={data} />;
       },
     },
+    {
+      accessorKey: "quantity",
+      header: t("table.thead.quantity"),
+      cell: ({ row }) => {
+        const data = row.original;
+        return <p className="text-center">{data.quantity}</p>;
+      },
+    },
+
     {
       accessorKey: "published",
       header: t("table.thead.published"),
@@ -143,6 +111,7 @@ export const JobsTable = ({ data }: JobsTableProps) => {
             title={t("form.editPublished.title")}
             description={t("form.editPublished.description")}
             isButton={false}
+            disabled={!isSuperAdmin}
           />
         );
       },
@@ -156,18 +125,6 @@ export const JobsTable = ({ data }: JobsTableProps) => {
     },
   ];
 
-  const bulkActions = [
-    {
-      label: t("form.destroyMany.label"),
-      action: (rows: JobTable[]) => {
-        onOpen({
-          title: t("form.destroyMany.title"),
-          description: t("form.destroyMany.description"),
-          onConfirm: () => handleConfirm(rows),
-        });
-      },
-    },
-  ];
   const facetedFilters = [
     {
       column: "experience",
@@ -189,7 +146,6 @@ export const JobsTable = ({ data }: JobsTableProps) => {
         value: "name",
         placeholder: t("search.placeholder"),
       }}
-      bulkActions={bulkActions}
       facetedFilters={facetedFilters}
       onViewDetail={handleEdit}
     />

@@ -1,6 +1,5 @@
-import { getStaffsTable } from "@/services/staffs";
+import { getStaffs } from "@/services/staffs";
 import { StaffsTable } from "./_components/staffs-table";
-import { UserOrderBy } from "@/services/users";
 import { parseToNumber } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StaffCreateButton } from "./_components/staff-create-button";
@@ -10,7 +9,7 @@ interface StaffsPageProps {
   searchParams: {
     query?: string;
     page?: string;
-    orderBy?: UserOrderBy;
+    orderBy?: string;
   };
 }
 export async function generateMetadata() {
@@ -24,9 +23,9 @@ const StaffsPage = async ({ searchParams }: StaffsPageProps) => {
   const page = parseToNumber(searchParams!.page, 1);
   const t = await getTranslations("staffs.page");
   const { orderBy, query } = searchParams;
-  const { data: staffs, totalPage } = await getStaffsTable({
+  const { data, totalPage } = await getStaffs({
     query,
-    currentPage: page,
+    page,
     orderBy,
   });
 
@@ -40,7 +39,7 @@ const StaffsPage = async ({ searchParams }: StaffsPageProps) => {
           <div className="flex justify-end">
             <StaffCreateButton />
           </div>
-          <StaffsTable data={structuredClone(staffs)} totalPage={totalPage} />
+          <StaffsTable data={data} totalPage={totalPage} />
         </CardContent>
       </Card>
     </div>

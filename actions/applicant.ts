@@ -18,6 +18,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { createUser, getUserByEmail } from "@/services/users";
+import { createStaff } from "@/services/staffs";
 
 export const create = async (
   values: z.infer<ReturnType<typeof ApplicantSchema>>,
@@ -79,7 +80,7 @@ export const createApplicantStaff = async (
   values: z.infer<ReturnType<typeof StaffSchema>>,
   applicantId: string
 ): Promise<ActionResponse> => {
-  const tSchema = await getTranslations("applicants.schema");
+  const tSchema = await getTranslations("staffs.schema");
   const tStatus = await getTranslations("applicants.status");
 
   const paramsSchema = StaffSchema(tSchema);
@@ -94,15 +95,31 @@ export const createApplicantStaff = async (
       return errorResponse(tSchema("errors.exist"));
     }
 
-    const { email, password } = validatedFields.data;
+    const { email, password, name, role, address, phone, baseHourlyWage } =
+      validatedFields.data;
 
     const existingUser = await getUserByEmail(email);
     if (existingUser) {
       return errorResponse(tSchema("errors.emailExist"));
     }
 
-    const user = await createUser({ ...validatedFields.data });
+    const user = await createUser({
+      email,
+      name,
+      password,
+      role,
+      address,
+      phone,
+    });
 
+    const staff = await createStaff(user.id, {
+      email,
+      name,
+      role,
+      address,
+      baseHourlyWage,
+      phone,
+    });
     // TODO: use webhook to create staff
 
     sendApplicantCreateUser(applicant, email, password);
@@ -110,8 +127,8 @@ export const createApplicantStaff = async (
     // send mail notification
 
     // update this applicant status to confirmed
-
     await updateApplicantStatus(applicant.email);
+
     revalidatePath("/admin/applicants");
     return successResponse(tStatus("success.createStaff"));
   } catch (error) {

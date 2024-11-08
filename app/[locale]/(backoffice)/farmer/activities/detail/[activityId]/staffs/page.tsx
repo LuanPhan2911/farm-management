@@ -20,7 +20,7 @@ interface ActivityStaffsPageProps {
 const ActivityStaffsPage = async ({ params }: ActivityStaffsPageProps) => {
   const t = await getTranslations("activities.page.detail.staffs");
 
-  const data = await getActivityAssignedStaffs(params.activityId);
+  const { data } = await getActivityAssignedStaffs(params.activityId);
 
   return (
     <Card>

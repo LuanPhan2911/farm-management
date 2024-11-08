@@ -110,7 +110,7 @@ export const UnitCreateButton = () => {
                       onChange={field.onChange}
                       options={Object.values(UnitType).map((item) => {
                         return {
-                          label: t(`schema.type.options.${item}`),
+                          label: tSchema(`type.options.${item}`),
                           value: item,
                         };
                       })}

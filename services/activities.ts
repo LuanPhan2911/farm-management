@@ -1,11 +1,11 @@
 import { db } from "@/lib/db";
 import {
   ActivityPriorityCount,
-  ActivitySelect,
   ActivitySelectWithCropAndField,
   ActivityStatusCount,
   ActivityTable,
   PaginatedResponse,
+  ActivityAssignedStaffWithActivityAndCost,
 } from "@/types";
 import { ActivityPriority, ActivityStatus, Staff } from "@prisma/client";
 import { LIMIT } from "@/configs/paginationConfig";
@@ -15,7 +15,6 @@ import {
   getObjectSortOrder,
 } from "@/lib/utils";
 import { getCurrentStaff } from "./staffs";
-import { truncateByDomain } from "recharts/types/util/ChartUtils";
 import { cropSelect } from "./crops";
 import { fieldSelect } from "./fields";
 import { plantSelect } from "./plants";
@@ -27,9 +26,8 @@ type ActivityParams = {
   activityDate: Date;
   status: ActivityStatus;
   priority: ActivityPriority;
-  estimatedDuration?: string | null;
-  actualDuration?: string | null;
-  createdById: string;
+  estimatedDuration: number;
+  actualDuration?: number | null;
   assignedTo: string[];
 };
 /**
@@ -40,10 +38,14 @@ type ActivityParams = {
  */
 export const createActivity = async (params: ActivityParams) => {
   const { assignedTo, ...other } = params;
-
+  const currentStaff = await getCurrentStaff();
+  if (!currentStaff) {
+    throw new Error("Unauthorized");
+  }
   const activity = await db.activity.create({
     data: {
       ...other,
+      createdById: currentStaff.id,
       assignedTo: {
         createMany: {
           data: assignedTo.map((staffId) => {
@@ -65,8 +67,8 @@ type ActivityUpdateParams = {
   activityDate: Date;
   status: ActivityStatus;
   priority: ActivityPriority;
-  estimatedDuration?: string | null;
-  actualDuration?: string | null;
+  estimatedDuration: number;
+  actualDuration?: number | null;
   assignedTo: string[];
 };
 /**
@@ -292,6 +294,7 @@ export const activitySelect = {
   status: true,
   priority: true,
   activityDate: true,
+  estimatedDuration: true,
 };
 export const getActivitiesSelect = async ({
   staffId,
@@ -501,7 +504,8 @@ export const deleteActivityAssigned = async ({
     },
   });
 };
-export const getActivityAssignedStaffs = async (
+
+export const getActivityAssignedStaffsSelect = async (
   activityId: string
 ): Promise<Staff[]> => {
   try {
@@ -517,4 +521,63 @@ export const getActivityAssignedStaffs = async (
   } catch (error) {
     return [];
   }
+};
+export const getActivityAssignedStaffs = async (
+  activityId: string
+): Promise<ActivityAssignedStaffWithActivityAndCost> => {
+  try {
+    const activityAssigned = await db.activityAssigned.findMany({
+      where: {
+        activityId,
+      },
+      include: {
+        staff: true,
+        activity: {
+          select: {
+            ...activitySelect,
+          },
+        },
+      },
+    });
+    let totalActualCost: number = 0;
+    const activityAssignedWithCost = activityAssigned.map((item) => {
+      if (item.actualWork !== null && item.hourlyWage !== null) {
+        totalActualCost += item.actualWork * item.hourlyWage;
+        return {
+          ...item,
+          actualCost: item.actualWork * item.hourlyWage,
+        };
+      }
+      return {
+        ...item,
+        actualCost: null,
+      };
+    });
+
+    return {
+      data: activityAssignedWithCost,
+      totalActualCost,
+    };
+  } catch (error) {
+    return {
+      data: [],
+      totalActualCost: 0,
+    };
+  }
+};
+
+type ActivityAssignedUpdateParams = {
+  actualWork?: number | null;
+  hourlyWage?: number | null;
+};
+export const updateActivityAssigned = async (
+  id: string,
+  params: ActivityAssignedUpdateParams
+) => {
+  return await db.activityAssigned.update({
+    where: { id },
+    data: {
+      ...params,
+    },
+  });
 };

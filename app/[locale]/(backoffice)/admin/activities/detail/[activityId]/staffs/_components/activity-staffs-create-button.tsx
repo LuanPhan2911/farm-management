@@ -11,9 +11,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { ActivityAssignedSchema } from "@/schemas";
+import { ActivityAssignedStaffWithActivitySelect } from "@/types";
 import { useAuth } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Staff } from "@prisma/client";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { useEffect, useTransition } from "react";
@@ -22,7 +22,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 interface ActivityStaffsCreateButtonProps {
-  data: Staff[];
+  data: ActivityAssignedStaffWithActivitySelect[];
 }
 export const ActivityStaffsCreateButton = ({
   data,
@@ -32,21 +32,25 @@ export const ActivityStaffsCreateButton = ({
     activityId: string;
   }>();
   const [isPending, startTransition] = useTransition();
-  const tSchema = useTranslations("activities.schema");
+  const tSchema = useTranslations("activityAssigned.schema");
   const formSchema = ActivityAssignedSchema(tSchema);
+  const assignedStaffs = data.map((item) => item.staff);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      assignedTo: !data.length ? undefined : data.map((item) => item.id),
+      assignedTo: !assignedStaffs.length
+        ? undefined
+        : assignedStaffs.map((item) => item.id),
       activityId: params?.activityId,
     },
   });
   useEffect(() => {
     form.setValue(
       "assignedTo",
-      data.map((item) => item.id)
+      assignedStaffs.map((item) => item.id)
     );
-  }, [data, form]);
+  }, [assignedStaffs, form]);
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       upsertAssigned(values)
@@ -66,7 +70,7 @@ export const ActivityStaffsCreateButton = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <div className="flex items-center gap-x-2">
+        <div className="flex lg:items-center items-end lg:flex-row flex-col gap-2">
           <FormField
             control={form.control}
             name="assignedTo"
@@ -81,7 +85,7 @@ export const ActivityStaffsCreateButton = ({
                     placeholder={tSchema("assignedTo.placeholder")}
                     notFound={tSchema("assignedTo.notFound")}
                     disabled={isPending}
-                    className="lg:w-[600px] w-[350px]"
+                    className="lg:w-[1024px] w-full"
                   />
                 </FormControl>
 

@@ -28,7 +28,7 @@ import { ActivityPriority, ActivityStatus } from "@prisma/client";
 
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -57,10 +57,8 @@ export const ActivityCreateButton = () => {
       name: "",
       status: "NEW",
       priority: "LOW",
-      createdById: currentStaff?.id,
       activityDate: new Date(),
-      estimatedDuration: "1 day",
-      actualDuration: "1 day",
+      estimatedDuration: 1,
       cropId: params.cropId,
     },
   });
@@ -70,6 +68,7 @@ export const ActivityCreateButton = () => {
         .then(({ message, ok }) => {
           if (ok) {
             toast.success(message);
+            setOpen(false);
           } else {
             toast.error(message);
           }
@@ -90,8 +89,8 @@ export const ActivityCreateButton = () => {
       </DialogTrigger>
       <DialogContent className="max-w-4xl overflow-y-auto max-h-screen">
         <DialogHeader>
-          <DialogTitle>{t("form.create.title")}</DialogTitle>
-          <DialogDescription>{t("form.create.description")}</DialogDescription>
+          <DialogTitle>{t("create.title")}</DialogTitle>
+          <DialogDescription>{t("create.description")}</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -269,6 +268,9 @@ export const ActivityCreateButton = () => {
                         value={field.value ?? undefined}
                         onChange={field.onChange}
                         disabled={isPending}
+                        type="number"
+                        min={1}
+                        max={100}
                       />
                     </FormControl>
 
@@ -288,6 +290,9 @@ export const ActivityCreateButton = () => {
                         value={field.value ?? undefined}
                         onChange={field.onChange}
                         disabled={isPending}
+                        type="number"
+                        min={1}
+                        max={100}
                       />
                     </FormControl>
 

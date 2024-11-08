@@ -67,6 +67,14 @@ export default async function RootLayout({
                 precise: {
                   maximumFractionDigits: 3,
                 },
+                currency: {
+                  currency: "VND",
+                  style: "currency",
+                },
+                hour: {
+                  style: "unit",
+                  unit: "hour",
+                },
               },
               list: {
                 enumeration: {

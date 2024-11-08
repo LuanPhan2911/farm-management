@@ -1,21 +1,58 @@
 import { LIMIT } from "@/configs/paginationConfig";
 import { db } from "@/lib/db";
 import { clerkClient, currentUser, getAuth } from "@clerk/nextjs/server";
-import { StaffRole } from "@prisma/client";
+import { Staff, StaffRole } from "@prisma/client";
 import { UserOrderBy } from "./users";
 import { NextApiRequest } from "next";
 import { getOrganizationMembership } from "./organizations";
+import { getObjectSortOrder } from "@/lib/utils";
+import { PaginatedResponse } from "@/types";
 
 type StaffParams = {
   email: string;
   name: string;
   role: StaffRole;
   imageUrl?: string | null;
+  baseHourlyWage?: number | null;
+  address?: string | null;
+  phone?: string | null;
 };
 export const createStaff = async (externalId: string, params: StaffParams) => {
   const staff = await db.staff.create({
     data: {
       ...params,
+      externalId,
+    },
+  });
+  return staff;
+};
+
+export const upsertStaff = async (externalId: string, params: StaffParams) => {
+  return await db.staff.upsert({
+    where: { externalId },
+    update: {
+      ...params,
+    },
+    create: {
+      ...params,
+      externalId,
+    },
+  });
+};
+export const updateStaff = async (id: string, params: StaffParams) => {
+  const { email, ...other } = params;
+  return await db.staff.update({
+    where: {
+      id,
+    },
+    data: {
+      ...other,
+    },
+  });
+};
+export const deleteStaff = async (externalId: string) => {
+  const staff = await db.staff.delete({
+    where: {
       externalId,
     },
   });
@@ -31,42 +68,6 @@ export const getStaffByExternalId = async (externalId: string) => {
     where: { externalId },
   });
 };
-export const upsertStaff = async (externalId: string, params: StaffParams) => {
-  return await db.staff.upsert({
-    where: { externalId },
-    update: {
-      ...params,
-    },
-    create: {
-      ...params,
-      externalId,
-    },
-  });
-};
-export const updateStaff = async (
-  externalId: string,
-  params: {
-    name: string;
-    imageUrl?: string | null;
-  }
-) => {
-  return await db.staff.update({
-    where: {
-      externalId,
-    },
-    data: {
-      ...params,
-    },
-  });
-};
-export const deleteStaff = async (externalId: string) => {
-  const staff = await db.staff.delete({
-    where: {
-      externalId,
-    },
-  });
-  return staff;
-};
 
 export const getStaffExternalIds = async (): Promise<string[]> => {
   try {
@@ -81,27 +82,64 @@ export const getStaffExternalIds = async (): Promise<string[]> => {
   }
 };
 
-export const getStaffsTable = async ({
-  query,
-  currentPage,
-  orderBy,
-}: {
+type StaffQuery = {
+  page?: number;
   query?: string;
-  currentPage: number;
-  orderBy?: UserOrderBy;
-}) => {
+  orderBy?: string;
+};
+export const getStaffs = async ({
+  orderBy,
+  page = 1,
+  query,
+}: StaffQuery): Promise<PaginatedResponse<Staff>> => {
   try {
-    const staffIds = await getStaffExternalIds();
+    const [data, count] = await db.$transaction([
+      db.staff.findMany({
+        take: LIMIT,
+        skip: (page - 1) * LIMIT,
+        where: {
+          ...(query && {
+            OR: [
+              {
+                name: {
+                  contains: query,
+                  mode: "insensitive",
+                },
+              },
+              {
+                email: {
+                  contains: query,
+                  mode: "insensitive",
+                },
+              },
+            ],
+          }),
+        },
+        orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
+      }),
+      db.staff.count({
+        where: {
+          ...(query && {
+            OR: [
+              {
+                name: {
+                  contains: query,
+                  mode: "insensitive",
+                },
+              },
+              {
+                email: {
+                  contains: query,
+                  mode: "insensitive",
+                },
+              },
+            ],
+          }),
+        },
+      }),
+    ]);
 
-    const { data, totalCount } = await clerkClient().users.getUserList({
-      limit: LIMIT,
-      offset: (currentPage - 1) * LIMIT,
-      query,
-      userId: staffIds.map((id) => `+${id}`),
-      orderBy,
-    });
-
-    const totalPage = Math.ceil(totalCount / LIMIT);
+    const totalPage = Math.ceil(count / LIMIT);
     return {
       data,
       totalPage,

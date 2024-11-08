@@ -10,19 +10,21 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
-import { Staff } from "@prisma/client";
+import { ActivityAssignedStaffWithActivitySelect } from "@/types";
 import { MoreHorizontal, Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
+import { ActivityStaffsEditButton } from "./activity-staffs-edit-button";
 interface ActivityStaffTableActionProps {
-  data: Staff;
+  data: ActivityAssignedStaffWithActivitySelect;
 }
 export const ActivityStaffsTableAction = ({
   data,
 }: ActivityStaffTableActionProps) => {
-  const t = useTranslations("activities.form");
+  const t = useTranslations("activityAssigned.form");
   const params = useParams<{ activityId: string }>();
   const { isOnlyAdmin } = useCurrentStaffRole();
+  const canEdit = isOnlyAdmin;
   const canDelete = isOnlyAdmin;
   return (
     <DropdownMenu>
@@ -33,11 +35,14 @@ export const ActivityStaffsTableAction = ({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-fit">
         <DropdownMenuItem>
+          <ActivityStaffsEditButton data={data} disabled={!canEdit} />
+        </DropdownMenuItem>
+        <DropdownMenuItem>
           <ActionButton
-            actionFn={() => deleteAssigned(params!.activityId, data.id)}
-            title={t("deleteAssigned.title")}
-            label={t("deleteAssigned.label")}
-            description={t("deleteAssigned.description")}
+            actionFn={() => deleteAssigned(params!.activityId, data.staffId)}
+            title={t("destroy.title")}
+            label={t("destroy.label")}
+            description={t("destroy.description")}
             className="w-full"
             icon={Trash}
             variant={"destroy"}

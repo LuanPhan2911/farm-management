@@ -1,28 +1,24 @@
 "use server";
 
-import {
-  ActivityCreatePermissionError,
-  ActivityExistError,
-  ActivityUpdatePermissionError,
-  ActivityUpdateStatusError,
-  StaffExistError,
-  UnAuthorizedError,
-} from "@/errors";
-import { db } from "@/lib/db";
 import { errorResponse, successResponse } from "@/lib/utils";
-import { ActivityAssignedSchema, ActivitySchema } from "@/schemas";
+import {
+  ActivityAssignedSchema,
+  ActivityAssignedUpdateSchema,
+  ActivitySchema,
+} from "@/schemas";
 import {
   createActivity,
   deleteActivity,
   deleteActivityAssigned,
   updateActivity,
+  updateActivityAssigned,
   updateActivityStatus,
   upsertActivityAssigned,
 } from "@/services/activities";
 import { ActionResponse } from "@/types";
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
-import { string, z } from "zod";
+import { z } from "zod";
 
 export const create = async (
   values: z.infer<ReturnType<typeof ActivitySchema>>
@@ -110,8 +106,8 @@ export const cancelActivity = async (
 export const upsertAssigned = async (
   values: z.infer<ReturnType<typeof ActivityAssignedSchema>>
 ): Promise<ActionResponse> => {
-  const tSchema = await getTranslations("activities.schema");
-  const tStatus = await getTranslations("activities.status");
+  const tSchema = await getTranslations("activityAssigned.schema");
+  const tStatus = await getTranslations("activityAssigned.status");
   const paramsSchema = ActivityAssignedSchema(tSchema);
   const validatedFields = paramsSchema.safeParse(values);
 
@@ -125,16 +121,16 @@ export const upsertAssigned = async (
     revalidatePath(
       `/admin/activities/detail/${validatedFields.data.activityId}/staffs`
     );
-    return successResponse(tStatus("success.upsertAssigned"));
+    return successResponse(tStatus("success.create"));
   } catch (error) {
-    return errorResponse(tStatus("failure.upsertAssigned"));
+    return errorResponse(tStatus("failure.create"));
   }
 };
 export const deleteAssigned = async (
   activityId: string,
   staffId: string
 ): Promise<ActionResponse> => {
-  const tStatus = await getTranslations("activities.status");
+  const tStatus = await getTranslations("activityAssigned.status");
 
   try {
     await deleteActivityAssigned({
@@ -142,8 +138,33 @@ export const deleteAssigned = async (
       staffId,
     });
     revalidatePath(`/admin/activities/detail/${activityId}/staffs`);
-    return successResponse(tStatus("success.deleteAssigned"));
+    return successResponse(tStatus("success.delete"));
   } catch (error) {
-    return errorResponse(tStatus("failure.deleteAssigned"));
+    return errorResponse(tStatus("failure.delete"));
+  }
+};
+
+export const editAssigned = async (
+  values: z.infer<ReturnType<typeof ActivityAssignedUpdateSchema>>,
+  id: string
+): Promise<ActionResponse> => {
+  const tSchema = await getTranslations("activityAssigned.schema");
+  const tStatus = await getTranslations("activityAssigned.status");
+  const paramsSchema = ActivityAssignedUpdateSchema(tSchema);
+  const validatedFields = paramsSchema.safeParse(values);
+
+  if (!validatedFields.success) {
+    return errorResponse(tSchema("errors.parse"));
+  }
+  try {
+    const activityAssigned = await updateActivityAssigned(id, {
+      ...validatedFields.data,
+    });
+    revalidatePath(
+      `/admin/activities/detail/${activityAssigned.activityId}/staffs`
+    );
+    return successResponse(tStatus("success.edit"));
+  } catch (error) {
+    return errorResponse(tStatus("failure.edit"));
   }
 };

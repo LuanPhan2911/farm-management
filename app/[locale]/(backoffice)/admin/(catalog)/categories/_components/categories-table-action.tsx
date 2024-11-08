@@ -11,10 +11,14 @@ import { MoreHorizontal } from "lucide-react";
 import { CategoryTable } from "@/types";
 import { destroy } from "@/actions/category";
 import { DestroyButton } from "@/components/buttons/destroy-button";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 interface CategoriesTableActionProps {
   data: CategoryTable;
 }
 export const CategoriesTableAction = ({ data }: CategoriesTableActionProps) => {
+  const { isSuperAdmin } = useCurrentStaffRole();
+
+  const canDelete = isSuperAdmin;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -32,6 +36,7 @@ export const CategoriesTableAction = ({ data }: CategoriesTableActionProps) => {
             id={data.id}
             inltKey="categories"
             className="w-full"
+            disabled={!canDelete}
           />
         </DropdownMenuItem>
       </DropdownMenuContent>

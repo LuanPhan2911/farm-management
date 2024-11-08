@@ -9,6 +9,8 @@ type UserParams = {
   email: string;
   password: string;
   role: StaffRole;
+  address?: string | null;
+  phone?: string | null;
 };
 export type UserOrderBy =
   | "created_at"
@@ -71,6 +73,8 @@ export const createUser = async ({
   email,
   password,
   role,
+  address,
+  phone,
 }: UserParams) => {
   const user = await clerkClient().users.createUser({
     firstName: name,
@@ -78,6 +82,8 @@ export const createUser = async ({
     password,
     publicMetadata: {
       role,
+      address,
+      phone,
     },
   });
 

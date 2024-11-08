@@ -235,32 +235,29 @@ export const JobSchema = (
 ) =>
   z.object({
     name: stringSchema(t, "name", {
-      min: 1,
-      max: 100,
+      min: 5,
+      max: 255,
     }),
     description: stringSchema(t, "description", {
-      min: 1,
       max: 5000,
     }),
     requirement: stringSchema(t, "requirement", {
-      min: 1,
       max: 5000,
     }),
     rights: stringSchema(t, "rights", {
-      min: 1,
       max: 5000,
     }),
     workingTime: stringSchema(t, "workingTime", {
-      min: 1,
+      min: 5,
       max: 100,
     }),
     wage: stringSchema(t, "wage", {
-      min: 1,
+      min: 5,
       max: 100,
     }),
     quantity: numberSchema(t, "quantity", {
       min: 1,
-      max: 100,
+      max: 10,
       int: true,
     }),
     experience: z.nativeEnum(JobExperience, {
@@ -327,11 +324,62 @@ export const StaffSchema = (
       min: 8,
       max: 100,
     }),
-
     role: z.nativeEnum(StaffRole, {
       message: t("role.enum"),
     }),
+    baseHourlyWage: numberSchema(t, "baseHourlyWage", {
+      min: 0,
+      max: 500_000,
+      required: false,
+    }).nullish(),
+    phone: stringSchema(t, "phone", {
+      min: 9,
+      max: 15,
+      required: false,
+    })
+      .refine(validator.isMobilePhone, t("phone.isPhone"))
+      .nullish(),
+    address: stringSchema(t, "address", {
+      min: 1,
+      max: 255,
+      required: false,
+    }).nullish(),
+
     receiverEmail: stringSchema(t, "receiverEmail", {
+      max: 255,
+      required: false,
+    }).nullish(),
+  });
+};
+export const StaffUpdateSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    name: stringSchema(t, "name", {
+      min: 1,
+      max: 100,
+    }),
+    email: stringSchema(t, "email", {
+      min: 1,
+      max: 100,
+    }).email(t("email.isEmail")),
+    role: z.nativeEnum(StaffRole, {
+      message: t("role.enum"),
+    }),
+    baseHourlyWage: numberSchema(t, "baseHourlyWage", {
+      min: 0,
+      max: 1_000_000,
+      required: false,
+    }).nullish(),
+    phone: stringSchema(t, "phone", {
+      min: 9,
+      max: 15,
+      required: false,
+    })
+      .refine(validator.isMobilePhone, t("phone.isPhone"))
+      .nullish(),
+    address: stringSchema(t, "address", {
+      min: 1,
       max: 255,
       required: false,
     }).nullish(),
@@ -747,8 +795,7 @@ export const EquipmentUsageSchema = (
     }),
     duration: numberSchema(t, "duration", {
       min: 0,
-      max: 10_000,
-      int: true,
+      max: 100,
     }),
     note: stringSchema(t, "note", {
       max: 255,
@@ -831,18 +878,16 @@ export const ActivitySchema = (
     priority: z.nativeEnum(ActivityPriority, {
       message: t("priority.enum"),
     }),
-    estimatedDuration: stringSchema(t, "estimatedDuration", {
+    estimatedDuration: numberSchema(t, "estimatedDuration", {
+      min: 1,
       max: 100,
-      required: false,
-    }).nullish(),
-    actualDuration: stringSchema(t, "actualDuration", {
+    }),
+    actualDuration: numberSchema(t, "actualDuration", {
+      min: 1,
       max: 100,
       required: false,
     }).nullish(),
 
-    createdById: stringSchema(t, "createdById", {
-      required: true,
-    }),
     assignedTo: z
       .array(z.string(), {
         required_error: t("assignedTo.required_error"),
@@ -861,6 +906,22 @@ export const ActivityAssignedSchema = (
         required_error: t("assignedTo.required_error"),
       })
       .min(1, t("assignedTo.min", { min: 1 })),
+  });
+};
+export const ActivityAssignedUpdateSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    actualWork: numberSchema(t, "actualWork", {
+      min: 1,
+      max: 10_000,
+      required: false,
+    }).nullish(),
+    hourlyWage: numberSchema(t, "hourlyWage", {
+      min: 0,
+      max: 1_000_000,
+      required: false,
+    }).nullish(),
   });
 };
 export const TaskSchema = (

@@ -3,9 +3,7 @@
 import { CategoryEditDialog } from "@/app/[locale]/(backoffice)/admin/(catalog)/categories/_components/category-edit-button";
 import { DynamicAlertDialog } from "@/components/dialog/dynamic-alert-dialog";
 import { UnitEditDialog } from "@/app/[locale]/(backoffice)/admin/(catalog)/units/_components/unit-edit-button";
-import { StaffCreateDialog } from "@/app/[locale]/(backoffice)/admin/(account)/staffs/_components/staff-create-button";
 import { ApplicantStaffCreateDialog } from "@/app/[locale]/(backoffice)/admin/(recruit)/applicants/_components/applicant-staff-create-button";
-import { StaffEditRoleDialog } from "@/app/[locale]/(backoffice)/admin/(account)/staffs/_components/staff-edit-role";
 import { WeatherEditDialog } from "@/app/[locale]/(backoffice)/admin/(farm)/fields/detail/[fieldId]/weathers/_components/weather-edit-button";
 import { SoilEditDialog } from "@/app/[locale]/(backoffice)/admin/(farm)/fields/detail/[fieldId]/soils/_components/soil-edit-button";
 import { FertilizerEditDialog } from "@/app/[locale]/(backoffice)/admin/(farm)/fertilizers/_components/fertilizer-edit-button";
@@ -16,27 +14,28 @@ import { PlantPesticideEditDialog } from "@/app/[locale]/(backoffice)/admin/(far
 import { EquipmentDetailEditDialog } from "@/app/[locale]/(backoffice)/admin/(inventory)/equipments/detail/[equipmentId]/_components/equipment-detail-edit-button";
 import { MaterialUsageEditDialog } from "@/app/[locale]/(backoffice)/admin/(inventory)/materials/detail/[materialId]/usages/_components/material-usages-edit-button";
 import { EquipmentUsageEditDialog } from "@/app/[locale]/(backoffice)/admin/(inventory)/equipments/detail/[equipmentId]/details/[equipmentDetailId]/usages/_components/equipment-usage-edit-button";
+import { StaffEditDialog } from "@/app/[locale]/(backoffice)/admin/(account)/staffs/_components/staff-edit-button";
+import { ActivityStaffEditDialog } from "@/app/[locale]/(backoffice)/admin/activities/detail/[activityId]/staffs/_components/activity-staffs-edit-button";
 
 export const DialogProvider = () => {
   return (
     <>
       <DynamicAlertDialog />
-      <StaffEditRoleDialog />
       <CategoryEditDialog />
       <UnitEditDialog />
-      <StaffCreateDialog />
+      <StaffEditDialog />
       <ApplicantStaffCreateDialog />
       <WeatherEditDialog />
       <SoilEditDialog />
       <FertilizerEditDialog />
       <PesticideEditDialog />
-
       <FileEditNameDialog />
       <PlantFertilizerEditDialog />
       <PlantPesticideEditDialog />
       <EquipmentDetailEditDialog />
       <MaterialUsageEditDialog />
       <EquipmentUsageEditDialog />
+      <ActivityStaffEditDialog />
     </>
   );
 };

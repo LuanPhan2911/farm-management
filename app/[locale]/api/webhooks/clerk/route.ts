@@ -1,12 +1,7 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
-import {
-  createStaff,
-  deleteStaff,
-  updateStaff,
-  upsertStaff,
-} from "@/services/staffs";
+import { createStaff, upsertStaff } from "@/services/staffs";
 import { StaffRole } from "@prisma/client";
 import { deleteMessagesByOrgId } from "@/services/messages";
 import { updateFieldOrgWhenOrgDeleted } from "@/services/fields";
@@ -58,20 +53,6 @@ export async function POST(req: Request) {
     });
   }
 
-  if (evt.type === "user.created") {
-    const role = evt.data.public_metadata?.role;
-    const user = evt.data;
-    const name = mergeName(user.first_name, user.last_name);
-    const email = user.email_addresses[0].email_address;
-    if (role) {
-      await createStaff(user.id, {
-        email,
-        name,
-        imageUrl: user.image_url,
-        role: role as StaffRole,
-      });
-    }
-  }
   if (evt.type === "user.updated") {
     const user = evt.data;
     const name = mergeName(user.first_name, user.last_name);

@@ -27,16 +27,17 @@ import { z } from "zod";
 import { StaffSelectRole } from "../../../_components/staff-select-role";
 import { useForm } from "react-hook-form";
 import { ApplicantTable } from "@/types";
-import { StaffRole } from "@prisma/client";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface ApplicantStaffCreateButtonProps {
   data: ApplicantTable;
   label: string;
+  disabled?: boolean;
 }
 export const ApplicantStaffCreateButton = ({
   data,
   label,
+  disabled,
 }: ApplicantStaffCreateButtonProps) => {
   const { onOpen } = useDialog();
 
@@ -50,6 +51,7 @@ export const ApplicantStaffCreateButton = ({
         });
       }}
       variant={"success"}
+      disabled={disabled}
     >
       <Edit className="h-4 w-4 mr-2" />
       {label}
@@ -65,7 +67,7 @@ export const ApplicantStaffCreateDialog = () => {
   const t = useTranslations("applicants.form");
   const tSchema = useTranslations("staffs.schema");
   const formSchema = StaffSchema(tSchema);
-  const { isAdmin } = useCurrentStaffRole();
+  const { isSuperAdmin } = useCurrentStaffRole();
   const form = useForm<z.infer<typeof formSchema>>({
     mode: "onChange",
     resolver: zodResolver(formSchema),
@@ -73,11 +75,13 @@ export const ApplicantStaffCreateDialog = () => {
   useEffect(() => {
     if (data.applicant) {
       form.reset({
-        name: data.applicant.name,
         email: generateEmail(data.applicant.name),
         receiverEmail: data.applicant.email,
         password: generatePassword(8),
         role: "farmer",
+        name: data.applicant.name,
+        address: data.applicant.address,
+        phone: data.applicant.phone,
       });
     }
   }, [form, data]);
@@ -118,120 +122,190 @@ export const ApplicantStaffCreateDialog = () => {
       isOpen={isOpenDialog}
       title={t("createStaff.title")}
       description={t("createStaff.description")}
+      className="max-w-5xl"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("name.label")}</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={tSchema("name.placeholder")}
-                    value={field.value ?? undefined}
-                    onChange={field.onChange}
-                    disabled={isPending}
-                  />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("email.label")}</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={tSchema("email.placeholder")}
-                    value={field.value ?? undefined}
-                    onChange={field.onChange}
-                    disabled={isPending}
-                  />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("password.label")}</FormLabel>
-                <div className="flex gap-x-2">
+          <div className="grid lg:grid-cols-2 gap-2">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("name.label")}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder={tSchema("password.placeholder")}
+                      placeholder={tSchema("name.placeholder")}
                       value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />
                   </FormControl>
-                  <Button
-                    size={"sm"}
-                    onClick={refreshPassword}
-                    type="button"
-                    disabled={isPending}
-                    variant={"outline"}
-                  >
-                    <RefreshCcw />
-                  </Button>
-                </div>
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="role"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("role.label")}</FormLabel>
-                <FormControl>
-                  <StaffSelectRole
-                    defaultValue={field.value}
-                    onChange={field.onChange}
-                    placeholder={tSchema("role.placeholder")}
-                    disabledValues={[
-                      ...(isAdmin
-                        ? [StaffRole.superadmin, StaffRole.admin]
-                        : []),
-                    ]}
-                  />
-                </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("email.label")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={tSchema("email.placeholder")}
+                      value={field.value ?? undefined}
+                      onChange={field.onChange}
+                      disabled={isPending}
+                    />
+                  </FormControl>
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="receiverEmail"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("receiverEmail.label")}</FormLabel>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <FormField
+              control={form.control}
+              name="role"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("role.label")}</FormLabel>
+                  <FormControl>
+                    <StaffSelectRole
+                      defaultValue={field.value ?? undefined}
+                      onChange={field.onChange}
+                      placeholder={tSchema("role.placeholder")}
+                      disabled={!isSuperAdmin}
+                    />
+                  </FormControl>
 
-                <FormControl>
-                  <Input
-                    placeholder={tSchema("receiverEmail.placeholder")}
-                    value={field.value ?? undefined}
-                    onChange={field.onChange}
-                    disabled={isPending}
-                  />
-                </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("password.label")}</FormLabel>
+                  <div className="flex gap-x-2">
+                    <FormControl>
+                      <Input
+                        placeholder={tSchema("password.placeholder")}
+                        value={field.value ?? undefined}
+                        onChange={field.onChange}
+                        disabled={isPending}
+                      />
+                    </FormControl>
+                    <Button
+                      size={"icon"}
+                      onClick={refreshPassword}
+                      type="button"
+                      variant={"blue"}
+                    >
+                      <RefreshCcw className="h-4 w-4" />
+                    </Button>
+                  </div>
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("phone.label")}</FormLabel>
+
+                  <FormControl>
+                    <Input
+                      placeholder={tSchema("phone.placeholder")}
+                      value={field.value ?? undefined}
+                      onChange={field.onChange}
+                      disabled={isPending}
+                    />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("address.label")}</FormLabel>
+
+                  <FormControl>
+                    <Input
+                      placeholder={tSchema("address.placeholder")}
+                      value={field.value ?? undefined}
+                      onChange={field.onChange}
+                      disabled={isPending}
+                    />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-2">
+            <FormField
+              control={form.control}
+              name="baseHourlyWage"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("baseHourlyWage.label")}</FormLabel>
+
+                  <FormControl>
+                    <Input
+                      placeholder={tSchema("baseHourlyWage.placeholder")}
+                      value={field.value ?? undefined}
+                      onChange={field.onChange}
+                      disabled={isPending}
+                      type="number"
+                      min={0}
+                      max={500_000}
+                    />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="receiverEmail"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("receiverEmail.label")}</FormLabel>
+
+                  <FormControl>
+                    <Input
+                      placeholder={tSchema("receiverEmail.placeholder")}
+                      value={field.value ?? undefined}
+                      onChange={field.onChange}
+                      disabled={isPending}
+                    />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
           <DynamicDialogFooter disabled={isPending} />
         </form>
       </Form>

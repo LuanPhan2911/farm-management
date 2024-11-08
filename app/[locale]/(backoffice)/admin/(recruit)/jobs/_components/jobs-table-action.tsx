@@ -29,7 +29,11 @@ export const JobsTableAction = ({ data }: JobsTableActionProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-fit">
         <DropdownMenuItem>
-          <JobEditButton data={data} label={t("edit.label")} />
+          <JobEditButton
+            data={data}
+            label={t("edit.label")}
+            disabled={disabled}
+          />
         </DropdownMenuItem>
         <DropdownMenuItem>
           <DestroyButton
