@@ -879,18 +879,23 @@
       "thead": {
         "name": "Name",
         "slug": "Slug",
-        "memberCount": "Member count",
-        "createdAt": "Create at"
+
+        "createdAt": "Create at",
+        "maxMember": "Max memberships",
+        "memberCount": "Current memberships"
+      },
+      "trow": {
+        "memberCount": "No values"
       },
       "member": {
         "thead": {
-          "firstName": "First name",
-          "lastName": "Last name",
+          "name": "Name",
           "email": "Email",
           "createdAt": "Create at",
           "role": "Role"
         }
-      }
+      },
+      "memberUnit": "{value} members"
     },
     "search": {
       "placeholder": "Filter by organization name...",
@@ -901,9 +906,9 @@
         "label": "Sort by: ",
         "placeholder": "Select sort by...",
         "options": {
-          "createdAt": "Create at",
-          "name": "Name",
-          "membersCount": "Member count"
+          "createdAt": "CreatedAt",
+          "name": "Organization name",
+          "membersCount": "Current memberships"
         }
       }
     },
@@ -1042,15 +1047,14 @@
       "thead": {
         "name": "Name",
         "location": "Location",
-        "orgId": "Set OrgId",
+        "orgId": "Organization",
         "soilType": "Soil type",
-        "area": "Area",
-        "shape": "Shape",
-        "note": "Note"
+        "area": "Field Area"
       },
       "trow": {
-        "orgId": "No set",
-        "soilType": "No set"
+        "soilType": "No select",
+        "location": "No filled",
+        "area": "No filled"
       }
     },
     "tabs": {
@@ -1215,10 +1219,10 @@
         "confirmedBy": "ConfirmedBy"
       },
       "trow": {
-        "temperature": "",
-        "humidity": "",
-        "atmosphericPressure": "",
-        "rainfall": "",
+        "temperature": "No filled",
+        "humidity": "No filled",
+        "atmosphericPressure": "No filled",
+        "rainfall": "No filled",
         "confirmedAt": "No confirmed",
         "confirmedBy": "No confirmed"
       }
@@ -2133,7 +2137,7 @@
   },
   "plantFertilizers": {
     "page": {
-      "title": "Recommended fertilizers for plant"
+      "title": "Fertilizers for plant"
     },
     "table": {
       "thead": {
@@ -2143,15 +2147,13 @@
           "recommendedDosage": "Recommended  dosage"
         },
         "stage": "Stage",
-        "dosage": "Plant dosage",
-        "note": "Note"
+        "dosage": "Plant dosage"
       },
       "trow": {
-        "dosage": "",
+        "dosage": "No filled",
         "fertilizer": {
-          "recommendedDosage": ""
-        },
-        "note": ""
+          "recommendedDosage": "No filled"
+        }
       }
     },
     "search": {},
@@ -2181,7 +2183,12 @@
         "placeholder": "Eg: Newly planted...",
         "required_error": "Plant stage is required",
         "min": "Min stage length is {min} characters",
-        "max": "Stage's length must be less than {max} characters"
+        "max": "Stage's length must be less than {max} characters",
+        "select": {
+          "error": "Fail load plant stage",
+          "notFound": "Plant stage not found",
+          "placeholder": "Select..."
+        }
       },
       "fertilizerId": {
         "label": "Fertilizer for plants",
@@ -2232,7 +2239,7 @@
   },
   "plantPesticides": {
     "page": {
-      "title": "Recommended pesticides for plant"
+      "title": "Pesticides for plant"
     },
     "table": {
       "thead": {
@@ -2242,15 +2249,13 @@
           "recommendedDosage": "Recommended  dosage"
         },
         "stage": "Stage",
-        "dosage": "Plant dosage",
-        "note": "Note"
+        "dosage": "Plant dosage"
       },
       "trow": {
-        "dosage": "",
+        "dosage": "No filled",
         "pesticide": {
-          "recommendedDosage": ""
-        },
-        "note": ""
+          "recommendedDosage": "No filled"
+        }
       }
     },
     "search": {},
@@ -2280,7 +2285,12 @@
         "placeholder": "Eg: Newly planted...",
         "required_error": "Plant stage is required",
         "min": "Min stage length is {min} characters",
-        "max": "Stage's length must be less than {max} characters"
+        "max": "Stage's length must be less than {max} characters",
+        "select": {
+          "error": "Fail load plant stage",
+          "notFound": "Plant stage not found",
+          "placeholder": "Select..."
+        }
       },
       "pesticideId": {
         "label": "Pesticide for plants",
@@ -2365,9 +2375,14 @@
         "name": "Name",
         "type": "Type",
         "brand": "Brand",
-        "countDetail": "Number of detail"
+        "countDetail": "Count equipments detail",
+        "purchaseDate": "Purchase date",
+        "purchasePrice": "Purchase price"
       },
-      "trow": {}
+      "trow": {
+        "purchaseDate": "No filled",
+        "purchasePrice": "No filled"
+      }
     },
     "search": {
       "placeholder": "Search by name...",
@@ -2769,9 +2784,12 @@
         "type": "Type",
         "quantityInStock": "Quantity in stock",
         "unitId": "Unit",
+        "basePrice": "Base price",
         "countUsages": "Count usages"
       },
-      "trow": {}
+      "trow": {
+        "basePrice": "No filled"
+      }
     },
     "search": {
       "placeholder": "Search by name...",
@@ -2844,6 +2862,14 @@
         "label": "Quantity in stock",
         "placeholder": "Quantity in stock"
       },
+      "basePrice": {
+        "required_error": "Base price value is required",
+        "invalid_type_error": "Price value must be number",
+        "min": "Min Price value is {min}",
+        "max": "Max Price value is {max}",
+        "label": "Base price",
+        "placeholder": "Base price for material"
+      },
       "description": {
         "label": "Material description",
         "placeholder": "Material description",
@@ -2890,15 +2916,16 @@
         },
         "createdAt": "CreatedAt",
         "quantityUsed": "Quantity used",
-        "unitId": "Unit"
+        "unitId": "Unit",
+        "actualPrice": "Actual price",
+        "actualCost": "Actual  cost"
       },
       "trow": {
-        "activity": {
-          "name": "No used",
-          "status": "No used",
-          "usage": "Usage",
-          "unused": "Unused"
-        }
+        "actualPrice": "No filled",
+        "actualCost": "No filled"
+      },
+      "tfooter": {
+        "totalCost": "Total cost of current page"
       }
     },
     "search": {
@@ -2971,6 +2998,14 @@
         "int": "Quantity is integer number",
         "label": "Quantity used",
         "placeholder": "Quantity used"
+      },
+      "actualPrice": {
+        "required_error": "Actual price value is required",
+        "invalid_type_error": "Price value must be number",
+        "min": "Min Price value is {min}",
+        "max": "Max Price value is {max}",
+        "label": "Actual price",
+        "placeholder": "Actual price for material usage"
       }
     },
     "status": {
@@ -3773,6 +3808,10 @@
         "error": "Fail load files",
         "notFound": "File not found",
         "placeholder": "Select file..."
+      },
+      "contentCaption": {
+        "label": "Caption",
+        "placeholder": "Enter file caption..."
       }
     },
     "fetch": {

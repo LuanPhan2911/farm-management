@@ -1,4 +1,4 @@
-import { getFieldById, getFieldsSelect } from "@/services/fields";
+import { getFieldsSelect } from "@/services/fields";
 import { notFound } from "next/navigation";
 
 import {
@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { getTranslations } from "next-intl/server";
 import { FieldEditForm } from "../../../_components/field-edit-button";
+import { canGetField } from "@/lib/role";
 
 interface FieldDetailPageProps {
   params: {
@@ -31,20 +32,20 @@ export async function generateStaticParams() {
   });
 }
 const FieldDetailPage = async ({ params }: FieldDetailPageProps) => {
-  const data = await getFieldById(params!.fieldId);
+  const data = await canGetField(params!.fieldId);
   const t = await getTranslations("fields.tabs");
   if (!data) {
     notFound();
   }
   return (
     <div className="flex flex-col gap-y-4 py-4 h-full">
-      <Card className="grid grid-cols-1 lg:grid-cols-5 p-6">
-        <CardHeader className="lg:col-span-1">
+      <Card>
+        <CardHeader>
           <CardTitle>{t("info.title")}</CardTitle>
           <CardDescription>{t("info.description")}</CardDescription>
           <h3 className="text-lg font-semibold">{data.name}</h3>
         </CardHeader>
-        <CardContent className="lg:col-span-4">
+        <CardContent>
           <FieldEditForm data={data} />
         </CardContent>
       </Card>

@@ -26,7 +26,6 @@ import { DownloadButtonWithUrl } from "@/components/buttons/download-button";
 import { StaffMetadataRole } from "../../../_components/staff-metadata-role";
 import { Separator } from "@/components/ui/separator";
 import { useScrollToBottom } from "@/hooks/use-scroll-bottom";
-import { isAdmin } from "@/lib/permission";
 import { useCurrentStaff } from "@/hooks/use-current-staff";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
@@ -292,11 +291,13 @@ const ChatItemFiles = ({ files }: ChatItemFilesProps) => {
                             <DownloadButtonWithUrl
                               name={file.name}
                               url={file.url}
+                              variant={"cyan"}
+                              size={"icon"}
                             />
                           </div>
                         </>
                       ) : (
-                        <span className="text-sm text-muted-foreground">
+                        <span className="text-sm text-rose-400">
                           File deleted
                         </span>
                       )}

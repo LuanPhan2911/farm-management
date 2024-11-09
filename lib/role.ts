@@ -2,7 +2,7 @@ import { getFieldById } from "@/services/fields";
 import { getCurrentStaff } from "@/services/staffs";
 import { auth } from "@clerk/nextjs/server";
 import { StaffRole } from "@prisma/client";
-import { isOnlyAdmin } from "./permission";
+import { isAdmin, isSuperAdmin } from "./permission";
 
 export const checkRole = (role: StaffRole) => {
   const { sessionClaims } = auth();
@@ -24,7 +24,8 @@ export const canGetField = async (fieldId: string) => {
   const data = await getFieldById(fieldId);
   const canReadField =
     (has({ permission: "org:field:read" }) && data?.orgId === orgId) ||
-    isOnlyAdmin(currentStaff.role);
+    (isAdmin(currentStaff.role) && !data?.orgId) ||
+    isSuperAdmin(currentStaff.role);
   if (!canReadField || !data) {
     return null;
   }

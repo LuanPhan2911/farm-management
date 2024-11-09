@@ -20,7 +20,7 @@ interface ActivityStaffsPageProps {
 const ActivityStaffsPage = async ({ params }: ActivityStaffsPageProps) => {
   const t = await getTranslations("activities.page.detail.staffs");
 
-  const { data, totalActualCost } = await getActivityAssignedStaffs(
+  const { data, totalCost } = await getActivityAssignedStaffs(
     params.activityId
   );
 
@@ -33,7 +33,7 @@ const ActivityStaffsPage = async ({ params }: ActivityStaffsPageProps) => {
         <div className="flex justify-end my-4">
           <ActivityStaffsCreateButton data={data} />
         </div>
-        <ActivityStaffsTable data={data} totalCost={totalActualCost} />
+        <ActivityStaffsTable data={data} totalCost={totalCost} />
       </CardContent>
     </Card>
   );

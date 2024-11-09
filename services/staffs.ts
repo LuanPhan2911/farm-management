@@ -156,6 +156,7 @@ type StaffSelectQuery = {
   adminOnly?: boolean;
   farmerOnly?: boolean;
   orgId?: string | null;
+  superAdminOnly?: boolean;
 };
 export const getStaffsSelect = async (params?: StaffSelectQuery) => {
   try {
@@ -183,9 +184,10 @@ export const getStaffsSelect = async (params?: StaffSelectQuery) => {
           },
         }),
         ...(params?.farmerOnly && {
-          role: {
-            in: ["farmer"],
-          },
+          role: "farmer",
+        }),
+        ...(params?.superAdminOnly && {
+          role: "superadmin",
         }),
       },
     });

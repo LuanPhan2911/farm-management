@@ -39,7 +39,7 @@ const MaterialUsagesPage = async ({
   const { query, orderBy } = searchParams;
   const page = parseToNumber(searchParams!.page, 1);
 
-  const { data: materialUsages, totalPage } = await getMaterialUsages({
+  const { data, totalPage, totalCost } = await getMaterialUsages({
     materialId: params.materialId,
     page,
     query,
@@ -55,7 +55,11 @@ const MaterialUsagesPage = async ({
         <div className="flex justify-end">
           <MaterialUsageCreateButton />
         </div>
-        <MaterialUsagesTable data={materialUsages} totalPage={totalPage} />
+        <MaterialUsagesTable
+          data={data}
+          totalPage={totalPage}
+          totalCost={totalCost}
+        />
       </CardContent>
     </Card>
   );

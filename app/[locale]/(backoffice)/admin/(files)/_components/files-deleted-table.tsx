@@ -38,7 +38,7 @@ export const FilesDeletedTable = ({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{t("table.thead.url")}</TableHead>
+            <TableHead></TableHead>
             <TableHead className="min-w-[250px]">
               <OrderByButton column="name" label={t("table.thead.name")} />
             </TableHead>

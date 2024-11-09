@@ -28,6 +28,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { PesticidesSelect } from "@/app/[locale]/(backoffice)/admin/_components/pesticides-select";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { EditButton } from "@/components/buttons/edit-button";
+import { CategoriesSelect } from "@/app/[locale]/(backoffice)/admin/_components/categories-select";
 
 interface PlantPesticideEditButtonProps {
   data: PlantPesticideTable;
@@ -131,12 +132,26 @@ export const PlantPesticideEditDialog = () => {
                   <FormItem>
                     <FormLabel>{tSchema("stage.label")}</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder={tSchema("stage.placeholder")}
-                        value={field.value ?? undefined}
-                        onChange={field.onChange}
-                        disabled={isPending || !canEdit}
-                      />
+                      <div className="grid grid-cols-4 gap-2">
+                        <div className="col-span-3">
+                          <Input
+                            placeholder={tSchema("stage.placeholder")}
+                            value={field.value ?? undefined}
+                            onChange={field.onChange}
+                            disabled={isPending || !canEdit}
+                          />
+                        </div>
+                        <CategoriesSelect
+                          error={tSchema("stage.select.error")}
+                          notFound={tSchema("stage.select.notFound")}
+                          placeholder={tSchema("stage.select.placeholder")}
+                          type="PLANT_STAGE"
+                          disabled={isPending || !canEdit}
+                          onChange={field.onChange}
+                          valueKey="name"
+                          hidden
+                        />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

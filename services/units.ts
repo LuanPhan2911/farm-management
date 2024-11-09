@@ -63,6 +63,10 @@ export const unitInclude = {
   },
 };
 
+export const unitSelect = {
+  id: true,
+  name: true,
+};
 export const getUnitsByType = async (type: UnitType): Promise<UnitSelect[]> => {
   try {
     const units = await db.unit.findMany({
@@ -70,8 +74,7 @@ export const getUnitsByType = async (type: UnitType): Promise<UnitSelect[]> => {
         type,
       },
       select: {
-        id: true,
-        name: true,
+        ...unitSelect,
       },
       cacheStrategy: {
         swr: 60,

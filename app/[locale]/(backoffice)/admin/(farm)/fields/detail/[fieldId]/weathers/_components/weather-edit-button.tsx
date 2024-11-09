@@ -37,7 +37,7 @@ interface WeatherEditButtonProps {
 export const WeatherEditButton = ({ data }: WeatherEditButtonProps) => {
   const { isSuperAdmin } = useCurrentStaffRole();
   const { has } = useAuth();
-  const isAdminOrg = has?.({ role: "org:field" }) || false;
+  const isAdminOrg = has?.({ role: "org:field" });
   const canEdit = !data.confirmed || isAdminOrg || isSuperAdmin;
   return (
     <EditButton

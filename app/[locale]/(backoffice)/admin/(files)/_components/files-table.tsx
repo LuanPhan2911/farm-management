@@ -34,7 +34,7 @@ export const FilesTable = ({ data, totalPage }: FilesTableProps) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{t("table.thead.url")}</TableHead>
+            <TableHead></TableHead>
             <TableHead>
               <OrderByButton column="name" label={t("table.thead.name")} />
             </TableHead>
@@ -57,13 +57,20 @@ export const FilesTable = ({ data, totalPage }: FilesTableProps) => {
                 <TableRow className="cursor-pointer">
                   <TableCell>
                     {isImage(item.type) ? (
-                      <div className="h-10 w-10 relative rounded-lg">
-                        <Image src={item.url} alt="Image" fill />
+                      <div className="h-10 w-10 relative">
+                        <Image
+                          src={item.url}
+                          alt="Image"
+                          fill
+                          className="rounded-md"
+                        />
                       </div>
                     ) : (
-                      <div className="h-10 w-10 flex items-center justify-center border rounded-lg">
-                        {isPDF(item.type) && <FileText className="h-8 w-8" />}
-                        {isJson(item.type) && <FileJson className="h-8 w-8" />}
+                      <div className="h-10 w-10 flex items-center justify-center border rounded-md">
+                        {isPDF(item.type) && <FileText className="h-10 w-10" />}
+                        {isJson(item.type) && (
+                          <FileJson className="h-10 w-10" />
+                        )}
                       </div>
                     )}
                   </TableCell>

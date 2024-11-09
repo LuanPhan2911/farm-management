@@ -4,8 +4,8 @@ import { parseToDate, parseToNumber } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getTranslations } from "next-intl/server";
 import { WeathersBarChart } from "./_components/weathers-bar-chart";
-import { getFieldById } from "@/services/fields";
 import { notFound } from "next/navigation";
+import { canGetField } from "@/lib/role";
 
 interface WeathersPageProps {
   params: {
@@ -33,8 +33,8 @@ const WeathersPage = async ({ params, searchParams }: WeathersPageProps) => {
   const end = parseToDate(searchParams!.end);
   const t = await getTranslations("weathers.page");
 
-  const field = await getFieldById(params.fieldId);
-  if (!field || field.orgId === null) {
+  const field = await canGetField(params.fieldId);
+  if (!field) {
     notFound();
   }
   const { data, totalPage } = await getWeathersOnField({

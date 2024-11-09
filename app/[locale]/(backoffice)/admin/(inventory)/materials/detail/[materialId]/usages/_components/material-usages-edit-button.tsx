@@ -56,6 +56,9 @@ export const MaterialUsageEditDialog = () => {
   const t = useTranslations("materialUsages.form");
   const formSchema = MaterialUsageSchema(tSchema);
 
+  const [maxQuantityUsed, setMaxQuantityUsed] = useState<number | undefined>(
+    undefined
+  );
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -65,7 +68,18 @@ export const MaterialUsageEditDialog = () => {
   const [id, setId] = useState("");
   useEffect(() => {
     if (data?.materialUsage) {
-      form.reset(data.materialUsage);
+      const { activityId, materialId, quantityUsed, unitId, material } =
+        data.materialUsage;
+      const actualPrice = data.materialUsage.actualPrice || material.basePrice;
+
+      form.reset({
+        activityId,
+        actualPrice,
+        materialId,
+        quantityUsed,
+        unitId,
+      });
+      setMaxQuantityUsed(quantityUsed + material.quantityInStock);
       setId(data.materialUsage.id);
     }
   }, [data, form]);
@@ -88,7 +102,6 @@ export const MaterialUsageEditDialog = () => {
         });
     });
   };
-  const maxQuantityUsed = data.materialUsage?.material.quantityInStock;
 
   const canEdit = isOnlyAdmin && data.materialUsage?.activityId === null;
   return (
@@ -147,6 +160,27 @@ export const MaterialUsageEditDialog = () => {
               )}
             />
           </div>
+          <FormField
+            control={form.control}
+            name="actualPrice"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("actualPrice.label")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={tSchema("actualPrice.placeholder")}
+                    value={field.value ?? undefined}
+                    onChange={field.onChange}
+                    disabled={isPending || !canEdit}
+                    type="number"
+                    min={1}
+                    max={10_000_000}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <DynamicDialogFooter disabled={isPending || !canEdit} />
         </form>
       </Form>

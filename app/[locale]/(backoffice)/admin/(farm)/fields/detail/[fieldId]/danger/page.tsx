@@ -11,6 +11,8 @@ import { getFieldById } from "@/services/fields";
 import { notFound } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 import { getTranslations } from "next-intl/server";
+import { getCurrentStaff } from "@/services/staffs";
+import { isSuperAdmin } from "@/lib/permission";
 
 interface FieldDangerPageProps {
   params: {
@@ -18,13 +20,19 @@ interface FieldDangerPageProps {
   };
 }
 const FieldDangerPage = async ({ params }: FieldDangerPageProps) => {
+  const { orgId, has } = auth();
   const data = await getFieldById(params.fieldId);
-  const { has } = auth();
-  const isAdminOrg = has({ role: "org:admin" }) || false;
+
+  const isAdminOrg = has({ role: "org:admin" });
+  const currentStaff = await getCurrentStaff();
   const t = await getTranslations("fields.form");
-  if (!data) {
+  if (!data || !currentStaff) {
     notFound();
   }
+
+  const canDelete =
+    (isAdminOrg && data.orgId === orgId) ||
+    (!data.orgId && isSuperAdmin(currentStaff.role));
   return (
     <Card>
       <CardHeader>
@@ -37,7 +45,7 @@ const FieldDangerPage = async ({ params }: FieldDangerPageProps) => {
           id={data.id}
           inltKey="fields"
           redirectHref="fields"
-          disabled={!isAdminOrg}
+          disabled={!canDelete}
         />
       </CardContent>
     </Card>

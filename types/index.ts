@@ -60,6 +60,9 @@ export type PaginatedResponse<T> = {
   data: T[];
   totalPage: number;
 };
+export type PaginatedResponseWithTotalCost<T> = PaginatedResponse<T> & {
+  totalCost: number;
+};
 export type PaginatedWithCursorResponse<T> = {
   items: T[];
   nextCursor?: string | null | number;
@@ -132,7 +135,7 @@ export type ApplicantTable = {
   status: ApplicantStatus;
 };
 export type FieldTable = Field & {
-  unit: Unit | null;
+  unit: UnitSelect | null;
 };
 export type FieldSelect = {
   id: string;
@@ -330,6 +333,7 @@ export type MaterialSelect = {
   unit: {
     name: string;
   };
+  basePrice: number | null;
 };
 export type MaterialUsageTable = MaterialUsage & {
   material: MaterialSelect;
@@ -339,6 +343,19 @@ export type MaterialUsageTable = MaterialUsage & {
   activity: ActivitySelect | null;
 };
 
+export type MaterialUsageTableWithCost = MaterialUsage & {
+  material: MaterialSelect;
+  unit: {
+    name: string;
+  };
+  activity: ActivitySelect | null;
+  actualCost: number | null;
+};
+
+export type MaterialUsageTableWithTotalCost = {
+  data: MaterialUsageTableWithCost[];
+  totalCost: number;
+};
 export type MaterialTypeCount = {
   type: MaterialType;
   _count: number;
@@ -407,7 +424,7 @@ export type ActivityAssignedStaffWithActivitySelect = ActivityAssigned & {
   actualCost: number | null;
 };
 export type ActivityAssignedStaffWithActivityAndCost = {
-  totalActualCost: number;
+  totalCost: number;
   data: ActivityAssignedStaffWithActivitySelect[];
 };
 export type ActivityTable = Activity & {

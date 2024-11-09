@@ -14,7 +14,7 @@ import { SocketIndicator } from "@/components/socket-indicator";
 import { Separator } from "@/components/ui/separator";
 import { DropdownMenuButton } from "@/components/buttons/dropdown-menu-button";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { LinkButton } from "@/components/buttons/link-button";
+import { LinkDetailButton } from "@/components/buttons/link-button";
 
 interface OrgMessages {
   org: Organization;
@@ -33,10 +33,7 @@ export const OrgMessages = ({ org }: OrgMessages) => {
           {t("messages.description")}
           <DropdownMenuButton>
             <DropdownMenuItem>
-              <LinkButton
-                href={`organizations/detail/${org.id}/files`}
-                label="Uploaded files"
-              />
+              <LinkDetailButton href={`files`} label="Uploaded files" />
             </DropdownMenuItem>
           </DropdownMenuButton>
         </CardDescription>

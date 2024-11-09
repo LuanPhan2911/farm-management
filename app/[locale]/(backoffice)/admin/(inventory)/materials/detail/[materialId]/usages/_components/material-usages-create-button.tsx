@@ -110,6 +110,10 @@ export const MaterialUsageCreateButton = () => {
                         notFound={tSchema("materialId.notFound")}
                         onSelected={(selectedMaterial) => {
                           form.setValue("unitId", selectedMaterial.unitId);
+                          form.setValue(
+                            "actualPrice",
+                            selectedMaterial.basePrice
+                          );
                           setMaxQuantityUsed(selectedMaterial.quantityInStock);
                         }}
                       />
@@ -193,6 +197,27 @@ export const MaterialUsageCreateButton = () => {
                   )}
                 />
               </div>
+              <FormField
+                control={form.control}
+                name="actualPrice"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("actualPrice.label")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={tSchema("actualPrice.placeholder")}
+                        value={field.value ?? undefined}
+                        onChange={field.onChange}
+                        disabled={isPending || !canCreate}
+                        type="number"
+                        min={1}
+                        max={10_000_000}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
             <DynamicDialogFooter disabled={isPending || !canCreate} />

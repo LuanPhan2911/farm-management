@@ -27,6 +27,7 @@ import slugify from "slugify";
 import { SelectOptions } from "@/components/form/select-options";
 import { CategoryTable } from "@/types";
 import { EditButton } from "@/components/buttons/edit-button";
+import { getSlug } from "@/lib/utils";
 
 interface CategoryEditButtonProps {
   data: CategoryTable;
@@ -60,12 +61,7 @@ export const CategoryEditDialog = () => {
   const [id, setId] = useState("");
   const name = form.watch("name");
   useEffect(() => {
-    form.setValue(
-      "slug",
-      slugify(name, {
-        lower: true,
-      })
-    );
+    form.setValue("slug", getSlug(name));
   }, [name, form]);
   useEffect(() => {
     if (data?.category) {

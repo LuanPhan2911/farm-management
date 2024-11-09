@@ -6,6 +6,7 @@ import { File } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { UTApi } from "uploadthing/server";
 import { getCurrentStaff } from "./staffs";
+import { addDays } from "date-fns";
 export const utapi = new UTApi();
 type FileParams = {
   name: string;
@@ -91,6 +92,9 @@ export const deleteManyFileDeleted = async () => {
   const fileKeys = await db.file.findMany({
     where: {
       deleted: true,
+      deletedAt: {
+        lte: addDays(new Date(), -30),
+      },
     },
     select: {
       key: true,

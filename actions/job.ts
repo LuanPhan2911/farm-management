@@ -1,7 +1,6 @@
 "use server";
 
-import { errorResponse, successResponse } from "@/lib/utils";
-import { redirect } from "@/navigation";
+import { errorResponse, getSlug, successResponse } from "@/lib/utils";
 import { JobSchema } from "@/schemas";
 import {
   createJob,
@@ -14,7 +13,6 @@ import {
 import { ActionResponse } from "@/types";
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
-import slugify from "slugify";
 import { z } from "zod";
 
 export const create = async (
@@ -29,16 +27,11 @@ export const create = async (
     return errorResponse(tSchema("errors.parse"));
   }
   try {
-    let slug = slugify(validatedFields.data.name, {
-      lower: true,
-    });
+    let slug = getSlug(validatedFields.data.name);
     const existingJob = await getJobBySlug(slug);
     if (existingJob) {
-      slug = slugify(
-        `${validatedFields.data.name}-${Math.floor(Math.random() * 1000)}`,
-        {
-          lower: true,
-        }
+      slug = getSlug(
+        `${validatedFields.data.name}-${Math.floor(Math.random() * 1000)}`
       );
     }
     const job = await createJob({
@@ -65,17 +58,12 @@ export const edit = async (
     return errorResponse(tSchema("errors.parse"));
   }
   try {
-    let slug = slugify(validatedFields.data.name, {
-      lower: true,
-    });
+    let slug = getSlug(validatedFields.data.name);
     const existingJob = await getJobBySlug(slug);
 
     if (existingJob && id !== existingJob.id) {
-      slug = slugify(
-        `${validatedFields.data.name}-${Math.floor(Math.random() * 1000)}`,
-        {
-          lower: true,
-        }
+      slug = getSlug(
+        `${validatedFields.data.name}-${Math.floor(Math.random() * 1000)}`
       );
     }
     const job = await updateJob(id, { ...validatedFields.data, slug });

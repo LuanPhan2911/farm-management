@@ -70,12 +70,25 @@ export const OrgsTable = ({ orgs, totalPage }: OrgsTableProps) => {
             <TableHead></TableHead>
             <TableHead>{t("table.thead.name")}</TableHead>
             <TableHead>{t("table.thead.slug")}</TableHead>
-            <TableHead>{t("table.thead.memberCount")}</TableHead>
             <TableHead>{t("table.thead.createdAt")} </TableHead>
+            <TableHead className="text-right">
+              {t("table.thead.maxMember")}
+            </TableHead>
+            <TableHead className="text-right">
+              {t("table.thead.memberCount")}
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {orgs.map((organization) => {
+            const {
+              name,
+              slug,
+              createdAt,
+              imageUrl,
+              maxAllowedMemberships,
+              membersCount,
+            } = organization;
             return (
               <TableRow
                 key={organization.id}
@@ -83,12 +96,19 @@ export const OrgsTable = ({ orgs, totalPage }: OrgsTableProps) => {
                 onClick={() => handleClick(organization)}
               >
                 <TableCell>
-                  <UserAvatar src={organization.imageUrl} />
+                  <UserAvatar src={imageUrl} />
                 </TableCell>
-                <TableCell>{organization.name}</TableCell>
-                <TableCell>{organization.slug}</TableCell>
-                <TableCell>{organization.membersCount}</TableCell>
-                <TableCell>{relativeTime(organization.createdAt)}</TableCell>
+                <TableCell>{name}</TableCell>
+                <TableCell>{slug}</TableCell>
+                <TableCell>{relativeTime(createdAt)}</TableCell>
+                <TableCell className="text-right">
+                  {t("table.memberUnit", { value: maxAllowedMemberships })}
+                </TableCell>
+                <TableCell className="text-right">
+                  {membersCount
+                    ? t("table.memberUnit", { value: membersCount })
+                    : t("table.trow.memberCount")}
+                </TableCell>
               </TableRow>
             );
           })}

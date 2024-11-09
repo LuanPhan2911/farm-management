@@ -1,6 +1,6 @@
 "use client";
 
-import { Link, usePathname } from "@/navigation";
+import { Link, usePathname, useRouter } from "@/navigation";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -80,6 +80,7 @@ const NavigationLink = ({
   disabled,
   className,
 }: NavigationLinkProps) => {
+  const router = useRouter();
   return (
     <Button
       size={"sm"}
@@ -90,13 +91,13 @@ const NavigationLink = ({
         isActive && "border-l-4 border-l-green-500 ",
         className
       )}
-      asChild
+      onClick={() => {
+        router.push(href);
+      }}
     >
-      <Link href={href}>
-        <span className={cn(isActive && "text-green-500 hover:text-green-400")}>
-          {label}
-        </span>
-      </Link>
+      <span className={cn(isActive && "text-green-500 hover:text-green-400")}>
+        {label}
+      </span>
     </Button>
   );
 };

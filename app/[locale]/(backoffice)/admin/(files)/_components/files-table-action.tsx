@@ -30,7 +30,7 @@ export const FilesTableAction = ({ data }: FilesTableActionProps) => {
   const { currentStaff } = useCurrentStaff();
   const { isSuperAdmin } = useCurrentStaffRole();
   const isOwner = currentStaff?.id === data.owner.id;
-  const disabled = !isSuperAdmin && !isOwner;
+  const canEdit = isSuperAdmin || isOwner;
 
   return (
     <DropdownMenu>
@@ -44,7 +44,7 @@ export const FilesTableAction = ({ data }: FilesTableActionProps) => {
           <FileEditNameButton
             data={data}
             label={t("editName.label")}
-            disabled={disabled}
+            disabled={!canEdit}
           />
         </DropdownMenuItem>
         <DropdownMenuItem>
@@ -91,7 +91,7 @@ export const FilesTableAction = ({ data }: FilesTableActionProps) => {
             icon={Trash}
             size={"sm"}
             variant={"destroy"}
-            disabled={disabled}
+            disabled={!canEdit}
           />
         </DropdownMenuItem>
       </DropdownMenuContent>
@@ -109,7 +109,7 @@ export const FilesTableActionContextMenu = ({
   const { currentStaff } = useCurrentStaff();
   const { isSuperAdmin } = useCurrentStaffRole();
   const isOwner = currentStaff?.id === data.owner.id;
-  const disabled = !isSuperAdmin && !isOwner;
+  const canEdit = isSuperAdmin || isOwner;
 
   return (
     <ContextMenu>
@@ -119,7 +119,7 @@ export const FilesTableActionContextMenu = ({
           <FileEditNameButton
             data={data}
             label={t("editName.label")}
-            disabled={disabled}
+            disabled={!canEdit}
           />
         </ContextMenuItem>
         <ContextMenuItem>
@@ -166,7 +166,7 @@ export const FilesTableActionContextMenu = ({
             icon={Trash}
             size={"sm"}
             variant={"destroy"}
-            disabled={disabled}
+            disabled={!canEdit}
           />
         </ContextMenuItem>
       </ContextMenuContent>

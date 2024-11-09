@@ -25,7 +25,7 @@ export const FieldNavigationMenu = ({ data }: FieldNavigationMenuProps) => {
   }
 
   const getHref = `${prefix}/fields/detail/${params.fieldId}`;
-  const disabled = (data && data.orgId === null) || false;
+  const disabled = !data?.orgId;
 
   const navigationMenu: NavigationMenuData[] = [
     {

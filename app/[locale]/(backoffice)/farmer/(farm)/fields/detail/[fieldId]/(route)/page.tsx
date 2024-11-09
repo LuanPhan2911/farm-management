@@ -1,4 +1,4 @@
-import { getFieldById, getFieldsSelect } from "@/services/fields";
+import { getFieldsSelect } from "@/services/fields";
 import { notFound } from "next/navigation";
 
 import {
@@ -10,9 +10,6 @@ import {
 } from "@/components/ui/card";
 import { getTranslations } from "next-intl/server";
 import { FieldEditForm } from "@/app/[locale]/(backoffice)/admin/(farm)/fields/_components/field-edit-button";
-import { auth } from "@clerk/nextjs/server";
-import { getCurrentStaff } from "@/services/staffs";
-import { isOnlyAdmin } from "@/lib/permission";
 import { canGetField } from "@/lib/role";
 
 interface FieldDetailPageProps {

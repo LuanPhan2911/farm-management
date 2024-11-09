@@ -43,9 +43,9 @@ export const FieldCreateButton = ({}: FieldCreateButtonProps) => {
   const formSchema = FieldSchema(tSchema);
   const [isPending, startTransition] = useTransition();
   const [isOpen, setOpen] = useState(false);
-  const { isSuperAdmin } = useCurrentStaffRole();
-  const canManageField =
-    has?.({ permission: "org:field:manage" }) || isSuperAdmin;
+
+  const canManageField = has?.({ permission: "org:field:manage" });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -87,44 +87,46 @@ export const FieldCreateButton = ({}: FieldCreateButtonProps) => {
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("name.label")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={tSchema("name.placeholder")}
-                      value={field.value ?? undefined}
-                      onChange={field.onChange}
-                      disabled={isPending}
-                    />
-                  </FormControl>
+            <div className="grid lg:grid-cols-2 gap-2">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("name.label")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={tSchema("name.placeholder")}
+                        value={field.value ?? undefined}
+                        onChange={field.onChange}
+                        disabled={isPending}
+                      />
+                    </FormControl>
 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="location"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("location.label")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={tSchema("location.placeholder")}
-                      value={field.value ?? undefined}
-                      onChange={field.onChange}
-                      disabled={isPending}
-                    />
-                  </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="location"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("location.label")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={tSchema("location.placeholder")}
+                        value={field.value ?? undefined}
+                        onChange={field.onChange}
+                        disabled={isPending}
+                      />
+                    </FormControl>
 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <div className="grid lg:grid-cols-2 gap-2">
               <FormField
@@ -165,6 +167,7 @@ export const FieldCreateButton = ({}: FieldCreateButtonProps) => {
                           };
                         })}
                         disabled={isPending}
+                        defaultValue={field.value}
                       />
                     </FormControl>
 
@@ -217,44 +220,46 @@ export const FieldCreateButton = ({}: FieldCreateButtonProps) => {
                 )}
               />
             </div>
-            <FormField
-              control={form.control}
-              name="shape"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("shape.label")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={tSchema("shape.placeholder")}
-                      value={field.value ?? undefined}
-                      onChange={field.onChange}
-                      disabled={isPending}
-                    />
-                  </FormControl>
+            <div className="grid lg:grid-cols-2 gap-2">
+              <FormField
+                control={form.control}
+                name="shape"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("shape.label")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={tSchema("shape.placeholder")}
+                        value={field.value ?? undefined}
+                        onChange={field.onChange}
+                        disabled={isPending}
+                      />
+                    </FormControl>
 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="note"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("note.label")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={tSchema("note.placeholder")}
-                      value={field.value ?? undefined}
-                      onChange={field.onChange}
-                      disabled={isPending}
-                    />
-                  </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="note"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("note.label")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={tSchema("note.placeholder")}
+                        value={field.value ?? undefined}
+                        onChange={field.onChange}
+                        disabled={isPending}
+                      />
+                    </FormControl>
 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <DynamicDialogFooter disabled={isPending} closeButton={false} />
           </form>

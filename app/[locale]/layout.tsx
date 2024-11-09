@@ -57,7 +57,7 @@ export default async function RootLayout({
                 },
                 long: {
                   day: "2-digit",
-                  month: "short",
+                  month: "numeric",
                   year: "numeric",
                   hour: "2-digit",
                   minute: "2-digit",

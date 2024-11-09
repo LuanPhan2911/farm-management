@@ -19,10 +19,10 @@ import { useContext, useEffect, useTransition } from "react";
 
 import { FileUploader } from "react-drag-drop-files";
 import { useForm } from "react-hook-form";
-import slugify from "slugify";
 import { toast } from "sonner";
 import { z } from "zod";
 import { OrgContext } from "./org-tabs";
+import { getSlug } from "@/lib/utils";
 
 interface OrgEditFormProps {
   data: Organization;
@@ -42,14 +42,7 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
   });
   const orgName = form.watch("name");
   useEffect(() => {
-    form.setValue(
-      "slug",
-      slugify(orgName, {
-        lower: true,
-        replacement: "-",
-        trim: true,
-      })
-    );
+    form.setValue("slug", getSlug(orgName));
   }, [orgName, form]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
@@ -86,9 +79,11 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
       });
     }
   };
+
+  const canEdit = canManageOrg;
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormItem>
           <InputClipboard label={tSchema("id.label")} value={data.id} />
         </FormItem>
@@ -104,7 +99,7 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
                   placeholder={tSchema("name.placeholder")}
                   value={field.value ?? undefined}
                   onChange={field.onChange}
-                  disabled={isPending || !canManageOrg}
+                  disabled={isPending || !canEdit}
                 />
               </FormControl>
 
@@ -123,7 +118,7 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
                   placeholder={tSchema("slug.placeholder")}
                   value={field.value ?? undefined}
                   onChange={field.onChange}
-                  disabled={isPending || !canManageOrg}
+                  disabled={isPending || !canEdit}
                 />
               </FormControl>
 
@@ -136,12 +131,12 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
           <FileUploader
             handleChange={onUpload}
             types={["JPG", "PNG"]}
-            disabled={isPending || !canManageOrg}
+            disabled={isPending || !canEdit}
           />
         </FormItem>
 
         <DynamicDialogFooter
-          disabled={isPending || !canManageOrg}
+          disabled={isPending || !canEdit}
           closeButton={false}
         />
       </form>

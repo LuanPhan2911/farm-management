@@ -10,9 +10,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { MaterialTable } from "@/types";
-import { MaterialsTableAction } from "./materials-table-action";
 
 import { OrderByButton } from "@/components/buttons/order-by-button";
 
@@ -20,6 +19,7 @@ import { SearchBar } from "@/components/search-bar";
 import { UserAvatar } from "@/components/user-avatar";
 import { MaterialsTableFaceted } from "./materials-table-faceted";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
+import { MaterialTypeValue } from "./material-type-value";
 
 interface MaterialsTableProps {
   data: MaterialTable[];
@@ -29,6 +29,7 @@ export const MaterialsTable = ({ data, totalPage }: MaterialsTableProps) => {
   const router = useRouterWithRole();
 
   const t = useTranslations("materials");
+  const { number } = useFormatter();
   const handleViewDetail = (row: MaterialTable) => {
     router.push(`materials/detail/${row.id}`);
   };
@@ -44,22 +45,20 @@ export const MaterialsTable = ({ data, totalPage }: MaterialsTableProps) => {
         <TableHeader>
           <TableRow>
             <TableHead>{t("table.thead.imageUrl")}</TableHead>
-            <TableHead className="lg:w-[200px]">
+            <TableHead>
               <OrderByButton column="name" label={t("table.thead.name")} />
             </TableHead>
-            <TableHead>
-              <OrderByButton column="type" label={t("table.thead.type")} />
+            <TableHead>{t("table.thead.type")}</TableHead>
+            <TableHead className="text-right">
+              {t("table.thead.basePrice")}
             </TableHead>
-            <TableHead>
+            <TableHead className="text-right">
               <OrderByButton
                 column="quantityInStock"
                 label={t("table.thead.quantityInStock")}
               />
             </TableHead>
             <TableHead>{t("table.thead.unitId")}</TableHead>
-            <TableHead>{t("table.thead.countUsages")}</TableHead>
-
-            <TableHead></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -74,18 +73,18 @@ export const MaterialsTable = ({ data, totalPage }: MaterialsTableProps) => {
                   <UserAvatar src={item.imageUrl || undefined} />
                 </TableCell>
                 <TableCell>{item.name}</TableCell>
-                <TableCell>{t(`schema.type.options.${item.type}`)}</TableCell>
-
-                <TableCell className="text-center">
+                <TableCell>
+                  <MaterialTypeValue value={item.type} />
+                </TableCell>
+                <TableCell className="text-right">
+                  {item.basePrice
+                    ? number(item.basePrice, "currency")
+                    : t("table.trow.basePrice")}
+                </TableCell>
+                <TableCell className="text-right">
                   {item.quantityInStock}
                 </TableCell>
                 <TableCell>{item.unit.name}</TableCell>
-                <TableCell className="text-center">
-                  {item._count.materialUsages}
-                </TableCell>
-                <TableCell>
-                  <MaterialsTableAction data={item} />
-                </TableCell>
               </TableRow>
             );
           })}

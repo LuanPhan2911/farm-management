@@ -39,7 +39,11 @@ const MaterialUsagesPage = async ({
   const { query, orderBy } = searchParams;
   const page = parseToNumber(searchParams!.page, 1);
 
-  const { data: materialUsages, totalPage } = await getMaterialUsages({
+  const {
+    data: materialUsages,
+    totalPage,
+    totalCost,
+  } = await getMaterialUsages({
     materialId: params.materialId,
     page,
     query,
@@ -52,7 +56,11 @@ const MaterialUsagesPage = async ({
         <CardTitle>{t("title")}</CardTitle>
       </CardHeader>
       <CardContent>
-        <MaterialUsagesTable data={materialUsages} totalPage={totalPage} />
+        <MaterialUsagesTable
+          data={materialUsages}
+          totalPage={totalPage}
+          totalCost={totalCost}
+        />
       </CardContent>
     </Card>
   );

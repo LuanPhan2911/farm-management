@@ -119,30 +119,30 @@ export const SoilsTable = ({ data, totalPage }: SoilsTableProps) => {
                   />
                 </TableCell>
                 <TableCell>{dateTime(item.createdAt, "long")}</TableCell>
-                <TableCell className="text-center">{item.ph}</TableCell>
+                <TableCell className="text-right">{item.ph}</TableCell>
 
-                <TableCell className="text-center">
+                <TableCell className="text-right">
                   <UnitWithValue
                     value={item.nutrientNitrogen}
-                    unit={item.nutrientUnit?.name}
+                    unit={item.nutrientUnit?.name || "g/kg"}
                   />
                 </TableCell>
-                <TableCell className="text-center">
+                <TableCell className="text-right">
                   <UnitWithValue
                     value={item.nutrientPhosphorus}
-                    unit={item.nutrientUnit?.name}
+                    unit={item.nutrientUnit?.name || "g/kg"}
                   />
                 </TableCell>
                 <TableCell className="text-center">
                   <UnitWithValue
                     value={item.nutrientPotassium}
-                    unit={item.nutrientUnit?.name}
+                    unit={item.nutrientUnit?.name || "g/kg"}
                   />
                 </TableCell>
                 <TableCell className="text-center">
                   <UnitWithValue
                     value={item.moisture?.value}
-                    unit={item.moisture?.unit?.name}
+                    unit={item.moisture?.unit?.name || "%"}
                   />
                 </TableCell>
 

@@ -539,10 +539,10 @@ export const getActivityAssignedStaffs = async (
         },
       },
     });
-    let totalActualCost: number = 0;
+    let totalCost: number = 0;
     const activityAssignedWithCost = activityAssigned.map((item) => {
       if (item.actualWork !== null && item.hourlyWage !== null) {
-        totalActualCost += item.actualWork * item.hourlyWage;
+        totalCost += item.actualWork * item.hourlyWage;
         return {
           ...item,
           actualCost: item.actualWork * item.hourlyWage,
@@ -556,12 +556,12 @@ export const getActivityAssignedStaffs = async (
 
     return {
       data: activityAssignedWithCost,
-      totalActualCost,
+      totalCost,
     };
   } catch (error) {
     return {
       data: [],
-      totalActualCost: 0,
+      totalCost: 0,
     };
   }
 };

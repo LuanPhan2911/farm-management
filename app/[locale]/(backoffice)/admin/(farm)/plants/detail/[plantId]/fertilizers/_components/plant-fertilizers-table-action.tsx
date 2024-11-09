@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { PlantFertilizerTable } from "@/types";
 import { MoreHorizontal } from "lucide-react";
-import { useTranslations } from "next-intl";
 import { PlantFertilizerEditButton } from "./plant-fertilizers-edit-button";
 import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/plant-fertilizer";

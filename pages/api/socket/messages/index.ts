@@ -2,7 +2,6 @@ import { errorResponse, successResponse } from "@/lib/utils";
 import { MessageSchema } from "@/schemas";
 import { createFileFromUrl } from "@/services/files";
 import { createMessage } from "@/services/messages";
-import { getOrganizationById } from "@/services/organizations";
 import { getCurrentStaffPages } from "@/services/staffs";
 import { ActionResponse, NextApiResponseServerIo } from "@/types";
 import { NextApiRequest } from "next";
@@ -26,18 +25,19 @@ export default async function handler(
       return res.status(400).json(errorResponse("Staff is not exist"));
     }
     // check all chat message orgIg= all
-    let message;
+
     const isPublic = orgId === "all";
+
     let { content, fileIds, fileUrl, name, type } = validatedFields.data;
     if (fileUrl) {
       //check file exist
-
       const copiedFile = await createFileFromUrl({
         url: fileUrl,
         ownerId: staff.id,
         isPublic,
         name,
         type,
+        orgId: isPublic ? undefined : (orgId as string),
       });
 
       if (copiedFile) {
@@ -45,24 +45,12 @@ export default async function handler(
       }
     }
 
-    if (!isPublic) {
-      const org = await getOrganizationById(orgId as string);
-      if (!org) {
-        return res.status(400).json(errorResponse("Org is not exist"));
-      }
-      message = await createMessage({
-        content,
-        fileIds,
-        orgId: org.id,
-        staffId: staff.id,
-      });
-    } else {
-      message = await createMessage({
-        content,
-        fileIds,
-        staffId: staff.id,
-      });
-    }
+    const message = await createMessage({
+      content,
+      fileIds,
+      orgId: isPublic ? undefined : (orgId as string),
+      staffId: staff.id,
+    });
 
     const key = `chat:${orgId as string}:messages`;
 

@@ -20,8 +20,6 @@ type EquipmentParams = {
   brand?: string | null;
   purchaseDate?: Date | null;
   purchasePrice?: Partial<UnitValue> | null;
-  fuelConsumption?: number | null;
-  energyType?: string | null;
   description?: string | null;
   imageUrl?: string | null;
 };

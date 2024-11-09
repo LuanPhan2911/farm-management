@@ -6,7 +6,6 @@ import { notFound } from "next/navigation";
 
 import { OrgTabs } from "../../../_components/org-tabs";
 import { getTranslations } from "next-intl/server";
-import { getCurrentStaff } from "@/services/staffs";
 
 interface OrganizationDetailPageProps {
   params: {

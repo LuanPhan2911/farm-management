@@ -1,9 +1,11 @@
 import { db } from "@/lib/db";
-import { FieldSelect } from "@/types";
+import { FieldSelect, FieldTable } from "@/types";
 import { SoilType } from "@prisma/client";
 import { getCurrentStaff } from "./staffs";
-import { isAdmin, isFarmer, isSuperAdmin } from "@/lib/permission";
+import { isAdmin, isFarmer, isOnlyAdmin, isSuperAdmin } from "@/lib/permission";
 import { getUserInOrganization } from "./organizations";
+import { unitInclude, unitSelect } from "./units";
+import { auth } from "@clerk/nextjs/server";
 
 type FieldParams = {
   name: string;
@@ -59,7 +61,9 @@ type FieldQuery = {
 // superadmin get all
 // admin get in org and null org
 // farmer get in org
-export const getFields = async ({ orgId }: FieldQuery) => {
+export const getFields = async ({
+  orgId,
+}: FieldQuery): Promise<FieldTable[]> => {
   try {
     // check user in org
     const currentStaff = await getCurrentStaff();
@@ -72,8 +76,17 @@ export const getFields = async ({ orgId }: FieldQuery) => {
     if (orgId === null && isSuperAdmin(currentStaff.role)) {
       return await db.field.findMany({
         include: {
-          unit: true,
+          unit: {
+            select: {
+              ...unitSelect,
+            },
+          },
         },
+        orderBy: [
+          {
+            orgId: "desc",
+          },
+        ],
       });
     }
     if (orgId === null && isAdmin(currentStaff.role)) {
@@ -82,7 +95,11 @@ export const getFields = async ({ orgId }: FieldQuery) => {
           orgId: null,
         },
         include: {
-          unit: true,
+          unit: {
+            select: {
+              ...unitSelect,
+            },
+          },
         },
       });
     }
@@ -105,7 +122,11 @@ export const getFields = async ({ orgId }: FieldQuery) => {
         orgId,
       },
       include: {
-        unit: true,
+        unit: {
+          select: {
+            ...unitSelect,
+          },
+        },
       },
     });
     return fields;
@@ -116,14 +137,20 @@ export const getFields = async ({ orgId }: FieldQuery) => {
 // superadmin edit
 // admin
 
-export const getFieldById = async (id: string) => {
+// field orgid = null just super admin get
+export const getFieldById = async (id: string): Promise<FieldTable | null> => {
   try {
     const field = await db.field.findUnique({
       where: { id },
       include: {
-        unit: true,
+        unit: {
+          select: {
+            ...unitSelect,
+          },
+        },
       },
     });
+
     return field;
   } catch (error) {
     return null;

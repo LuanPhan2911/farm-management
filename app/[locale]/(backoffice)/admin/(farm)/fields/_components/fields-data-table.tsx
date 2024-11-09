@@ -5,11 +5,11 @@ import { DataTableColumnHeader } from "@/components/datatable/datatable-column-h
 import { ColumnDef } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
 import { FieldTable } from "@/types";
-import { FieldsTableAction } from "./fields-table-action";
 import { UnitWithValue } from "../../../_components/unit-with-value";
 
 import { SoilType } from "@prisma/client";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
+import { UsageStatusValue } from "@/components/usage-status-value";
 
 interface FieldsDataTableProps {
   data: FieldTable[];
@@ -20,6 +20,14 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
   const t = useTranslations("fields");
 
   const columns: ColumnDef<FieldTable>[] = [
+    {
+      accessorKey: "orgId",
+      header: t("table.thead.orgId"),
+      cell: ({ row }) => {
+        const data = row.original;
+        return <UsageStatusValue status={!!data.orgId} />;
+      },
+    },
     {
       accessorKey: "name",
       header: ({ column }) => {
@@ -33,33 +41,20 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
     },
     {
       accessorKey: "location",
-      header: ({ column }) => {
-        return (
-          <DataTableColumnHeader
-            column={column}
-            title={t("table.thead.location")}
-          />
-        );
-      },
-    },
-    {
-      accessorKey: "orgId",
-      header: t("table.thead.orgId"),
+      header: t("table.thead.location"),
+
       cell: ({ row }) => {
         const data = row.original;
-        return data.orgId ? "Unused" : "Usage";
+        if (!data.location) {
+          return t("table.trow.location");
+        }
+        return data.location;
       },
     },
+
     {
       accessorKey: "soilType",
-      header: ({ column }) => {
-        return (
-          <DataTableColumnHeader
-            column={column}
-            title={t("table.thead.soilType")}
-          />
-        );
-      },
+      header: t("table.thead.soilType"),
       filterFn: (row, id, value) => {
         return value.includes(row.getValue(id));
       },
@@ -74,33 +69,15 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
 
     {
       accessorKey: "area",
-      header: ({ column }) => {
-        return (
-          <DataTableColumnHeader
-            column={column}
-            title={t("table.thead.area")}
-          />
-        );
+      header: () => {
+        return <p className="text-right">{t("table.thead.area")}</p>;
       },
       cell: ({ row }) => {
         const data = row.original;
-        const unit = data.unit?.name ? `${data.unit.name}2` : "";
-        return <UnitWithValue value={data.area} unit={unit} />;
-      },
-    },
-    {
-      accessorKey: "shape",
-      header: t("table.thead.shape"),
-    },
-    {
-      accessorKey: "note",
-      header: t("table.thead.note"),
-    },
-    {
-      id: "actions",
-      cell: ({ row }) => {
-        const data = row.original;
-        return <FieldsTableAction data={data} />;
+        if (!data.area) {
+          return <p className="text-right">{t("table.trow.area")}</p>;
+        }
+        return <UnitWithValue value={data.area} unit={data.unit?.name} />;
       },
     },
   ];

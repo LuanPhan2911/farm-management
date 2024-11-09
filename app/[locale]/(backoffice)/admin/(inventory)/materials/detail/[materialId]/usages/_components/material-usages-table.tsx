@@ -6,12 +6,13 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import { useFormatter, useTranslations } from "next-intl";
-import { MaterialUsageTable } from "@/types";
+import { MaterialUsageTable, MaterialUsageTableWithCost } from "@/types";
 
 import { OrderByButton } from "@/components/buttons/order-by-button";
 
@@ -21,18 +22,22 @@ import { useDialog } from "@/stores/use-dialog";
 import { UserAvatar } from "@/components/user-avatar";
 import { MaterialTypeValue } from "../../../../_components/material-type-value";
 import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-with-value";
+import { UsageStatusValue } from "@/components/usage-status-value";
 
 interface MaterialUsagesTableProps {
-  data: MaterialUsageTable[];
+  data: MaterialUsageTableWithCost[];
   totalPage: number;
+  totalCost: number;
 }
 export const MaterialUsagesTable = ({
   data,
   totalPage,
+  totalCost,
 }: MaterialUsagesTableProps) => {
   const { onOpen } = useDialog();
   const t = useTranslations("materialUsages");
   const { dateTime } = useFormatter();
+  const { number } = useFormatter();
   const handleEdit = (row: MaterialUsageTable) => {
     onOpen("materialUsage.edit", { materialUsage: row });
   };
@@ -40,7 +45,10 @@ export const MaterialUsagesTable = ({
   return (
     <>
       <div className="flex flex-col lg:flex-row gap-2 my-2 lg:items-center">
-        <SearchBar isPagination placeholder={t("search.placeholder")} />
+        <SearchBar
+          isPagination={totalPage > 1}
+          placeholder={t("search.placeholder")}
+        />
       </div>
 
       <Table>
@@ -49,18 +57,25 @@ export const MaterialUsagesTable = ({
             <TableHead>{t("table.thead.activity.usage")}</TableHead>
             <TableHead>{t("table.thead.createdAt")}</TableHead>
             <TableHead>{t("table.thead.material.imageUrl")}</TableHead>
-            <TableHead className="w-[250px]">
+            <TableHead className="w-[200px]">
               <OrderByButton
                 column="material.name"
                 label={t("table.thead.material.name")}
               />
             </TableHead>
-
             <TableHead>{t("table.thead.material.type")}</TableHead>
-
-            <TableHead>{t("table.thead.material.quantityInStock")}</TableHead>
-            <TableHead>{t("table.thead.quantityUsed")}</TableHead>
-
+            <TableHead className="text-right">
+              {t("table.thead.material.quantityInStock")}
+            </TableHead>
+            <TableHead className="text-right">
+              {t("table.thead.quantityUsed")}
+            </TableHead>
+            <TableHead className="text-right">
+              {t("table.thead.actualPrice")}
+            </TableHead>
+            <TableHead className="text-right">
+              {t("table.thead.actualCost")}
+            </TableHead>
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>
@@ -72,40 +87,39 @@ export const MaterialUsagesTable = ({
                 className="cursor-pointer"
                 onClick={() => handleEdit(item)}
               >
-                <TableCell className="font-semibold">
-                  {item.activity ? (
-                    <span className="text-green-400">
-                      {t("table.trow.activity.usage")}
-                    </span>
-                  ) : (
-                    <span className="text-rose-400">
-                      {t("table.trow.activity.unused")}
-                    </span>
-                  )}
+                <TableCell>
+                  <UsageStatusValue status={!!item.activityId} />
                 </TableCell>
                 <TableCell>{dateTime(item.createdAt, "long")}</TableCell>
                 <TableCell>
                   <UserAvatar src={item.material.imageUrl || undefined} />
                 </TableCell>
                 <TableCell>{item.material.name}</TableCell>
-
                 <TableCell>
                   <MaterialTypeValue value={item.material.type} />
                 </TableCell>
-
-                <TableCell>
+                <TableCell className="text-right">
                   <UnitWithValue
                     value={item.material.quantityInStock}
                     unit={item.unit.name}
                   />
                 </TableCell>
-                <TableCell>
+                <TableCell className="text-right">
                   <UnitWithValue
                     value={item.quantityUsed}
                     unit={item.unit.name}
                   />
                 </TableCell>
-
+                <TableCell className="text-right">
+                  {item.actualPrice
+                    ? number(item.actualPrice, "currency")
+                    : t("table.trow.actualPrice")}
+                </TableCell>
+                <TableCell className="text-right">
+                  {item.actualCost
+                    ? number(item.actualCost, "currency")
+                    : t("table.trow.actualCost")}
+                </TableCell>
                 <TableCell>
                   <MaterialUsagesTableAction data={item} />
                 </TableCell>
@@ -113,6 +127,15 @@ export const MaterialUsagesTable = ({
             );
           })}
         </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={8}>{t("table.tfooter.totalCost")}</TableCell>
+            <TableCell className="text-right">
+              {number(totalCost, "currency")}
+            </TableCell>
+            <TableCell></TableCell>
+          </TableRow>
+        </TableFooter>
       </Table>
       {!data.length && (
         <div className="my-4 text-muted-foreground flex justify-center">

@@ -71,25 +71,26 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
               />
             </TableHead>
             <TableHead>{t("thead.status")} </TableHead>
-            <TableHead>
+
+            <TableHead className="text-right">
               <OrderByButton
                 column="temperature.value"
                 label={t("thead.temperature")}
               />
             </TableHead>
-            <TableHead>
+            <TableHead className="text-right">
               <OrderByButton
                 column="humidity.value"
                 label={t("thead.humidity")}
               />
             </TableHead>
-            <TableHead>
+            <TableHead className="text-right">
               <OrderByButton
                 column="atmosphericPressure.value"
                 label={t("thead.atmosphericPressure")}
               />
             </TableHead>
-            <TableHead>
+            <TableHead className="text-right">
               <OrderByButton
                 column="rainfall.value"
                 label={t("thead.rainfall")}
@@ -97,9 +98,7 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
             </TableHead>
             <TableHead>{t("thead.confirmed")} </TableHead>
             <TableHead>{t("thead.confirmedAt")} </TableHead>
-            <TableHead className="min-w-[200px]">
-              {t("thead.confirmedBy")}{" "}
-            </TableHead>
+            <TableHead>{t("thead.confirmedBy")} </TableHead>
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>
@@ -123,42 +122,42 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
                 <TableCell>
                   <WeatherStatusValue status={item.status} />
                 </TableCell>
-                <TableCell className="text-center">
+
+                <TableCell className="text-right">
                   {item.temperature ? (
-                    <span>
-                      {item.temperature?.value}
-                      <sup>o</sup>
-                      {item.temperature?.unit?.name}
-                    </span>
+                    <UnitWithValue
+                      value={item.temperature.value}
+                      unit={item.temperature.unit?.name || "C"}
+                    />
                   ) : (
                     t("trow.temperature")
                   )}
                 </TableCell>
-                <TableCell className="text-center">
+                <TableCell className="text-right">
                   {item.humidity ? (
                     <UnitWithValue
                       value={item.humidity?.value}
-                      unit={item.humidity?.unit?.name}
+                      unit={item.humidity?.unit?.name || "%"}
                     />
                   ) : (
                     t("trow.humidity")
                   )}
                 </TableCell>
-                <TableCell className="text-center">
+                <TableCell className="text-right">
                   {item.atmosphericPressure ? (
                     <UnitWithValue
                       value={item.atmosphericPressure?.value}
-                      unit={item.atmosphericPressure?.unit?.name}
+                      unit={item.atmosphericPressure?.unit?.name || "hPa"}
                     />
                   ) : (
                     t("trow.atmosphericPressure")
                   )}
                 </TableCell>
-                <TableCell className="text-center">
+                <TableCell className="text-right">
                   {item.rainfall ? (
                     <UnitWithValue
                       value={item.rainfall?.value}
-                      unit={item.rainfall?.unit?.name}
+                      unit={item.rainfall?.unit?.name || "mm"}
                     />
                   ) : (
                     t("trow.rainfall")
@@ -172,7 +171,7 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
                     ? relativeTime(item.confirmedAt)
                     : t("trow.confirmedAt")}
                 </TableCell>
-                <TableCell>
+                <TableCell className="min-w-[200px]">
                   {item.confirmedBy ? (
                     <SelectItemContent
                       imageUrl={item.confirmedBy.imageUrl}

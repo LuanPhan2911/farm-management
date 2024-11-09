@@ -5,7 +5,6 @@ import {
 } from "@/components/custom-navigation-menu";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { usePrefix } from "@/hooks/use-prefix";
-import { usePathname } from "@/navigation";
 import { useTranslations } from "next-intl";
 
 import { useParams } from "next/navigation";

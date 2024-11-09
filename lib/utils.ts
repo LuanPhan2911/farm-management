@@ -65,7 +65,10 @@ export function generateEmail(name: string) {
 export function getFullName(user: User) {
   return `${user.firstName || ""} ${user.lastName || ""}`.trim();
 }
-export function mergeName(firstName: string | null, lastName: string | null) {
+export function mergeName(
+  firstName: string | null | undefined,
+  lastName: string | null | undefined
+) {
   return `${firstName || ""} ${lastName || ""}`.trim();
 }
 export function getEmailAddress(user: User) {
@@ -383,4 +386,14 @@ export function dateToString(
   date: Date | undefined | null
 ): string | undefined {
   return date ? `${format(date, "yyyy-MM-dd")}` : undefined;
+}
+
+export function getSlug(value: string | null | undefined) {
+  if (!value) {
+    return "";
+  }
+  return slugify(value, {
+    lower: true,
+    replacement: "-",
+  });
 }

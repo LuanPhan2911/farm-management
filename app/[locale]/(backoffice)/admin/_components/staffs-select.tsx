@@ -52,6 +52,7 @@ interface StaffsSelectProps {
   orgId?: string | null;
   adminOnly?: boolean;
   farmerOnly?: boolean;
+  superAdminOnly?: boolean;
   onChange: (value: string | undefined) => void;
   defaultValue?: string;
   disabled?: boolean;
@@ -71,6 +72,7 @@ export const StaffsSelect = (props: StaffsSelectProps) => {
           query: {
             adminOnly: props.adminOnly,
             farmerOnly: props.farmerOnly,
+            superAdminOnly: props.superAdminOnly,
             orgId: props.orgId,
           },
         },

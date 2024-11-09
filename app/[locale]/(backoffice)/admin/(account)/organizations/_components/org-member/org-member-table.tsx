@@ -14,6 +14,7 @@ import { OrgMemberRoleEditButton } from "./org-member-role-edit-button";
 import { OrgRole } from "@/types";
 import { useFormatter, useTranslations } from "next-intl";
 import { OrganizationMembership } from "@clerk/nextjs/server";
+import { mergeName } from "@/lib/utils";
 
 interface OrgMemberTableProps {
   data: OrganizationMembership[];
@@ -34,8 +35,7 @@ export const OrgMemberTable = ({ data }: OrgMemberTableProps) => {
         <TableHeader>
           <TableRow>
             <TableHead></TableHead>
-            <TableHead>{t("table.member.thead.firstName")}</TableHead>
-            <TableHead>{t("table.member.thead.lastName")}</TableHead>
+            <TableHead>{t("table.member.thead.name")}</TableHead>
             <TableHead>{t("table.member.thead.email")}</TableHead>
             <TableHead>{t("table.member.thead.role")}</TableHead>
             <TableHead>{t("table.member.thead.createdAt")}</TableHead>
@@ -53,8 +53,13 @@ export const OrgMemberTable = ({ data }: OrgMemberTableProps) => {
                     className="rounded-full"
                   />
                 </TableCell>
-                <TableCell>{publicUserData?.firstName}</TableCell>
-                <TableCell>{publicUserData?.lastName}</TableCell>
+                <TableCell>
+                  {mergeName(
+                    publicUserData?.firstName,
+                    publicUserData?.lastName
+                  )}
+                </TableCell>
+
                 <TableCell>{publicUserData?.identifier}</TableCell>
                 <TableCell>
                   <OrgMemberRoleEditButton

@@ -25,7 +25,6 @@ import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
-import slugify from "slugify";
 import { toast } from "sonner";
 import { z } from "zod";
 import { StaffsSelect } from "../../../_components/staffs-select";
@@ -33,6 +32,7 @@ import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 import { useCurrentStaff } from "@/hooks/use-current-staff";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { useAuth } from "@clerk/nextjs";
+import { getSlug } from "@/lib/utils";
 
 export const OrgCreateButton = () => {
   const t = useTranslations("organizations.form");
@@ -42,30 +42,23 @@ export const OrgCreateButton = () => {
   const { orgId } = useAuth();
   const [isPending, startTransition] = useTransition();
   const { currentStaff } = useCurrentStaff();
-  const { isOnlyAdmin } = useCurrentStaffRole();
+
+  const { isSuperAdmin } = useCurrentStaffRole();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
   const [isOpen, setOpen] = useState(false);
   const orgName = form.watch("name");
   useEffect(() => {
-    if (!orgName) {
-      return;
-    }
-    form.setValue(
-      "slug",
-      slugify(orgName, {
-        lower: true,
-        replacement: "-",
-        trim: true,
-      })
-    );
+    form.setValue("slug", getSlug(orgName));
   }, [orgName, form]);
   useEffect(() => {
     if (currentStaff) {
       form.setValue("createdBy", currentStaff.id);
     }
   }, [currentStaff, form]);
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       create(values)
@@ -84,10 +77,12 @@ export const OrgCreateButton = () => {
     });
   };
 
+  const canCreate = isSuperAdmin;
+
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={"success"} size={"sm"} disabled={!isOnlyAdmin}>
+        <Button variant={"success"} size={"sm"} disabled={!canCreate}>
           <Plus className="h-4 w-4 mr-2" />{" "}
           <span className="text-sm font-semibold">{t("create.label")}</span>
         </Button>
@@ -155,7 +150,7 @@ export const OrgCreateButton = () => {
                       placeholder={tSchema("createdBy.placeholder")}
                       notFound={tSchema("createdBy.notFound")}
                       disabled={isPending}
-                      adminOnly
+                      superAdminOnly
                     />
                   </FormControl>
 

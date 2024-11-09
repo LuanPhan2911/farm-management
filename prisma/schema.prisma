@@ -476,8 +476,6 @@ model Equipment {
   purchaseDate    DateTime?
   purchasePriceId String?
   purchasePrice   FloatUnit?    @relation(name: "purchasePrice", fields: [purchasePriceId], references: [id], onDelete: SetNull)
-  fuelConsumption Float? // Lượng nhiên liệu tiêu thụ
-  energyType      String? // Loại năng lượng sử dụng
   description     String?
   imageUrl        String?
 
@@ -510,6 +508,10 @@ model EquipmentDetail {
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   equipmentUsages EquipmentUsage[]
+
+  maxFuelConsumption Float?
+  energyType         String?
+  basePrice          Float?
 }
 
 model EquipmentUsage {
@@ -527,6 +529,9 @@ model EquipmentUsage {
   equipmentDetail EquipmentDetail @relation(fields: [equipmentDetailId], references: [id])
   activity        Activity?       @relation(fields: [activityId], references: [id])
   operator        Staff?          @relation(fields: [operatorId], references: [id]) // Operator
+
+  fuelConsumption Float?
+  actualPrice     Float?
 }
 
 enum MaterialType {
@@ -544,8 +549,10 @@ model Material {
   quantityInStock Float // Current stock quantity
   type            MaterialType
   unitId          String
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
+
+  basePrice Float?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   materialUsages MaterialUsage[] // Relation to usage records
   unit           Unit            @relation(fields: [unitId], references: [id])
@@ -556,6 +563,7 @@ model MaterialUsage {
   activityId   String?
   materialId   String
   quantityUsed Float // Quantity used in the activity
+  actualPrice  Float?
   unitId       String
 
   createdAt DateTime @default(now())

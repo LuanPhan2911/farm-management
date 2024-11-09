@@ -42,3 +42,30 @@ export const LinkButton = ({
     </Button>
   );
 };
+export const LinkDetailButton = ({
+  href,
+  label,
+  disabled,
+  className,
+  size,
+  variant,
+  icon,
+}: LinkButtonProps) => {
+  const Icon = icon ? icon : null;
+  const router = useRouterWithRole();
+  return (
+    <Button
+      variant={variant || "cyan"}
+      size={size || "sm"}
+      disabled={disabled}
+      className={cn(className)}
+      onClick={(e) => {
+        e.stopPropagation();
+        router.pushDetail(href);
+      }}
+    >
+      {Icon && <Icon className="w-4 h-4 mr-2" />}
+      {label}
+    </Button>
+  );
+};

@@ -172,6 +172,7 @@ export const MaterialCreateForm = () => {
                           disabled={isPending || !canCreate}
                           type="number"
                           min={1}
+                          max={1000}
                         />
                       </FormControl>
                       <FormMessage />
@@ -179,6 +180,7 @@ export const MaterialCreateForm = () => {
                   )}
                 />
               </div>
+
               <FormField
                 control={form.control}
                 name="unitId"
@@ -203,6 +205,27 @@ export const MaterialCreateForm = () => {
                 )}
               />
             </div>
+            <FormField
+              control={form.control}
+              name="basePrice"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("basePrice.label")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={tSchema("basePrice.placeholder")}
+                      value={field.value ?? undefined}
+                      onChange={field.onChange}
+                      disabled={isPending || !canCreate}
+                      type="number"
+                      min={0}
+                      max={10_000_000}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="description"

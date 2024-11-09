@@ -29,10 +29,10 @@ import { useEffect, useState, useTransition } from "react";
 import { create } from "@/actions/category";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
-import slugify from "slugify";
 import { SelectOptions } from "@/components/form/select-options";
 import { CategoryType } from "@prisma/client";
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
+import { getSlug } from "@/lib/utils";
 
 export const CategoryCreateButton = () => {
   const tSchema = useTranslations("categories.schema");
@@ -48,12 +48,7 @@ export const CategoryCreateButton = () => {
   });
   const name = form.watch("name");
   useEffect(() => {
-    form.setValue(
-      "slug",
-      slugify(name, {
-        lower: true,
-      })
-    );
+    form.setValue("slug", getSlug(name));
   }, [name, form]);
   const [isOpen, setOpen] = useState(false);
   const onSubmit = (values: z.infer<typeof formSchema>) => {

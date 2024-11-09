@@ -737,15 +737,6 @@ export const EquipmentSchema = (
       min: 0,
       max: 1_000_000_000,
     }).nullish(),
-    fuelConsumption: numberSchema(t, "fuelConsumption", {
-      min: 0,
-      max: 100_000,
-      required: false,
-    }).nullish(),
-    energyType: stringSchema(t, "energyType", {
-      max: 255,
-      required: false,
-    }).nullish(),
     description: stringSchema(t, "description", {
       max: 255,
       required: false,
@@ -818,10 +809,16 @@ export const MaterialSchema = (
     }),
     quantityInStock: numberSchema(t, "quantityInStock", {
       min: 1,
-      max: 1_000_000_000,
+      max: 1_000,
       required: true,
       int: true,
     }),
+    basePrice: numberSchema(t, "basePrice", {
+      min: 0,
+      max: 10_000_000,
+      required: false,
+    }).nullish(),
+
     unitId: stringSchema(t, "unitId", { required: true }),
     type: z.nativeEnum(MaterialType, {
       message: t("type.enum"),
@@ -845,10 +842,15 @@ export const MaterialUsageSchema = (
     activityId: stringSchema(t, "activityId", { required: false }).nullish(),
     quantityUsed: numberSchema(t, "quantityUsed", {
       min: 1,
-      max: 1_000_000_000,
+      max: 1_000,
       required: true,
       int: true,
     }),
+    actualPrice: numberSchema(t, "actualPrice", {
+      min: 0,
+      max: 10_000_000,
+      required: false,
+    }).nullish(),
   });
 };
 
@@ -1086,7 +1088,6 @@ export const MessageSchema = () => {
   return z.object({
     content: z
       .string({ required_error: "Content is required" })
-      .min(1, "Min content length is 1 character")
       .max(5000, "Max content length is 5000 characters"),
     fileIds: z.array(z.string()).nullish(),
     fileUrl: z.string().nullish(),

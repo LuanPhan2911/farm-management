@@ -1,11 +1,9 @@
 "use client";
 import { DataTableColumnHeader } from "@/components/datatable/datatable-column-header";
 import { PlantTable } from "@/types";
-import { Checkbox } from "@radix-ui/react-checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
 import { UserAvatar } from "@/components/user-avatar";
-import { PlantsTableAction } from "./plants-table-action";
 
 import { DataTable } from "@/components/datatable";
 
@@ -40,14 +38,7 @@ export const PlantsDataTable = ({ data }: PlantsDataTableProps) => {
     },
     {
       accessorKey: "category",
-      header: ({ column }) => {
-        return (
-          <DataTableColumnHeader
-            column={column}
-            title={t("table.thead.category")}
-          />
-        );
-      },
+      header: t("table.thead.category"),
       cell: ({ row }) => {
         const data = row.original;
         return data.category.name;
@@ -55,14 +46,7 @@ export const PlantsDataTable = ({ data }: PlantsDataTableProps) => {
     },
     {
       accessorKey: "season",
-      header: ({ column }) => {
-        return (
-          <DataTableColumnHeader
-            column={column}
-            title={t("table.thead.season")}
-          />
-        );
-      },
+      header: t("table.thead.season"),
       cell: ({ row }) => {
         const data = row.original;
         if (!data.season) {
@@ -98,14 +82,6 @@ export const PlantsDataTable = ({ data }: PlantsDataTableProps) => {
     {
       accessorKey: "growthDuration",
       header: t("table.thead.growthDuration"),
-    },
-
-    {
-      id: "actions",
-      cell: ({ row }) => {
-        const data = row.original;
-        return <PlantsTableAction data={data} />;
-      },
     },
   ];
   const facetedFilters = [

@@ -56,7 +56,10 @@ export const edit = async (
         return errorResponse(tSchema("errors.existOrg"));
       }
     }
-    const field = await updateField(fieldId, validatedFields.data);
+    const field = await updateField(fieldId, {
+      ...validatedFields.data,
+      orgId: orgId || null,
+    });
     revalidatePath(`/admin/fields/detail/${field.id}`);
     return successResponse(tStatus("success.edit"));
   } catch (error) {

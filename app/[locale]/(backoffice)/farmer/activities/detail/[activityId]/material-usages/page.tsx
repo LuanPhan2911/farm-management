@@ -2,9 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { getTranslations } from "next-intl/server";
 
-import { getMaterialUsages } from "@/services/material-usages";
+import { getMaterialUsagesByActivity } from "@/services/material-usages";
 import { MaterialUsagesTable } from "@/app/[locale]/(backoffice)/admin/(inventory)/materials/detail/[materialId]/usages/_components/material-usages-table";
-import { parseToNumber } from "@/lib/utils";
 export async function generateMetadata() {
   const t = await getTranslations("activities.page.detail.material-usages");
   return {
@@ -28,13 +27,11 @@ const ActivityMaterialUsagesPage = async ({
 }: MaterialUsagesPageProps) => {
   const t = await getTranslations("activities.page.detail.material-usages");
   const { query, orderBy } = searchParams;
-  const page = parseToNumber(searchParams!.page, 1);
 
-  const { data, totalPage } = await getMaterialUsages({
+  const { data, totalCost } = await getMaterialUsagesByActivity({
     activityId: params.activityId,
     orderBy,
     query,
-    page,
   });
 
   return (
@@ -43,7 +40,7 @@ const ActivityMaterialUsagesPage = async ({
         <CardTitle>{t("title")}</CardTitle>
       </CardHeader>
       <CardContent>
-        <MaterialUsagesTable data={data} totalPage={totalPage} />
+        <MaterialUsagesTable data={data} totalPage={0} totalCost={totalCost} />
       </CardContent>
     </Card>
   );

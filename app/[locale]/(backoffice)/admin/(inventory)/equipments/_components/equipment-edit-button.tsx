@@ -241,47 +241,6 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
           )}
         />
 
-        <div className="grid lg:grid-cols-2 gap-2">
-          <FormField
-            control={form.control}
-            name="fuelConsumption"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("fuelConsumption.label")}</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={tSchema("fuelConsumption.placeholder")}
-                    value={field.value ?? undefined}
-                    onChange={field.onChange}
-                    disabled={isPending || !canEdit}
-                    type="number"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="energyType"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("energyType.label")}</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={tSchema("energyType.placeholder")}
-                    value={field.value ?? undefined}
-                    onChange={field.onChange}
-                    disabled={isPending || !canEdit}
-                  />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
         <DynamicDialogFooter
           disabled={isPending || !canEdit}
           closeButton={false}

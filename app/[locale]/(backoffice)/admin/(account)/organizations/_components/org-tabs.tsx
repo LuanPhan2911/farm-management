@@ -4,7 +4,6 @@ import { Organization, OrganizationMembership } from "@clerk/nextjs/server";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslations } from "next-intl";
 import { OrgMessages } from "./org-messages";
-import { Staff } from "@prisma/client";
 import {
   Card,
   CardContent,
@@ -20,10 +19,10 @@ import { includeString } from "@/lib/utils";
 import { OrgMemberCreateButton } from "./org-member/org-member-create-button";
 import { createContext, useContext, useEffect } from "react";
 import { useAuth } from "@clerk/nextjs";
-import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/organization";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
+import { useCurrentStaff } from "@/hooks/use-current-staff";
 
 interface OrgTabsProps {
   org: Organization;
@@ -46,22 +45,21 @@ export const OrgContext = createContext<{
 export const OrgTabs = ({ org, orgMember }: OrgTabsProps) => {
   const t = useTranslations("organizations.tabs");
   const { has, userId, orgId } = useAuth();
-  const { isSuperAdmin } = useCurrentStaffRole();
-  const { push } = useRouterWithRole();
+
+  const router = useRouterWithRole();
   const canManageOrg = has?.({ permission: "org:sys_profile:manage" }) || false;
   const canManageMember =
     has?.({ permission: "org:sys_memberships:manage" }) || false;
-  const canDeleteOrg =
-    has?.({ permission: "org:sys_profile:delete" }) || isSuperAdmin;
+  const canDeleteOrg = has?.({ permission: "org:sys_profile:delete" }) || false;
 
   useEffect(() => {
     if (!orgId) {
       return;
     }
     if (org.id !== orgId) {
-      push(`organizations/detail/${orgId}`);
+      router.pushDetail(`detail/${orgId}`);
     }
-  }, [orgId, push, org.id]);
+  }, [orgId, router, org.id]);
   return (
     <OrgContext.Provider
       value={{
@@ -156,8 +154,9 @@ interface OrgDangerProps {
 }
 export const OrgDanger = ({ data }: OrgDangerProps) => {
   const t = useTranslations("organizations.tabs");
-  const { canDeleteOrg } = useContext(OrgContext);
-  const disabled = !canDeleteOrg;
+  const { canDeleteOrg, isCreated } = useContext(OrgContext);
+  const { currentStaff } = useCurrentStaff();
+  const disabled = !isCreated(currentStaff?.externalId) || !canDeleteOrg;
   return (
     <Card>
       <CardHeader>
