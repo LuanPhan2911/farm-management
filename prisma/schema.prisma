@@ -15,16 +15,18 @@ datasource db {
 }
 
 model Unit {
-  id             String          @id @default(uuid())
-  name           String          @unique
-  description    String?
-  type           UnitType?
-  floatUnits     FloatUnit[]
-  intUnits       IntUnit[]
-  fields         Field[]
-  soils          Soil[]
-  materials      Material[]
-  materialUsages MaterialUsage[]
+  id               String            @id @default(uuid())
+  name             String            @unique
+  description      String?
+  type             UnitType?
+  floatUnits       FloatUnit[]
+  intUnits         IntUnit[]
+  fields           Field[]
+  soils            Soil[]
+  materials        Material[]
+  materialUsages   MaterialUsage[]
+  equipmentDetails EquipmentDetail[]
+  equipmentUsages  EquipmentUsage[]
 }
 
 enum UnitType {
@@ -84,6 +86,7 @@ enum CategoryType {
   SEED
   ACTIVITY
   PLANT_STAGE
+  ENERGY
 }
 
 model Category {
@@ -510,8 +513,10 @@ model EquipmentDetail {
   equipmentUsages EquipmentUsage[]
 
   maxFuelConsumption Float?
+  unitId             String?
+  unit               Unit?   @relation(fields: [unitId], references: [id])
   energyType         String?
-  basePrice          Float?
+  baseFuelPrice      Float?
 }
 
 model EquipmentUsage {
@@ -531,7 +536,10 @@ model EquipmentUsage {
   operator        Staff?          @relation(fields: [operatorId], references: [id]) // Operator
 
   fuelConsumption Float?
-  actualPrice     Float?
+  unitId          String?
+  unit            Unit?   @relation(fields: [unitId], references: [id])
+  fuelPrice       Float?
+  rentalPrice     Float?
 }
 
 enum MaterialType {
@@ -661,4 +669,8 @@ model Activity {
   createdBy      Staff              @relation(name: "createdBy", fields: [createdById], references: [id])
   crop           Crop               @relation(fields: [cropId], references: [id])
   assignedTo     ActivityAssigned[]
+
+  totalStaffCost     Float?
+  totalMaterialCost  Float?
+  totalEquipmentCost Float?
 }

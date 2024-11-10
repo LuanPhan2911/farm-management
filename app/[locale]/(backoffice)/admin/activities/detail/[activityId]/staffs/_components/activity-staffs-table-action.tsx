@@ -15,6 +15,7 @@ import { MoreHorizontal, Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { ActivityStaffsEditButton } from "./activity-staffs-edit-button";
+import { canUpdateActivityStatus } from "@/lib/permission";
 interface ActivityStaffTableActionProps {
   data: ActivityAssignedStaffWithActivitySelect;
 }
@@ -24,8 +25,8 @@ export const ActivityStaffsTableAction = ({
   const t = useTranslations("activityAssigned.form");
   const params = useParams<{ activityId: string }>();
   const { isOnlyAdmin } = useCurrentStaffRole();
-  const canEdit = isOnlyAdmin;
-  const canDelete = isOnlyAdmin;
+  const canEdit = canUpdateActivityStatus(data.activity.status) && isOnlyAdmin;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -46,7 +47,7 @@ export const ActivityStaffsTableAction = ({
             className="w-full"
             icon={Trash}
             variant={"destroy"}
-            disabled={!canDelete}
+            disabled={!canEdit}
           />
         </DropdownMenuItem>
       </DropdownMenuContent>

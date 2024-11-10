@@ -18,6 +18,8 @@ import { getCurrentStaff } from "./staffs";
 import { cropSelect } from "./crops";
 import { fieldSelect } from "./fields";
 import { plantSelect } from "./plants";
+import { getMaterialUsagesByActivity } from "./material-usages";
+import { getEquipmentUsagesByActivity } from "./equipment-usages";
 
 type ActivityParams = {
   name: string;
@@ -137,6 +139,14 @@ export const updateActivityStatus = async (
   id: string,
   status: "COMPLETED" | "CANCELLED"
 ) => {
+  const { totalCost: totalStaffCost } = await getActivityAssignedStaffs(id);
+  const { totalCost: totalMaterialCost } = await getMaterialUsagesByActivity({
+    activityId: id,
+  });
+  const { totalCost: totalEquipmentCost } = await getEquipmentUsagesByActivity({
+    activityId: id,
+  });
+
   return await db.$transaction(async (ctx) => {
     const equipmentUseds = await ctx.equipmentUsage.findMany({
       where: { activityId: id },
@@ -145,10 +155,14 @@ export const updateActivityStatus = async (
         duration: true,
       },
     });
+
     const activity = await ctx.activity.update({
       where: { id },
       data: {
         status,
+        totalEquipmentCost,
+        totalMaterialCost,
+        totalStaffCost,
       },
     });
 
@@ -179,6 +193,8 @@ type ActivityQuery = {
   filterNumber?: string;
   type?: "createdBy" | "assignedTo";
   cropId?: string;
+  begin?: Date;
+  end?: Date;
 };
 export const getActivities = async ({
   filterNumber,
@@ -188,6 +204,8 @@ export const getActivities = async ({
   query,
   type = "assignedTo",
   cropId,
+  begin,
+  end,
 }: ActivityQuery): Promise<PaginatedResponse<ActivityTable>> => {
   try {
     const currentStaff = await getCurrentStaff();
@@ -212,6 +230,10 @@ export const getActivities = async ({
               },
             },
           }),
+          activityDate: {
+            ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
+            ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
+          },
           name: {
             contains: query,
             mode: "insensitive",
@@ -269,6 +291,10 @@ export const getActivities = async ({
           name: {
             contains: query,
             mode: "insensitive",
+          },
+          activityDate: {
+            ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
+            ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
           },
           ...(filterString && getObjectFilterString(filterString)),
           ...(filterNumber && getObjectFilterNumber(filterNumber)),
@@ -399,18 +425,34 @@ export const getActivityById = async (
 type ActivityCountQuery = {
   begin?: Date;
   end?: Date;
+  cropId?: string;
 };
 export const getCountActivityStatus = async ({
   begin,
   end,
+  cropId,
 }: ActivityCountQuery): Promise<ActivityStatusCount[]> => {
   try {
-    if (!begin || !end) {
-      return [];
+    const currentStaff = await getCurrentStaff();
+    if (!currentStaff) {
+      throw new Error("Unauthorized");
     }
     const result = await db.activity.groupBy({
       by: "status",
       where: {
+        ...(cropId && {
+          cropId,
+        }),
+        OR: [
+          { createdById: currentStaff.id },
+          {
+            assignedTo: {
+              some: {
+                staffId: currentStaff.id,
+              },
+            },
+          },
+        ],
         activityDate: {
           ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
           ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
@@ -433,14 +475,29 @@ export const getCountActivityStatus = async ({
 export const getCountActivityPriority = async ({
   begin,
   end,
+  cropId,
 }: ActivityCountQuery): Promise<ActivityPriorityCount[]> => {
   try {
-    if (!begin || !end) {
-      return [];
+    const currentStaff = await getCurrentStaff();
+    if (!currentStaff) {
+      throw new Error("Unauthorized");
     }
     const result = await db.activity.groupBy({
       by: "priority",
       where: {
+        ...(cropId && {
+          cropId,
+        }),
+        OR: [
+          { createdById: currentStaff.id },
+          {
+            assignedTo: {
+              some: {
+                staffId: currentStaff.id,
+              },
+            },
+          },
+        ],
         activityDate: {
           ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
           ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided

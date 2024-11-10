@@ -3,8 +3,11 @@ import {
   ComboBoxCustomAppearance,
 } from "@/components/form/combo-box";
 import { SelectItemContent } from "@/components/form/select-item";
-import { EquipmentDetailSelectWithEquipment } from "@/types";
+import { EquipmentDetailSelectWithEquipmentAndUnit } from "@/types";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { EquipmentDetailStatusValue } from "../(inventory)/equipments/detail/[equipmentId]/_components/equipment-detail-status-value";
+import queryString from "query-string";
 
 interface EquipmentDetailsSelectProps {
   onChange: (value: string | undefined) => void;
@@ -14,15 +17,39 @@ interface EquipmentDetailsSelectProps {
   notFound: string;
   error: string;
   appearance?: ComboBoxCustomAppearance;
+  onSelected?: (value: EquipmentDetailSelectWithEquipmentAndUnit) => void;
 }
 export const EquipmentDetailsSelect = (props: EquipmentDetailsSelectProps) => {
+  const { onSelected, defaultValue } = props;
   const { data, isPending, isError, refetch } = useQuery({
-    queryKey: ["equipment-details-select"],
+    queryKey: ["equipment-details-select", defaultValue],
     queryFn: async () => {
-      const res = await fetch("/api/equipment-details/select");
-      return (await res.json()) as EquipmentDetailSelectWithEquipment[];
+      const url = queryString.stringifyUrl(
+        {
+          url: "/api/equipment-details/select",
+          query: {
+            id: defaultValue,
+          },
+        },
+        {
+          skipEmptyString: true,
+          skipNull: true,
+        }
+      );
+      const res = await fetch(url);
+      return (await res.json()) as EquipmentDetailSelectWithEquipmentAndUnit[];
     },
   });
+
+  useEffect(() => {
+    const selected = data?.find((item) => item.id === defaultValue);
+
+    if (!selected) {
+      return;
+    }
+    onSelected?.(selected);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, defaultValue]);
 
   return (
     <ComboBoxCustom
@@ -37,7 +64,7 @@ export const EquipmentDetailsSelect = (props: EquipmentDetailsSelectProps) => {
         <SelectItemContent
           imageUrl={item.equipment.imageUrl}
           title={item.name || item.equipment.name}
-          description={`Location: ${item.location || "No filled"}`}
+          description={<EquipmentDetailStatusValue status={item.status} />}
         />
       )}
     />

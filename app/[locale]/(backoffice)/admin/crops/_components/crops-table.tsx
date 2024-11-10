@@ -84,15 +84,17 @@ export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
                 label={t("table.thead.endDate")}
               />
             </TableHead>
-            <TableHead className="w-[250px]">
+            <TableHead className="w-[200px]">
               <OrderByButton column="name" label={t("table.thead.name")} />
             </TableHead>
+            <TableHead>{t("table.thead.status")}</TableHead>
             <TableHead>{t("table.thead.plant")}</TableHead>
-            <TableHead className="w-[250px]">
+            <TableHead className="w-[200px]">
               {t("table.thead.field.name")}
             </TableHead>
-            <TableHead>{t("table.thead.field.area")}</TableHead>
-            <TableHead>{t("table.thead.status")}</TableHead>
+            <TableHead className="text-right">
+              {t("table.thead.field.area")}
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -110,6 +112,7 @@ export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
                     : t("table.trow.endDate")}
                 </TableCell>
                 <TableCell>{item.name}</TableCell>
+                <TableCell>{item.status || t("table.trow.status")}</TableCell>
                 <TableCell>{item.plant.name}</TableCell>
                 <TableCell>
                   <SelectItemContentWithoutImage
@@ -117,7 +120,7 @@ export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
                     description={item.field.location}
                   />
                 </TableCell>
-                <TableCell>
+                <TableCell className="text-right">
                   {!!item.field.area ? (
                     <UnitWithValue
                       value={item.field.area}
@@ -127,7 +130,6 @@ export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
                     t("table.trow.field.area")
                   )}
                 </TableCell>
-                <TableCell>{item.status || t("table.trow.status")}</TableCell>
               </TableRow>
             );
           })}

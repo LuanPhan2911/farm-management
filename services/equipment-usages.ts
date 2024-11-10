@@ -3,13 +3,20 @@ import { canUpdateActivityStatus } from "@/lib/permission";
 import { db } from "@/lib/db";
 import { LIMIT } from "@/configs/paginationConfig";
 import { getObjectSortOrder } from "@/lib/utils";
-import { EquipmentUsageTable, PaginatedResponse } from "@/types";
+import {
+  EquipmentUsageTable,
+  EquipmentUsageTableWithCost,
+  EquipmentUsageTableWithTotalCost,
+  PaginatedResponse,
+  PaginatedResponseWithTotalCost,
+} from "@/types";
 import { revalidatePath } from "next/cache";
 import { equipmentDetailSelect } from "./equipment-details";
 import { equipmentSelect } from "./equipments";
 import { activitySelect } from "./activities";
 import { cropSelect } from "./crops";
 import { fieldSelect } from "./fields";
+import { unitSelect } from "./units";
 
 type RevalidateEquipmentUsageParam = {
   equipmentDetailId: string;
@@ -39,6 +46,10 @@ type EquipmentUsageParams = {
   operatorId?: string | null;
   note?: string | null;
   location?: string | null;
+  fuelConsumption?: number | null;
+  unitId?: string | null;
+  fuelPrice?: number | null;
+  rentalPrice?: number | null;
 };
 
 export const createEquipmentUsage = async (params: EquipmentUsageParams) => {
@@ -70,6 +81,11 @@ type EquipmentUsageUpdateParams = {
   duration: number;
   note?: string | null;
   usageStartTime: Date;
+  fuelConsumption?: number | null;
+  unitId?: string | null;
+  fuelPrice?: number | null;
+  rentalPrice?: number | null;
+  operatorId?: string | null;
 };
 export const updateEquipmentUsage = async (
   id: string,
@@ -189,11 +205,13 @@ type EquipmentUsageQuery = {
 };
 export const getEquipmentUsages = async ({
   equipmentDetailId,
-  activityId,
   orderBy,
   page = 1,
   query,
-}: EquipmentUsageQuery): Promise<PaginatedResponse<EquipmentUsageTable>> => {
+  activityId,
+}: EquipmentUsageQuery): Promise<
+  PaginatedResponseWithTotalCost<EquipmentUsageTableWithCost>
+> => {
   try {
     const [data, count] = await db.$transaction([
       db.equipmentUsage.findMany({
@@ -222,29 +240,19 @@ export const getEquipmentUsages = async ({
         },
 
         include: {
+          unit: {
+            select: {
+              ...unitSelect,
+            },
+          },
           equipmentDetail: {
             select: {
               ...equipmentDetailSelect,
-              equipment: {
-                select: {
-                  ...equipmentSelect,
-                },
-              },
             },
           },
           activity: {
             select: {
               ...activitySelect,
-              crop: {
-                select: {
-                  ...cropSelect,
-                  field: {
-                    select: {
-                      ...fieldSelect,
-                    },
-                  },
-                },
-              },
             },
           },
           operator: true,
@@ -253,7 +261,19 @@ export const getEquipmentUsages = async ({
       }),
       db.equipmentUsage.count({
         where: {
-          equipmentDetailId,
+          ...(equipmentDetailId && {
+            equipmentDetailId,
+          }),
+          ...(activityId && {
+            OR: [
+              {
+                activityId: null,
+              },
+              {
+                activityId,
+              },
+            ],
+          }),
           equipmentDetail: {
             name: {
               contains: query,
@@ -263,16 +283,116 @@ export const getEquipmentUsages = async ({
         },
       }),
     ]);
-
+    let totalCost: number = 0;
+    const dataWithCost = data.map((item) => {
+      let actualCost = 0;
+      if (item.rentalPrice !== null) {
+        actualCost += item.rentalPrice;
+      }
+      if (item.fuelConsumption != null && item.fuelPrice !== null) {
+        actualCost += item.fuelConsumption * item.fuelPrice;
+      }
+      totalCost += actualCost;
+      return {
+        ...item,
+        actualCost,
+      };
+    });
     const totalPage = Math.ceil(count / LIMIT);
     return {
-      data,
+      data: dataWithCost,
       totalPage,
+      totalCost,
     };
   } catch (error) {
     return {
       data: [],
       totalPage: 0,
+      totalCost: 0,
+    };
+  }
+};
+
+type EquipmentUsageActivityQuery = {
+  query?: string;
+  orderBy?: string;
+  activityId: string;
+};
+export const getEquipmentUsagesByActivity = async ({
+  activityId,
+  orderBy,
+  query,
+}: EquipmentUsageActivityQuery): Promise<EquipmentUsageTableWithTotalCost> => {
+  try {
+    const data = await db.equipmentUsage.findMany({
+      where: {
+        OR: [
+          {
+            activityId: null,
+          },
+          {
+            activityId,
+          },
+        ],
+
+        equipmentDetail: {
+          name: {
+            contains: query,
+            mode: "insensitive",
+          },
+        },
+      },
+
+      include: {
+        unit: {
+          select: {
+            ...unitSelect,
+          },
+        },
+        equipmentDetail: {
+          select: {
+            ...equipmentDetailSelect,
+          },
+        },
+        activity: {
+          select: {
+            ...activitySelect,
+          },
+        },
+        operator: true,
+      },
+      orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
+    });
+
+    let totalCost: number = 0;
+    const dataWithCost = data.map((item) => {
+      let actualCost = 0;
+      if (item.activityId === null) {
+        return {
+          ...item,
+          actualCost: null,
+        };
+      }
+      if (item.rentalPrice !== null) {
+        actualCost += item.rentalPrice;
+      }
+      if (item.fuelConsumption != null && item.fuelPrice !== null) {
+        actualCost += item.fuelConsumption * item.fuelPrice;
+      }
+      totalCost += actualCost;
+      return {
+        ...item,
+        actualCost,
+      };
+    });
+    return {
+      data: dataWithCost,
+      totalCost,
+    };
+  } catch (error) {
+    return {
+      data: [],
+      totalCost: 0,
     };
   }
 };

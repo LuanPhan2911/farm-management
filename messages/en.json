@@ -174,6 +174,7 @@
           "SEED": "Seed",
           "ACTIVITY": "Activity",
           "PLANT_STAGE": "Plant stage",
+          "ENERGY": "Energy type",
           "default": "No selected"
         }
       },
@@ -2515,16 +2516,22 @@
         "name": "Name",
         "status": "Status",
         "location": "Location",
-        "lastMaintenanceDate": "Last maintenance date",
+        "lastMaintenanceDate": "Last maintenance",
         "operatingHours": "Operating hours",
         "maxOperatingHours": "Max operating hours",
+        "maxFuelConsumption": "Max fuel consumption",
+        "energyType": "Energy type",
+        "baseFuelPrice": "Base fuel price",
         "equipment": {
           "imageUrl": "Image"
         }
       },
       "trow": {
         "location": "No filled",
-        "lastMaintenanceDate": "Never"
+        "lastMaintenanceDate": "Never",
+        "maxFuelConsumption": "No filled",
+        "energyType": "No filled",
+        "baseFuelPrice": "No filled"
       }
     },
     "search": {
@@ -2580,7 +2587,7 @@
         }
       },
       "maxOperatingHours": {
-        "label": "Equipment max operating hour",
+        "label": "Max operating hour",
         "placeholder": "Eg: 300 hours",
         "invalid_type_error": "Max Operating hour value must be number",
         "required_error": "Max operating hours is required",
@@ -2589,9 +2596,39 @@
         "max": "Max Operating hour  value is {max}"
       },
       "location": {
-        "label": "Equipment location",
-        "placeholder": "Equipment location",
+        "label": "Current location",
+        "placeholder": "Current location",
         "max": "Location's length must be less than {max} characters"
+      },
+      "maxFuelConsumption": {
+        "label": "Max fuel consumption",
+        "placeholder": "Max fuel consumption",
+        "invalid_type_error": "Max fuel consumption value must be number",
+        "min": "Max fuel consumption  value is {min}",
+        "max": "Max fuel consumption  value is {max}"
+      },
+      "unitId": {
+        "placeholder": "Unit",
+        "error": "Fail load units",
+        "notFound": "Units not found",
+        "label": "Unit"
+      },
+      "baseFuelPrice": {
+        "label": "Base fuel price",
+        "placeholder": "Base fuel price",
+        "invalid_type_error": "Base fuel price value must be number",
+        "min": "Base fuel price  value is {min}",
+        "max": "Base fuel price  value is {max}"
+      },
+      "energyType": {
+        "label": "Energy type",
+        "placeholder": "Energy type",
+        "max": "Energy's length must be less than {max} characters",
+        "select": {
+          "placeholder": "Select...",
+          "error": "Fail load energy type",
+          "notFound": "Energy type not found"
+        }
       }
     },
     "status": {
@@ -2631,7 +2668,11 @@
         },
         "usageStartTime": "Created date",
         "duration": "Duration",
-        "operator": "Operator"
+        "operator": "Operator",
+        "fuelConsumption": "Fuel consumption",
+        "fuelPrice": "Fuel price",
+        "rentalPrice": "Rental Price",
+        "actualCost": "Actual cost"
       },
       "trow": {
         "activity": {
@@ -2641,9 +2682,16 @@
           "unused": "Unused"
         },
         "equipmentDetail": {
-          "location": "Unknown"
+          "location": "No filled"
         },
-        "operator": "No operator"
+        "operator": "No operator",
+        "fuelConsumption": "No filled",
+        "fuelPrice": "No filled",
+        "rentalPrice": "No filled",
+        "actualCost": "No value calculator"
+      },
+      "tfooter": {
+        "totalCost": "Total cost of current page"
       }
     },
     "search": {
@@ -2683,10 +2731,7 @@
       "errors": {
         "parse": "Invalid equipment usages!",
         "existEquipmentDetail": "Equipment detail is not exist",
-        "existStaff": "Operator is not exist",
-        "existActivity": "Activity is not exist",
-        "existEquipmentUsage": "Equipment usage is not exist",
-        "invalidActivityStatus": "Activity status is in list:[new, in progress, pending] is possible update"
+        "equipmentDetailStatusAvailable": "Equipment not available"
       },
       "activityId": {
         "required_error": "Required activity id",
@@ -2726,6 +2771,33 @@
         "label": "Note",
         "placeholder": "Usage note",
         "max": "Note length must be at most {max} characters long."
+      },
+      "fuelConsumption": {
+        "label": "Fuel consumption",
+        "placeholder": "Fuel consumption",
+        "invalid_type_error": "Fuel consumption value must be number",
+        "min": "Fuel consumption  value is {min}",
+        "max": "Fuel consumption  value is {max}"
+      },
+      "unitId": {
+        "placeholder": "Unit",
+        "error": "Fail load units",
+        "notFound": "Units not found",
+        "label": "Unit"
+      },
+      "fuelPrice": {
+        "label": "Fuel price",
+        "placeholder": "Fuel price",
+        "invalid_type_error": "Fuel price value must be number",
+        "min": "Fuel price  value is {min}",
+        "max": "Fuel price  value is {max}"
+      },
+      "rentalPrice": {
+        "label": "Rental price",
+        "placeholder": "Rental price",
+        "invalid_type_error": "Rental price value must be number",
+        "min": "Rental price  value is {min}",
+        "max": "Rental price  value is {max}"
       }
     },
     "status": {
@@ -3111,11 +3183,11 @@
     },
     "table": {
       "thead": {
-        "activityDate": "CreateAt",
+        "activityDate": "Activity date",
         "name": "Name",
         "status": "Status",
         "priority": "Priority",
-        "estimatedDuration": "Duration",
+        "estimatedDuration": "Estimate duration",
         "createdBy": "CreatedBy",
         "actualDuration": "Actual duration",
         "crop": {
@@ -3125,14 +3197,30 @@
           "plant": {
             "name": "Plant name"
           }
-        }
+        },
+        "totalStaffCost": "Total staff cost",
+        "totalEquipmentCost": "Total equipment cost",
+        "totalMaterialCost": "Total material cost"
       },
       "trow": {
-        "estimatedDuration": "No filled"
+        "actualDuration": "No filled",
+        "totalStaffCost": "No value calculator",
+        "totalEquipmentCost": "No value calculator",
+        "totalEquipmentCost": "No value calculator"
       }
     },
     "search": {
-      "placeholder": "Search by name..."
+      "placeholder": "Search by name...",
+      "faceted": {
+        "status": {
+          "placeholder": "Status",
+          "error": "Fail load status"
+        },
+        "priority": {
+          "placeholder": "Priority",
+          "error": "Fail load priority"
+        }
+      }
     },
     "form": {
       "create": {
@@ -3149,12 +3237,12 @@
         "label": "View detail"
       },
       "destroy": {
-        "label": "Delete",
+        "label": "Delete activity",
         "title": "Delete activity?",
         "description": "Activity can only delete when no material used and no equipment used. Are you absolutely sure? This action can not be undone!"
       },
       "complete": {
-        "label": "Finish",
+        "label": "Finish activity",
         "title": "Finish activity?",
         "description": "After marking finish this activity. This activity can not be updated! Are you absolutely sure? This action can not be undone!"
       },

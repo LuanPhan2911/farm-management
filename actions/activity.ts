@@ -76,26 +76,20 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
   }
 };
 
-export const completeActivity = async (
-  id: string,
-  status: "COMPLETED" | "CANCELLED"
-): Promise<ActionResponse> => {
+export const completeActivity = async (id: string): Promise<ActionResponse> => {
   const tStatus = await getTranslations("activities.status");
   try {
-    await updateActivityStatus(id, status);
+    await updateActivityStatus(id, "COMPLETED");
     revalidatePath("/admin/activities");
     return successResponse(tStatus("success.complete"));
   } catch (error) {
     return errorResponse(tStatus("failure.complete"));
   }
 };
-export const cancelActivity = async (
-  id: string,
-  status: "COMPLETED" | "CANCELLED"
-): Promise<ActionResponse> => {
+export const cancelActivity = async (id: string): Promise<ActionResponse> => {
   const tStatus = await getTranslations("activities.status");
   try {
-    await updateActivityStatus(id, status);
+    await updateActivityStatus(id, "CANCELLED");
     revalidatePath("/admin/activities");
     return successResponse(tStatus("success.cancel"));
   } catch (error) {

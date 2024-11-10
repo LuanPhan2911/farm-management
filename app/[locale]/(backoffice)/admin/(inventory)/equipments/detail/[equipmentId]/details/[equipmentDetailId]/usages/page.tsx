@@ -31,7 +31,7 @@ const EquipmentUsagesPage = async ({
   const { query, orderBy } = searchParams;
   const page = parseToNumber(searchParams!.page, 1);
 
-  const { data, totalPage } = await getEquipmentUsages({
+  const { data, totalPage, totalCost } = await getEquipmentUsages({
     equipmentDetailId: params.equipmentDetailId,
     page,
     query,
@@ -47,7 +47,11 @@ const EquipmentUsagesPage = async ({
         <div className="flex justify-end">
           <EquipmentUsageCreateButton />
         </div>
-        <EquipmentUsagesTable data={data} totalPage={totalPage} />
+        <EquipmentUsagesTable
+          data={data}
+          totalPage={totalPage}
+          totalCost={totalCost}
+        />
       </CardContent>
     </Card>
   );

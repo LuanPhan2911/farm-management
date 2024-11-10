@@ -19,13 +19,11 @@ import { SearchBar } from "@/components/search-bar";
 import { ActivityStatusValue } from "./activity-status-value";
 import { ActivityPriorityValue } from "./activity-priority-value";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
-import { SelectData, SelectOptions } from "@/components/form/select-options";
-import { useUpdateSearchParam } from "@/hooks/use-update-search-param";
-import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import {
   SelectItemContent,
   SelectItemContentWithoutImage,
 } from "@/components/form/select-item";
+import { ActivitiesTableFaceted } from "./activities-table-faceted";
 
 interface ActivitiesTableProps {
   data: ActivityTable[];
@@ -33,41 +31,17 @@ interface ActivitiesTableProps {
 }
 export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
   const router = useRouterWithRole();
-  const { dateTime } = useFormatter();
+  const { dateTime, number } = useFormatter();
   const t = useTranslations("activities");
-  const { isFarmer } = useCurrentStaffRole();
+
   const handleViewDetail = (row: ActivityTable) => {
     router.pushDetail(`detail/${row.id}`);
   };
-  const { updateSearchParam, initialParam } = useUpdateSearchParam(
-    "type",
-    "assignedTo"
-  );
-  const selectData: SelectData[] = [
-    {
-      label: "Assigned To",
-      value: "assignedTo",
-    },
-    {
-      label: "Created By",
-      value: "createdBy",
-    },
-  ];
 
   return (
     <>
-      <div className="flex flex-col lg:flex-row gap-2 my-2 lg:items-center">
-        <SearchBar isPagination placeholder={t("search.placeholder")} />
-        <div className="lg:w-[250px]">
-          <SelectOptions
-            options={selectData}
-            onChange={updateSearchParam}
-            defaultValue={initialParam}
-            placeholder="Select type"
-            disabledValues={isFarmer ? ["createdBy"] : []}
-          />
-        </div>
-      </div>
+      <ActivitiesTableFaceted />
+      <SearchBar isPagination placeholder={t("search.placeholder")} />
 
       <Table>
         <TableHeader>
@@ -79,17 +53,25 @@ export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
                 defaultValue="desc"
               />
             </TableHead>
-            <TableHead className="w-[250px]">
+            <TableHead>
               <OrderByButton column="name" label={t("table.thead.name")} />
             </TableHead>
             <TableHead>{t("table.thead.status")}</TableHead>
             <TableHead>{t("table.thead.priority")}</TableHead>
-            <TableHead>{t("table.thead.estimatedDuration")}</TableHead>
-            <TableHead className="w-[250px]">
-              {t("table.thead.crop.field.name")}
+            <TableHead>{t("table.thead.crop.field.name")}</TableHead>
+            <TableHead>{t("table.thead.crop.plant.name")}</TableHead>
+            <TableHead>{t("table.thead.createdBy")}</TableHead>
+            <TableHead className="text-right">
+              {t("table.thead.estimatedDuration")}
             </TableHead>
-            <TableHead className="w-[250px]">
-              {t("table.thead.crop.plant.name")}
+            <TableHead className="text-right">
+              {t("table.thead.totalStaffCost")}
+            </TableHead>
+            <TableHead className="text-right">
+              {t("table.thead.totalEquipmentCost")}
+            </TableHead>
+            <TableHead className="text-right">
+              {t("table.thead.totalMaterialCost")}
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -111,9 +93,6 @@ export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
                 </TableCell>
 
                 <TableCell>
-                  {item.estimatedDuration || t("table.trow.estimatedDuration")}
-                </TableCell>
-                <TableCell>
                   <SelectItemContentWithoutImage
                     title={item.crop.field.name}
                     description={item.crop.field.location}
@@ -124,6 +103,31 @@ export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
                     imageUrl={item.crop.plant.imageUrl}
                     title={item.crop.plant.name}
                   />
+                </TableCell>
+                <TableCell>
+                  <SelectItemContent
+                    imageUrl={item.createdBy.imageUrl}
+                    title={item.createdBy.name}
+                    description={item.createdBy.email}
+                  />
+                </TableCell>
+                <TableCell className="text-right">
+                  {number(item.estimatedDuration, "hour")}
+                </TableCell>
+                <TableCell className="text-right">
+                  {item.totalStaffCost
+                    ? number(item.totalStaffCost, "currency")
+                    : t("table.trow.totalStaffCost")}
+                </TableCell>
+                <TableCell className="text-right">
+                  {item.totalEquipmentCost
+                    ? number(item.totalEquipmentCost, "currency")
+                    : t("table.trow.totalEquipmentCost")}
+                </TableCell>
+                <TableCell className="text-right">
+                  {item.totalMaterialCost
+                    ? number(item.totalMaterialCost, "currency")
+                    : t("table.trow.totalMaterialCost")}
                 </TableCell>
               </TableRow>
             );

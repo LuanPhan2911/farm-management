@@ -39,8 +39,15 @@ import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { useAuth } from "@clerk/nextjs";
 import { EquipmentDetailsSelect } from "@/app/[locale]/(backoffice)/admin/_components/equipment-details-select";
 import { useCurrentStaff } from "@/hooks/use-current-staff";
+import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
+import { UnitType } from "@prisma/client";
 
-export const EquipmentUsageCreateButton = () => {
+interface EquipmentUsageCreateButtonProps {
+  disabled?: boolean;
+}
+export const EquipmentUsageCreateButton = ({
+  disabled,
+}: EquipmentUsageCreateButtonProps) => {
   const tSchema = useTranslations("equipmentUsages.schema");
   const t = useTranslations("equipmentUsages.form");
 
@@ -48,10 +55,13 @@ export const EquipmentUsageCreateButton = () => {
     equipmentDetailId: string;
     activityId: string;
   }>();
-  const { isOnlyAdmin: canCreate } = useCurrentStaffRole();
+  const { isOnlyAdmin } = useCurrentStaffRole();
   const { currentStaff } = useCurrentStaff();
   const { orgId } = useAuth();
 
+  const [maxFuelConsumption, setMaxFuelConsumption] = useState<
+    number | undefined
+  >(undefined);
   const formSchema = EquipmentUsageSchema(tSchema);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -60,9 +70,14 @@ export const EquipmentUsageCreateButton = () => {
       activityId: params?.activityId,
       usageStartTime: new Date(),
       duration: 1,
+      unitId: null,
+      fuelConsumption: null,
+      fuelPrice: null,
+      rentalPrice: null,
     },
   });
 
+  const canCreate = isOnlyAdmin && !disabled;
   useEffect(() => {
     if (currentStaff) {
       form.setValue("operatorId", currentStaff.id);
@@ -89,6 +104,7 @@ export const EquipmentUsageCreateButton = () => {
         });
     });
   };
+
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -126,6 +142,23 @@ export const EquipmentUsageCreateButton = () => {
                         error={tSchema("equipmentDetailId.error")}
                         notFound={tSchema("equipmentDetailId.notFound")}
                         defaultValue={field.value}
+                        onSelected={(equipmentDetail) => {
+                          form.setValue(
+                            "fuelPrice",
+                            equipmentDetail.baseFuelPrice
+                          );
+                          form.setValue(
+                            "fuelConsumption",
+                            equipmentDetail.maxFuelConsumption
+                              ? equipmentDetail.maxFuelConsumption * 0.8
+                              : null
+                          );
+
+                          form.setValue("unitId", equipmentDetail.unit?.id);
+                          setMaxFuelConsumption(
+                            equipmentDetail.maxFuelConsumption || 10000
+                          );
+                        }}
                       />
                     </FormControl>
 
@@ -178,6 +211,14 @@ export const EquipmentUsageCreateButton = () => {
                             "location",
                             selectedActivity.crop.field.location
                           );
+                          form.setValue(
+                            "usageStartTime",
+                            new Date(selectedActivity.activityDate)
+                          );
+                          form.setValue(
+                            "duration",
+                            selectedActivity.estimatedDuration
+                          );
                         }}
                       />
                     </FormControl>
@@ -224,6 +265,101 @@ export const EquipmentUsageCreateButton = () => {
                         disabled={isPending || !canCreate}
                         type="number"
                         min={1}
+                        max={100}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="grid grid-cols-4 gap-2">
+                <div className="col-span-3">
+                  <FormField
+                    control={form.control}
+                    name="fuelConsumption"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          {tSchema("fuelConsumption.label")}
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder={tSchema("fuelConsumption.placeholder")}
+                            value={field.value ?? undefined}
+                            onChange={field.onChange}
+                            disabled={isPending || !canCreate}
+                            type="number"
+                            min={0}
+                            max={maxFuelConsumption}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <FormField
+                  control={form.control}
+                  name="unitId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{tSchema("unitId.label")}</FormLabel>
+                      <FormControl>
+                        <UnitsSelect
+                          onChange={field.onChange}
+                          placeholder={tSchema("unitId.placeholder")}
+                          unitType={UnitType.VOLUME}
+                          disabled={isPending || !canCreate}
+                          className="w-full"
+                          error={tSchema("unitId.error")}
+                          notFound={tSchema("unitId.notFound")}
+                          defaultValue={field.value}
+                        />
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+            <div className="grid lg:grid-cols-2 gap-2">
+              <FormField
+                control={form.control}
+                name="fuelPrice"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("fuelPrice.label")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={tSchema("fuelPrice.placeholder")}
+                        value={field.value ?? undefined}
+                        onChange={field.onChange}
+                        disabled={isPending || !canCreate}
+                        type="number"
+                        min={0}
+                        max={1_000_000}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="rentalPrice"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("rentalPrice.label")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={tSchema("rentalPrice.placeholder")}
+                        value={field.value ?? undefined}
+                        onChange={field.onChange}
+                        disabled={isPending || !canCreate}
+                        type="number"
+                        min={0}
+                        max={10_000_000}
                       />
                     </FormControl>
                     <FormMessage />

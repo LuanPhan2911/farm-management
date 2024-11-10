@@ -1,11 +1,11 @@
 import { db } from "@/lib/db";
 import {
-  EquipmentDetailSelect,
-  EquipmentDetailSelectWithEquipment,
+  EquipmentDetailSelectWithEquipmentAndUnit,
   EquipmentDetailTable,
 } from "@/types";
 import { EquipmentStatus } from "@prisma/client";
 import { equipmentSelect } from "./equipments";
+import { unitSelect } from "./units";
 
 type EquipmentDetailParams = {
   equipmentId: string;
@@ -14,6 +14,10 @@ type EquipmentDetailParams = {
   lastMaintenanceDate?: Date | null;
   name?: string | null;
   location?: string | null;
+  maxFuelConsumption?: number | null;
+  baseFuelPrice?: number | null;
+  energyType?: string | null;
+  unitId?: string | null;
 };
 
 export const createEquipmentDetail = async (params: EquipmentDetailParams) => {
@@ -73,6 +77,11 @@ export const getEquipmentDetails = async ({
             ...equipmentSelect,
           },
         },
+        unit: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
   } catch (error) {
@@ -86,28 +95,10 @@ export const equipmentDetailSelect = {
   equipmentId: true,
   status: true,
   location: true,
+  baseFuelPrice: true,
+  maxFuelConsumption: true,
 };
-export const getEquipmentDetailsSelect = async (
-  equipmentId: string
-): Promise<EquipmentDetailSelectWithEquipment[]> => {
-  try {
-    return await db.equipmentDetail.findMany({
-      where: {
-        equipmentId,
-      },
-      select: {
-        ...equipmentDetailSelect,
-        equipment: {
-          select: {
-            ...equipmentSelect,
-          },
-        },
-      },
-    });
-  } catch (error) {
-    return [];
-  }
-};
+
 export const getEquipmentDetailById = async (
   id: string
 ): Promise<EquipmentDetailTable | null> => {
@@ -122,6 +113,11 @@ export const getEquipmentDetailById = async (
             ...equipmentSelect,
           },
         },
+        unit: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
   } catch (error) {
@@ -129,16 +125,28 @@ export const getEquipmentDetailById = async (
   }
 };
 
-export const getEquipmentDetailsSelectForActivity = async (): Promise<
-  EquipmentDetailSelect[]
-> => {
+export const getEquipmentDetailsSelect = async (
+  defaultId?: string
+): Promise<EquipmentDetailSelectWithEquipmentAndUnit[]> => {
   try {
     return await db.equipmentDetail.findMany({
       where: {
-        status: "AVAILABLE",
+        OR: [
+          {
+            id: defaultId,
+          },
+          {
+            status: "AVAILABLE",
+          },
+        ],
       },
       select: {
         ...equipmentDetailSelect,
+        unit: {
+          select: {
+            ...unitSelect,
+          },
+        },
         equipment: {
           select: {
             ...equipmentSelect,

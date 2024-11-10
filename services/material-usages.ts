@@ -386,7 +386,7 @@ type MaterialUsageByActivityQuery = {
   materialId?: string;
   query?: string;
   orderBy?: string;
-  activityId?: string;
+  activityId: string;
 };
 export const getMaterialUsagesByActivity = async ({
   query,
@@ -400,16 +400,16 @@ export const getMaterialUsagesByActivity = async ({
         ...(materialId && {
           materialId,
         }),
-        ...(activityId && {
-          OR: [
-            {
-              activityId: null,
-            },
-            {
-              activityId,
-            },
-          ],
-        }),
+
+        OR: [
+          {
+            activityId: null,
+          },
+          {
+            activityId,
+          },
+        ],
+
         material: {
           name: {
             contains: query,

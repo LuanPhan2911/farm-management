@@ -25,6 +25,8 @@ import { Input } from "@/components/ui/input";
 
 import { ActivityAssignedStaffWithActivitySelect } from "@/types";
 import { editAssigned } from "@/actions/activity";
+import { canUpdateActivityStatus } from "@/lib/permission";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface ActivityStaffEditButtonProps {
   data: ActivityAssignedStaffWithActivitySelect;
@@ -52,7 +54,7 @@ export const ActivityStaffEditDialog = () => {
   const tSchema = useTranslations("activityAssigned.schema");
   const t = useTranslations("activityAssigned.form");
   const formSchema = ActivityAssignedUpdateSchema(tSchema);
-
+  const { isOnlyAdmin } = useCurrentStaffRole();
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -89,6 +91,10 @@ export const ActivityStaffEditDialog = () => {
     });
   };
 
+  const canEdit =
+    data.activityAssigned &&
+    canUpdateActivityStatus(data.activityAssigned.activity.status) &&
+    isOnlyAdmin;
   return (
     <DynamicDialog
       isOpen={isOpenDialog}
@@ -110,7 +116,7 @@ export const ActivityStaffEditDialog = () => {
                     placeholder={tSchema("actualWork.placeholder")}
                     value={field.value ?? undefined}
                     onChange={field.onChange}
-                    disabled={isPending}
+                    disabled={isPending || !canEdit}
                     type="number"
                     min={0}
                     max={10_000}
@@ -133,7 +139,7 @@ export const ActivityStaffEditDialog = () => {
                     placeholder={tSchema("hourlyWage.placeholder")}
                     value={field.value ?? undefined}
                     onChange={field.onChange}
-                    disabled={isPending}
+                    disabled={isPending || !canEdit}
                     type="number"
                     min={0}
                     max={1_000_000}
@@ -144,7 +150,7 @@ export const ActivityStaffEditDialog = () => {
               </FormItem>
             )}
           />
-          <DynamicDialogFooter disabled={isPending} />
+          <DynamicDialogFooter disabled={isPending || !canEdit} />
         </form>
       </Form>
     </DynamicDialog>

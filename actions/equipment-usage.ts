@@ -3,6 +3,7 @@
 import { ActivityUpdateStatusError, EquipmentUsageExistError } from "@/errors";
 import { errorResponse, successResponse } from "@/lib/utils";
 import { EquipmentUsageSchema } from "@/schemas";
+import { getEquipmentDetailById } from "@/services/equipment-details";
 import {
   assignEquipmentUsage,
   createEquipmentUsage,
@@ -27,6 +28,14 @@ export const create = async (
     return errorResponse(tSchema("errors.parse"));
   }
   try {
+    const { equipmentDetailId } = validatedFields.data;
+    const equipmentDetail = await getEquipmentDetailById(equipmentDetailId);
+    if (!equipmentDetail) {
+      return errorResponse(tSchema("errors.existEquipmentDetail"));
+    }
+    if (equipmentDetail.status !== "AVAILABLE") {
+      return errorResponse(tSchema("errors.equipmentDetailStatusAvailable"));
+    }
     const { equipmentUsage } = await createEquipmentUsage(validatedFields.data);
 
     revalidatePathEquipmentUsage({
@@ -52,11 +61,25 @@ export const edit = async (
     return errorResponse(tSchema("errors.parse"));
   }
   try {
-    const { duration, note, usageStartTime } = validatedFields.data;
+    const {
+      duration,
+      note,
+      usageStartTime,
+      fuelConsumption,
+      fuelPrice,
+      rentalPrice,
+      unitId,
+      operatorId,
+    } = validatedFields.data;
     const equipmentUsage = await updateEquipmentUsage(id, {
       duration,
       note,
       usageStartTime,
+      fuelConsumption,
+      fuelPrice,
+      rentalPrice,
+      unitId,
+      operatorId,
     });
 
     revalidatePathEquipmentUsage({

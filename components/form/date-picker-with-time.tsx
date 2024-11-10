@@ -75,14 +75,7 @@ export const DatePickerWithTime = ({
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
           {date ? (
-            dateTime(date, {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
-              hour12: true,
-              hour: "2-digit",
-              minute: "2-digit",
-            })
+            dateTime(date, "long")
           ) : (
             <span>{placeholder || "Pick a date"}</span>
           )}

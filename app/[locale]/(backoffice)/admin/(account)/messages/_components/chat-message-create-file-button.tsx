@@ -260,7 +260,7 @@ export const ChatMessageCreateFileFromCLoud = ({
                           button: "lg:w-full",
                           content: "lg:w-[480px]",
                         }}
-                        onSelectedFile={(file) => {
+                        onSelected={(file) => {
                           form.setValue("name", file.name);
                           form.setValue("type", file.type);
                         }}

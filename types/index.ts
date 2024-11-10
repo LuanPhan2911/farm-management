@@ -373,6 +373,9 @@ export type EquipmentSelect = {
 };
 export type EquipmentDetailTable = EquipmentDetail & {
   equipment: EquipmentSelect;
+  unit: {
+    name: string;
+  } | null;
 };
 
 export type EquipmentDetailSelect = {
@@ -381,11 +384,15 @@ export type EquipmentDetailSelect = {
   equipmentId: string;
   status: EquipmentStatus;
   location: string | null;
+  baseFuelPrice: number | null;
+  maxFuelConsumption: number | null;
 };
 
-export type EquipmentDetailSelectWithEquipment = EquipmentDetailSelect & {
-  equipment: EquipmentSelect;
-};
+export type EquipmentDetailSelectWithEquipmentAndUnit =
+  EquipmentDetailSelect & {
+    equipment: EquipmentSelect;
+    unit: UnitSelect | null;
+  };
 
 export type EquipmentTypeCount = {
   type: EquipmentType;
@@ -393,10 +400,24 @@ export type EquipmentTypeCount = {
 };
 
 export type EquipmentUsageTable = EquipmentUsage & {
-  equipmentDetail: EquipmentDetailSelectWithEquipment;
-  activity: ActivitySelectWithCropAndField | null;
+  unit: UnitSelect | null;
+  equipmentDetail: EquipmentDetailSelect;
+  activity: ActivitySelect | null;
   operator: Staff | null;
 };
+export type EquipmentUsageTableWithCost = EquipmentUsage & {
+  unit: UnitSelect | null;
+  equipmentDetail: EquipmentDetailSelect;
+  activity: ActivitySelect | null;
+  operator: Staff | null;
+  actualCost: number | null;
+};
+
+export type EquipmentUsageTableWithTotalCost = {
+  data: EquipmentUsageTableWithCost[];
+  totalCost: number;
+};
+
 export type CropTable = Crop & {
   actualYield: FloatUnitTable | null;
   estimatedYield: FloatUnitTable | null;

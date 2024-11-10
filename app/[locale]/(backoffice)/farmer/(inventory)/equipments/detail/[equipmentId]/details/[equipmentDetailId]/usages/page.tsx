@@ -1,9 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { getTranslations } from "next-intl/server";
-import { getEquipmentUsages } from "@/services/equipment-usages";
 import { parseToNumber } from "@/lib/utils";
 import { EquipmentUsagesTable } from "@/app/[locale]/(backoffice)/admin/(inventory)/equipments/detail/[equipmentId]/details/[equipmentDetailId]/usages/_components/equipment-usages-table";
+import { getEquipmentUsages } from "@/services/equipment-usages";
+
 export async function generateMetadata() {
   const t = await getTranslations("equipmentUsages.page");
   return {
@@ -30,7 +31,7 @@ const EquipmentUsagesPage = async ({
   const { query, orderBy } = searchParams;
   const page = parseToNumber(searchParams!.page, 1);
 
-  const { data, totalPage } = await getEquipmentUsages({
+  const { data, totalCost, totalPage } = await getEquipmentUsages({
     equipmentDetailId: params.equipmentDetailId,
     page,
     query,
@@ -43,7 +44,11 @@ const EquipmentUsagesPage = async ({
         <CardTitle>{t("title")}</CardTitle>
       </CardHeader>
       <CardContent>
-        <EquipmentUsagesTable data={data} totalPage={totalPage} />
+        <EquipmentUsagesTable
+          data={data}
+          totalPage={totalPage}
+          totalCost={totalCost}
+        />
       </CardContent>
     </Card>
   );

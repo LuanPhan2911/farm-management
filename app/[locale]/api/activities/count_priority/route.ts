@@ -7,10 +7,11 @@ export const GET = async (req: NextRequest) => {
     const searchParams = req.nextUrl.searchParams;
     const begin = parseToDate(searchParams!.get("begin"));
     const end = parseToDate(searchParams!.get("end"));
-
+    const cropId = searchParams.get("cropId") || undefined;
     const result = await getCountActivityPriority({
       begin,
       end,
+      cropId,
     });
     return NextResponse.json(result);
   } catch (error) {

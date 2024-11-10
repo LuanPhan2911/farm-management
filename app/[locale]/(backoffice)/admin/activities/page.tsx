@@ -1,6 +1,6 @@
 import { getActivities } from "@/services/activities";
 import { ActivitiesTable } from "./_components/activities-table";
-import { parseToNumber } from "@/lib/utils";
+import { parseToDate, parseToNumber } from "@/lib/utils";
 import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ActivityCreateButton } from "./_components/activity-create-button";
@@ -13,6 +13,8 @@ interface ActivitiesPageProps {
     filterNumber?: string;
     query?: string;
     type?: string;
+    begin?: string;
+    end?: string;
   };
 }
 export async function generateMetadata() {
@@ -26,7 +28,8 @@ const ActivitiesPage = async ({ searchParams }: ActivitiesPageProps) => {
   const page = parseToNumber(searchParams!.page, 1);
   const t = await getTranslations("activities.page");
   const { orderBy, filterNumber, filterString, query, type } = searchParams;
-
+  const begin = parseToDate(searchParams!.begin);
+  const end = parseToDate(searchParams!.end);
   const { data, totalPage } = await getActivities({
     filterNumber,
     filterString,
@@ -34,6 +37,8 @@ const ActivitiesPage = async ({ searchParams }: ActivitiesPageProps) => {
     page,
     query,
     type: type === "createdBy" ? "createdBy" : undefined,
+    begin,
+    end,
   });
   return (
     <div className="flex flex-col gap-4 py-4 h-full">

@@ -765,11 +765,26 @@ export const EquipmentDetailSchema = (
     }),
     maxOperatingHours: numberSchema(t, "maxOperatingHours", {
       min: 0,
-      max: 1_000_000,
+      max: 10_000,
       int: true,
     }),
     location: stringSchema(t, "location", {
       max: 255,
+      required: false,
+    }).nullish(),
+    maxFuelConsumption: numberSchema(t, "maxFuelConsumption", {
+      min: 0,
+      max: 10_000,
+      required: false,
+    }).nullish(),
+    unitId: stringSchema(t, "unitId", { required: false }).nullish(),
+    baseFuelPrice: numberSchema(t, "baseFuelPrice", {
+      min: 0,
+      max: 1_000_000,
+      required: false,
+    }).nullish(),
+    energyType: stringSchema(t, "energyType", {
+      max: 100,
       required: false,
     }).nullish(),
   });
@@ -796,6 +811,22 @@ export const EquipmentUsageSchema = (
       required: false,
     }).nullish(),
     location: z.string().nullish(),
+    fuelConsumption: numberSchema(t, "fuelConsumption", {
+      min: 0,
+      max: 10_000,
+      required: false,
+    }).nullish(),
+    unitId: stringSchema(t, "unitId", { required: false }).nullish(),
+    fuelPrice: numberSchema(t, "fuelPrice", {
+      min: 0,
+      max: 1_000_000,
+      required: false,
+    }).nullish(),
+    rentalPrice: numberSchema(t, "rentalPrice", {
+      min: 0,
+      max: 10_000_000,
+      required: false,
+    }).nullish(),
   });
 };
 

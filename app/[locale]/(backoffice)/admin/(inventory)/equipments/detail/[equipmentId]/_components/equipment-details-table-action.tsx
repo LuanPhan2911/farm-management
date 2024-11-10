@@ -14,11 +14,7 @@ import { EditButton } from "@/components/buttons/edit-button";
 import { LinkButton } from "@/components/buttons/link-button";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { destroy } from "@/actions/equipment-detail";
-import {
-  canUpdateEquipmentDetail,
-  isOnlyAdmin,
-  isSuperAdmin,
-} from "@/lib/permission";
+import { canUpdateEquipmentDetail } from "@/lib/permission";
 interface EquipmentDetailsTableActionProps {
   data: EquipmentDetailTable;
 }
@@ -38,14 +34,6 @@ export const EquipmentDetailsTableAction = ({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-fit">
-        <DropdownMenuItem>
-          <LinkButton
-            href={`equipments/detail/${data.equipmentId}/details/${data.id}/usages`}
-            className="w-full"
-            label={t("viewUsage.label")}
-            disabled={!canEdit}
-          />
-        </DropdownMenuItem>
         <DropdownMenuItem>
           <EditButton
             inltKey="equipmentDetails"

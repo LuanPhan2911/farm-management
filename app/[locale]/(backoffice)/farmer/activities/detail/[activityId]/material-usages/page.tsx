@@ -18,7 +18,6 @@ interface MaterialUsagesPageProps {
   searchParams: {
     query?: string;
     orderBy?: string;
-    page?: string;
   };
 }
 const ActivityMaterialUsagesPage = async ({

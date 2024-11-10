@@ -136,6 +136,7 @@ interface ComboBoxCustomProps<T extends Record<string, any>> {
   appearance?: ComboBoxCustomAppearance;
   renderItemDetail?: (item: T) => React.ReactNode;
   noItemDetailMessage?: string;
+  disabledItem?: (item: T) => boolean;
 }
 export const ComboBoxCustom = <T extends Record<string, any>>({
   data: options,
@@ -158,6 +159,7 @@ export const ComboBoxCustom = <T extends Record<string, any>>({
   onChange,
   renderItem,
   renderItemDetail,
+  disabledItem,
 }: ComboBoxCustomProps<T>) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(defaultValue);
@@ -221,6 +223,7 @@ export const ComboBoxCustom = <T extends Record<string, any>>({
                     key={item[valueKey]}
                     value={item[valueKey]}
                     onSelect={handleSelect}
+                    disabled={disabledItem ? disabledItem(item) : false}
                   >
                     <Check
                       className={cn(

@@ -2,10 +2,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { getTranslations } from "next-intl/server";
 
-import { getEquipmentUsages } from "@/services/equipment-usages";
 import { EquipmentUsageCreateButton } from "../../../../(inventory)/equipments/detail/[equipmentId]/details/[equipmentDetailId]/usages/_components/equipment-usage-create-button";
 import { EquipmentUsagesTable } from "../../../../(inventory)/equipments/detail/[equipmentId]/details/[equipmentDetailId]/usages/_components/equipment-usages-table";
-import { parseToNumber } from "@/lib/utils";
+import { getEquipmentUsagesByActivity } from "@/services/equipment-usages";
+import { getActivityById } from "@/services/activities";
+import { canUpdateActivityStatus } from "@/lib/permission";
+import { notFound } from "next/navigation";
 export async function generateMetadata() {
   const t = await getTranslations("activities.page.detail.equipment-usages");
   return {
@@ -20,7 +22,6 @@ interface ActivityEquipmentUsagesPageProps {
   searchParams: {
     query?: string;
     orderBy?: string;
-    page?: string;
   };
 }
 const ActivityEquipmentUsagesPage = async ({
@@ -29,13 +30,17 @@ const ActivityEquipmentUsagesPage = async ({
 }: ActivityEquipmentUsagesPageProps) => {
   const t = await getTranslations("activities.page.detail.equipment-usages");
   const { query, orderBy } = searchParams;
-  const page = parseToNumber(searchParams!.page, 1);
-  const { data, totalPage } = await getEquipmentUsages({
+
+  const { data, totalCost } = await getEquipmentUsagesByActivity({
     activityId: params.activityId,
     orderBy,
     query,
-    page,
   });
+  const activity = await getActivityById(params.activityId);
+  if (!activity) {
+    notFound();
+  }
+  const canUpdateActivity = canUpdateActivityStatus(activity.status);
 
   return (
     <Card>
@@ -44,9 +49,9 @@ const ActivityEquipmentUsagesPage = async ({
       </CardHeader>
       <CardContent>
         <div className="flex justify-end">
-          <EquipmentUsageCreateButton />
+          <EquipmentUsageCreateButton disabled={!canUpdateActivity} />
         </div>
-        <EquipmentUsagesTable data={data} totalPage={totalPage} />
+        <EquipmentUsagesTable data={data} totalPage={0} totalCost={totalCost} />
       </CardContent>
     </Card>
   );

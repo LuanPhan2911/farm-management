@@ -26,13 +26,16 @@ export const MaterialsSelect = (props: MaterialsSelectProps) => {
     },
   });
 
+  const { onSelected, defaultValue } = props;
   useEffect(() => {
-    const selected = data?.find((item) => item.id === props.defaultValue);
+    const selected = data?.find((item) => item.id === defaultValue);
+
     if (!selected) {
       return;
     }
-    props.onSelected?.(selected);
-  }, [data, props]);
+    onSelected?.(selected);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, defaultValue]);
 
   return (
     <ComboBoxCustom

@@ -26,6 +26,10 @@ import { DatePickerWithTime } from "@/components/form/date-picker-with-time";
 import { Textarea } from "@/components/ui/textarea";
 import { EditButton } from "@/components/buttons/edit-button";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
+import { UnitType } from "@prisma/client";
+import { StaffsSelect } from "@/app/[locale]/(backoffice)/admin/_components/staffs-select";
+import { useAuth } from "@clerk/nextjs";
 
 interface EquipmentUsageEditButtonProps {
   data: EquipmentUsageTable;
@@ -64,7 +68,7 @@ export const EquipmentUsageEditDialog = () => {
   });
 
   const { isOnlyAdmin } = useCurrentStaffRole();
-
+  const { orgId } = useAuth();
   const [id, setId] = useState("");
   useEffect(() => {
     if (data?.equipmentUsage) {
@@ -140,6 +144,123 @@ export const EquipmentUsageEditDialog = () => {
                       disabled={isPending || !canEdit}
                       type="number"
                       min={1}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="grid lg:grid-cols-2 gap-2">
+            <FormField
+              control={form.control}
+              name="operatorId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("operatorId.label")}</FormLabel>
+                  <FormControl>
+                    <StaffsSelect
+                      orgId={orgId}
+                      onChange={field.onChange}
+                      defaultValue={field.value ?? undefined}
+                      placeholder={tSchema("operatorId.placeholder")}
+                      disabled={isPending || !canEdit}
+                      error={tSchema("operatorId.error")}
+                      notFound={tSchema("operatorId.notFound")}
+                    />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="grid grid-cols-4 gap-2">
+              <div className="col-span-3">
+                <FormField
+                  control={form.control}
+                  name="fuelConsumption"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{tSchema("fuelConsumption.label")}</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder={tSchema("fuelConsumption.placeholder")}
+                          value={field.value ?? undefined}
+                          onChange={field.onChange}
+                          disabled={isPending || !canEdit}
+                          type="number"
+                          min={0}
+                          max={10_000}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={form.control}
+                name="unitId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("unitId.label")}</FormLabel>
+                    <FormControl>
+                      <UnitsSelect
+                        onChange={field.onChange}
+                        placeholder={tSchema("unitId.placeholder")}
+                        unitType={UnitType.VOLUME}
+                        disabled={isPending || !canEdit}
+                        className="w-full"
+                        error={tSchema("unitId.error")}
+                        notFound={tSchema("unitId.notFound")}
+                        defaultValue={field.value}
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-2">
+            <FormField
+              control={form.control}
+              name="fuelPrice"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("fuelPrice.label")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={tSchema("fuelPrice.placeholder")}
+                      value={field.value ?? undefined}
+                      onChange={field.onChange}
+                      disabled={isPending || !canEdit}
+                      type="number"
+                      min={0}
+                      max={1_000_000}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="rentalPrice"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("rentalPrice.label")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={tSchema("rentalPrice.placeholder")}
+                      value={field.value ?? undefined}
+                      onChange={field.onChange}
+                      disabled={isPending || !canEdit}
+                      type="number"
+                      min={0}
+                      max={10_000_000}
                     />
                   </FormControl>
                   <FormMessage />

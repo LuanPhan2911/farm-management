@@ -5,6 +5,9 @@ import { getTranslations } from "next-intl/server";
 import { getMaterialUsagesByActivity } from "@/services/material-usages";
 import { MaterialUsageCreateButton } from "@/app/[locale]/(backoffice)/admin/(inventory)/materials/detail/[materialId]/usages/_components/material-usages-create-button";
 import { MaterialUsagesTable } from "@/app/[locale]/(backoffice)/admin/(inventory)/materials/detail/[materialId]/usages/_components/material-usages-table";
+import { getActivityById } from "@/services/activities";
+import { notFound } from "next/navigation";
+import { canUpdateActivityStatus } from "@/lib/permission";
 export async function generateMetadata() {
   const t = await getTranslations("activities.page.detail.material-usages");
   return {
@@ -19,7 +22,6 @@ interface MaterialUsagesPageProps {
   searchParams: {
     query?: string;
     orderBy?: string;
-    page?: string;
   };
 }
 const ActivityMaterialUsagesPage = async ({
@@ -34,6 +36,11 @@ const ActivityMaterialUsagesPage = async ({
     orderBy,
     query,
   });
+  const activity = await getActivityById(params.activityId);
+  if (!activity) {
+    notFound();
+  }
+  const canUpdateActivity = canUpdateActivityStatus(activity.status);
 
   return (
     <Card>
@@ -42,7 +49,7 @@ const ActivityMaterialUsagesPage = async ({
       </CardHeader>
       <CardContent>
         <div className="flex justify-end">
-          <MaterialUsageCreateButton />
+          <MaterialUsageCreateButton disabled={!canUpdateActivity} />
         </div>
         <MaterialUsagesTable data={data} totalPage={0} totalCost={totalCost} />
       </CardContent>

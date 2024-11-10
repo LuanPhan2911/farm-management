@@ -28,7 +28,7 @@ import { ActivityPriority, ActivityStatus } from "@prisma/client";
 
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -37,7 +37,6 @@ import { useAuth } from "@clerk/nextjs";
 import { StaffsSelectMultiple } from "../../_components/staffs-select";
 import { CategoriesSelect } from "../../_components/categories-select";
 import { Button } from "@/components/ui/button";
-import { useCurrentStaff } from "@/hooks/use-current-staff";
 import { useParams } from "next/navigation";
 
 export const ActivityCreateButton = () => {
@@ -49,7 +48,7 @@ export const ActivityCreateButton = () => {
 
   const { orgId } = useAuth();
   const [isOpen, setOpen] = useState(false);
-  const { currentStaff } = useCurrentStaff();
+
   const params = useParams<{ cropId: string }>()!;
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

@@ -21,7 +21,7 @@ interface FilesSelectProps {
   notFound: string;
   defaultValue?: string;
   appearance?: ComboBoxCustomAppearance;
-  onSelectedFile: (file: FileSelect) => void;
+  onSelected: (file: FileSelect) => void;
 }
 export const FilesSelect = (props: FilesSelectProps) => {
   const { data, isPending, isError, refetch } = useQuery({
@@ -40,13 +40,16 @@ export const FilesSelect = (props: FilesSelectProps) => {
       return (await res.json()) as FileSelect[];
     },
   });
+  const { onSelected, defaultValue } = props;
   useEffect(() => {
-    const selectedFile = data?.find((item) => item.url === props.defaultValue);
-    if (!selectedFile) {
+    const selected = data?.find((item) => item.url === defaultValue);
+
+    if (!selected) {
       return;
     }
-    props.onSelectedFile(selectedFile);
-  }, [data, props]);
+    onSelected?.(selected);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, defaultValue]);
 
   return (
     <ComboBoxCustom

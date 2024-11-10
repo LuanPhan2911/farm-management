@@ -37,7 +37,12 @@ import { ActivitiesSelect } from "@/app/[locale]/(backoffice)/admin/_components/
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { MaterialsSelect } from "@/app/[locale]/(backoffice)/admin/_components/materials-select";
 
-export const MaterialUsageCreateButton = () => {
+interface MaterialUsageCreateButtonProps {
+  disabled?: boolean;
+}
+export const MaterialUsageCreateButton = ({
+  disabled,
+}: MaterialUsageCreateButtonProps) => {
   const tSchema = useTranslations("materialUsages.schema");
   const t = useTranslations("materialUsages.form");
   const formSchema = MaterialUsageSchema(tSchema);
@@ -45,7 +50,9 @@ export const MaterialUsageCreateButton = () => {
   const [isPending, startTransition] = useTransition();
   const [isOpen, setOpen] = useState(false);
 
-  const { isOnlyAdmin: canCreate } = useCurrentStaffRole();
+  const { isOnlyAdmin } = useCurrentStaffRole();
+
+  const canCreate = isOnlyAdmin && !disabled;
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -78,7 +85,7 @@ export const MaterialUsageCreateButton = () => {
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size={"sm"} variant={"success"}>
+        <Button size={"sm"} variant={"success"} disabled={!canCreate}>
           <Plus className="h-4 w-4 mr-2" />{" "}
           <span className="text-sm font-semibold">{t("create.label")}</span>
         </Button>

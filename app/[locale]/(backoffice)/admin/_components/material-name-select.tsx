@@ -7,7 +7,6 @@ import {
 import { MaterialType } from "@prisma/client";
 import { FertilizersSelect } from "./fertilizers-select";
 import { PesticidesSelect } from "./pesticides-select";
-import { SelectOptions } from "@/components/form/select-options";
 import { CategoriesSelect } from "./categories-select";
 
 interface MaterialNameSelectProps {

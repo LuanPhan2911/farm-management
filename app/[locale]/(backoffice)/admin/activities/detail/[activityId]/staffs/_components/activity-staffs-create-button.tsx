@@ -23,9 +23,11 @@ import { z } from "zod";
 
 interface ActivityStaffsCreateButtonProps {
   data: ActivityAssignedStaffWithActivitySelect[];
+  disabled?: boolean;
 }
 export const ActivityStaffsCreateButton = ({
   data,
+  disabled,
 }: ActivityStaffsCreateButtonProps) => {
   const { orgId } = useAuth();
   const params = useParams<{
@@ -84,7 +86,7 @@ export const ActivityStaffsCreateButton = ({
                     error={tSchema("assignedTo.error")}
                     placeholder={tSchema("assignedTo.placeholder")}
                     notFound={tSchema("assignedTo.notFound")}
-                    disabled={isPending}
+                    disabled={isPending || disabled}
                     className="lg:w-[1024px] w-full"
                   />
                 </FormControl>
@@ -93,7 +95,11 @@ export const ActivityStaffsCreateButton = ({
               </FormItem>
             )}
           />
-          <Button type="submit" disabled={isPending} variant={"blue"}>
+          <Button
+            type="submit"
+            disabled={isPending || disabled}
+            variant={"blue"}
+          >
             Submit
           </Button>
         </div>

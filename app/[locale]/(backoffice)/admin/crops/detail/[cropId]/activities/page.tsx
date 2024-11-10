@@ -1,6 +1,6 @@
 import { getActivities } from "@/services/activities";
 
-import { parseToNumber } from "@/lib/utils";
+import { parseToDate, parseToNumber } from "@/lib/utils";
 import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -18,6 +18,8 @@ interface CropActivitiesPageProps {
     filterNumber?: string;
     query?: string;
     type?: string;
+    begin?: string;
+    end?: string;
   };
 }
 export async function generateMetadata() {
@@ -33,7 +35,8 @@ const CropActivitiesPage = async ({
 }: CropActivitiesPageProps) => {
   const page = parseToNumber(searchParams!.page, 1);
   const t = await getTranslations("crops.page.detail.activities");
-
+  const begin = parseToDate(searchParams!.begin);
+  const end = parseToDate(searchParams!.end);
   const { orderBy, filterNumber, filterString, query, type } = searchParams;
 
   const { data, totalPage } = await getActivities({
@@ -42,9 +45,10 @@ const CropActivitiesPage = async ({
     orderBy,
     page,
     query,
-
     cropId: params.cropId,
     type: type === "createdBy" ? "createdBy" : undefined,
+    begin,
+    end,
   });
   return (
     <div className="flex flex-col gap-4 py-4 h-full">
