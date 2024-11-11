@@ -1,15 +1,10 @@
 import { getActivities } from "@/services/activities";
 import { ActivitiesTable } from "./_components/activities-table";
-import { parseToNumber } from "@/lib/utils";
+import { parseToDate, parseToNumber } from "@/lib/utils";
 import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ActivityCreateButton } from "./_components/activity-create-button";
-import { getCurrentStaff } from "@/services/staffs";
-import { notFound } from "next/navigation";
-import {
-  ActivitiesPriorityPieChart,
-  ActivitiesStatusPieChart,
-} from "./_components/activities-chart";
+import { checkRole } from "@/lib/role";
 interface ActivitiesPageProps {
   params: {};
   searchParams: {
@@ -18,6 +13,9 @@ interface ActivitiesPageProps {
     filterString?: string;
     filterNumber?: string;
     query?: string;
+    type?: string;
+    begin?: string;
+    end?: string;
   };
 }
 export async function generateMetadata() {
@@ -30,19 +28,20 @@ export async function generateMetadata() {
 const ActivitiesPage = async ({ searchParams }: ActivitiesPageProps) => {
   const page = parseToNumber(searchParams!.page, 1);
   const t = await getTranslations("activities.page");
-  const { orderBy, filterNumber, filterString, query } = searchParams;
-  const currentStaff = await getCurrentStaff();
-  if (!currentStaff) {
-    notFound();
-  }
+  const { orderBy, filterNumber, filterString, query, type } = searchParams;
+  const begin = parseToDate(searchParams!.begin);
+  const end = parseToDate(searchParams!.end);
   const { data, totalPage } = await getActivities({
     filterNumber,
     filterString,
     orderBy,
     page,
     query,
-    staffId: currentStaff.id,
+    type: type === "createdBy" ? "createdBy" : undefined,
+    begin,
+    end,
   });
+  const canCreate = checkRole("superadmin");
   return (
     <div className="flex flex-col gap-4 py-4 h-full">
       <Card>
@@ -51,17 +50,9 @@ const ActivitiesPage = async ({ searchParams }: ActivitiesPageProps) => {
         </CardHeader>
         <CardContent>
           <div className="flex justify-end">
-            <ActivityCreateButton />
+            <ActivityCreateButton disabled={!canCreate} />
           </div>
           <ActivitiesTable data={data} totalPage={totalPage} />
-        </CardContent>
-      </Card>
-      <Card>
-        <CardContent>
-          <div className="grid lg:grid-cols-2 gap-4">
-            <ActivitiesStatusPieChart />
-            <ActivitiesPriorityPieChart />
-          </div>
         </CardContent>
       </Card>
     </div>

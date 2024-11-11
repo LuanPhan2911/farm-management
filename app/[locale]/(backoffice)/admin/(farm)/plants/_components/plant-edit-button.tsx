@@ -25,15 +25,14 @@ import { SelectOptions } from "@/components/form/select-options";
 import { UnitsSelect } from "../../../_components/units-select";
 import { PlantTable } from "@/types";
 import { UploadImage } from "@/components/form/upload-image";
-import { convertNullToUndefined } from "@/lib/utils";
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface PlantCreateFormProps {
   data: PlantTable;
 }
 export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
   const tSchema = useTranslations("plants.schema");
-  const t = useTranslations("plants");
 
   const formSchema = PlantSchema(tSchema);
   const [isPending, startTransition] = useTransition();
@@ -43,6 +42,7 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
       ...data,
     },
   });
+  const { isOnlyAdmin: canEdit } = useCurrentStaffRole();
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
@@ -76,7 +76,7 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
                 <UploadImage
                   onChange={field.onChange}
                   defaultValue={field.value}
-                  disabled={isPending}
+                  disabled={isPending || !canEdit}
                 />
               </FormControl>
               <FormMessage />
@@ -93,9 +93,9 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("name.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
-                    disabled={isPending}
+                    disabled={isPending || !canEdit}
                   />
                 </FormControl>
 
@@ -117,6 +117,10 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
                     type={CategoryType.PLANT}
                     placeholder={tSchema("categoryId.placeholder")}
                     defaultValue={field.value}
+                    appearance={{
+                      button: "lg:w-full h-10",
+                      content: "lg:w-[350px]",
+                    }}
                   />
                 </FormControl>
 
@@ -134,9 +138,9 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
               <FormControl>
                 <Input
                   placeholder={tSchema("growthDuration.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
-                  disabled={isPending}
+                  disabled={isPending || !canEdit}
                 />
               </FormControl>
               <FormMessage />
@@ -154,7 +158,7 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
                   <SelectOptions
                     placeholder={tSchema("fertilizerType.placeholder")}
                     onChange={field.onChange}
-                    disabled={isPending}
+                    disabled={isPending || !canEdit}
                     options={Object.values(FertilizerType).map((item) => {
                       return {
                         label: tSchema(`fertilizerType.options.${item}`),
@@ -179,7 +183,7 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
                   <SelectOptions
                     placeholder={tSchema("season.placeholder")}
                     onChange={field.onChange}
-                    disabled={isPending}
+                    disabled={isPending || !canEdit}
                     options={Object.values(Season).map((item) => {
                       return {
                         label: tSchema(`season.options.${item}`),
@@ -207,9 +211,9 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("idealTemperature.placeholder")}
-                        value={field.value || undefined}
+                        value={field.value ?? undefined}
                         onChange={field.onChange}
-                        disabled={isPending}
+                        disabled={isPending || !canEdit}
                         type="number"
                       />
                     </FormControl>
@@ -234,7 +238,7 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
                           "idealTemperature.unitId.placeholder"
                         )}
                         unitType={UnitType.TEMPERATURE}
-                        disabled={isPending}
+                        disabled={isPending || !canEdit}
                         className="w-full"
                         error={tSchema("idealTemperature.unitId.error")}
                         notFound={tSchema("idealTemperature.unitId.notFound")}
@@ -259,9 +263,9 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("idealHumidity.placeholder")}
-                        value={field.value || undefined}
+                        value={field.value ?? undefined}
                         onChange={field.onChange}
-                        disabled={isPending}
+                        disabled={isPending || !canEdit}
                         type="number"
                       />
                     </FormControl>
@@ -286,7 +290,7 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
                           "idealHumidity.unitId.placeholder"
                         )}
                         unitType={UnitType.PERCENT}
-                        disabled={isPending}
+                        disabled={isPending || !canEdit}
                         className="w-full"
                         error={tSchema("idealHumidity.unitId.error")}
                         notFound={tSchema("idealHumidity.unitId.notFound")}
@@ -311,9 +315,9 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("waterRequirement.placeholder")}
-                        value={field.value || undefined}
+                        value={field.value ?? undefined}
                         onChange={field.onChange}
-                        disabled={isPending}
+                        disabled={isPending || !canEdit}
                         type="number"
                       />
                     </FormControl>
@@ -338,7 +342,7 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
                           "waterRequirement.unitId.placeholder"
                         )}
                         unitType={UnitType.RAINFALL}
-                        disabled={isPending}
+                        disabled={isPending || !canEdit}
                         className="w-full"
                         error={tSchema("waterRequirement.unitId.error")}
                         notFound={tSchema("waterRequirement.unitId.notFound")}
@@ -354,7 +358,10 @@ export const PlantEditForm = ({ data }: PlantCreateFormProps) => {
           </div>
         </div>
 
-        <DynamicDialogFooter disabled={isPending} closeButton={false} />
+        <DynamicDialogFooter
+          disabled={isPending || !canEdit}
+          closeButton={false}
+        />
       </form>
     </Form>
   );

@@ -3,8 +3,6 @@ import { FilesTable } from "../../../(files)/_components/files-table";
 import { getTranslations } from "next-intl/server";
 import { getMessageFiles } from "@/services/files";
 import { parseToNumber } from "@/lib/utils";
-import { getCurrentStaff } from "@/services/staffs";
-import { notFound } from "next/navigation";
 
 export async function generateMetadata() {
   const t = await getTranslations("messages.page.files");
@@ -29,10 +27,7 @@ const MessageFilesPage = async ({ searchParams }: MessageFilesPageProps) => {
     query,
     orderBy,
   });
-  const currentStaff = await getCurrentStaff();
-  if (!currentStaff) {
-    notFound();
-  }
+
   return (
     <div className="flex flex-col gap-y-4 py-4 h-full">
       <Card>
@@ -40,11 +35,7 @@ const MessageFilesPage = async ({ searchParams }: MessageFilesPageProps) => {
           <CardTitle>{t("title")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <FilesTable
-            data={data}
-            totalPage={totalPage}
-            currentStaff={currentStaff}
-          />
+          <FilesTable data={data} totalPage={totalPage} />
         </CardContent>
       </Card>
     </div>

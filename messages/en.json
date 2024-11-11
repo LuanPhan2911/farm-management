@@ -113,8 +113,8 @@
         "description": "Description"
       },
       "trow": {
-        "type": "...",
-        "description": "..."
+        "type": "No select",
+        "description": "No filled"
       }
     },
     "search": {
@@ -129,7 +129,7 @@
       "create": {
         "label": "Add",
         "title": "Add category",
-        "description": "Category use for classify in the farm"
+        "description": "Category use for categorizing everything in the farm"
       },
       "edit": {
         "label": "Edit",
@@ -160,7 +160,7 @@
       },
       "slug": {
         "label": "Slug",
-        "placeholder": "Slug will be automatically filled in according to name",
+        "placeholder": "Slug will be automatically generated from name",
         "required_error": "Slug is required!",
         "min": "Slug is required!",
         "max": "Slug's length must be less than {max} characters"
@@ -170,7 +170,12 @@
         "placeholder": "Select type...",
         "enum": "Please choose category type in list",
         "options": {
-          "PLANT": "Plant"
+          "PLANT": "Plant",
+          "SEED": "Seed",
+          "ACTIVITY": "Activity",
+          "PLANT_STAGE": "Plant stage",
+          "ENERGY": "Energy type",
+          "default": "No selected"
         }
       },
       "description": {
@@ -225,12 +230,12 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete unit?",
-        "description": "Are you absolutely sure? This action can not be undone! If unit in use, you cannot to delete."
+        "description": "Are you absolutely sure? This action can not be undone!"
       },
       "destroyMany": {
         "label": "Delete all",
         "title": "Delete all selected units?",
-        "description": "Are you absolutely sure? This action can not be undone! If unit in use, you cannot to delete."
+        "description": "Are you absolutely sure? This action can not be undone!"
       }
     },
     "schema": {
@@ -249,7 +254,6 @@
         "placeholder": "Select type...",
         "enum": "Please select type in list",
         "options": {
-          "AREA": "Area",
           "QUANTITY": "Quantity",
           "TEMPERATURE": "Temperature",
           "ATMOSPHERICPRESSURE": "Atmospheric pressure",
@@ -260,7 +264,8 @@
           "VOLUME": "Volume",
           "NUTRIENT": "Nutrient",
           "DATE": "Date",
-          "MONEY": "Finance"
+          "MONEY": "Finance",
+          "default": "No selected"
         }
       },
       "description": {
@@ -305,7 +310,7 @@
         "status": "Status"
       },
       "trow": {
-        "note": "..."
+        "note": "No filled"
       }
     },
     "search": {
@@ -439,7 +444,7 @@
       "create": {
         "label": "Add",
         "title": "Add job",
-        "description": "Post job vacancies for farms"
+        "description": "Create job to find applicants"
       },
       "edit": {
         "label": "Edit",
@@ -454,7 +459,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete job?",
-        "description": "Are you absolutely sure? This action can not be undone! If job in use, you cannot to delete."
+        "description": "Are you absolutely sure? This action can not be undone! All applicants applied to the job will be deleted."
       },
       "destroyMany": {
         "label": "Delete all selected",
@@ -470,7 +475,7 @@
         "label": "Name",
         "placeholder": "Job name",
         "required_error": "Job name is required!",
-        "min": "Job name is required!",
+        "min": "Min job name is {min} character",
         "max": "Job name's length must be less than {max} characters"
       },
       "experience": {
@@ -523,35 +528,32 @@
         "label": "Working Time",
         "placeholder": "Eg: Monday to Friday 8:30am to 5pm",
         "required_error": "Working time is required!",
-        "min": "Working time is required!",
+        "min": "Min working time length is {min} character",
         "max": "Job working time is maximum {max} characters"
       },
       "wage": {
         "label": "Wage",
         "placeholder": "Job's wage eg: 1000$ - 2000$",
         "required_error": "Job wage is required!",
-        "min": "Job wage is required!",
+        "min": "Min wage length is {min} character",
         "max": "Job wage's length must be less than {max} characters"
       },
       "description": {
         "label": "Job description",
         "placeholder": "Job's description",
         "required_error": "Job description is required!",
-        "min": "Job description is required!",
         "max": "Job description is maximum {max} characters"
       },
       "requirement": {
         "label": "Job requirement",
         "placeholder": "Job's requirement",
         "required_error": "Job requirement is required!",
-        "min": "Job requirement is required!",
         "max": "Job requirements is maximum {max} characters"
       },
       "rights": {
         "label": "Job rights",
         "placeholder": "Job's right",
         "required_error": "Job rights is required!",
-        "min": "Job rights is required!",
         "max": "Job right is maximum {max} characters"
       }
     },
@@ -608,8 +610,8 @@
       },
       "trow": {
         "name": "No filled",
-        "lastSignedInAt": "Never signed in",
-        "lastActiveAt": "Never active"
+        "lastSignedInAt": "Never",
+        "lastActiveAt": "Never"
       }
     },
     "search": {
@@ -626,6 +628,11 @@
       }
     },
     "form": {
+      "editRole": {
+        "label": "Make user as staff",
+        "title": "Edit role",
+        "description": "When role edited, user will be staff"
+      },
       "detail": {
         "label": "Detail",
         "title": "User basic information",
@@ -668,7 +675,7 @@
       },
       "phone": {
         "label": "Phone number",
-        "placeholder": "+84 182012 293",
+        "placeholder": "Phone number",
         "required_error": "Phone number is required!",
         "min": "Phone number is required!",
         "max": "Phone number must be less than {max} number",
@@ -709,28 +716,26 @@
       "title": "All staffs",
       "thead": {
         "name": "Staff",
+        "email": "Email",
         "role": "Role",
-        "lastSignedInAt": "Last signed in",
-        "lastActiveAt": "Last active at",
-        "joinedAt": "Joined at"
+        "phone": "Phone number",
+        "address": "Address",
+        "baseHourlyWage": "Hourly wage",
+        "createdAt": "CreateAt",
+        "assignedAt": "AssignedAt",
+        "actualWork": "Actual work",
+        "hourlyWage": "Actual hourly wage"
       },
       "trow": {
-        "lastActiveAt": "Never active",
-        "lastSignedInAt": "Never signed"
+        "phone": "No filled",
+        "address": "No filled",
+        "baseHourlyWage": "No filled",
+        "actualWork": "No filled",
+        "hourlyWage": "No filled"
       }
     },
     "search": {
-      "placeholder": "Filter by staff name...",
-      "sortByDropdown": {
-        "label": "Sort by: ",
-        "placeholder": "Select sort by...",
-        "options": {
-          "email": "Email",
-          "createdAt": "Created at",
-          "lastSignInAt": "Last sign in at",
-          "lastActiveAt": "Last active at"
-        }
-      }
+      "placeholder": "Filter by staff name..."
     },
     "form": {
       "create": {
@@ -794,10 +799,32 @@
           "farmer": "Farmer"
         }
       },
+      "baseHourlyWage": {
+        "label": "Base hourly wage",
+        "placeholder": "Hourly wage: 5$/h",
+        "min": "Min hourly wage is {min}",
+        "max": "Max hourly wage is {max}",
+        "invalid_type_error": "Hourly wage must be number"
+      },
+      "phone": {
+        "label": "Phone number",
+        "placeholder": "Phone number",
+        "required_error": "Phone number is required!",
+        "min": "Phone number is required!",
+        "max": "Phone number must be less than {max} number",
+        "isPhone": "Phone number is invalid"
+      },
+      "address": {
+        "label": "Address",
+        "placeholder": "Address",
+        "required_error": "Address is required!",
+        "min": "Address is required!",
+        "max": "Address's length must be less than {max} characters"
+      },
       "receiverEmail": {
-        "label": "Receiver email",
-        "placeholder": "Receiver email",
-        "max": "Receiver email's length must be less than {max} characters"
+        "label": "Applicant email",
+        "placeholder": "Applicant email",
+        "max": "Applicant email's length must be less than {max} characters"
       }
     },
     "status": {
@@ -845,7 +872,7 @@
         "description": "Chat with other members"
       },
       "danger": {
-        "title": "Danger zone",
+        "title": "Danger",
         "description": "Delete organization. This action cannot be undone!"
       }
     },
@@ -853,41 +880,36 @@
       "thead": {
         "name": "Name",
         "slug": "Slug",
-        "memberCount": "Member count",
-        "createdAt": "Create at"
+
+        "createdAt": "Create at",
+        "maxMember": "Max memberships",
+        "memberCount": "Current memberships"
+      },
+      "trow": {
+        "memberCount": "No values"
       },
       "member": {
         "thead": {
-          "firstName": "First name",
-          "lastName": "Last name",
+          "name": "Name",
           "email": "Email",
           "createdAt": "Create at",
           "role": "Role"
         }
-      }
+      },
+      "memberUnit": "{value} members"
     },
     "search": {
       "placeholder": "Filter by organization name...",
       "member": {
-        "placeholder": "Search by name...",
-        "sortByDropdown": {
-          "label": "Sort by: ",
-          "placeholder": "Select sort by...",
-          "options": {
-            "createdAt": "Create at",
-            "email": "Email",
-            "firstName": "First name",
-            "lastName": "Last name"
-          }
-        }
+        "placeholder": "Search by email..."
       },
       "sortByDropdown": {
         "label": "Sort by: ",
         "placeholder": "Select sort by...",
         "options": {
-          "createdAt": "Create at",
-          "name": "Name",
-          "membersCount": "Member count"
+          "createdAt": "CreatedAt",
+          "name": "Organization name",
+          "membersCount": "Current memberships"
         }
       }
     },
@@ -912,16 +934,11 @@
         "title": "Delete organization?",
         "description": "Are you absolutely sure? This action can not be undone!"
       },
-      "destroyMany": {
-        "label": "Delete all selected",
-        "title": "Delete all selected organizations?",
-        "description": "Are you absolutely sure? This action can not be undone!"
-      },
       "viewProfile": {
         "label": "View profile"
       },
       "destroyMember": {
-        "label": "Remove member",
+        "label": "Remove",
         "title": "Remove member?",
         "description": "Remove member from organizations. This action can not be undone!"
       },
@@ -984,7 +1001,8 @@
           "enum": "Please select role in list",
           "options": {
             "admin": "Admin",
-            "member": "Member"
+            "member": "Member",
+            "field_staff": "Field Staff"
           }
         }
       }
@@ -1013,6 +1031,9 @@
       "title": "Organization not found",
       "description": "Sorry, we couldn’t find the organization you’re looking for.",
       "backLabel": "Go to organizations page"
+    },
+    "other": {
+      "setActive": "You are not member in this organization so you don't have admin permission in this organization"
     }
   },
 
@@ -1027,12 +1048,15 @@
       "thead": {
         "name": "Name",
         "location": "Location",
+        "orgId": "Organization",
         "soilType": "Soil type",
-        "height": "Height",
-        "width": "Width",
-        "area": "Area"
+        "area": "Field Area"
       },
-      "trow": { "soilType": "..." }
+      "trow": {
+        "soilType": "No select",
+        "location": "No filled",
+        "area": "No filled"
+      }
     },
     "tabs": {
       "info": {
@@ -1070,11 +1094,6 @@
       }
     },
     "form": {
-      "viewDetail": {
-        "label": "View detail",
-        "title": "View detail",
-        "description": ""
-      },
       "create": {
         "label": "Add",
         "title": "Add field",
@@ -1099,7 +1118,7 @@
     "schema": {
       "errors": {
         "parse": "Invalid fields!",
-        "orgExist": "A field just belong to one organization."
+        "existOrg": "OrgId is not exist."
       },
       "name": {
         "label": "Name",
@@ -1122,22 +1141,7 @@
         "error": "Fail load organizations",
         "notFound": "Organization not found"
       },
-      "width": {
-        "label": "Width",
-        "placeholder": "Width of field",
-        "required_error": "Width is required",
-        "invalid_type_error": "Width value must be number",
-        "min": "Width value must be at least {min}",
-        "max": "Width value must be less than {max}"
-      },
-      "height": {
-        "label": "Height",
-        "placeholder": "Height of field",
-        "required_error": "Height is required",
-        "invalid_type_error": "Height value must be number",
-        "min": "Height value must be at least {min}",
-        "max": "Height value must be less than {max}"
-      },
+
       "area": {
         "label": "Area",
         "placeholder": "Area of field",
@@ -1158,6 +1162,11 @@
         "placeholder": "Shape of field eg:circle, square...",
         "max": "Shape must be less than {max} characters"
       },
+      "note": {
+        "label": "Note",
+        "placeholder": "Note",
+        "max": "Note length must be less than {max} characters"
+      },
       "soilType": {
         "label": "Soil type",
         "placeholder": "Select soil type...",
@@ -1166,7 +1175,8 @@
           "SAND": "Sand",
           "CLAY": "Clay",
           "ALLUVIUM": "Alluvium",
-          "LOAM": "Loam"
+          "LOAM": "Loam",
+          "default": "No selected"
         }
       }
     },
@@ -1205,10 +1215,10 @@
         "confirmedBy": "ConfirmedBy"
       },
       "trow": {
-        "temperature": "...",
-        "humidity": "...",
-        "atmosphericPressure": "...",
-        "rainfall": "...",
+        "temperature": "No filled",
+        "humidity": "No filled",
+        "atmosphericPressure": "No filled",
+        "rainfall": "No filled",
         "confirmedAt": "No confirmed",
         "confirmedBy": "No confirmed"
       }
@@ -1636,10 +1646,11 @@
       },
       "trow": {
         "season": "Any season",
-        "idealTemperature": "...",
-        "idealHumidity": "...",
-        "waterRequirement": "...",
-        "growDuration": "days"
+        "fertilizerType": "No select",
+        "idealTemperature": "No filled",
+        "idealHumidity": "No filled",
+        "waterRequirement": "No filled",
+        "growDuration": "No filled"
       }
     },
     "tabs": {
@@ -1832,9 +1843,11 @@
         "manufacturer": "Manufacturer"
       },
       "trow": {
-        "manufacturer": "...",
-        "applicationMethod": "...",
-        "frequencyOfUse": "..."
+        "manufacturer": "No filled",
+        "applicationMethod": "No filled",
+        "frequencyOfUse": "No filled",
+        "nutrientOfNPK": "No filled",
+        "type": "No select"
       }
     },
     "search": {
@@ -1888,7 +1901,8 @@
         "options": {
           "ORGANIC": "Organic",
           "INORGANIC": "Inorganic",
-          "BIO": "Bio"
+          "BIO": "Bio",
+          "default": "No filled"
         }
       },
       "nutrientOfNPK": {
@@ -1896,7 +1910,8 @@
         "placeholder": "1/2/1 mean 25% nitrogen, 50% potassium, 25% phosphorus",
         "required_error": "NPK ratio is required!",
         "min": "Min NPK ratio length is {min} characters",
-        "max": "Max NPK ratio's length is {max} characters"
+        "max": "Max NPK ratio's length is {max} characters",
+        "default": "No filled"
       },
       "composition": {
         "label": "Composition",
@@ -1974,9 +1989,10 @@
         "manufacturer": "Manufacturer"
       },
       "trow": {
-        "toxicityLevel": "...",
-        "manufacturer": "...",
-        "applicationMethod": "..."
+        "type": "No select",
+        "toxicityLevel": "No select",
+        "manufacturer": "No filled",
+        "applicationMethod": "No filled"
       }
     },
     "search": {
@@ -2027,8 +2043,10 @@
         "options": {
           "PESTICIDE": "Pesticide",
           "HERBICIDE": "Herbicide",
-          "FUNGICIDE": "Fungicide"
-        }
+          "FUNGICIDE": "Fungicide",
+          "default": "No selected"
+        },
+        "default": "No filled"
       },
       "ingredient": {
         "label": "Ingredient",
@@ -2046,14 +2064,16 @@
           "placeholder": "Unit",
           "error": "Fail load units",
           "notFound": "Units not found",
-          "label": "Unit"
+          "label": "Unit",
+          "default": "No selected"
         },
         "value": {
           "required_error": "Withdrawal period value is required",
           "invalid_type_error": "Withdrawal period value must be number",
           "int": "Withdrawal period value must be integer",
           "min": "Min Withdrawal period value is {min}",
-          "max": "Max Withdrawal period value is {max}"
+          "max": "Max Withdrawal period value is {max}",
+          "default": "No filled"
         },
         "label": "Withdrawal period",
         "placeholder": "Eg: 3 months"
@@ -2113,7 +2133,7 @@
   },
   "plantFertilizers": {
     "page": {
-      "title": "Recommended fertilizers for plant"
+      "title": "Fertilizers for plant"
     },
     "table": {
       "thead": {
@@ -2123,15 +2143,13 @@
           "recommendedDosage": "Recommended  dosage"
         },
         "stage": "Stage",
-        "dosage": "Plant dosage",
-        "note": "Note"
+        "dosage": "Plant dosage"
       },
       "trow": {
-        "dosage": "...",
+        "dosage": "No filled",
         "fertilizer": {
-          "recommendedDosage": "..."
-        },
-        "note": "..."
+          "recommendedDosage": "No filled"
+        }
       }
     },
     "search": {},
@@ -2161,7 +2179,12 @@
         "placeholder": "Eg: Newly planted...",
         "required_error": "Plant stage is required",
         "min": "Min stage length is {min} characters",
-        "max": "Stage's length must be less than {max} characters"
+        "max": "Stage's length must be less than {max} characters",
+        "select": {
+          "error": "Fail load plant stage",
+          "notFound": "Plant stage not found",
+          "placeholder": "Select..."
+        }
       },
       "fertilizerId": {
         "label": "Fertilizer for plants",
@@ -2212,7 +2235,7 @@
   },
   "plantPesticides": {
     "page": {
-      "title": "Recommended pesticides for plant"
+      "title": "Pesticides for plant"
     },
     "table": {
       "thead": {
@@ -2222,15 +2245,13 @@
           "recommendedDosage": "Recommended  dosage"
         },
         "stage": "Stage",
-        "dosage": "Plant dosage",
-        "note": "Note"
+        "dosage": "Plant dosage"
       },
       "trow": {
-        "dosage": "...",
+        "dosage": "No filled",
         "pesticide": {
-          "recommendedDosage": "..."
-        },
-        "note": "..."
+          "recommendedDosage": "No filled"
+        }
       }
     },
     "search": {},
@@ -2260,7 +2281,12 @@
         "placeholder": "Eg: Newly planted...",
         "required_error": "Plant stage is required",
         "min": "Min stage length is {min} characters",
-        "max": "Stage's length must be less than {max} characters"
+        "max": "Stage's length must be less than {max} characters",
+        "select": {
+          "error": "Fail load plant stage",
+          "notFound": "Plant stage not found",
+          "placeholder": "Select..."
+        }
       },
       "pesticideId": {
         "label": "Pesticide for plants",
@@ -2330,7 +2356,10 @@
         "label": "Info"
       },
       "details": {
-        "label": "Equipment details"
+        "label": "Equipment details",
+        "usages": {
+          "label": "Equipment usages"
+        }
       },
       "danger": {
         "label": "Danger"
@@ -2342,9 +2371,14 @@
         "name": "Name",
         "type": "Type",
         "brand": "Brand",
-        "countDetail": "Number of detail"
+        "countDetail": "Count equipments detail",
+        "purchaseDate": "Purchase date",
+        "purchasePrice": "Purchase price"
       },
-      "trow": {}
+      "trow": {
+        "purchaseDate": "No filled",
+        "purchasePrice": "No filled"
+      }
     },
     "search": {
       "placeholder": "Search by name...",
@@ -2477,18 +2511,22 @@
         "name": "Name",
         "status": "Status",
         "location": "Location",
-        "lastMaintenanceDate": "Last maintenance date",
-        "maintenanceSchedule": "Maintenance schedule",
+        "lastMaintenanceDate": "Last maintenance",
         "operatingHours": "Operating hours",
+        "maxOperatingHours": "Max operating hours",
+        "maxFuelConsumption": "Max fuel consumption",
+        "energyType": "Energy type",
+        "baseFuelPrice": "Base fuel price",
         "equipment": {
           "imageUrl": "Image"
         }
       },
       "trow": {
-        "location": "Unknown",
+        "location": "No filled",
         "lastMaintenanceDate": "Never",
-        "maintenanceSchedule": "Never",
-        "operatingHours": "Never"
+        "maxFuelConsumption": "No filled",
+        "energyType": "No filled",
+        "baseFuelPrice": "No filled"
       }
     },
     "search": {
@@ -2543,23 +2581,49 @@
           "AVAILABLE": "Available"
         }
       },
-      "maintenanceSchedule": {
-        "label": "Equipment maintenance Schedule",
-        "placeholder": "Eg: monthly, weekly... ",
-        "max": "Maintenance Schedule's length must be less than {max} characters"
-      },
-      "operatingHours": {
-        "label": "Equipment operating hour",
+      "maxOperatingHours": {
+        "label": "Max operating hour",
         "placeholder": "Eg: 300 hours",
-        "invalid_type_error": "Operating hour value must be number",
-        "int": "Operating hour must be integer",
-        "min": "Operating hour  value is {min}",
-        "max": "Operating hour  value is {max}"
+        "invalid_type_error": "Max Operating hour value must be number",
+        "required_error": "Max operating hours is required",
+        "int": "Max Operating hour must be integer",
+        "min": "Max Operating hour  value is {min}",
+        "max": "Max Operating hour  value is {max}"
       },
       "location": {
-        "label": "Equipment location",
-        "placeholder": "Equipment location",
+        "label": "Current location",
+        "placeholder": "Current location",
         "max": "Location's length must be less than {max} characters"
+      },
+      "maxFuelConsumption": {
+        "label": "Max fuel consumption",
+        "placeholder": "Max fuel consumption",
+        "invalid_type_error": "Max fuel consumption value must be number",
+        "min": "Max fuel consumption  value is {min}",
+        "max": "Max fuel consumption  value is {max}"
+      },
+      "unitId": {
+        "placeholder": "Unit",
+        "error": "Fail load units",
+        "notFound": "Units not found",
+        "label": "Unit"
+      },
+      "baseFuelPrice": {
+        "label": "Base fuel price",
+        "placeholder": "Base fuel price",
+        "invalid_type_error": "Base fuel price value must be number",
+        "min": "Base fuel price  value is {min}",
+        "max": "Base fuel price  value is {max}"
+      },
+      "energyType": {
+        "label": "Energy type",
+        "placeholder": "Energy type",
+        "max": "Energy's length must be less than {max} characters",
+        "select": {
+          "placeholder": "Select...",
+          "error": "Fail load energy type",
+          "notFound": "Energy type not found"
+        }
       }
     },
     "status": {
@@ -2587,9 +2651,10 @@
     "table": {
       "thead": {
         "equipmentDetail": {
-          "name": "Equipment name",
-          "status": "Equipment status",
-          "imageUrl": "Equipment image"
+          "name": "Name",
+          "status": "Status",
+          "imageUrl": "Image",
+          "location": "Location"
         },
         "activity": {
           "name": "Activity name",
@@ -2598,7 +2663,11 @@
         },
         "usageStartTime": "Created date",
         "duration": "Duration",
-        "operator": "Operator"
+        "operator": "Operator",
+        "fuelConsumption": "Fuel consumption",
+        "fuelPrice": "Fuel price",
+        "rentalPrice": "Rental Price",
+        "actualCost": "Actual cost"
       },
       "trow": {
         "activity": {
@@ -2607,7 +2676,17 @@
           "usage": "Usage",
           "unused": "Unused"
         },
-        "operator": "No operator"
+        "equipmentDetail": {
+          "location": "No filled"
+        },
+        "operator": "No operator",
+        "fuelConsumption": "No filled",
+        "fuelPrice": "No filled",
+        "rentalPrice": "No filled",
+        "actualCost": "No value calculator"
+      },
+      "tfooter": {
+        "totalCost": "Total cost of current page"
       }
     },
     "search": {
@@ -2647,10 +2726,7 @@
       "errors": {
         "parse": "Invalid equipment usages!",
         "existEquipmentDetail": "Equipment detail is not exist",
-        "existStaff": "Operator is not exist",
-        "existActivity": "Activity is not exist",
-        "existEquipmentUsage": "Equipment usage is not exist",
-        "invalidActivityStatus": "Activity status is in list:[new, in progress, pending] is possible update"
+        "equipmentDetailStatusAvailable": "Equipment not available"
       },
       "activityId": {
         "required_error": "Required activity id",
@@ -2679,16 +2755,44 @@
         "required_error": "Start usage time is required!"
       },
       "duration": {
-        "label": "Duration",
+        "label": "Duration(hours)",
         "placeholder": "Duration usage",
-        "min": "Duration must be at least {min} characters long",
-        "max": "Duration must be at most {max} characters long.",
+        "min": "Min duration value must be greater than {min} hours",
+        "max": "Max duration value must be less than {max} hours",
+        "invalid_type_error": "Duration value must be number",
         "required_error": "Duration is required"
       },
       "note": {
         "label": "Note",
         "placeholder": "Usage note",
         "max": "Note length must be at most {max} characters long."
+      },
+      "fuelConsumption": {
+        "label": "Fuel consumption",
+        "placeholder": "Fuel consumption",
+        "invalid_type_error": "Fuel consumption value must be number",
+        "min": "Fuel consumption  value is {min}",
+        "max": "Fuel consumption  value is {max}"
+      },
+      "unitId": {
+        "placeholder": "Unit",
+        "error": "Fail load units",
+        "notFound": "Units not found",
+        "label": "Unit"
+      },
+      "fuelPrice": {
+        "label": "Fuel price",
+        "placeholder": "Fuel price",
+        "invalid_type_error": "Fuel price value must be number",
+        "min": "Fuel price  value is {min}",
+        "max": "Fuel price  value is {max}"
+      },
+      "rentalPrice": {
+        "label": "Rental price",
+        "placeholder": "Rental price",
+        "invalid_type_error": "Rental price value must be number",
+        "min": "Rental price  value is {min}",
+        "max": "Rental price  value is {max}"
       }
     },
     "status": {
@@ -2747,9 +2851,12 @@
         "type": "Type",
         "quantityInStock": "Quantity in stock",
         "unitId": "Unit",
+        "basePrice": "Base price",
         "countUsages": "Count usages"
       },
-      "trow": {}
+      "trow": {
+        "basePrice": "No filled"
+      }
     },
     "search": {
       "placeholder": "Search by name...",
@@ -2764,12 +2871,12 @@
       "create": {
         "label": "Add",
         "title": "Add material",
-        "description": "Add material"
+        "description": "Add material use in farm"
       },
-      "edit": {
-        "label": "Edit",
-        "title": "Edit material",
-        "description": "Update of material"
+      "detail": {
+        "label": "Detail",
+        "title": "Material detail",
+        "description": "Material detail"
       },
       "destroy": {
         "label": "Delete",
@@ -2786,7 +2893,13 @@
         "placeholder": "Material name",
         "required_error": "Material name is required!",
         "min": "Min name length is {min} characters",
-        "max": "Name's length must be less than {max} characters"
+        "max": "Name's length must be less than {max} characters",
+        "select": {
+          "label": "Select material name",
+          "error": "Fail load material name",
+          "notFound": "Material name not found",
+          "placeholder": "Select name..."
+        }
       },
       "type": {
         "label": "Material type",
@@ -2812,8 +2925,17 @@
         "invalid_type_error": "Quantity value must be number",
         "min": "Min Quantity value is {min}",
         "max": "Max Quantity value is {max}",
+        "int": "Quantity is integer number",
         "label": "Quantity in stock",
         "placeholder": "Quantity in stock"
+      },
+      "basePrice": {
+        "required_error": "Base price value is required",
+        "invalid_type_error": "Price value must be number",
+        "min": "Min Price value is {min}",
+        "max": "Max Price value is {max}",
+        "label": "Base price",
+        "placeholder": "Base price for material"
       },
       "description": {
         "label": "Material description",
@@ -2851,26 +2973,26 @@
     "table": {
       "thead": {
         "activity": {
-          "name": "Activity name",
-          "status": "Activity Status",
           "usage": "Usage"
         },
         "material": {
-          "imageUrl": "Material image",
-          "name": "Material name",
-          "type": "Material type",
-          "quantityInStock": "Quantity in stock"
+          "imageUrl": "Image",
+          "name": "Name",
+          "type": "Type",
+          "quantityInStock": "Quantity remained"
         },
+        "createdAt": "CreatedAt",
         "quantityUsed": "Quantity used",
-        "unitId": "Unit"
+        "unitId": "Unit",
+        "actualPrice": "Actual price",
+        "actualCost": "Actual  cost"
       },
       "trow": {
-        "activity": {
-          "name": "No used",
-          "status": "No used",
-          "usage": "Usage",
-          "unused": "Unused"
-        }
+        "actualPrice": "No filled",
+        "actualCost": "No filled"
+      },
+      "tfooter": {
+        "totalCost": "Total cost of current page"
       }
     },
     "search": {
@@ -2940,8 +3062,17 @@
         "invalid_type_error": "Quantity value must be number",
         "min": "Min Quantity value is {min}",
         "max": "Max Quantity value is {max}",
+        "int": "Quantity is integer number",
         "label": "Quantity used",
         "placeholder": "Quantity used"
+      },
+      "actualPrice": {
+        "required_error": "Actual price value is required",
+        "invalid_type_error": "Price value must be number",
+        "min": "Min Price value is {min}",
+        "max": "Max Price value is {max}",
+        "label": "Actual price",
+        "placeholder": "Actual price for material usage"
       }
     },
     "status": {
@@ -2974,6 +3105,9 @@
       },
       "detail": {
         "title": "Activity info",
+        "staffs": {
+          "title": "Staffs"
+        },
         "equipment-usages": {
           "title": "Equipment usages"
         },
@@ -2989,11 +3123,14 @@
       "info": {
         "label": "Info"
       },
+      "staffs": {
+        "label": "Staffs"
+      },
       "equipment-usages": {
-        "label": "Equipment usages"
+        "label": "Equipments"
       },
       "material-usages": {
-        "label": "Material usages"
+        "label": "Materials"
       },
       "danger": {
         "label": "Danger"
@@ -3042,21 +3179,44 @@
     "table": {
       "thead": {
         "activityDate": "Activity date",
-        "name": "Activity name",
-        "status": "Activity Status",
-        "priority": "Activity Priority",
-        "estimatedDuration": "Estimated duration",
+        "name": "Name",
+        "status": "Status",
+        "priority": "Priority",
+        "estimatedDuration": "Estimate duration",
         "createdBy": "CreatedBy",
-        "assignedTo": "AssignedTo",
-        "countEquipmentUsage": "Count equipment",
-        "countMaterialUsage": "Count material"
+        "actualDuration": "Actual duration",
+        "crop": "Crop info",
+        "totalStaffCost": "Total staff cost",
+        "totalEquipmentCost": "Total equipment cost",
+        "totalMaterialCost": "Total material cost",
+        "actualCost": "Total actual cost"
       },
       "trow": {
-        "estimatedDuration": "No filled"
+        "actualDuration": "No filled",
+        "totalStaffCost": "No value calculator",
+        "totalEquipmentCost": "No value calculator",
+        "totalMaterialCost": "No value calculator",
+        "actualCost": "No value calculator",
+        "crop": {
+          "endDate": "No filled"
+        }
+      },
+      "tfooter": {
+        "totalCost": "Total cost"
       }
     },
     "search": {
-      "placeholder": "Search by name..."
+      "placeholder": "Search by name...",
+      "faceted": {
+        "status": {
+          "placeholder": "Status",
+          "error": "Fail load status"
+        },
+        "priority": {
+          "placeholder": "Priority",
+          "error": "Fail load priority"
+        }
+      }
     },
     "form": {
       "create": {
@@ -3073,19 +3233,19 @@
         "label": "View detail"
       },
       "destroy": {
-        "label": "Delete",
+        "label": "Delete activity",
         "title": "Delete activity?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "Activity can only delete when no material used and no equipment used. Are you absolutely sure? This action can not be undone!"
       },
       "complete": {
-        "label": "Finish",
+        "label": "Finish activity",
         "title": "Finish activity?",
-        "description": "Update finish activity"
+        "description": "After marking finish this activity. This activity can not be updated! Are you absolutely sure? This action can not be undone!"
       },
       "cancel": {
         "label": "Cancel Activity",
         "title": "Cancel activity?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "After cancel, material usage will not restore, equipment used will be available. Are you absolutely sure? This action can not be undone!"
       }
     },
     "schema": {
@@ -3103,19 +3263,25 @@
         "placeholder": "Activity name",
         "required_error": "Activity name is required!",
         "min": "Min name length is {min} characters",
-        "max": "Name's length must be less than {max} characters"
+        "max": "Name's length must be less than {max} characters",
+        "select": {
+          "error": "Fail load name",
+          "label": "Select",
+          "placeholder": "Select",
+          "notFound": "Name not found"
+        }
       },
       "description": {
         "label": "Activity description",
         "placeholder": "Activity description",
         "max": "Description's length must be less than {max} characters"
       },
-      "fieldId": {
-        "label": "Field",
-        "placeholder": "Select field",
-        "required_error": "Required field id",
-        "error": "Fail load fields",
-        "notFound": "Fields not found"
+      "cropId": {
+        "label": "Crop",
+        "placeholder": "Select crop...",
+        "required_error": "Required crop id",
+        "error": "Fail load crops",
+        "notFound": "Crops not found"
       },
       "activityDate": {
         "label": "Start date",
@@ -3148,29 +3314,32 @@
         "enum": "Please select priority in list"
       },
       "estimatedDuration": {
-        "label": "Estimated duration",
-        "placeholder": "Estimated duration",
-        "max": "Estimated duration's length must be less than {max} characters"
+        "label": "Estimate Duration(hours)",
+        "placeholder": "Estimate Duration",
+        "min": "Min duration value must be greater than {min} hours",
+        "max": "Max duration value must be less than {max} hours",
+        "invalid_type_error": "Duration value must be number",
+        "required_error": "Duration is required"
       },
       "actualDuration": {
-        "label": "Actual duration",
-        "placeholder": "Actual duration",
-        "max": "Actual duration's length must be less than {max} characters"
+        "label": "Actual Duration(hours)",
+        "placeholder": "Actual Duration",
+        "min": "Min duration value must be greater than {min} hours",
+        "max": "Max duration value must be less than {max} hours",
+        "invalid_type_error": "Duration value must be number",
+        "required_error": "Duration is required"
       },
-      "note": {
-        "label": "Note",
-        "placeholder": "Note",
-        "max": "Note's length must be less than {max} characters"
-      },
+
       "createdById": {
         "required_error": "Created by id required"
       },
-      "assignedToId": {
+      "assignedTo": {
         "label": "Assigned to",
         "placeholder": "Select assigned to",
         "required_error": "Assigned to is required",
         "error": "Fail load staffs",
-        "notFound": "Staffs not found"
+        "notFound": "Staffs not found",
+        "min": "At least {min} staff in activity"
       }
     },
     "status": {
@@ -3195,9 +3364,142 @@
       "backLabel": "Go to activities page"
     }
   },
+  "activityAssigned": {
+    "table": {
+      "title": "All assigned staffs",
+      "thead": {
+        "name": "Staff",
+        "email": "Email",
+        "role": "Role",
+        "baseHourlyWage": "Base hourly wage",
+        "assignedAt": "AssignedAt",
+        "actualWork": "Actual work",
+        "hourlyWage": "Actual hourly wage",
+        "actualCost": "Actual Cost"
+      },
+      "trow": {
+        "baseHourlyWage": "No filled",
+        "actualWork": "No filled",
+        "hourlyWage": "No filled",
+        "actualCost": "No value calculator"
+      },
+      "tfooter": {
+        "total": "Total actual cost"
+      }
+    },
+    "search": {
+      "placeholder": "Filter by staff name..."
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Assign staff to activity",
+        "description": "Assign staff to activity"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit assigned staff",
+        "description": "Update actual work and hourly wage "
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete assigned staff?",
+        "description": "Are you absolutely sure?"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid activity"
+      },
+      "assignedTo": {
+        "label": "Assigned to",
+        "placeholder": "Select assigned to",
+        "required_error": "Assigned to is required",
+        "error": "Fail load staffs",
+        "notFound": "Staffs not found",
+        "min": "At least {min} staff in activity"
+      },
+      "actualWork": {
+        "label": "Actual work(hours)",
+        "placeholder": "Actual work",
+        "min": "Min actual work value must be greater than {min} hours",
+        "max": "Max actual work value must be less than {max} hours",
+        "invalid_type_error": "Actual work value must be number"
+      },
+      "hourlyWage": {
+        "label": " Actual hourly wage",
+        "placeholder": "Hourly wage: 5$/h",
+        "min": "Min hourly wage is {min}",
+        "max": "Max hourly wage is {max}",
+        "invalid_type_error": "Hourly wage must be number"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Staff assigned!",
+        "edit": "Assigned staff edited!",
+        "destroy": "Assigned staff deleted!"
+      },
+      "failure": {
+        "create": "Something went wrong while creating staff!",
+        "edit": "Something went wrong while editing staff!",
+        "destroy": "Something went wrong while deleting staff!"
+      }
+    }
+  },
   "crops": {
     "page": {
-      "title": "Manage crops"
+      "title": "Manage crops",
+      "detail": {
+        "title": "Crop detail",
+        "activities": {
+          "title": "Crop activities",
+          "detail": {
+            "title": "Activity info",
+            "staffs": {
+              "title": "Staffs"
+            },
+            "equipment-usages": {
+              "title": "Equipment usages"
+            },
+            "material-usages": {
+              "title": "Material usages"
+            },
+            "danger": {
+              "title": "Activity Danger"
+            }
+          }
+        },
+        "danger": {
+          "title": "Crop danger"
+        }
+      }
+    },
+    "tabs": {
+      "info": {
+        "label": "Crop info"
+      },
+      "activities": {
+        "label": "Activities",
+        "info": {
+          "label": "Activity Info"
+        },
+        "staffs": {
+          "label": "Assigned staffs"
+        },
+        "equipment-usages": {
+          "label": "Equipment usages"
+        },
+        "material-usages": {
+          "label": "Material usages"
+        },
+        "danger": {
+          "label": "Activity danger"
+        }
+      },
+      "danger": {
+        "label": "Crop danger"
+      }
     },
     "table": {
       "thead": {
@@ -3207,13 +3509,20 @@
         "plant": "Plant",
         "estimatedYield": "Estimated Yield",
         "actualYield": "Actual Yield",
-        "status": "Status"
+        "status": "Status",
+        "field": {
+          "name": "Field name",
+          "area": "Field area"
+        }
       },
       "trow": {
-        "endDate": "...",
-        "estimatedYield": "...",
-        "actualYield": "...",
-        "status": "..."
+        "endDate": "No filled",
+        "estimatedYield": "No filled",
+        "actualYield": "No filled",
+        "status": "No filled",
+        "field": {
+          "area": "No filled"
+        }
       }
     },
     "search": {
@@ -3228,12 +3537,17 @@
       "edit": {
         "label": "Edit",
         "title": "Edit crop",
-        "description": "Update of crop"
+        "description": "Update information of crop"
       },
       "destroy": {
-        "label": "Delete",
+        "label": "Delete crop",
         "title": "Delete crop?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "Crop can only delete when no activities. This action cannot be undone!"
+      },
+      "finish": {
+        "label": "Finish crop",
+        "title": "Finish crop?",
+        "description": "After finish crop, this crop cannot update anymore. This action cannot be undone!"
       }
     },
     "schema": {
@@ -3247,11 +3561,10 @@
         "min": "Min name length is {min} characters",
         "max": "Name's length must be less than {max} characters"
       },
-      "dateRange": {
-        "startDate": {
-          "invalid_type_error": "Value select must be date",
-          "required_error": "Start-end date range required"
-        },
+      "startDate": {
+        "invalid_type_error": "Value select must be date",
+        "required_error": "Start-end date range required",
+
         "label": "Start date -  end date",
         "placeholder": "Select date range"
       },
@@ -3262,57 +3575,63 @@
         "notFound": "Plant not found",
         "error": "Fail load plant"
       },
-
+      "fieldId": {
+        "label": "Field",
+        "placeholder": "Select field...",
+        "required_error": "Field is required",
+        "notFound": "Field not found",
+        "error": "Fail load field"
+      },
+      "unitId": {
+        "required_error": "Required unit for yield",
+        "placeholder": "Unit",
+        "error": "Fail load units",
+        "notFound": "Units not found",
+        "label": "Unit"
+      },
       "estimatedYield": {
-        "unitId": {
-          "required_error": "Required unit",
-          "placeholder": "Unit",
-          "error": "Fail load units",
-          "notFound": "Units not found",
-          "label": "Unit"
-        },
-        "value": {
-          "required_error": "Estimated yield value is required",
-          "invalid_type_error": "Estimated yield value must be number",
-          "min": "Min Estimated yield value is {min}",
-          "max": "Max Estimated yield value is {max}"
-        },
+        "required_error": "Estimated yield value is required",
+        "invalid_type_error": "Estimated yield value must be number",
+        "min": "Min Estimated yield value is {min}",
+        "max": "Max Estimated yield value is {max}",
         "label": "Estimated yield",
         "placeholder": "From 0 to 1 000 000 000"
       },
       "actualYield": {
-        "unitId": {
-          "required_error": "Required unit",
-          "placeholder": "Unit",
-          "error": "Fail load units",
-          "notFound": "Units not found",
-          "label": "Unit"
-        },
-        "value": {
-          "required_error": "Actual yield value is required",
-          "invalid_type_error": "Actual yield value must be number",
-          "min": "Min Actual yield value is {min}",
-          "max": "Max Actual yield value is {max}"
-        },
+        "required_error": "Actual yield value is required",
+        "invalid_type_error": "Actual yield value must be number",
+        "min": "Min Actual yield value is {min}",
+        "max": "Max Actual yield value is {max}",
+
         "label": "Actual yield",
         "placeholder": "From 0 to 1 000 000 000"
       },
       "status": {
         "label": "Status",
-        "placeholder": "Eg: Newly planted",
-        "max": "Max status length is {max}"
+        "placeholder": "Select status...",
+        "enum": "Select crop status in list",
+        "options": {
+          "NEW": "Newly planted",
+          "MEDIUM": "Medium planted",
+          "MATURE": "Mature plant",
+          "HARVEST": "Harvest",
+          "FINISH": "Finish",
+          "default": "No selected"
+        }
       }
     },
     "status": {
       "success": {
         "create": "Crop created!",
         "edit": "Crop edited!",
-        "destroy": "Crop deleted!"
+        "destroy": "Crop deleted!",
+        "finish": "Crop finished!"
       },
       "failure": {
         "create": "Something went wrong while creating crop!",
         "edit": "Something went wrong while editing crop!",
-        "destroy": "Something went wrong while deleting crop!"
+        "destroy": "Something went wrong while deleting crop!",
+        "finish": "Crop finish fail!"
       }
     },
     "notFound": {
@@ -3553,7 +3872,7 @@
   },
   "messages": {
     "page": {
-      "title": "Chat all",
+      "title": "Chat to all staff in organizations",
       "files": {
         "title": "Uploaded files"
       }
@@ -3571,6 +3890,10 @@
         "error": "Fail load files",
         "notFound": "File not found",
         "placeholder": "Select file..."
+      },
+      "contentCaption": {
+        "label": "Caption",
+        "placeholder": "Enter file caption..."
       }
     },
     "fetch": {
@@ -3610,14 +3933,14 @@
   "files": {
     "page": {
       "my-files": {
-        "title": "My files"
+        "title": "MyFiles"
       },
       "public-files": {
-        "title": "Public files",
+        "title": "PublicFiles",
         "description": "Public storage of organization"
       },
       "my-trash": {
-        "title": "My trash",
+        "title": "MyTrash",
         "description": "After 30 days, files will be automatically removed"
       }
     },
@@ -3644,17 +3967,17 @@
       "copy": {
         "label": "Make copy",
         "title": "Make copy",
-        "description": "Make a new copy from file"
+        "description": "Make a new copy from file to MyFiles page "
       },
       "restore": {
         "label": "Restore",
         "title": "Restore file",
-        "description": "After restored, file will be move to my files page"
+        "description": "After restored, file will be move to MyFiles page"
       },
       "editDeleted": {
         "label": "Move to trash",
         "title": "Move to trash?",
-        "description": "File will be moved to owner file trash page!"
+        "description": "File will be moved to owner MyTrash page!"
       },
       "editName": {
         "label": "Edit name",
@@ -3711,7 +4034,6 @@
   "route": {
     "/admin": "Admin",
     "/admin/dashboard": "Dashboard",
-    "/admin/products": "Products",
     "/admin/categories": "Categories",
     "/admin/units": "Units",
     "/admin/jobs": "Jobs",
@@ -3721,15 +4043,12 @@
     "/admin/users": "User",
     "/admin/users/detail": "Detail",
     "/admin/staffs": "Staff",
-    "/admin/staffs/detail": "Detail",
     "/admin/organizations": "Organization",
     "/admin/organizations/detail": "Detail",
     "/admin/organizations/detail/files": "Uploaded files",
     "/admin/fields": "Field",
-    "/admin/fields/create": "Create",
     "/admin/fields/detail": "Detail",
     "/admin/fields/detail/danger": "Danger",
-    "/admin/fields/detail/crops": "Crops",
     "/admin/fields/detail/weathers": "Weathers",
     "/admin/fields/detail/soils": "Soils",
     "/admin/plants": "Plants",
@@ -3751,18 +4070,95 @@
     "/admin/materials/detail": "Info",
     "/admin/materials/detail/danger": "Danger",
     "/admin/materials/detail/usages": "Usages",
+
+    "/admin/crops": "Crops",
+    "/admin/crops/detail": "Crop detail",
+    "/admin/crops/detail/activities": "Crop activities",
+    "/admin/crops/detail/activities/detail": "Activity Info",
+    "/admin/crops/detail/activities/detail/staffs": "Staffs",
+    "/admin/crops/detail/activities/detail/material-usages": "Material usages",
+    "/admin/crops/detail/activities/detail/equipment-usages": "Equipment usages",
+    "/admin/crops/detail/activities/detail/danger": "Activity Danger",
+    "/admin/crops/detail/danger": "Crop danger",
     "/admin/activities": "Activities",
     "/admin/activities/create": "Create",
     "/admin/activities/detail": "Info",
+    "/admin/activities/detail/staffs": "Staffs",
     "/admin/activities/detail/equipment-usages": "Equipment Usages",
     "/admin/activities/detail/material-usages": "Material Usages",
     "/admin/activities/detail/danger": "Danger",
+
     "/admin/tasks": "Tasks",
     "/admin/schedules": "Schedules",
     "/admin/messages": "All messages",
     "/admin/messages/files": "Uploaded files",
     "/admin/my-files": "My files",
     "/admin/public-files": "Public files",
-    "/admin/my-trash": "My trash"
+    "/admin/my-trash": "My trash",
+
+    "/farmer": "Farmer",
+    "/farmer/staffs": "Staffs",
+
+    "/farmer/organizations": "Organization",
+    "/farmer/organizations/detail": "Detail",
+    "/farmer/organizations/detail/files": "Uploaded files",
+    "/farmer/messages": "All messages",
+    "/farmer/messages/files": "Uploaded files",
+    "/farmer/fields": "Field",
+    "/farmer/fields/detail": "Detail",
+    "/farmer/fields/detail/weathers": "Weathers",
+    "/farmer/fields/detail/soils": "Soils",
+
+    "/farmer/plants": "Plants",
+    "/farmer/plants/detail": "Detail",
+    "/farmer/plants/detail/fertilizers": "Plant Fertilizers",
+    "/farmer/plants/detail/pesticides": "Plant Pesticides",
+    "/farmer/fertilizers": "Fertilizer",
+    "/farmer/pesticides": "Pesticide",
+
+    "/farmer/equipments": "Equipment",
+    "/farmer/equipments/detail": "Info",
+    "/farmer/equipments/detail/details": "Details",
+    "/farmer/equipments/detail/details/usages": "Usages",
+    "/farmer/materials": "Material",
+    "/farmer/materials/detail": "Info",
+    "/farmer/materials/detail/usages": "Usages",
+    "/farmer/activities": "Activities",
+
+    "/farmer/activities/detail": "Info",
+    "/farmer/activities/detail/staffs": "Staffs",
+    "/farmer/activities/detail/equipment-usages": "Equipment Usages",
+    "/farmer/activities/detail/material-usages": "Material Usages"
+  },
+  "sidebar": {
+    "farm": "Farm",
+    "account": "Account",
+    "inventory": "Inventory",
+    "catalogue": "Catalogue",
+    "recruit": "Recruit",
+    "cron-job": "Cron job",
+    "storage": "Storage",
+    "dashboard": "Dashboard",
+    "activities": "Activities",
+    "crops": "Crops",
+    "users": "Users",
+    "staffs": "Staffs",
+    "organizations": "Organizations",
+    "messages": "Messages",
+    "fields": "Fields",
+    "plants": "Plants",
+    "fertilizers": "Fertilizers",
+    "pesticides": "Pesticides",
+    "materials": "Materials",
+    "equipments": "Equipments",
+    "categories": "Categories",
+    "units": "Units",
+    "jobs": "Jobs",
+    "applicants": "Applicants",
+    "tasks": "Tasks",
+    "schedules": "Schedules",
+    "my-files": "My Files",
+    "public-files": "Public Files",
+    "my-trash": "My trash"
   }
 }

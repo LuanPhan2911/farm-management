@@ -14,7 +14,7 @@ import { User } from "@clerk/nextjs/server";
 import { useFormatter, useTranslations } from "next-intl";
 import { SearchBar } from "@/components/search-bar";
 import { NavPagination } from "@/components/nav-pagination";
-import { useRouter } from "@/navigation";
+
 import { getEmailAddress, getFullName } from "@/lib/utils";
 import { UsersTableSortBy } from "./users-table-sort-by";
 
@@ -25,10 +25,7 @@ interface UsersTableProps {
 export const UsersTable = ({ data, totalPage }: UsersTableProps) => {
   const t = useTranslations("users");
   const { relativeTime } = useFormatter();
-  const router = useRouter();
-  const handleClick = (id: string) => {
-    router.push(`/admin/users/detail/${id}`);
-  };
+
   return (
     <>
       <div className="py-4 flex gap-2 lg:flex-row flex-col items-start lg:items-center">
@@ -49,20 +46,12 @@ export const UsersTable = ({ data, totalPage }: UsersTableProps) => {
         <TableBody>
           {data.map((user) => {
             return (
-              <TableRow
-                key={user.id}
-                className="cursor-pointer"
-                onClick={() => handleClick(user.id)}
-              >
+              <TableRow key={user.id}>
                 <TableCell>
-                  <UserAvatar
-                    src={user.imageUrl}
-                    size={"default"}
-                    className="rounded-full"
-                  />
+                  <UserAvatar src={user.imageUrl} className="rounded-full" />
                 </TableCell>
                 <TableCell>
-                  <div className="ml-4 space-y-1">
+                  <div className="space-y-1">
                     <p className="text-sm font-medium leading-none">
                       {getFullName(user) || t("table.trow.name")}
                     </p>

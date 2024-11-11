@@ -12,16 +12,14 @@ import {
   EquipmentSelect,
 } from "@/types";
 import { EquipmentType } from "@prisma/client";
-import { UnitValue, upsertFloatUnit } from "./units";
+import { unitInclude, UnitValue, upsertFloatUnit } from "./units";
 
 type EquipmentParams = {
   name: string;
   type: EquipmentType;
-  brand: string;
-  purchaseDate: Date;
+  brand?: string | null;
+  purchaseDate?: Date | null;
   purchasePrice?: Partial<UnitValue> | null;
-  fuelConsumption?: number | null;
-  energyType?: string | null;
   description?: string | null;
   imageUrl?: string | null;
 };
@@ -92,11 +90,7 @@ export const getEquipments = async ({
         include: {
           purchasePrice: {
             include: {
-              unit: {
-                select: {
-                  name: true,
-                },
-              },
+              ...unitInclude,
             },
           },
           _count: {
@@ -126,13 +120,17 @@ export const getEquipments = async ({
     };
   }
 };
+
+export const equipmentSelect = {
+  id: true,
+  name: true,
+  imageUrl: true,
+};
 export const getEquipmentsSelect = async (): Promise<EquipmentSelect[]> => {
   try {
     return await db.equipment.findMany({
       select: {
-        id: true,
-        name: true,
-        imageUrl: true,
+        ...equipmentSelect,
       },
     });
   } catch (error) {
@@ -150,11 +148,7 @@ export const getEquipmentById = async (
       include: {
         purchasePrice: {
           include: {
-            unit: {
-              select: {
-                name: true,
-              },
-            },
+            ...unitInclude,
           },
         },
         _count: {

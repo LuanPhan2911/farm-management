@@ -1,13 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { getTranslations } from "next-intl/server";
-import { getEquipmentUsagesByActivityId } from "@/services/equipment-usages";
-import { ActivityEquipmentUsageCreateButton } from "./_components/activity-equipment-usage-create-button";
-import { ActivityEquipmentUsagesTable } from "./_components/activity-equipment-usages-table";
-import { getCurrentStaff } from "@/services/staffs";
-import { notFound } from "next/navigation";
-import { getActivityById } from "@/services/activities";
+
+import { EquipmentUsageCreateButton } from "../../../../(inventory)/equipments/detail/[equipmentId]/details/[equipmentDetailId]/usages/_components/equipment-usage-create-button";
+import { getEquipmentUsagesByActivity } from "@/services/equipment-usages";
+import { getOnlyActivityById } from "@/services/activities";
 import { canUpdateActivityStatus } from "@/lib/permission";
+import { notFound } from "next/navigation";
+import { ActivityEquipmentUsagesTable } from "./_components/activity-equipment-usages-table";
+import { canUpdateActivity } from "@/lib/role";
 export async function generateMetadata() {
   const t = await getTranslations("activities.page.detail.equipment-usages");
   return {
@@ -15,7 +16,7 @@ export async function generateMetadata() {
   };
 }
 
-interface EquipmentUsagesPageProps {
+interface ActivityEquipmentUsagesPageProps {
   params: {
     activityId: string;
   };
@@ -27,26 +28,21 @@ interface EquipmentUsagesPageProps {
 const ActivityEquipmentUsagesPage = async ({
   params,
   searchParams,
-}: EquipmentUsagesPageProps) => {
+}: ActivityEquipmentUsagesPageProps) => {
   const t = await getTranslations("activities.page.detail.equipment-usages");
   const { query, orderBy } = searchParams;
-  const currentStaff = await getCurrentStaff();
-  const data = await getEquipmentUsagesByActivityId({
+
+  const { data, totalCost } = await getEquipmentUsagesByActivity({
     activityId: params.activityId,
     orderBy,
     query,
   });
-  if (!currentStaff) {
-    notFound();
-  }
-  const activity = await getActivityById({
-    activityId: params.activityId,
-    staffId: currentStaff.id,
-  });
+  const activity = await getOnlyActivityById(params.activityId);
   if (!activity) {
     notFound();
   }
-  const canUpdate = canUpdateActivityStatus(activity.status);
+  const canEdit = await canUpdateActivity(activity.cropId, params.activityId);
+
   return (
     <Card>
       <CardHeader>
@@ -54,12 +50,13 @@ const ActivityEquipmentUsagesPage = async ({
       </CardHeader>
       <CardContent>
         <div className="flex justify-end">
-          <ActivityEquipmentUsageCreateButton
-            currentOperator={currentStaff}
-            disabled={!canUpdate}
-          />
+          <EquipmentUsageCreateButton disabled={!canEdit} />
         </div>
-        <ActivityEquipmentUsagesTable data={data} />
+        <ActivityEquipmentUsagesTable
+          data={data}
+          totalCost={totalCost}
+          disabled={!canEdit}
+        />
       </CardContent>
     </Card>
   );

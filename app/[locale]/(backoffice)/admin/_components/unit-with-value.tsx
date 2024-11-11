@@ -23,24 +23,9 @@ interface UnitWithValueProps {
   unit?: string;
 }
 export const UnitWithValue = ({ unit, value }: UnitWithValueProps) => {
-  if (!unit) {
-    return null;
-  }
-  const [baseUnit, exponent] = splitUnitValue(unit);
-  if (!exponent) {
-    return (
-      <span>
-        {value}
-        <span className="ml-1">{baseUnit}</span>
-      </span>
-    );
-  }
-
   return (
-    <span>
-      {value}
-      <span className="ml-1">{baseUnit}</span>
-      <sup>{exponent}</sup>
-    </span>
+    <p className="text-right">
+      {value} {unit || ""}
+    </p>
   );
 };

@@ -68,7 +68,11 @@ export const PesticidesTable = ({ data, totalPage }: PesticidesTableProps) => {
                 onClick={() => handleEdit(item)}
               >
                 <TableCell>{item.name}</TableCell>
-                <TableCell>{t(`schema.type.options.${item.type}`)}</TableCell>
+                <TableCell>
+                  {item.type
+                    ? t(`schema.type.options.${item.type}`)
+                    : t("table.trow.type")}
+                </TableCell>
                 <TableCell>
                   {item.toxicityLevel
                     ? t(`schema.toxicityLevel.options.${item.toxicityLevel}`)

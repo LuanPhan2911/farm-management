@@ -51,8 +51,14 @@ export default async function RootLayout({
             formats={{
               dateTime: {
                 short: {
+                  year: "numeric",
                   day: "2-digit",
-                  month: "short",
+                  month: "2-digit",
+                },
+                long: {
+                  day: "2-digit",
+                  month: "numeric",
+                  year: "numeric",
                   hour: "2-digit",
                   minute: "2-digit",
                 },
@@ -60,6 +66,14 @@ export default async function RootLayout({
               number: {
                 precise: {
                   maximumFractionDigits: 3,
+                },
+                currency: {
+                  currency: "VND",
+                  style: "currency",
+                },
+                hour: {
+                  style: "unit",
+                  unit: "hour",
                 },
               },
               list: {

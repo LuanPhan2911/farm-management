@@ -18,6 +18,7 @@ import { ApplicantTable } from "@/types";
 import { useDialog } from "@/stores/use-dialog";
 import { JobsSelect } from "../../../_components/jobs-select";
 import { useUpdateSearchParam } from "@/hooks/use-update-search-param";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface ApplicantsTableProps {
   applicants: ApplicantTable[];
@@ -28,6 +29,7 @@ export const ApplicantsTable = ({ applicants }: ApplicantsTableProps) => {
   const { updateSearchParam, initialParam } = useUpdateSearchParam("jobId");
   const { onOpen, onClose, setPending } = useAlertDialog();
   const { onOpen: onOpenModal } = useDialog();
+  const { isSuperAdmin } = useCurrentStaffRole();
   const handleConfirm = (rows: ApplicantTable[]) => {
     setPending(true);
     const ids = rows.map((row) => row.id);
@@ -47,6 +49,9 @@ export const ApplicantsTable = ({ applicants }: ApplicantsTableProps) => {
       });
   };
   const handleCreateStaff = (data: ApplicantTable) => {
+    if (!isSuperAdmin || data.status === "CONFIRM") {
+      return;
+    }
     onOpenModal("applicant.createStaff", {
       applicant: data,
     });
@@ -73,6 +78,17 @@ export const ApplicantsTable = ({ applicants }: ApplicantsTableProps) => {
       ),
       enableSorting: false,
       enableHiding: false,
+    },
+    {
+      accessorKey: "status",
+      header: t("table.thead.status"),
+      cell: ({ row }) => {
+        const data = row.original;
+        if (data.status === ApplicantStatus.NEW) {
+          return <Badge variant={"info"}>{data.status}</Badge>;
+        }
+        return <Badge variant={"success"}>{data.status}</Badge>;
+      },
     },
     {
       accessorKey: "name",
@@ -119,17 +135,6 @@ export const ApplicantsTable = ({ applicants }: ApplicantsTableProps) => {
         return data.note || t("table.trow.note");
       },
     },
-    {
-      accessorKey: "status",
-      header: t("table.thead.status"),
-      cell: ({ row }) => {
-        const data = row.original;
-        if (data.status === ApplicantStatus.NEW) {
-          return <Badge variant={"info"}>{data.status}</Badge>;
-        }
-        return <Badge variant={"success"}>{data.status}</Badge>;
-      },
-    },
 
     {
       id: "actions",
@@ -150,6 +155,7 @@ export const ApplicantsTable = ({ applicants }: ApplicantsTableProps) => {
           onConfirm: () => handleConfirm(rows),
         });
       },
+      disabled: !isSuperAdmin,
     },
   ];
   const facetedFilters = [

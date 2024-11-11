@@ -1,12 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import { getMaterialById, getMaterialsSelect } from "@/services/materials";
-import { notFound } from "next/navigation";
+import { parseToNumber } from "@/lib/utils";
+import { getMaterialUsages } from "@/services/material-usages";
+import { getMaterialsSelect } from "@/services/materials";
 import { getTranslations } from "next-intl/server";
 import { MaterialUsageCreateButton } from "./_components/material-usages-create-button";
 import { MaterialUsagesTable } from "./_components/material-usages-table";
-import { getMaterialUsages } from "@/services/material-usages";
-import { parseToNumber } from "@/lib/utils";
+import { checkRole } from "@/lib/role";
 export async function generateMetadata() {
   const t = await getTranslations("materials.page.detail.usages");
   return {
@@ -39,16 +39,15 @@ const MaterialUsagesPage = async ({
   const t = await getTranslations("materials.page.detail.usages");
   const { query, orderBy } = searchParams;
   const page = parseToNumber(searchParams!.page, 1);
-  const material = await getMaterialById(params.materialId);
-  const { data: materialUsages, totalPage } = await getMaterialUsages({
+
+  const { data, totalPage } = await getMaterialUsages({
     materialId: params.materialId,
     page,
     query,
     orderBy,
   });
-  if (!material) {
-    notFound();
-  }
+  const canEdit = checkRole("superadmin");
+
   return (
     <Card>
       <CardHeader>
@@ -56,9 +55,9 @@ const MaterialUsagesPage = async ({
       </CardHeader>
       <CardContent>
         <div className="flex justify-end">
-          <MaterialUsageCreateButton material={material} />
+          <MaterialUsageCreateButton disabled={!canEdit} />
         </div>
-        <MaterialUsagesTable data={materialUsages} totalPage={totalPage} />
+        <MaterialUsagesTable data={data} totalPage={totalPage} />
       </CardContent>
     </Card>
   );

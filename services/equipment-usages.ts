@@ -1,17 +1,19 @@
-import {
-  ActivityExistError,
-  ActivityUpdateStatusError,
-  EquipmentDetailExistError,
-  EquipmentUsageExistError,
-  StaffExistError,
-} from "@/errors";
+import { ActivityUpdateStatusError, EquipmentUsageExistError } from "@/errors";
 import { canUpdateActivityStatus } from "@/lib/permission";
 import { db } from "@/lib/db";
-import { getStaffById } from "./staffs";
 import { LIMIT } from "@/configs/paginationConfig";
 import { getObjectSortOrder } from "@/lib/utils";
-import { EquipmentUsageTable, PaginatedResponse } from "@/types";
+import {
+  EquipmentUsageTable,
+  EquipmentUsageTableWithCost,
+  EquipmentUsageTableWithTotalCost,
+  PaginatedResponse,
+  PaginatedResponseWithTotalCost,
+} from "@/types";
 import { revalidatePath } from "next/cache";
+import { equipmentDetailSelect } from "./equipment-details";
+import { activitySelect } from "./activities";
+import { unitSelect } from "./units";
 
 type RevalidateEquipmentUsageParam = {
   equipmentDetailId: string;
@@ -32,96 +34,25 @@ export const revalidatePathEquipmentUsage = ({
     revalidatePath(`/admin/activities/detail/${activityId}/equipment-usages`);
   }
 };
-const checkCreateEquipmentUsage = async ({
-  equipmentDetailId,
-  operatorId,
-  activityId,
-}: {
-  equipmentDetailId: string;
-  operatorId?: string | null;
-  activityId?: string | null;
-}) => {
-  const equipmentDetail = await db.equipmentDetail.findUnique({
-    where: {
-      id: equipmentDetailId,
-    },
-  });
-  if (!equipmentDetail) {
-    throw new EquipmentDetailExistError();
-  }
-  if (operatorId) {
-    const operator = await getStaffById(operatorId);
-    if (!operator) {
-      throw new StaffExistError();
-    }
-  }
-  if (activityId) {
-    const activity = await db.activity.findUnique({
-      where: { id: activityId },
-      select: {
-        status: true,
-        field: {
-          select: {
-            location: true,
-          },
-        },
-      },
-    });
-    if (!activity) {
-      throw new ActivityExistError();
-    }
-    if (!canUpdateActivityStatus(activity.status)) {
-      throw new ActivityUpdateStatusError();
-    }
-  }
-  return true;
-};
-const checkUpdateEquipmentUsage = async ({
-  equipmentUsageId,
-}: {
-  equipmentUsageId: string;
-}) => {
-  const equipmentUsage = await db.equipmentUsage.findUnique({
-    where: { id: equipmentUsageId },
-    select: {
-      activity: {
-        select: {
-          status: true,
-        },
-      },
-    },
-  });
-  if (!equipmentUsage) {
-    throw new EquipmentUsageExistError();
-  }
-  if (equipmentUsage.activity) {
-    if (!canUpdateActivityStatus(equipmentUsage.activity.status)) {
-      throw new ActivityUpdateStatusError();
-    }
-  }
-  return true;
-};
+
 type EquipmentUsageParams = {
   activityId?: string | null;
   equipmentDetailId: string;
   usageStartTime: Date;
-  duration: string;
+  duration: number;
   operatorId?: string | null;
   note?: string | null;
+  fuelConsumption?: number | null;
+  unitId?: string | null;
+  fuelPrice?: number | null;
+  rentalPrice?: number | null;
 };
 
 export const createEquipmentUsage = async (params: EquipmentUsageParams) => {
-  const { activityId, operatorId, equipmentDetailId } = params;
-  await checkCreateEquipmentUsage({
-    equipmentDetailId,
-    activityId,
-    operatorId,
-  });
-
   const [updatedEquipmentDetail, equipmentUsage] = await db.$transaction([
     db.equipmentDetail.update({
       where: {
-        id: equipmentDetailId,
+        id: params.equipmentDetailId,
       },
       data: {
         status: "WORKING",
@@ -141,15 +72,19 @@ export const createEquipmentUsage = async (params: EquipmentUsageParams) => {
   return { updatedEquipmentDetail, equipmentUsage };
 };
 type EquipmentUsageUpdateParams = {
-  duration: string;
+  duration: number;
   note?: string | null;
   usageStartTime: Date;
+  fuelConsumption?: number | null;
+  unitId?: string | null;
+  fuelPrice?: number | null;
+  rentalPrice?: number | null;
+  operatorId?: string | null;
 };
 export const updateEquipmentUsage = async (
   id: string,
   params: EquipmentUsageUpdateParams
 ) => {
-  await checkUpdateEquipmentUsage({ equipmentUsageId: id });
   const updatedEquipmentUsage = await db.equipmentUsage.update({
     where: {
       id,
@@ -172,24 +107,6 @@ export const assignEquipmentUsage = async (
   id: string,
   { activityId }: { activityId: string }
 ) => {
-  const equipmentUsage = await db.equipmentUsage.findUnique({
-    where: {
-      id,
-      activityId: null,
-    },
-  });
-  if (!equipmentUsage) {
-    throw new EquipmentUsageExistError();
-  }
-  const activity = await db.activity.findUnique({
-    where: { id: activityId },
-  });
-  if (!activity) {
-    throw new ActivityExistError();
-  }
-  if (!canUpdateActivityStatus(activity.status)) {
-    throw new ActivityUpdateStatusError();
-  }
   const updatedEquipmentUsage = await db.equipmentUsage.update({
     where: {
       id,
@@ -207,23 +124,7 @@ export const assignEquipmentUsage = async (
   });
   return updatedEquipmentUsage;
 };
-export const revokeEquipmentUsage = async (
-  id: string,
-  { activityId }: { activityId: string }
-) => {
-  const equipmentUsage = await db.equipmentUsage.findUnique({
-    where: { id, activityId },
-  });
-  if (!equipmentUsage) {
-    throw new EquipmentUsageExistError();
-  }
-  const activity = await db.activity.findUnique({ where: { id: activityId } });
-  if (!activity) {
-    throw new ActivityExistError();
-  }
-  if (!canUpdateActivityStatus(activity.status)) {
-    throw new ActivityUpdateStatusError();
-  }
+export const revokeEquipmentUsage = async (id: string) => {
   const updatedEquipmentUsage = await db.equipmentUsage.update({
     where: { id },
     data: {
@@ -282,6 +183,7 @@ export const deleteEquipmentUsage = async (id: string) => {
         },
         data: {
           status: "AVAILABLE",
+          location: null,
         },
       }),
     ]
@@ -316,32 +218,19 @@ export const getEquipmentUsages = async ({
         },
 
         include: {
+          unit: {
+            select: {
+              ...unitSelect,
+            },
+          },
           equipmentDetail: {
             select: {
-              id: true,
-              name: true,
-              equipmentId: true,
-              status: true,
-              location: true,
-              equipment: {
-                select: {
-                  name: true,
-                  type: true,
-                  imageUrl: true,
-                },
-              },
+              ...equipmentDetailSelect,
             },
           },
           activity: {
             select: {
-              id: true,
-              name: true,
-              status: true,
-              priority: true,
-              createdBy: true,
-              assignedTo: true,
-              activityDate: true,
-              note: true,
+              ...activitySelect,
             },
           },
           operator: true,
@@ -374,18 +263,18 @@ export const getEquipmentUsages = async ({
   }
 };
 
-type ActivityEquipmentUsageQuery = {
-  activityId: string;
+type EquipmentUsageActivityQuery = {
   query?: string;
   orderBy?: string;
+  activityId: string;
 };
-export const getEquipmentUsagesByActivityId = async ({
+export const getEquipmentUsagesByActivity = async ({
   activityId,
   orderBy,
   query,
-}: ActivityEquipmentUsageQuery): Promise<EquipmentUsageTable[]> => {
+}: EquipmentUsageActivityQuery): Promise<EquipmentUsageTableWithTotalCost> => {
   try {
-    return await db.equipmentUsage.findMany({
+    const data = await db.equipmentUsage.findMany({
       where: {
         OR: [
           {
@@ -395,6 +284,7 @@ export const getEquipmentUsagesByActivityId = async ({
             activityId,
           },
         ],
+
         equipmentDetail: {
           name: {
             contains: query,
@@ -404,39 +294,55 @@ export const getEquipmentUsagesByActivityId = async ({
       },
 
       include: {
+        unit: {
+          select: {
+            ...unitSelect,
+          },
+        },
         equipmentDetail: {
           select: {
-            id: true,
-            name: true,
-            equipmentId: true,
-            status: true,
-            location: true,
-            equipment: {
-              select: {
-                name: true,
-                type: true,
-                imageUrl: true,
-              },
-            },
+            ...equipmentDetailSelect,
           },
         },
         activity: {
           select: {
-            id: true,
-            name: true,
-            status: true,
-            priority: true,
-            createdBy: true,
-            assignedTo: true,
-            activityDate: true,
-            note: true,
+            ...activitySelect,
           },
         },
         operator: true,
       },
       orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
     });
+
+    let totalCost: number = 0;
+    const dataWithCost = data.map((item) => {
+      let actualCost = 0;
+      if (item.activityId === null) {
+        return {
+          ...item,
+          actualCost: null,
+        };
+      }
+      if (item.rentalPrice !== null) {
+        actualCost += item.rentalPrice;
+      }
+      if (item.fuelConsumption != null && item.fuelPrice !== null) {
+        actualCost += item.fuelConsumption * item.fuelPrice;
+      }
+      totalCost += actualCost;
+      return {
+        ...item,
+        actualCost,
+      };
+    });
+    return {
+      data: dataWithCost,
+      totalCost,
+    };
   } catch (error) {
-    return [];
+    return {
+      data: [],
+      totalCost: 0,
+    };
   }
 };

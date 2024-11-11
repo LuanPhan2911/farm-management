@@ -18,29 +18,23 @@ import {
   FilesTableAction,
   FilesTableActionContextMenu,
 } from "./files-table-action";
-import { Staff } from "@prisma/client";
 
-import { isImage } from "@/lib/utils";
+import { isImage, isJson, isPDF } from "@/lib/utils";
+import { FileJson, FileText } from "lucide-react";
 interface FilesTableProps {
   data: FileWithOwner[];
   totalPage: number;
-  currentStaff: Staff;
 }
-export const FilesTable = ({
-  data,
-  totalPage,
-  currentStaff,
-}: FilesTableProps) => {
+export const FilesTable = ({ data, totalPage }: FilesTableProps) => {
   const { dateTime } = useFormatter();
   const t = useTranslations("files");
   return (
     <>
       <SearchBar isPagination placeholder={t("search.placeholder")} />
-
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{t("table.thead.url")}</TableHead>
+            <TableHead></TableHead>
             <TableHead>
               <OrderByButton column="name" label={t("table.thead.name")} />
             </TableHead>
@@ -59,20 +53,24 @@ export const FilesTable = ({
         <TableBody>
           {data.map((item) => {
             return (
-              <FilesTableActionContextMenu
-                key={item.id}
-                data={item}
-                currentStaff={currentStaff}
-              >
+              <FilesTableActionContextMenu key={item.id} data={item}>
                 <TableRow className="cursor-pointer">
                   <TableCell>
                     {isImage(item.type) ? (
-                      <div className="h-10 w-10 relative rounded-lg">
-                        <Image src={item.url} alt="Image" fill />
+                      <div className="h-10 w-10 relative">
+                        <Image
+                          src={item.url}
+                          alt="Image"
+                          fill
+                          className="rounded-md"
+                        />
                       </div>
                     ) : (
-                      <div className="h-16 w-16 flex items-center justify-center border rounded-lg">
-                        <span className="text-blue-300">{item.type}</span>
+                      <div className="h-10 w-10 flex items-center justify-center border rounded-md">
+                        {isPDF(item.type) && <FileText className="h-10 w-10" />}
+                        {isJson(item.type) && (
+                          <FileJson className="h-10 w-10" />
+                        )}
                       </div>
                     )}
                   </TableCell>
@@ -84,17 +82,9 @@ export const FilesTable = ({
                       title={item.owner.name}
                     />
                   </TableCell>
+                  <TableCell>{dateTime(item.createdAt, "long")}</TableCell>
                   <TableCell>
-                    {dateTime(item.createdAt, {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </TableCell>
-                  <TableCell>
-                    <FilesTableAction data={item} currentStaff={currentStaff} />
+                    <FilesTableAction data={item} />
                   </TableCell>
                 </TableRow>
               </FilesTableActionContextMenu>

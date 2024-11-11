@@ -74,8 +74,14 @@ export const FertilizersTable = ({
                 onClick={() => handleEdit(item)}
               >
                 <TableCell>{item.name}</TableCell>
-                <TableCell>{t(`schema.type.options.${item.type}`)}</TableCell>
-                <TableCell>{item.nutrientOfNPK}</TableCell>
+                <TableCell>
+                  {item.type
+                    ? t(`schema.type.options.${item.type}`)
+                    : t("table.trow.type")}
+                </TableCell>
+                <TableCell>
+                  {item.nutrientOfNPK || t("table.trow.nutrientOfNPK")}
+                </TableCell>
                 <TableCell>
                   {item.frequencyOfUse
                     ? t(`schema.frequencyOfUse.options.${item.frequencyOfUse}`)

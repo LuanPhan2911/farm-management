@@ -7,13 +7,14 @@ export const GET = async (req: NextRequest) => {
     const searchParams = req.nextUrl.searchParams;
     const begin = parseToDate(searchParams!.get("begin"));
     const end = parseToDate(searchParams!.get("end"));
-
+    const cropId = searchParams.get("cropId") || undefined;
     const result = await getCountActivityPriority({
       begin,
       end,
+      cropId,
     });
     return NextResponse.json(result);
   } catch (error) {
-    return NextResponse.json("Internal Error", { status: 500 });
+    return new NextResponse("Internal Error", { status: 500 });
   }
 };

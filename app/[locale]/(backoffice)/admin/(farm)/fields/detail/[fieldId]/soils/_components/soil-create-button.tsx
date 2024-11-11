@@ -51,6 +51,9 @@ export const SoilCreateButton = () => {
     defaultValues: {
       fieldId: params!.fieldId,
       createdAt: new Date(),
+      nutrientNitrogen: 0,
+      nutrientPhosphorus: 0,
+      nutrientPotassium: 0,
     },
   });
   const [isOpen, setOpen] = useState(false);
@@ -120,7 +123,7 @@ export const SoilCreateButton = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("ph.placeholder")}
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
                           disabled={isPending}
                           type="number"
@@ -145,7 +148,7 @@ export const SoilCreateButton = () => {
                         <FormControl>
                           <Input
                             placeholder={tSchema("moisture.placeholder")}
-                            value={field.value || undefined}
+                            value={field.value ?? undefined}
                             onChange={field.onChange}
                             disabled={isPending}
                             type="number"
@@ -215,7 +218,7 @@ export const SoilCreateButton = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("nutrientNitrogen.placeholder")}
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
                           disabled={isPending}
                           type="number"
@@ -238,7 +241,7 @@ export const SoilCreateButton = () => {
                           placeholder={tSchema(
                             "nutrientPhosphorus.placeholder"
                           )}
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
                           disabled={isPending}
                           type="number"
@@ -259,7 +262,7 @@ export const SoilCreateButton = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("nutrientPotassium.placeholder")}
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
                           disabled={isPending}
                           type="number"
@@ -280,7 +283,7 @@ export const SoilCreateButton = () => {
                   <div className="flex gap-x-2">
                     <FormControl>
                       <Textarea
-                        value={field.value || undefined}
+                        value={field.value ?? undefined}
                         onChange={field.onChange}
                         disabled={isPending}
                         placeholder={tSchema("note.placeholder")}
@@ -315,8 +318,8 @@ export const SoilCreateManyButton = () => {
       nutrientPhosphorus: 0.9,
       nutrientPotassium: 1.8,
       nutrientUnitId: "0c22be4a-8909-4e22-ae5e-13b69e5f0422",
-      fieldId: params!.fieldId || "f20cfcc8-eb88-4d23-9451-79e2c94c842e",
-      createdAt: "2024-08-01T07:00:00",
+      fieldId: params!.fieldId,
+      createdAt: new Date().toISOString(),
     },
   ];
   const [jsonContent, setJsonContent] = useState<Content>({

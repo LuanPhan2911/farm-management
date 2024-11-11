@@ -7,16 +7,26 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Ellipsis } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { User } from "@clerk/nextjs/server";
-import { StaffDeleteButton } from "./staff-delele-button";
-import { StaffEditRole } from "./staff-edit-role";
-
+import { isSuperAdmin } from "@/lib/permission";
+import { Staff } from "@prisma/client";
+import { DestroyButton } from "@/components/buttons/destroy-button";
+import { destroy } from "@/actions/staff";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { StaffEditButton } from "./staff-edit-button";
+import { useCurrentStaff } from "@/hooks/use-current-staff";
 interface StaffsTableActionProps {
-  data: User;
+  data: Staff;
 }
-export const StaffsTableAction = ({ data: staff }: StaffsTableActionProps) => {
+export const StaffsTableAction = ({ data }: StaffsTableActionProps) => {
   const t = useTranslations("staffs.form");
+  const { currentStaff } = useCurrentStaff();
+  const { isSuperAdmin: isSuperAdminRole } = useCurrentStaffRole();
 
+  const isOwner = currentStaff?.id === data.id;
+
+  const canEdit = isSuperAdminRole || isOwner;
+  const staffIsSuperAdmin = isSuperAdmin(data.role);
+  const canDelete = isSuperAdminRole && !staffIsSuperAdmin;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -24,10 +34,17 @@ export const StaffsTableAction = ({ data: staff }: StaffsTableActionProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
-          <StaffEditRole data={staff} label={t("editRole.label")} />
+          <StaffEditButton data={data} disabled={!canEdit} />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <StaffDeleteButton data={staff} label={t("destroy.label")} />
+          <DestroyButton
+            destroyFn={destroy}
+            id={data.id}
+            inltKey="staffs"
+            className="w-full"
+            disabled={!canDelete}
+            redirectHref="staffs"
+          />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

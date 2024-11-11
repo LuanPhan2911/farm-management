@@ -3,12 +3,10 @@ import {
   DynamicDialog,
   DynamicDialogFooter,
 } from "@/components/dialog/dynamic-dialog";
-import { Button } from "@/components/ui/button";
 import { MaterialUsageSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UnitType } from "@prisma/client";
-import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -26,35 +24,28 @@ import { edit } from "@/actions/material-usage";
 import { Input } from "@/components/ui/input";
 import { MaterialUsageTable } from "@/types";
 import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
+import { EditButton } from "@/components/buttons/edit-button";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface MaterialUsageEditButtonProps {
   data: MaterialUsageTable;
-  label: string;
   disabled?: boolean;
 }
 
 export const MaterialUsageEditButton = ({
   data,
-  label,
   disabled,
 }: MaterialUsageEditButtonProps) => {
-  const { onOpen } = useDialog();
   return (
-    <Button
+    <EditButton
+      inltKey="materialUsages"
+      type="materialUsage.edit"
       className="w-full"
-      onClick={(e) => {
-        e.stopPropagation();
-        onOpen("materialUsage.edit", {
-          materialUsage: data,
-        });
+      data={{
+        materialUsage: data,
       }}
-      size={"sm"}
-      variant={"edit"}
       disabled={disabled}
-    >
-      <Edit className="w-4 h-4 mr-2" />
-      {label}
-    </Button>
+    />
   );
 };
 export const MaterialUsageEditDialog = () => {
@@ -65,14 +56,30 @@ export const MaterialUsageEditDialog = () => {
   const t = useTranslations("materialUsages.form");
   const formSchema = MaterialUsageSchema(tSchema);
 
+  const [maxQuantityUsed, setMaxQuantityUsed] = useState<number | undefined>(
+    undefined
+  );
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+
+  const { isOnlyAdmin } = useCurrentStaffRole();
   const [id, setId] = useState("");
   useEffect(() => {
     if (data?.materialUsage) {
-      form.reset(data.materialUsage);
+      const { activityId, materialId, quantityUsed, unitId, material } =
+        data.materialUsage;
+      const actualPrice = data.materialUsage.actualPrice || material.basePrice;
+
+      form.reset({
+        activityId,
+        actualPrice,
+        materialId,
+        quantityUsed,
+        unitId,
+      });
+      setMaxQuantityUsed(quantityUsed + material.quantityInStock);
       setId(data.materialUsage.id);
     }
   }, [data, form]);
@@ -95,6 +102,8 @@ export const MaterialUsageEditDialog = () => {
         });
     });
   };
+
+  const canEdit = isOnlyAdmin && data.materialUsage?.activityId === null;
   return (
     <DynamicDialog
       isOpen={isOpenDialog}
@@ -114,10 +123,12 @@ export const MaterialUsageEditDialog = () => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("quantityUsed.placeholder")}
-                        value={field.value || undefined}
+                        value={field.value ?? undefined}
                         onChange={field.onChange}
-                        disabled={isPending}
+                        disabled={isPending || !canEdit}
                         type="number"
+                        min={1}
+                        max={maxQuantityUsed}
                       />
                     </FormControl>
                     <FormMessage />
@@ -149,7 +160,28 @@ export const MaterialUsageEditDialog = () => {
               )}
             />
           </div>
-          <DynamicDialogFooter disabled={isPending} />
+          <FormField
+            control={form.control}
+            name="actualPrice"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("actualPrice.label")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={tSchema("actualPrice.placeholder")}
+                    value={field.value ?? undefined}
+                    onChange={field.onChange}
+                    disabled={isPending || !canEdit}
+                    type="number"
+                    min={1}
+                    max={10_000_000}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <DynamicDialogFooter disabled={isPending || !canEdit} />
         </form>
       </Form>
     </DynamicDialog>

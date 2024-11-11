@@ -16,21 +16,24 @@ import {
 } from "./weather-create-button";
 import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-with-value";
 import { WeatherTable } from "@/types";
-import { WeathersTableAction } from "./weathers-table-action";
 import {
   WeatherConfirmButton,
+  WeatherDeleteManyUnConfirmedButton,
+  WeatherPinnedButton,
   WeathersConfirmedAllButton,
-} from "./weather-confirm-button";
+  WeathersExportButton,
+  WeathersTableAction,
+} from "./weathers-table-action";
+
 import { WeatherStatusValue } from "./weather-status-value";
 
 import { OrderByButton } from "@/components/buttons/order-by-button";
 import { DatePickerWithRangeButton } from "@/components/buttons/date-picker-range-button";
 import { WeatherTableFaceted } from "./weathers-table-faceted";
 import { SelectItemContent } from "@/components/form/select-item";
-import { WeatherDeleteManyUnConfirmedButton } from "./weather-delete-button";
-import { WeathersExportButton } from "./weathers-export-button";
+
 import { useDialog } from "@/stores/use-dialog";
-import { WeatherPinnedButton } from "./weather-pinned-button";
+
 import { cn } from "@/lib/utils";
 interface WeathersTableProps {
   data: WeatherTable[];
@@ -47,9 +50,9 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
   return (
     <div className="flex flex-col gap-y-4 p-4 border rounded-lg my-4">
       <div className="flex lg:justify-end gap-1.5 flex-wrap">
+        <WeatherCreateButton />
         <WeatherCreateManyButton />
         <WeathersExportButton />
-        <WeatherCreateButton />
         <WeathersConfirmedAllButton />
         <WeatherDeleteManyUnConfirmedButton />
       </div>
@@ -68,25 +71,26 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
               />
             </TableHead>
             <TableHead>{t("thead.status")} </TableHead>
-            <TableHead>
+
+            <TableHead className="text-right">
               <OrderByButton
                 column="temperature.value"
                 label={t("thead.temperature")}
               />
             </TableHead>
-            <TableHead>
+            <TableHead className="text-right">
               <OrderByButton
                 column="humidity.value"
                 label={t("thead.humidity")}
               />
             </TableHead>
-            <TableHead>
+            <TableHead className="text-right">
               <OrderByButton
                 column="atmosphericPressure.value"
                 label={t("thead.atmosphericPressure")}
               />
             </TableHead>
-            <TableHead>
+            <TableHead className="text-right">
               <OrderByButton
                 column="rainfall.value"
                 label={t("thead.rainfall")}
@@ -94,9 +98,7 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
             </TableHead>
             <TableHead>{t("thead.confirmed")} </TableHead>
             <TableHead>{t("thead.confirmedAt")} </TableHead>
-            <TableHead className="min-w-[200px]">
-              {t("thead.confirmedBy")}{" "}
-            </TableHead>
+            <TableHead>{t("thead.confirmedBy")} </TableHead>
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>
@@ -116,54 +118,46 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
                     )}
                   />
                 </TableCell>
-                <TableCell>
-                  {dateTime(item.createdAt, {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                  })}
-                </TableCell>
+                <TableCell>{dateTime(item.createdAt, "long")}</TableCell>
                 <TableCell>
                   <WeatherStatusValue status={item.status} />
                 </TableCell>
-                <TableCell className="text-center">
+
+                <TableCell className="text-right">
                   {item.temperature ? (
-                    <span>
-                      {item.temperature?.value}
-                      <sup>o</sup>
-                      {item.temperature?.unit?.name}
-                    </span>
+                    <UnitWithValue
+                      value={item.temperature.value}
+                      unit={item.temperature.unit?.name || "C"}
+                    />
                   ) : (
                     t("trow.temperature")
                   )}
                 </TableCell>
-                <TableCell className="text-center">
+                <TableCell className="text-right">
                   {item.humidity ? (
                     <UnitWithValue
                       value={item.humidity?.value}
-                      unit={item.humidity?.unit?.name}
+                      unit={item.humidity?.unit?.name || "%"}
                     />
                   ) : (
                     t("trow.humidity")
                   )}
                 </TableCell>
-                <TableCell className="text-center">
+                <TableCell className="text-right">
                   {item.atmosphericPressure ? (
                     <UnitWithValue
                       value={item.atmosphericPressure?.value}
-                      unit={item.atmosphericPressure?.unit?.name}
+                      unit={item.atmosphericPressure?.unit?.name || "hPa"}
                     />
                   ) : (
                     t("trow.atmosphericPressure")
                   )}
                 </TableCell>
-                <TableCell className="text-center">
+                <TableCell className="text-right">
                   {item.rainfall ? (
                     <UnitWithValue
                       value={item.rainfall?.value}
-                      unit={item.rainfall?.unit?.name}
+                      unit={item.rainfall?.unit?.name || "mm"}
                     />
                   ) : (
                     t("trow.rainfall")
@@ -177,7 +171,7 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
                     ? relativeTime(item.confirmedAt)
                     : t("trow.confirmedAt")}
                 </TableCell>
-                <TableCell>
+                <TableCell className="min-w-[200px]">
                   {item.confirmedBy ? (
                     <SelectItemContent
                       imageUrl={item.confirmedBy.imageUrl}

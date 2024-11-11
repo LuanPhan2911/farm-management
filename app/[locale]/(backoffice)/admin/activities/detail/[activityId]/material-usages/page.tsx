@@ -1,13 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { getTranslations } from "next-intl/server";
-import { getMaterialUsagesByActivityId } from "@/services/material-usages";
-import { ActivityMaterialUsageCreateButton } from "./_components/activity-material-usage-create-button";
-import { ActivityMaterialUsagesTable } from "./_components/activity-material-usages-table";
-import { getActivityById } from "@/services/activities";
-import { getCurrentStaff } from "@/services/staffs";
+
+import { getMaterialUsagesByActivity } from "@/services/material-usages";
+import { MaterialUsageCreateButton } from "../../../../(inventory)/materials/detail/[materialId]/usages/_components/material-usages-create-button";
+import { getOnlyActivityById } from "@/services/activities";
 import { notFound } from "next/navigation";
 import { canUpdateActivityStatus } from "@/lib/permission";
+import { ActivityMaterialUsagesTable } from "./_components/activity-material-usages-table";
+import { canUpdateActivity } from "@/lib/role";
 export async function generateMetadata() {
   const t = await getTranslations("activities.page.detail.material-usages");
   return {
@@ -30,23 +31,18 @@ const ActivityMaterialUsagesPage = async ({
 }: MaterialUsagesPageProps) => {
   const t = await getTranslations("activities.page.detail.material-usages");
   const { query, orderBy } = searchParams;
-  const currentStaff = await getCurrentStaff();
-  if (!currentStaff) {
-    notFound();
-  }
-  const activity = await getActivityById({
-    activityId: params.activityId,
-    staffId: currentStaff.id,
-  });
-  if (!activity) {
-    notFound();
-  }
-  const materials = await getMaterialUsagesByActivityId({
+
+  const { data, totalCost } = await getMaterialUsagesByActivity({
     activityId: params.activityId,
     orderBy,
     query,
   });
-  const canUpdate = canUpdateActivityStatus(activity.status);
+  const activity = await getOnlyActivityById(params.activityId);
+  if (!activity) {
+    notFound();
+  }
+  const canEdit = await canUpdateActivity(activity.cropId, params.activityId);
+
   return (
     <Card>
       <CardHeader>
@@ -54,9 +50,13 @@ const ActivityMaterialUsagesPage = async ({
       </CardHeader>
       <CardContent>
         <div className="flex justify-end">
-          <ActivityMaterialUsageCreateButton disabled={!canUpdate} />
+          <MaterialUsageCreateButton disabled={!canEdit} />
         </div>
-        <ActivityMaterialUsagesTable data={materials} />
+        <ActivityMaterialUsagesTable
+          data={data}
+          totalCost={totalCost}
+          disabled={!canEdit}
+        />
       </CardContent>
     </Card>
   );

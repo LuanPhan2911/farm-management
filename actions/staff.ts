@@ -2,16 +2,14 @@
 
 import { sendStaffCreateUser } from "@/lib/mail";
 import { errorResponse, successResponse } from "@/lib/utils";
-import { StaffSchema, UserSchema } from "@/schemas";
+import { StaffSchema, StaffUpdateSchema } from "@/schemas";
+import { createStaff, deleteStaff, updateStaff } from "@/services/staffs";
 import {
   createUser,
-  deleteUser,
   getUserByEmail,
-  updateUser,
   updateUserMetadata,
 } from "@/services/users";
 import { ActionResponse } from "@/types";
-import { StaffRole } from "@prisma/client";
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -28,13 +26,37 @@ export const create = async (
     if (!validatedFields.success) {
       return errorResponse(tSchema("errors.parse"));
     }
-    const { email, name, receiverEmail, password } = validatedFields.data;
+    const {
+      email,
+      name,
+      receiverEmail,
+      password,
+      role,
+      address,
+      baseHourlyWage,
+      phone,
+    } = validatedFields.data;
     const existingUser = await getUserByEmail(email);
     if (existingUser) {
       return errorResponse(tSchema("errors.exist"));
     }
 
-    const user = await createUser({ ...validatedFields.data });
+    const user = await createUser({
+      email,
+      name,
+      password,
+      role,
+      address,
+      phone,
+    });
+    const staff = await createStaff(user.id, {
+      email,
+      name,
+      role,
+      address,
+      baseHourlyWage,
+      phone,
+    });
 
     //TODO: webhook for create staff
     if (!!receiverEmail) {
@@ -51,58 +73,44 @@ export const create = async (
   }
 };
 
-export const editRole = async (
-  userId: string,
-  role: StaffRole
+export const edit = async (
+  values: z.infer<ReturnType<typeof StaffUpdateSchema>>,
+  id: string
 ): Promise<ActionResponse> => {
+  const tSchema = await getTranslations("staffs.schema");
   const tStatus = await getTranslations("staffs.status");
-  try {
-    const user = await updateUserMetadata(userId, {
-      role,
-    });
+  const paramsSchema = StaffUpdateSchema(tSchema);
+  const validatedFields = paramsSchema.safeParse(values);
 
-    //TODO webhook for update staff role
+  try {
+    if (!validatedFields.success) {
+      return errorResponse(tSchema("errors.parse"));
+    }
+
+    const staff = await updateStaff(id, {
+      ...validatedFields.data,
+    });
     revalidatePath("/admin/staffs");
-    revalidatePath(`/admin/staffs/detail/${userId}`);
-    return successResponse(tStatus("success.editRole"));
+    return successResponse(tStatus("success.edit"));
   } catch (error) {
-    return errorResponse(tStatus("failure.editRole"));
+    return errorResponse(tStatus("failure.edit"));
   }
 };
 
-export const destroy = async (id: string): Promise<ActionResponse> => {
+export const destroy = async (externalId: string): Promise<ActionResponse> => {
   const tStatus = await getTranslations("staffs.status");
 
   try {
-    const user = await deleteUser(id);
+    const user = await updateUserMetadata(externalId, {
+      role: undefined,
+    });
+    const staff = await deleteStaff(externalId);
 
     //TODO: webhook for delete staff
+    revalidatePath(`/admin/users`);
     revalidatePath("/admin/staffs");
     return successResponse(tStatus("success.destroy"));
   } catch (error) {
     return errorResponse(tStatus("failure.destroy"));
-  }
-};
-export const edit = async (
-  values: z.infer<ReturnType<typeof UserSchema>>,
-  userId: string
-): Promise<ActionResponse> => {
-  const tSchema = await getTranslations("users.schema");
-  const tStatus = await getTranslations("users.status");
-  const paramsSchema = UserSchema(tSchema);
-  const validatedFields = paramsSchema.safeParse(values);
-
-  if (!validatedFields.success) {
-    return errorResponse(tSchema("errors.parse"));
-  }
-
-  try {
-    const user = await updateUser(userId, validatedFields.data);
-
-    revalidatePath("/admin/users");
-    revalidatePath(`/admin/users/detail/${user.id}`);
-    return successResponse(tStatus("success.edit"));
-  } catch (error) {
-    return errorResponse(tStatus("failure.edit"));
   }
 };

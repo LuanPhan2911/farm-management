@@ -121,3 +121,9 @@ export const getMessageById = async (id: string) => {
     },
   });
 };
+
+export const deleteMessagesByOrgId = async (orgId: string) => {
+  return await db.message.deleteMany({
+    where: { orgId },
+  });
+};

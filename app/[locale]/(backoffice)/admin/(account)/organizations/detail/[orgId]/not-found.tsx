@@ -9,7 +9,7 @@ const OrgNotFoundPage = () => {
       title={t("title")}
       description={t("description")}
       backButtonLabel={t("backLabel")}
-      backButtonUrl="/admin/organizations"
+      backButtonUrl="organizations"
     />
   );
 };

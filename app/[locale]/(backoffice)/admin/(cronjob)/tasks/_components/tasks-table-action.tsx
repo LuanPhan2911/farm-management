@@ -7,17 +7,19 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Play } from "lucide-react";
 
 import { useTranslations } from "next-intl";
 import { TaskResponse } from "@/types";
-import { TaskDeleteButton } from "./task-delete-button";
-import { TaskRunButton } from "./task-run-button";
+import { destroy, run } from "@/actions/task";
+import { DestroyButton } from "@/components/buttons/destroy-button";
+import { ActionButton } from "@/components/buttons/action-button";
 interface TasksTableActionProps {
   data: TaskResponse;
 }
 export const TasksTableAction = ({ data }: TasksTableActionProps) => {
   const t = useTranslations("tasks.form");
+  const disabled = data.status !== "queued";
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -27,10 +29,25 @@ export const TasksTableAction = ({ data }: TasksTableActionProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-fit">
         <DropdownMenuItem>
-          <TaskRunButton data={data} label={t("run.label")} />
+          <ActionButton
+            actionFn={() => run(data.id)}
+            label={t("run.label")}
+            title={t("run.title")}
+            description={t("run.description")}
+            className="w-full"
+            icon={Play}
+            variant={"blue"}
+            size={"sm"}
+            disabled={disabled}
+          />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <TaskDeleteButton data={data} label={t("destroy.label")} />
+          <DestroyButton
+            destroyFn={destroy}
+            id={data.id}
+            inltKey="tasks"
+            className="w-full"
+          />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

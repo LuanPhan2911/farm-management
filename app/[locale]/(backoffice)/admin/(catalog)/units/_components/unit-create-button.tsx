@@ -88,7 +88,7 @@ export const UnitCreateButton = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("name.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />
@@ -110,7 +110,7 @@ export const UnitCreateButton = () => {
                       onChange={field.onChange}
                       options={Object.values(UnitType).map((item) => {
                         return {
-                          label: t(`schema.type.options.${item}`),
+                          label: tSchema(`type.options.${item}`),
                           value: item,
                         };
                       })}
@@ -131,7 +131,7 @@ export const UnitCreateButton = () => {
                   <FormControl>
                     <Textarea
                       placeholder={tSchema("description.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />

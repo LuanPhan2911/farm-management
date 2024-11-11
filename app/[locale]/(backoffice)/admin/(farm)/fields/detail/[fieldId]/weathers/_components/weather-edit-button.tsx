@@ -3,14 +3,12 @@ import {
   DynamicDialog,
   DynamicDialogFooter,
 } from "@/components/dialog/dynamic-dialog";
-import { Button } from "@/components/ui/button";
 import { WeatherSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UnitType, WeatherStatus } from "@prisma/client";
-import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -27,35 +25,30 @@ import { SelectOptions } from "@/components/form/select-options";
 import { WeatherTable } from "@/types";
 import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { edit } from "@/actions/weather";
-import { convertNullToUndefined } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { useAuth } from "@clerk/nextjs";
+import { EditButton } from "@/components/buttons/edit-button";
 
 interface WeatherEditButtonProps {
   data: WeatherTable;
-  label: string;
 }
 
-export const WeatherEditButton = ({ data, label }: WeatherEditButtonProps) => {
-  const { onOpen } = useDialog();
-  const { isFarmer } = useCurrentStaffRole();
-  const disabled = data.confirmed && isFarmer;
+export const WeatherEditButton = ({ data }: WeatherEditButtonProps) => {
+  const { isSuperAdmin } = useCurrentStaffRole();
+  const { has } = useAuth();
+  const isAdminOrg = has?.({ role: "org:field" });
+  const canEdit = !data.confirmed || isAdminOrg || isSuperAdmin;
   return (
-    <Button
+    <EditButton
+      inltKey="weathers"
+      type="weather.edit"
       className="w-full"
-      onClick={(e) => {
-        e.stopPropagation();
-        onOpen("weather.edit", {
-          weather: data,
-        });
+      data={{
+        weather: data,
       }}
-      size={"sm"}
-      variant={"edit"}
-      disabled={disabled}
-    >
-      <Edit className="w-4 h-4 mr-2" />
-      {label}
-    </Button>
+      disabled={!canEdit}
+    />
   );
 };
 export const WeatherEditDialog = () => {
@@ -145,7 +138,7 @@ export const WeatherEditDialog = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("temperature.placeholder")}
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
                           disabled={isPending}
                           type="number"
@@ -191,7 +184,7 @@ export const WeatherEditDialog = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("humidity.placeholder")}
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
                           disabled={isPending}
                           type="number"
@@ -243,7 +236,7 @@ export const WeatherEditDialog = () => {
                           placeholder={tSchema(
                             "atmosphericPressure.placeholder"
                           )}
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
                           disabled={isPending}
                           type="number"
@@ -295,7 +288,7 @@ export const WeatherEditDialog = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("rainfall.placeholder")}
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
                           disabled={isPending}
                           type="number"
@@ -340,7 +333,7 @@ export const WeatherEditDialog = () => {
                 <div className="flex gap-x-2">
                   <FormControl>
                     <Textarea
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                       placeholder={tSchema("note.placeholder")}

@@ -55,7 +55,9 @@ export const JobCardItem = ({ data, active }: JobCardProps) => {
       </div>
       <div className="text-sm font-semibold">
         <span> {tJob("expiredAt.label")}: </span>
-        <Badge variant={"destructive"}>{format.dateTime(data.expiredAt)}</Badge>
+        <Badge variant={"destructive"}>
+          {format.dateTime(data.expiredAt, "short")}
+        </Badge>
       </div>
     </button>
   );

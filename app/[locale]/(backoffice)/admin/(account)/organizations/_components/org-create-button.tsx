@@ -25,19 +25,25 @@ import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
-import slugify from "slugify";
 import { toast } from "sonner";
 import { z } from "zod";
 import { StaffsSelect } from "../../../_components/staffs-select";
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
-interface OrgCreateButtonProps {}
+import { useCurrentStaff } from "@/hooks/use-current-staff";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { useAuth } from "@clerk/nextjs";
+import { getSlug } from "@/lib/utils";
 
-export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
+export const OrgCreateButton = () => {
   const t = useTranslations("organizations.form");
   const tSchema = useTranslations("organizations.schema");
   const formSchema = OrganizationSchema(tSchema);
 
+  const { orgId } = useAuth();
   const [isPending, startTransition] = useTransition();
+  const { currentStaff } = useCurrentStaff();
+
+  const { isSuperAdmin } = useCurrentStaffRole();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -45,18 +51,14 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
   const [isOpen, setOpen] = useState(false);
   const orgName = form.watch("name");
   useEffect(() => {
-    if (!orgName) {
-      return;
-    }
-    form.setValue(
-      "slug",
-      slugify(orgName, {
-        lower: true,
-        replacement: "-",
-        trim: true,
-      })
-    );
+    form.setValue("slug", getSlug(orgName));
   }, [orgName, form]);
+  useEffect(() => {
+    if (currentStaff) {
+      form.setValue("createdBy", currentStaff.id);
+    }
+  }, [currentStaff, form]);
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       create(values)
@@ -75,10 +77,12 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
     });
   };
 
+  const canCreate = isSuperAdmin;
+
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={"success"} size={"sm"}>
+        <Button variant={"success"} size={"sm"} disabled={!canCreate}>
           <Plus className="h-4 w-4 mr-2" />{" "}
           <span className="text-sm font-semibold">{t("create.label")}</span>
         </Button>
@@ -102,7 +106,7 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("name.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />
@@ -121,7 +125,7 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("slug.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />
@@ -138,17 +142,16 @@ export const OrgCreateButton = ({}: OrgCreateButtonProps) => {
                 <FormItem>
                   <FormLabel>{tSchema("createdBy.label")}</FormLabel>
                   <FormControl>
-                    <div className="block">
-                      <StaffsSelect
-                        defaultValue={field.value}
-                        onChange={field.onChange}
-                        error={tSchema("createdBy.error")}
-                        placeholder={tSchema("createdBy.placeholder")}
-                        notFound={tSchema("createdBy.notFound")}
-                        disabled={isPending}
-                        adminOnly
-                      />
-                    </div>
+                    <StaffsSelect
+                      orgId={orgId}
+                      defaultValue={field.value}
+                      onChange={field.onChange}
+                      error={tSchema("createdBy.error")}
+                      placeholder={tSchema("createdBy.placeholder")}
+                      notFound={tSchema("createdBy.notFound")}
+                      disabled={isPending}
+                      superAdminOnly
+                    />
                   </FormControl>
 
                   <FormMessage />

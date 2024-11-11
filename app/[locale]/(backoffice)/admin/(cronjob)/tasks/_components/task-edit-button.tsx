@@ -144,7 +144,7 @@ export const TaskEditSheet = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("request.url.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />

@@ -65,6 +65,12 @@ export function generateEmail(name: string) {
 export function getFullName(user: User) {
   return `${user.firstName || ""} ${user.lastName || ""}`.trim();
 }
+export function mergeName(
+  firstName: string | null | undefined,
+  lastName: string | null | undefined
+) {
+  return `${firstName || ""} ${lastName || ""}`.trim();
+}
 export function getEmailAddress(user: User) {
   const email = user.emailAddresses;
   return email[0].emailAddress;
@@ -370,6 +376,24 @@ export function isImage(type: string): boolean {
   return imageMimeTypes.includes(type);
 }
 
-export function dateToString(date: Date | undefined): string | undefined {
-  return date ? `${format(date, "yyy-MM-dd")}` : undefined;
+export function isPDF(type: string): boolean {
+  return type === "application/pdf";
+}
+export function isJson(type: string): boolean {
+  return type === "application/json";
+}
+export function dateToString(
+  date: Date | undefined | null
+): string | undefined {
+  return date ? `${format(date, "yyyy-MM-dd")}` : undefined;
+}
+
+export function getSlug(value: string | null | undefined) {
+  if (!value) {
+    return "";
+  }
+  return slugify(value, {
+    lower: true,
+    replacement: "-",
+  });
 }

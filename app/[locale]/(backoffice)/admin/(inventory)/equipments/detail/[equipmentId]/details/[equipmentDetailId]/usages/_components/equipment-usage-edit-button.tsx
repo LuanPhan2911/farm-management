@@ -3,11 +3,9 @@ import {
   DynamicDialog,
   DynamicDialogFooter,
 } from "@/components/dialog/dynamic-dialog";
-import { Button } from "@/components/ui/button";
 import { EquipmentUsageSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -26,35 +24,34 @@ import { Input } from "@/components/ui/input";
 import { EquipmentUsageTable } from "@/types";
 import { DatePickerWithTime } from "@/components/form/date-picker-with-time";
 import { Textarea } from "@/components/ui/textarea";
+import { EditButton } from "@/components/buttons/edit-button";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
+import { UnitType } from "@prisma/client";
+import { StaffsSelect } from "@/app/[locale]/(backoffice)/admin/_components/staffs-select";
+import { useAuth } from "@clerk/nextjs";
 
 interface EquipmentUsageEditButtonProps {
   data: EquipmentUsageTable;
-  label: string;
+
   disabled?: boolean;
 }
 
 export const EquipmentUsageEditButton = ({
   data,
-  label,
+
   disabled,
 }: EquipmentUsageEditButtonProps) => {
-  const { onOpen } = useDialog();
   return (
-    <Button
+    <EditButton
+      inltKey="equipmentUsages"
+      type="equipmentUsage.edit"
       className="w-full"
-      onClick={(e) => {
-        e.stopPropagation();
-        onOpen("equipmentUsage.edit", {
-          equipmentUsage: data,
-        });
+      data={{
+        equipmentUsage: data,
       }}
-      size={"sm"}
-      variant={"edit"}
       disabled={disabled}
-    >
-      <Edit className="w-4 h-4 mr-2" />
-      {label}
-    </Button>
+    />
   );
 };
 export const EquipmentUsageEditDialog = () => {
@@ -69,6 +66,9 @@ export const EquipmentUsageEditDialog = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+
+  const { isOnlyAdmin } = useCurrentStaffRole();
+  const { orgId } = useAuth();
   const [id, setId] = useState("");
   useEffect(() => {
     if (data?.equipmentUsage) {
@@ -95,6 +95,9 @@ export const EquipmentUsageEditDialog = () => {
         });
     });
   };
+
+  const canEdit = isOnlyAdmin && data.equipmentUsage?.activityId === null;
+
   return (
     <DynamicDialog
       isOpen={isOpenDialog}
@@ -115,7 +118,7 @@ export const EquipmentUsageEditDialog = () => {
                     <DatePickerWithTime
                       onChange={field.onChange}
                       placeholder={tSchema("usageStartTime.placeholder")}
-                      disabled={isPending}
+                      disabled={isPending || !canEdit}
                       value={field.value}
                       disabledDateRange={{
                         before: new Date(),
@@ -136,9 +139,128 @@ export const EquipmentUsageEditDialog = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("duration.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
-                      disabled={isPending}
+                      disabled={isPending || !canEdit}
+                      type="number"
+                      min={1}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="grid lg:grid-cols-2 gap-2">
+            <FormField
+              control={form.control}
+              name="operatorId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("operatorId.label")}</FormLabel>
+                  <FormControl>
+                    <StaffsSelect
+                      orgId={orgId}
+                      onChange={field.onChange}
+                      defaultValue={field.value ?? undefined}
+                      placeholder={tSchema("operatorId.placeholder")}
+                      disabled={isPending || !canEdit}
+                      error={tSchema("operatorId.error")}
+                      notFound={tSchema("operatorId.notFound")}
+                    />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="grid grid-cols-4 gap-2">
+              <div className="col-span-3">
+                <FormField
+                  control={form.control}
+                  name="fuelConsumption"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{tSchema("fuelConsumption.label")}</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder={tSchema("fuelConsumption.placeholder")}
+                          value={field.value ?? undefined}
+                          onChange={field.onChange}
+                          disabled={isPending || !canEdit}
+                          type="number"
+                          min={0}
+                          max={10_000}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={form.control}
+                name="unitId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("unitId.label")}</FormLabel>
+                    <FormControl>
+                      <UnitsSelect
+                        onChange={field.onChange}
+                        placeholder={tSchema("unitId.placeholder")}
+                        unitType={UnitType.VOLUME}
+                        disabled={isPending || !canEdit}
+                        className="w-full"
+                        error={tSchema("unitId.error")}
+                        notFound={tSchema("unitId.notFound")}
+                        defaultValue={field.value}
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-2">
+            <FormField
+              control={form.control}
+              name="fuelPrice"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("fuelPrice.label")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={tSchema("fuelPrice.placeholder")}
+                      value={field.value ?? undefined}
+                      onChange={field.onChange}
+                      disabled={isPending || !canEdit}
+                      type="number"
+                      min={0}
+                      max={1_000_000}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="rentalPrice"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("rentalPrice.label")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={tSchema("rentalPrice.placeholder")}
+                      value={field.value ?? undefined}
+                      onChange={field.onChange}
+                      disabled={isPending || !canEdit}
+                      type="number"
+                      min={0}
+                      max={10_000_000}
                     />
                   </FormControl>
                   <FormMessage />
@@ -156,9 +278,9 @@ export const EquipmentUsageEditDialog = () => {
                 <FormControl>
                   <Textarea
                     placeholder={tSchema("note.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
-                    disabled={isPending}
+                    disabled={isPending || !canEdit}
                   />
                 </FormControl>
                 <FormMessage />
@@ -166,7 +288,7 @@ export const EquipmentUsageEditDialog = () => {
             )}
           />
 
-          <DynamicDialogFooter disabled={isPending} />
+          <DynamicDialogFooter disabled={isPending || !canEdit} />
         </form>
       </Form>
     </DynamicDialog>

@@ -3,12 +3,10 @@ import {
   DynamicDialog,
   DynamicDialogFooter,
 } from "@/components/dialog/dynamic-dialog";
-import { Button } from "@/components/ui/button";
 import { PesticideSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PesticideType, UnitType, ToxicityLevel } from "@prisma/client";
-import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -28,32 +26,25 @@ import { PesticideTable } from "@/types";
 import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { edit } from "@/actions/pesticide";
 import { Textarea } from "@/components/ui/textarea";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { EditButton } from "@/components/buttons/edit-button";
 
 interface PesticideEditButtonProps {
   data: PesticideTable;
-  label: string;
 }
 
-export const PesticideEditButton = ({
-  data,
-  label,
-}: PesticideEditButtonProps) => {
-  const { onOpen } = useDialog();
+export const PesticideEditButton = ({ data }: PesticideEditButtonProps) => {
+  const { isOnlyAdmin: canEdit } = useCurrentStaffRole();
   return (
-    <Button
+    <EditButton
+      inltKey="pesticides"
+      type="pesticide.edit"
       className="w-full"
-      onClick={(e) => {
-        e.stopPropagation();
-        onOpen("pesticide.edit", {
-          pesticide: data,
-        });
+      data={{
+        pesticide: data,
       }}
-      size={"sm"}
-      variant={"edit"}
-    >
-      <Edit className="w-4 h-4 mr-2" />
-      {label}
-    </Button>
+      disabled={!canEdit}
+    />
   );
 };
 export const PesticideEditDialog = () => {
@@ -68,6 +59,7 @@ export const PesticideEditDialog = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+  const { isOnlyAdmin: canEdit } = useCurrentStaffRole();
   const [id, setId] = useState("");
   useEffect(() => {
     if (data?.pesticide) {
@@ -99,29 +91,50 @@ export const PesticideEditDialog = () => {
       isOpen={isOpenDialog}
       title={t("form.edit.title")}
       description={t("form.edit.description")}
-      className="max-w-4xl overflow-y-auto max-h-screen"
+      className="max-w-6xl"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("name.label")}</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={tSchema("name.placeholder")}
-                    value={field.value || undefined}
-                    onChange={field.onChange}
-                    disabled={isPending}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <div className="grid lg:grid-cols-2 gap-2">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("name.label")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={tSchema("name.placeholder")}
+                      value={field.value ?? undefined}
+                      onChange={field.onChange}
+                      disabled={isPending || !canEdit}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="manufacturer"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("manufacturer.label")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={tSchema("manufacturer.placeholder")}
+                      value={field.value ?? undefined}
+                      onChange={field.onChange}
+                      disabled={isPending || !canEdit}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="grid lg:grid-cols-3 gap-2">
             <FormField
               control={form.control}
               name="type"
@@ -138,8 +151,8 @@ export const PesticideEditDialog = () => {
                           value: item,
                         };
                       })}
-                      disabled={isPending}
                       defaultValue={field.value}
+                      disabled={isPending || !canEdit}
                     />
                   </FormControl>
                   <FormMessage />
@@ -163,7 +176,25 @@ export const PesticideEditDialog = () => {
                         };
                       })}
                       defaultValue={field.value}
-                      disabled={isPending}
+                      disabled={isPending || !canEdit}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="applicationMethod"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("applicationMethod.label")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={tSchema("applicationMethod.placeholder")}
+                      value={field.value ?? undefined}
+                      onChange={field.onChange}
+                      disabled={isPending || !canEdit}
                     />
                   </FormControl>
                   <FormMessage />
@@ -171,126 +202,111 @@ export const PesticideEditDialog = () => {
               )}
             />
           </div>
-
-          <div className="grid grid-cols-4 gap-2">
-            <div className="col-span-3">
+          <div className="grid lg:grid-cols-2 gap-2">
+            <div className="grid grid-cols-4 gap-2">
+              <div className="col-span-3">
+                <FormField
+                  control={form.control}
+                  name="recommendedDosage.value"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        {tSchema("recommendedDosage.label")}
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder={tSchema("recommendedDosage.placeholder")}
+                          value={field.value ?? undefined}
+                          onChange={field.onChange}
+                          disabled={isPending || !canEdit}
+                          type="number"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <FormField
                 control={form.control}
-                name="recommendedDosage.value"
+                name="recommendedDosage.unitId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{tSchema("recommendedDosage.label")}</FormLabel>
+                    <FormLabel>
+                      {tSchema("recommendedDosage.unitId.label")}
+                    </FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder={tSchema("recommendedDosage.placeholder")}
-                        value={field.value || undefined}
+                      <UnitsSelect
                         onChange={field.onChange}
-                        disabled={isPending}
-                        type="number"
+                        placeholder={tSchema(
+                          "recommendedDosage.unitId.placeholder"
+                        )}
+                        unitType={UnitType.VOLUME}
+                        disabled={isPending || !canEdit}
+                        className="w-full"
+                        error={tSchema("recommendedDosage.unitId.error")}
+                        notFound={tSchema("recommendedDosage.unitId.notFound")}
+                        defaultValue={field.value}
                       />
                     </FormControl>
+
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-            <FormField
-              control={form.control}
-              name="recommendedDosage.unitId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {tSchema("recommendedDosage.unitId.label")}
-                  </FormLabel>
-                  <FormControl>
-                    <UnitsSelect
-                      onChange={field.onChange}
-                      placeholder={tSchema(
-                        "recommendedDosage.unitId.placeholder"
-                      )}
-                      unitType={UnitType.VOLUME}
-                      disabled={isPending}
-                      className="w-full"
-                      error={tSchema("recommendedDosage.unitId.error")}
-                      notFound={tSchema("recommendedDosage.unitId.notFound")}
-                      defaultValue={field.value}
-                    />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="grid grid-cols-4 gap-2">
-            <div className="col-span-3">
+            <div className="grid grid-cols-4 gap-2">
+              <div className="col-span-3">
+                <FormField
+                  control={form.control}
+                  name="withdrawalPeriod.value"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{tSchema("withdrawalPeriod.label")}</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder={tSchema("withdrawalPeriod.placeholder")}
+                          value={field.value ?? undefined}
+                          onChange={field.onChange}
+                          disabled={isPending || !canEdit}
+                          type="number"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <FormField
                 control={form.control}
-                name="withdrawalPeriod.value"
+                name="withdrawalPeriod.unitId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{tSchema("withdrawalPeriod.label")}</FormLabel>
+                    <FormLabel>
+                      {tSchema("withdrawalPeriod.unitId.label")}
+                    </FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder={tSchema("withdrawalPeriod.placeholder")}
-                        value={field.value || undefined}
+                      <UnitsSelect
                         onChange={field.onChange}
-                        disabled={isPending}
-                        type="number"
+                        placeholder={tSchema(
+                          "withdrawalPeriod.unitId.placeholder"
+                        )}
+                        unitType={UnitType.DATE}
+                        disabled={isPending || !canEdit}
+                        className="w-full"
+                        error={tSchema("withdrawalPeriod.unitId.error")}
+                        notFound={tSchema("withdrawalPeriod.unitId.notFound")}
+                        defaultValue={field.value}
                       />
                     </FormControl>
+
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-            <FormField
-              control={form.control}
-              name="withdrawalPeriod.unitId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {tSchema("withdrawalPeriod.unitId.label")}
-                  </FormLabel>
-                  <FormControl>
-                    <UnitsSelect
-                      onChange={field.onChange}
-                      placeholder={tSchema(
-                        "withdrawalPeriod.unitId.placeholder"
-                      )}
-                      unitType={UnitType.DATE}
-                      disabled={isPending}
-                      className="w-full"
-                      error={tSchema("withdrawalPeriod.unitId.error")}
-                      notFound={tSchema("withdrawalPeriod.unitId.notFound")}
-                      defaultValue={field.value}
-                    />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           </div>
 
-          <FormField
-            control={form.control}
-            name="applicationMethod"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("applicationMethod.label")}</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={tSchema("applicationMethod.placeholder")}
-                    value={field.value || undefined}
-                    onChange={field.onChange}
-                    disabled={isPending}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <FormField
             control={form.control}
             name="ingredient"
@@ -300,9 +316,9 @@ export const PesticideEditDialog = () => {
                 <div className="flex gap-x-2">
                   <FormControl>
                     <Textarea
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
-                      disabled={isPending}
+                      disabled={isPending || !canEdit}
                       placeholder={tSchema("ingredient.placeholder")}
                     />
                   </FormControl>
@@ -312,25 +328,7 @@ export const PesticideEditDialog = () => {
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="manufacturer"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("manufacturer.label")}</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={tSchema("manufacturer.placeholder")}
-                    value={field.value || undefined}
-                    onChange={field.onChange}
-                    disabled={isPending}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <DynamicDialogFooter disabled={isPending} />
+          <DynamicDialogFooter disabled={isPending || !canEdit} />
         </form>
       </Form>
     </DynamicDialog>

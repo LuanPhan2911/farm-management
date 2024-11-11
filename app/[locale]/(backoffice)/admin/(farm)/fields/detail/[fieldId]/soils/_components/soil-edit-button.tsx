@@ -3,14 +3,12 @@ import {
   DynamicDialog,
   DynamicDialogFooter,
 } from "@/components/dialog/dynamic-dialog";
-import { Button } from "@/components/ui/button";
 import { SoilSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UnitType } from "@prisma/client";
-import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -27,35 +25,30 @@ import { Input } from "@/components/ui/input";
 import { SoilTable } from "@/types";
 import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { edit } from "@/actions/soil";
-import { convertNullToUndefined } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { useAuth } from "@clerk/nextjs";
+import { EditButton } from "@/components/buttons/edit-button";
 
 interface SoilEditButtonProps {
   data: SoilTable;
-  label: string;
 }
 
-export const SoilEditButton = ({ data, label }: SoilEditButtonProps) => {
-  const { onOpen } = useDialog();
-  const { isFarmer } = useCurrentStaffRole();
-  const disabled = data.confirmed && isFarmer;
+export const SoilEditButton = ({ data }: SoilEditButtonProps) => {
+  const { isSuperAdmin } = useCurrentStaffRole();
+  const { has } = useAuth();
+  const isAdminOrg = has?.({ role: "org:field" }) || false;
+  const canEdit = !data.confirmed || isAdminOrg || isSuperAdmin;
   return (
-    <Button
+    <EditButton
+      inltKey="soils"
+      type="soil.edit"
       className="w-full"
-      onClick={(e) => {
-        e.stopPropagation();
-        onOpen("soil.edit", {
-          soil: data,
-        });
+      data={{
+        soil: data,
       }}
-      size={"sm"}
-      variant={"edit"}
-      disabled={disabled}
-    >
-      <Edit className="w-4 h-4 mr-2" />
-      {label}
-    </Button>
+      disabled={!canEdit}
+    />
   );
 };
 export const SoilEditDialog = () => {
@@ -115,7 +108,7 @@ export const SoilEditDialog = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("ph.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                       type="number"
@@ -139,7 +132,7 @@ export const SoilEditDialog = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("moisture.placeholder")}
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
                           disabled={isPending}
                           type="number"
@@ -211,7 +204,7 @@ export const SoilEditDialog = () => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("nutrientNitrogen.placeholder")}
-                        value={field.value || undefined}
+                        value={field.value ?? undefined}
                         onChange={field.onChange}
                         disabled={isPending}
                         type="number"
@@ -232,7 +225,7 @@ export const SoilEditDialog = () => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("nutrientPhosphorus.placeholder")}
-                        value={field.value || undefined}
+                        value={field.value ?? undefined}
                         onChange={field.onChange}
                         disabled={isPending}
                         type="number"
@@ -253,7 +246,7 @@ export const SoilEditDialog = () => {
                     <FormControl>
                       <Input
                         placeholder={tSchema("nutrientPotassium.placeholder")}
-                        value={field.value || undefined}
+                        value={field.value ?? undefined}
                         onChange={field.onChange}
                         disabled={isPending}
                         type="number"
@@ -274,7 +267,7 @@ export const SoilEditDialog = () => {
                 <div className="flex gap-x-2">
                   <FormControl>
                     <Textarea
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                       placeholder={tSchema("note.placeholder")}

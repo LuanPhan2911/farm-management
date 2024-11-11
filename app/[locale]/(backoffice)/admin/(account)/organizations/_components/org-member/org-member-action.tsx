@@ -4,19 +4,27 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { OrganizationMembershipPublicUserData } from "@clerk/nextjs/server";
-import { Ellipsis } from "lucide-react";
-import { OrgMemberViewProfileButton } from "./org-member-view-profile-button";
-import { OrgMemberRemoveButton } from "./org-member-remove-button";
+import { OrganizationMembership } from "@clerk/nextjs/server";
+import { Ellipsis, Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { LinkButton } from "@/components/buttons/link-button";
+import { ActionButton } from "@/components/buttons/action-button";
+import { destroyMember } from "@/actions/organization";
+import { useContext } from "react";
+import { OrgContext } from "../org-tabs";
 interface OrgMemberActionProps {
-  data: OrganizationMembershipPublicUserData | null | undefined;
+  data: OrganizationMembership;
 }
 export const OrgMemberAction = ({ data }: OrgMemberActionProps) => {
   const t = useTranslations("organizations.form");
-  if (!data) {
+  const { canManageMember, isCreated, isSelf } = useContext(OrgContext);
+  if (!data.publicUserData) {
     return null;
   }
+  const disabled =
+    !canManageMember ||
+    isSelf(data.publicUserData.userId) ||
+    isCreated(data.publicUserData.userId);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -24,13 +32,18 @@ export const OrgMemberAction = ({ data }: OrgMemberActionProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
-          <OrgMemberViewProfileButton
-            data={data}
-            label={t("viewProfile.label")}
+          <ActionButton
+            actionFn={() =>
+              destroyMember(data.publicUserData!.userId, data.organization.id)
+            }
+            label={t("destroyMember.label")}
+            description={t("destroyMember.description")}
+            title={t("destroyMember.title")}
+            className="w-full"
+            disabled={disabled}
+            icon={Trash}
+            variant={"destroy"}
           />
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <OrgMemberRemoveButton data={data} label={t("destroyMember.label")} />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

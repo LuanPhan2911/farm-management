@@ -12,11 +12,11 @@ export const GET = async (
 
     const data = await getOrganizationById(orgId);
     if (!data) {
-      return NextResponse.json("Organization not found", { status: 404 });
+      return new NextResponse("Organization not found", { status: 404 });
     }
 
     return NextResponse.json(data);
   } catch (error) {
-    return NextResponse.json("Internal Error", { status: 500 });
+    return new NextResponse("Internal Error", { status: 500 });
   }
 };

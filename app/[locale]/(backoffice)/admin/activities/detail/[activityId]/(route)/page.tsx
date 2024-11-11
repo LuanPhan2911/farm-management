@@ -3,9 +3,7 @@ import { getActivityById } from "@/services/activities";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { ActivityEditForm } from "../../../_components/activity-edit-button";
-import { getCurrentStaff } from "@/services/staffs";
-import { ActivityCompletedButton } from "../../../_components/activity-edit-status-button";
-import { canUpdateActivityStatus } from "@/lib/permission";
+import { canUpdateActivity } from "@/lib/role";
 
 export async function generateMetadata() {
   const t = await getTranslations("activities.page.detail");
@@ -20,19 +18,14 @@ interface ActivityDetailPageProps {
   };
 }
 const ActivityDetailPage = async ({ params }: ActivityDetailPageProps) => {
-  const currentStaff = await getCurrentStaff();
-  if (!currentStaff) {
-    notFound();
-  }
-  const data = await getActivityById({
-    activityId: params.activityId,
-    staffId: currentStaff.id,
-  });
+  const data = await getActivityById(params.activityId);
   const t = await getTranslations("activities.page.detail");
   if (!data) {
     notFound();
   }
-  const canUpdate = canUpdateActivityStatus(data.status);
+
+  const canEdit = await canUpdateActivity(data.cropId, data.id);
+
   return (
     <div className="flex flex-col gap-y-4 py-4 h-full">
       <Card>
@@ -40,13 +33,7 @@ const ActivityDetailPage = async ({ params }: ActivityDetailPageProps) => {
           <CardTitle>{t("title")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex justify-end">
-            <ActivityCompletedButton
-              activityId={data.id}
-              disabled={!canUpdate}
-            />
-          </div>
-          <ActivityEditForm data={data} disabled={!canUpdate} />
+          <ActivityEditForm data={data} disabled={!canEdit} />
         </CardContent>
       </Card>
     </div>

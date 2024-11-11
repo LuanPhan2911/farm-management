@@ -1,51 +1,28 @@
 "use client";
 import { DataTableColumnHeader } from "@/components/datatable/datatable-column-header";
 import { PlantTable } from "@/types";
-import { Checkbox } from "@radix-ui/react-checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
 import { UserAvatar } from "@/components/user-avatar";
-import { PlantsTableAction } from "./plants-table-action";
 
 import { DataTable } from "@/components/datatable";
-import { useRouter } from "@/navigation";
+
 import { FertilizerType, Season } from "@prisma/client";
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
 
 interface PlantsDataTableProps {
   data: PlantTable[];
 }
 export const PlantsDataTable = ({ data }: PlantsDataTableProps) => {
   const t = useTranslations("plants");
-  const router = useRouter();
+  const router = useRouterWithRole();
   const columns: ColumnDef<PlantTable>[] = [
-    {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
     {
       accessorKey: "imageUrl",
       header: t("table.thead.imageUrl"),
       cell: ({ row }) => {
         const data = row.original;
-        return <UserAvatar src={data.imageUrl || undefined} size={"default"} />;
+        return <UserAvatar src={data.imageUrl || undefined} />;
       },
     },
     {
@@ -61,14 +38,7 @@ export const PlantsDataTable = ({ data }: PlantsDataTableProps) => {
     },
     {
       accessorKey: "category",
-      header: ({ column }) => {
-        return (
-          <DataTableColumnHeader
-            column={column}
-            title={t("table.thead.category")}
-          />
-        );
-      },
+      header: t("table.thead.category"),
       cell: ({ row }) => {
         const data = row.original;
         return data.category.name;
@@ -76,14 +46,7 @@ export const PlantsDataTable = ({ data }: PlantsDataTableProps) => {
     },
     {
       accessorKey: "season",
-      header: ({ column }) => {
-        return (
-          <DataTableColumnHeader
-            column={column}
-            title={t("table.thead.season")}
-          />
-        );
-      },
+      header: t("table.thead.season"),
       cell: ({ row }) => {
         const data = row.original;
         if (!data.season) {
@@ -110,16 +73,15 @@ export const PlantsDataTable = ({ data }: PlantsDataTableProps) => {
       },
       cell: ({ row }) => {
         const data = row.original;
+        if (!data.fertilizerType) {
+          return t(`table.trow.fertilizerType`);
+        }
         return t(`schema.fertilizerType.options.${data.fertilizerType}`);
       },
     },
-
     {
-      id: "actions",
-      cell: ({ row }) => {
-        const data = row.original;
-        return <PlantsTableAction data={data} />;
-      },
+      accessorKey: "growthDuration",
+      header: t("table.thead.growthDuration"),
     },
   ];
   const facetedFilters = [
@@ -145,7 +107,7 @@ export const PlantsDataTable = ({ data }: PlantsDataTableProps) => {
     },
   ];
   const onViewDetail = (data: PlantTable) => {
-    router.push(`/admin/plants/detail/${data.id}`);
+    router.push(`plants/detail/${data.id}`);
   };
   return (
     <DataTable

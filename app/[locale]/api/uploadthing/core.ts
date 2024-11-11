@@ -11,7 +11,7 @@ const f = createUploadthing();
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
   // Define as many FileRoutes as you like, each with a unique routeSlug
-  imageUploader: f({ image: { maxFileSize: "4MB" } })
+  imageUploader: f({ image: { maxFileSize: "4MB" } }, { awaitServerData: true })
     // Set permissions and file types for this FileRoute
     .middleware(async ({ req }) => {
       // This code runs on your server before upload
@@ -39,13 +39,14 @@ export const ourFileRouter = {
         // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
       }
     ),
-  fileUploader: f({
-    image: { maxFileSize: "4MB", maxFileCount: 3 },
-    pdf: { maxFileSize: "16MB", maxFileCount: 3 },
-    "application/json": { maxFileSize: "16MB", maxFileCount: 3 },
-    "application/msword": { maxFileSize: "16MB", maxFileCount: 3 },
-    "application/vnd.ms-excel": { maxFileSize: "16MB", maxFileCount: 3 },
-  })
+  fileUploader: f(
+    {
+      image: { maxFileSize: "4MB", maxFileCount: 3 },
+      "application/pdf": { maxFileSize: "16MB", maxFileCount: 3 },
+      "application/json": { maxFileSize: "16MB", maxFileCount: 3 },
+    },
+    { awaitServerData: true }
+  )
     // Set permissions and file types for this FileRoute
     .input(
       z.object({
@@ -77,12 +78,15 @@ export const ourFileRouter = {
           if (!staff) {
             return { uploadedBy: metadata.userId, uploadedFile: null };
           }
-          const { customId, size, ...other } = file;
+          const { key, name, type, url } = file;
 
           const newFile = await createFile({
-            ...other,
+            key,
+            name,
+            type,
+            url,
             ownerId: staff.id,
-            isPublic: metadata.input.isPublic ?? false,
+            isPublic: metadata.input.isPublic || false,
             orgId: metadata.input.orgId,
           });
 

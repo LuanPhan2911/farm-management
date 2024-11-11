@@ -7,9 +7,7 @@ import {
 } from "@/components/ui/card";
 import { parseToNumber } from "@/lib/utils";
 import { getFilesDeletedByOwnerId } from "@/services/files";
-import { getCurrentStaff } from "@/services/staffs";
 import { getTranslations } from "next-intl/server";
-import { notFound } from "next/navigation";
 import { FilesDeletedTable } from "../_components/files-deleted-table";
 
 export async function generateMetadata() {
@@ -29,12 +27,8 @@ const MyTrashPage = async ({ searchParams }: MyTrashPageProps) => {
   const t = await getTranslations("files.page.my-trash");
   const page = parseToNumber(searchParams.page, 1);
   const { query, orderBy } = searchParams;
-  const currentStaff = await getCurrentStaff();
-  if (!currentStaff) {
-    notFound();
-  }
+
   const { data, totalPage } = await getFilesDeletedByOwnerId({
-    ownerId: currentStaff.id,
     orderBy,
     page,
     query,
@@ -47,11 +41,7 @@ const MyTrashPage = async ({ searchParams }: MyTrashPageProps) => {
           <CardDescription>{t("description")}</CardDescription>
         </CardHeader>
         <CardContent>
-          <FilesDeletedTable
-            data={data}
-            totalPage={totalPage}
-            currentStaff={currentStaff}
-          />
+          <FilesDeletedTable data={data} totalPage={totalPage} />
         </CardContent>
       </Card>
     </div>

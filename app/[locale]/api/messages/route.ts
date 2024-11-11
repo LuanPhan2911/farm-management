@@ -6,7 +6,7 @@ export const GET = async (req: NextRequest) => {
   try {
     const staff = await getCurrentStaff();
     if (!staff) {
-      return NextResponse.json("Unauthorized", { status: 400 });
+      return new NextResponse("Unauthorized", { status: 400 });
     }
     const searchParams = req.nextUrl.searchParams;
     const orgId = searchParams.get("orgId");

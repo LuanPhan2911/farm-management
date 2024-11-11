@@ -11,49 +11,82 @@ import { MaterialUsageTable } from "@/types";
 import { MoreHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { MaterialUsageEditButton } from "./material-usages-edit-button";
-import { canUpdateActivityStatus } from "@/lib/permission";
-import { DetailButton } from "@/components/buttons/detail-button";
+import { LinkButton } from "@/components/buttons/link-button";
 import { DestroyButton } from "@/components/buttons/destroy-button";
-import { destroy } from "@/actions/material-usage";
+import { assign, destroy, revoke } from "@/actions/material-usage";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { canUpdateActivityStatus } from "@/lib/permission";
+import { useParams } from "next/navigation";
+import { ActionButton } from "@/components/buttons/action-button";
 
 interface MaterialUsagesTableActionProps {
   data: MaterialUsageTable;
+  disabled?: boolean;
 }
 export const MaterialUsagesTableAction = ({
   data,
+  disabled,
 }: MaterialUsagesTableActionProps) => {
   const t = useTranslations("materialUsages.form");
+  const params = useParams<{ activityId: string }>()!;
+  const { isOnlyAdmin } = useCurrentStaffRole();
+  const canAssign =
+    data.activity === null ||
+    (data.activity && canUpdateActivityStatus(data.activity.status));
+  const canUpdate = data.activity === null && isOnlyAdmin;
+  const canDelete = canUpdate;
 
-  const canUpdate =
-    !data.activity || canUpdateActivityStatus(data.activity.status);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
+        <Button variant="ghost" className="h-8 w-8 p-0" disabled={disabled}>
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-fit">
+        {params.activityId && (
+          <DropdownMenuItem>
+            {!data.activity ? (
+              <ActionButton
+                actionFn={() => {
+                  return assign(data.id, params.activityId);
+                }}
+                disabled={!canAssign}
+                label={t("assign.label")}
+                description={t("assign.description")}
+                title={t("assign.title")}
+                className="w-full"
+              />
+            ) : (
+              <ActionButton
+                actionFn={() => {
+                  return revoke(data.id, params.activityId);
+                }}
+                disabled={!canAssign}
+                label={t("revoke.label")}
+                description={t("revoke.description")}
+                title={t("revoke.title")}
+                className="w-full"
+              />
+            )}
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem>
-          <MaterialUsageEditButton
-            data={data}
-            label={t("edit.label")}
-            disabled={!canUpdate}
-          />
+          <MaterialUsageEditButton data={data} disabled={!canUpdate} />
         </DropdownMenuItem>
         <DropdownMenuItem>
           <DestroyButton
             destroyFn={destroy}
             id={data.id}
             inltKey="materialUsages"
-            disabled={!canUpdate}
+            disabled={!canDelete}
             className="w-full"
           />
         </DropdownMenuItem>
-        {data.activity && (
+        {data.activity && !params.activityId && (
           <DropdownMenuItem>
-            <DetailButton
-              href={`/admin/activities/detail/${data.activity.id}`}
+            <LinkButton
+              href={`activities/detail/${data.activity.id}`}
               label={t("detailActivity.label")}
             />
           </DropdownMenuItem>

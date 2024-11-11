@@ -6,12 +6,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal } from "lucide-react";
+import { Copy, MoreHorizontal, Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { FileWithOwner } from "@/types";
-import { FileEditDeletedButton } from "./file-edit-deleted-button";
-import { Staff } from "@prisma/client";
-import { useRole } from "@/hooks/use-role";
 import { DownloadButtonWithUrl } from "@/components/buttons/download-button";
 import {
   ContextMenu,
@@ -21,18 +18,19 @@ import {
 } from "@/components/ui/context-menu";
 import { PropsWithChildren } from "react";
 import { FileEditNameButton } from "./file-edit-name-button";
-import { FileCopyButton } from "./file-copy-button";
+import { useCurrentStaff } from "@/hooks/use-current-staff";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { ActionButton } from "@/components/buttons/action-button";
+import { copy, editDeleted } from "@/actions/file";
 interface FilesTableActionProps {
   data: FileWithOwner;
-  currentStaff: Staff;
 }
-export const FilesTableAction = ({
-  data,
-  currentStaff,
-}: FilesTableActionProps) => {
+export const FilesTableAction = ({ data }: FilesTableActionProps) => {
   const t = useTranslations("files.form");
-  const { isSuperAdmin } = useRole(currentStaff.role);
-  const isOwner = currentStaff.id === data.owner.id || isSuperAdmin;
+  const { currentStaff } = useCurrentStaff();
+  const { isSuperAdmin } = useCurrentStaffRole();
+  const isOwner = currentStaff?.id === data.owner.id;
+  const canEdit = isSuperAdmin || isOwner;
 
   return (
     <DropdownMenu>
@@ -46,14 +44,28 @@ export const FilesTableAction = ({
           <FileEditNameButton
             data={data}
             label={t("editName.label")}
-            disabled={!isOwner}
+            disabled={!canEdit}
           />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <FileCopyButton
-            data={data}
+          <ActionButton
+            actionFn={() =>
+              copy({
+                name: data.name,
+                ownerId: currentStaff?.id || data.ownerId,
+                type: data.type,
+                url: data.url,
+                isPublic: false,
+                orgId: null,
+              })
+            }
+            title={t("copy.label")}
+            description={t("copy.description")}
             label={t("copy.label")}
-            disabled={data.isPublic}
+            className="w-full"
+            icon={Copy}
+            size={"sm"}
+            variant={"outline"}
           />
         </DropdownMenuItem>
         <DropdownMenuItem>
@@ -66,10 +78,20 @@ export const FilesTableAction = ({
           />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <FileEditDeletedButton
-            data={data}
+          <ActionButton
+            actionFn={() =>
+              editDeleted(data.id, {
+                deleted: true,
+              })
+            }
+            title={t("editDeleted.label")}
+            description={t("editDeleted.description")}
             label={t("editDeleted.label")}
-            disabled={!isOwner}
+            className="w-full"
+            icon={Trash}
+            size={"sm"}
+            variant={"destroy"}
+            disabled={!canEdit}
           />
         </DropdownMenuItem>
       </DropdownMenuContent>
@@ -78,16 +100,16 @@ export const FilesTableAction = ({
 };
 interface FilesTableActionContextMenuProps extends PropsWithChildren {
   data: FileWithOwner;
-  currentStaff: Staff;
 }
 export const FilesTableActionContextMenu = ({
-  currentStaff,
   data,
   children,
 }: FilesTableActionContextMenuProps) => {
   const t = useTranslations("files.form");
-  const { isSuperAdmin } = useRole(currentStaff.role);
-  const isOwner = currentStaff.id === data.owner.id || isSuperAdmin;
+  const { currentStaff } = useCurrentStaff();
+  const { isSuperAdmin } = useCurrentStaffRole();
+  const isOwner = currentStaff?.id === data.owner.id;
+  const canEdit = isSuperAdmin || isOwner;
 
   return (
     <ContextMenu>
@@ -97,14 +119,28 @@ export const FilesTableActionContextMenu = ({
           <FileEditNameButton
             data={data}
             label={t("editName.label")}
-            disabled={!isOwner}
+            disabled={!canEdit}
           />
         </ContextMenuItem>
         <ContextMenuItem>
-          <FileCopyButton
-            data={data}
+          <ActionButton
+            actionFn={() =>
+              copy({
+                name: data.name,
+                ownerId: currentStaff?.id || data.ownerId,
+                type: data.type,
+                url: data.url,
+                isPublic: false,
+                orgId: null,
+              })
+            }
+            title={t("copy.label")}
+            description={t("copy.description")}
             label={t("copy.label")}
-            disabled={data.isPublic}
+            className="w-full"
+            icon={Copy}
+            size={"sm"}
+            variant={"outline"}
           />
         </ContextMenuItem>
         <ContextMenuItem>
@@ -117,10 +153,20 @@ export const FilesTableActionContextMenu = ({
           />
         </ContextMenuItem>
         <ContextMenuItem>
-          <FileEditDeletedButton
-            data={data}
+          <ActionButton
+            actionFn={() =>
+              editDeleted(data.id, {
+                deleted: true,
+              })
+            }
+            title={t("editDeleted.label")}
+            description={t("editDeleted.description")}
             label={t("editDeleted.label")}
-            disabled={!isOwner}
+            className="w-full"
+            icon={Trash}
+            size={"sm"}
+            variant={"destroy"}
+            disabled={!canEdit}
           />
         </ContextMenuItem>
       </ContextMenuContent>

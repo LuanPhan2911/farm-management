@@ -6,14 +6,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { getActivityById } from "@/services/activities";
+import { getActivityByIdWithCountUsage } from "@/services/activities";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/activity";
-import { getCurrentStaff } from "@/services/staffs";
-import { ActivityCancelButton } from "../../../_components/activity-edit-status-button";
+import {
+  ActivityCancelButton,
+  ActivityCompletedButton,
+} from "../../../_components/activity-edit-status-button";
 import { canUpdateActivityStatus } from "@/lib/permission";
+import { canUpdateCrop } from "@/lib/role";
 
 interface ActivityDangerPageProps {
   params: {
@@ -29,27 +32,34 @@ export async function generateMetadata() {
 
 const ActivityDangerPage = async ({ params }: ActivityDangerPageProps) => {
   const t = await getTranslations("activities.form");
-  const currentStaff = await getCurrentStaff();
-  if (!currentStaff) {
-    notFound();
-  }
-  const data = await getActivityById({
-    activityId: params.activityId,
-    staffId: currentStaff.id,
-  });
+  const data = await getActivityByIdWithCountUsage(params.activityId);
   if (!data) {
     notFound();
   }
-  const canUpdate = canUpdateActivityStatus(data.status);
+  const canEdit =
+    (await canUpdateCrop(data.cropId)) && canUpdateActivityStatus(data.status);
+  const canDelete =
+    data._count.equipmentUseds === 0 &&
+    data._count.materialUseds === 0 &&
+    canEdit;
   return (
     <>
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("complete.title")}</CardTitle>
+          <CardDescription>{t("complete.description")}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ActivityCompletedButton activityId={data.id} disabled={!canEdit} />
+        </CardContent>
+      </Card>
       <Card>
         <CardHeader>
           <CardTitle>{t("cancel.title")}</CardTitle>
           <CardDescription>{t("cancel.description")}</CardDescription>
         </CardHeader>
         <CardContent>
-          <ActivityCancelButton activityId={data.id} disabled={!canUpdate} />
+          <ActivityCancelButton activityId={data.id} disabled={!canEdit} />
         </CardContent>
       </Card>
       <Card>
@@ -62,8 +72,8 @@ const ActivityDangerPage = async ({ params }: ActivityDangerPageProps) => {
             destroyFn={destroy}
             id={data.id}
             inltKey="activities"
-            redirectHref="/admin/activities"
-            disabled={!canUpdate}
+            redirectHref="activities"
+            disabled={!canDelete}
           />
         </CardContent>
       </Card>

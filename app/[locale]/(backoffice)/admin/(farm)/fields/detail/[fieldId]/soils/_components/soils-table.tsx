@@ -14,21 +14,22 @@ import { useFormatter, useTranslations } from "next-intl";
 import { SoilCreateButton, SoilCreateManyButton } from "./soil-create-button";
 import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-with-value";
 import { SoilTable } from "@/types";
-import { SoilsTableAction } from "./soils-table-action";
 import {
   SoilConfirmButton,
+  SoilDeleteManyUnConfirmedButton,
+  SoilPinnedButton,
   SoilsConfirmedAllButton,
-} from "./soil-confirm-button";
+  SoilsExportButton,
+  SoilsTableAction,
+} from "./soils-table-action";
 
 import { OrderByButton } from "@/components/buttons/order-by-button";
 import { DatePickerWithRangeButton } from "@/components/buttons/date-picker-range-button";
 import { SoilsTableFaceted } from "./soils-table-faceted";
 import { SelectItemContent } from "@/components/form/select-item";
-import { SoilPinnedButton } from "./soil-pinned-button";
+
 import { cn } from "@/lib/utils";
 import { useDialog } from "@/stores/use-dialog";
-import { SoilsExportButton } from "./soils-export-button";
-import { SoilDeleteManyUnConfirmedButton } from "./soil-delete-button";
 
 interface SoilsTableProps {
   data: SoilTable[];
@@ -44,9 +45,10 @@ export const SoilsTable = ({ data, totalPage }: SoilsTableProps) => {
   return (
     <div className="flex flex-col gap-y-2 p-4 border rounded-lg my-4">
       <div className="flex lg:justify-end gap-1.5 flex-wrap">
+        <SoilCreateButton />
         <SoilCreateManyButton />
         <SoilsExportButton />
-        <SoilCreateButton />
+
         <SoilsConfirmedAllButton />
         <SoilDeleteManyUnConfirmedButton />
       </div>
@@ -116,39 +118,31 @@ export const SoilsTable = ({ data, totalPage }: SoilsTableProps) => {
                     )}
                   />
                 </TableCell>
-                <TableCell>
-                  {dateTime(item.createdAt, {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                  })}
-                </TableCell>
-                <TableCell className="text-center">{item.ph}</TableCell>
+                <TableCell>{dateTime(item.createdAt, "long")}</TableCell>
+                <TableCell className="text-right">{item.ph}</TableCell>
 
-                <TableCell className="text-center">
+                <TableCell className="text-right">
                   <UnitWithValue
                     value={item.nutrientNitrogen}
-                    unit={item.nutrientUnit?.name}
+                    unit={item.nutrientUnit?.name || "g/kg"}
                   />
                 </TableCell>
-                <TableCell className="text-center">
+                <TableCell className="text-right">
                   <UnitWithValue
                     value={item.nutrientPhosphorus}
-                    unit={item.nutrientUnit?.name}
+                    unit={item.nutrientUnit?.name || "g/kg"}
                   />
                 </TableCell>
                 <TableCell className="text-center">
                   <UnitWithValue
                     value={item.nutrientPotassium}
-                    unit={item.nutrientUnit?.name}
+                    unit={item.nutrientUnit?.name || "g/kg"}
                   />
                 </TableCell>
                 <TableCell className="text-center">
                   <UnitWithValue
                     value={item.moisture?.value}
-                    unit={item.moisture?.unit?.name}
+                    unit={item.moisture?.unit?.name || "%"}
                   />
                 </TableCell>
 

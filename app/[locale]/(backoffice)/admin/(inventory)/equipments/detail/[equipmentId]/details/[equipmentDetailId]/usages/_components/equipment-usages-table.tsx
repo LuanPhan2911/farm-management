@@ -11,18 +11,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useFormatter, useTranslations } from "next-intl";
-import { EquipmentUsageTable } from "@/types";
+import { EquipmentUsageTable, EquipmentUsageTableWithCost } from "@/types";
 
 import { OrderByButton } from "@/components/buttons/order-by-button";
 
 import { SearchBar } from "@/components/search-bar";
 
-import { ActivityStatusValue } from "@/app/[locale]/(backoffice)/admin/activities/_components/activity-status-value";
 import { useDialog } from "@/stores/use-dialog";
-import { SelectItemContent } from "@/components/form/select-item";
 import { EquipmentUsagesTableAction } from "./equipment-usages-table-action";
 import { EquipmentDetailStatusValue } from "../../../../_components/equipment-detail-status-value";
-import { UserAvatar } from "@/components/user-avatar";
+import { UsageStatusValue } from "@/components/usage-status-value";
+import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-with-value";
 
 interface EquipmentUsagesTableProps {
   data: EquipmentUsageTable[];
@@ -34,7 +33,7 @@ export const EquipmentUsagesTable = ({
 }: EquipmentUsagesTableProps) => {
   const { onOpen } = useDialog();
   const t = useTranslations("equipmentUsages");
-  const { dateTime } = useFormatter();
+  const { dateTime, number } = useFormatter();
   const handleEdit = (row: EquipmentUsageTable) => {
     onOpen("equipmentUsage.edit", { equipmentUsage: row });
   };
@@ -42,32 +41,38 @@ export const EquipmentUsagesTable = ({
   return (
     <>
       <div className="flex flex-col lg:flex-row gap-2 my-2 lg:items-center">
-        <SearchBar isPagination placeholder={t("search.placeholder")} />
+        <SearchBar
+          isPagination={totalPage > 1}
+          placeholder={t("search.placeholder")}
+        />
       </div>
 
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{t("table.thead.equipmentDetail.imageUrl")}</TableHead>
-            <TableHead className="lg:w-[200px]">
-              {t("table.thead.equipmentDetail.name")}
-            </TableHead>
+            <TableHead>{t("table.thead.activity.usage")}</TableHead>
+
+            <TableHead>{t("table.thead.equipmentDetail.name")}</TableHead>
             <TableHead>{t("table.thead.equipmentDetail.status")}</TableHead>
-            <TableHead className="lg:w-[200px]">
-              <OrderByButton
-                column="activity.name"
-                label={t("table.thead.activity.name")}
-              />
-            </TableHead>
-            <TableHead>{t("table.thead.activity.status")}</TableHead>
-            <TableHead className="lg:w-[200px]">
+
+            <TableHead>
               <OrderByButton
                 column="usageStartTime"
                 label={t("table.thead.usageStartTime")}
               />
             </TableHead>
-            <TableHead>{t("table.thead.duration")}</TableHead>
-            <TableHead>{t("table.thead.operator")}</TableHead>
+            <TableHead className="text-right">
+              {t("table.thead.duration")}
+            </TableHead>
+            <TableHead className="text-right">
+              {t("table.thead.fuelConsumption")}
+            </TableHead>
+            <TableHead className="text-right">
+              {t("table.thead.fuelPrice")}
+            </TableHead>
+            <TableHead className="text-right">
+              {t("table.thead.rentalPrice")}
+            </TableHead>
 
             <TableHead></TableHead>
           </TableRow>
@@ -80,44 +85,42 @@ export const EquipmentUsagesTable = ({
                 className="cursor-pointer"
                 onClick={() => handleEdit(item)}
               >
-                <TableCell>
-                  <UserAvatar
-                    src={item.equipmentDetail.equipment.imageUrl || undefined}
-                  />
+                <TableCell className="font-semibold">
+                  <UsageStatusValue status={!!item.activity} />
                 </TableCell>
+
                 <TableCell>{item.equipmentDetail.name}</TableCell>
                 <TableCell>
                   <EquipmentDetailStatusValue
                     status={item.equipmentDetail.status}
                   />
                 </TableCell>
-                <TableCell>
-                  {item.activity?.name || t("table.trow.activity.name")}
+
+                <TableCell>{dateTime(item.usageStartTime, "long")}</TableCell>
+                <TableCell className="text-right">
+                  {number(item.duration, "hour")}
                 </TableCell>
-                <TableCell>
-                  {item.activity ? (
-                    <ActivityStatusValue value={item.activity.status} />
+                <TableCell className="text-right">
+                  {item.fuelConsumption ? (
+                    <UnitWithValue
+                      value={item.fuelConsumption}
+                      unit={item.unit?.name}
+                    />
                   ) : (
-                    t("table.trow.activity.status")
+                    t("table.trow.fuelConsumption")
                   )}
                 </TableCell>
+                <TableCell className="text-right">
+                  {item.fuelPrice
+                    ? number(item.fuelPrice, "currency")
+                    : t("table.trow.fuelPrice")}
+                </TableCell>
+                <TableCell className="text-right">
+                  {item.rentalPrice
+                    ? number(item.rentalPrice, "currency")
+                    : t("table.trow.rentalPrice")}
+                </TableCell>
 
-                <TableCell className="text-center">
-                  {dateTime(item.usageStartTime, {
-                    month: "short",
-                    day: "2-digit",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </TableCell>
-                <TableCell>{item.duration}</TableCell>
-                <TableCell>
-                  <SelectItemContent
-                    imageUrl={item.operator?.imageUrl || null}
-                    title={item.operator?.name || t("table.trow.operator")}
-                    description={item.operator?.email}
-                  />
-                </TableCell>
                 <TableCell>
                   <EquipmentUsagesTableAction data={item} />
                 </TableCell>

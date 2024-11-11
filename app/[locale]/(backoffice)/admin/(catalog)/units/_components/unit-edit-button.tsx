@@ -3,12 +3,10 @@ import {
   DynamicDialog,
   DynamicDialogFooter,
 } from "@/components/dialog/dynamic-dialog";
-import { Button } from "@/components/ui/button";
 import { UnitSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UnitType } from "@prisma/client";
-import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -27,29 +25,20 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { SelectOptions } from "@/components/form/select-options";
 import { UnitTable } from "@/types";
+import { EditButton } from "@/components/buttons/edit-button";
 
 interface UnitEditButtonProps {
   data: UnitTable;
-  label: string;
 }
 
-export const UnitEditButton = ({ data, label }: UnitEditButtonProps) => {
-  const { onOpen } = useDialog();
+export const UnitEditButton = ({ data }: UnitEditButtonProps) => {
   return (
-    <Button
+    <EditButton
+      inltKey="units"
+      type="unit.edit"
+      data={{ unit: data }}
       className="w-full"
-      onClick={(e) => {
-        e.stopPropagation();
-        onOpen("unit.edit", {
-          unit: data,
-        });
-      }}
-      size={"sm"}
-      variant={"edit"}
-    >
-      <Edit className="w-4 h-4 mr-2" />
-      {label}
-    </Button>
+    />
   );
 };
 export const UnitEditDialog = () => {
@@ -107,7 +96,7 @@ export const UnitEditDialog = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("name.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />
@@ -151,7 +140,7 @@ export const UnitEditDialog = () => {
                 <FormControl>
                   <Textarea
                     placeholder={tSchema("description.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />

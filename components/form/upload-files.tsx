@@ -2,18 +2,21 @@
 import { useUploadThing } from "@/lib/uploadthing";
 import { useDropzone } from "@uploadthing/react";
 import { useCallback, useEffect, useState } from "react";
-import { generateClientDropzoneAccept } from "uploadthing/client";
+import {
+  generateClientDropzoneAccept,
+  generatePermittedFileTypes,
+} from "uploadthing/client";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
-import { isImage, safeParseJSON } from "@/lib/utils";
+import { isImage, isJson, isPDF, safeParseJSON } from "@/lib/utils";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
-import { Check, X } from "lucide-react";
+import { Check, FileJson, FileText, X } from "lucide-react";
 import { v4 } from "uuid";
 import { ClientUploadedFileData } from "uploadthing/types";
 import { File as FilePrisma } from "@prisma/client";
@@ -45,7 +48,7 @@ export const UploadFiles = ({
 }: UploadFilesProps) => {
   const [files, setFiles] = useState<FileUpload[]>([]);
 
-  const { startUpload, permittedFileInfo, isUploading } = useUploadThing(
+  const { startUpload, routeConfig, isUploading } = useUploadThing(
     "fileUploader",
     {
       onClientUploadComplete: (
@@ -84,7 +87,6 @@ export const UploadFiles = ({
   );
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      setUploading(true);
       setFiles(
         acceptedFiles.map((file) =>
           Object.assign(file, {
@@ -96,6 +98,7 @@ export const UploadFiles = ({
       );
       if (mode === "auto") {
         startUpload(acceptedFiles, input || {});
+        setUploading(true);
       }
     },
     [input, startUpload, mode, setUploading]
@@ -109,13 +112,11 @@ export const UploadFiles = ({
       );
   }, [files]);
 
-  const fileTypes = permittedFileInfo?.config
-    ? Object.keys(permittedFileInfo?.config)
-    : [];
-
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    accept: fileTypes ? generateClientDropzoneAccept(fileTypes) : undefined,
+    accept: generateClientDropzoneAccept(
+      generatePermittedFileTypes(routeConfig).fileTypes
+    ),
     maxFiles: MAX_FILES,
     disabled: disabled || isUploading,
   });
@@ -173,11 +174,14 @@ export const UploadFiles = ({
                           {file.preview ? (
                             <Image src={file.preview} alt="Preview" fill />
                           ) : (
-                            <div className="flex flex-col justify-end h-full max-w-full">
-                              <div className="text-xs text-center text-blue-400 font-semibold w-full line-clamp-1">
-                                {file.type}
-                              </div>
-                              <div className="text-xs text-center text-muted-foreground w-full break-words">
+                            <div className="flex flex-col justify-center items-center h-full max-w-full">
+                              {isPDF(file.type) && (
+                                <FileText className="h-8 w-8" />
+                              )}
+                              {isJson(file.type) && (
+                                <FileJson className="h-8 w-8" />
+                              )}
+                              <div className="text-xs text-center text-muted-foreground w-full break-words pt-4">
                                 {file.name}
                               </div>
                             </div>

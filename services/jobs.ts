@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { JobTable } from "@/types";
 import { Gender, JobExperience, JobWorkingState } from "@prisma/client";
 
 type JobParams = {
@@ -34,7 +35,7 @@ export const getJobById = async (id: string) => {
   }
 };
 
-export const getJobsTable = async () => {
+export const getJobsTable = async (): Promise<JobTable[]> => {
   try {
     return await db.job.findMany({
       select: {
@@ -45,6 +46,11 @@ export const getJobsTable = async () => {
         gender: true,
         expiredAt: true,
         published: true,
+        _count: {
+          select: {
+            applicants: true,
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",

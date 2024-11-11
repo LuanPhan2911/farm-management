@@ -31,7 +31,7 @@ import {
   OnChangeStatus,
   toTextContent,
 } from "vanilla-jsoneditor";
-import { ScheduleSelectCron } from "./schedule-select-cron";
+import { ScheduleSelectCron } from "../../../_components/schedule-select-cron";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ScheduleResponse } from "@/types";
@@ -150,7 +150,7 @@ export const ScheduleEditSheet = () => {
                 <FormControl>
                   <Textarea
                     placeholder={tSchema("description.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />
@@ -171,7 +171,7 @@ export const ScheduleEditSheet = () => {
                     <div className="col-span-3">
                       <Input
                         placeholder={tSchema("cron.placeholder")}
-                        value={field.value || undefined}
+                        value={field.value ?? undefined}
                         onChange={field.onChange}
                         disabled={isPending}
                       />
@@ -179,7 +179,7 @@ export const ScheduleEditSheet = () => {
                     <ScheduleSelectCron
                       onChange={field.onChange}
                       placeholder="Custom"
-                      defaultValue={field.value || undefined}
+                      defaultValue={field.value ?? undefined}
                       disabled={isPending}
                     />
                   </div>
@@ -206,7 +206,7 @@ export const ScheduleEditSheet = () => {
                 <FormControl>
                   <Input
                     placeholder={tSchema("request.url.placeholder")}
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     disabled={isPending}
                   />

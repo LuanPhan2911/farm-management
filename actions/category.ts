@@ -4,7 +4,6 @@ import { CategorySchema } from "@/schemas";
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import slugify from "slugify";
 import {
   createCategory,
   deleteCategory,
@@ -13,7 +12,7 @@ import {
   updateCategory,
 } from "@/services/categories";
 import { ActionResponse } from "@/types";
-import { errorResponse, successResponse } from "@/lib/utils";
+import { errorResponse, getSlug, successResponse } from "@/lib/utils";
 
 export const create = async (
   values: z.infer<ReturnType<typeof CategorySchema>>
@@ -30,9 +29,8 @@ export const create = async (
     let { slug, name, description, type } = validatedFields.data;
     const existingCategorySlug = await getCategoryBySlug(slug);
     if (existingCategorySlug) {
-      slug = slugify(
-        `${validatedFields.data.name}-${Math.floor(Math.random() * 1000)}`,
-        { lower: true }
+      slug = getSlug(
+        `${validatedFields.data.name}-${Math.floor(Math.random() * 1000)}`
       );
     }
     await createCategory({
@@ -64,11 +62,8 @@ export const edit = async (
     const existingCategorySlug = await getCategoryBySlug(slug);
 
     if (existingCategorySlug && id !== existingCategorySlug.id) {
-      slug = slugify(
-        `${validatedFields.data.name}-${Math.floor(Math.random() * 1000)}`,
-        {
-          lower: true,
-        }
+      slug = getSlug(
+        `${validatedFields.data.name}-${Math.floor(Math.random() * 1000)}`
       );
     }
     await updateCategory(id, { name, slug, description, type });

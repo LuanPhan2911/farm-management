@@ -9,9 +9,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { PlantPesticideTable } from "@/types";
 import { MoreHorizontal } from "lucide-react";
-import { useTranslations } from "next-intl";
 import { PlantPesticideEditButton } from "./plant-pesticides-edit-button";
-import { PlantPesticideDeleteButton } from "./plant-pesticide-delete-button";
+import { DestroyButton } from "@/components/buttons/destroy-button";
+import { destroy } from "@/actions/plant-pesticide";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface PlantPesticidesTableActionProps {
   data: PlantPesticideTable;
@@ -19,7 +20,7 @@ interface PlantPesticidesTableActionProps {
 export const PlantPesticidesTableAction = ({
   data,
 }: PlantPesticidesTableActionProps) => {
-  const t = useTranslations("plantPesticides.form");
+  const { isSuperAdmin: canDelete } = useCurrentStaffRole();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -29,10 +30,16 @@ export const PlantPesticidesTableAction = ({
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
-          <PlantPesticideEditButton data={data} label={t("edit.label")} />
+          <PlantPesticideEditButton data={data} />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <PlantPesticideDeleteButton data={data} label={t("destroy.label")} />
+          <DestroyButton
+            destroyFn={destroy}
+            id={data.id}
+            inltKey="plantPesticides"
+            disabled={!canDelete}
+            className="w-full"
+          />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -12,6 +12,7 @@ import {
   PaginatedResponse,
 } from "@/types";
 import { MaterialType } from "@prisma/client";
+import { materialSelect } from "./material-usages";
 
 type MaterialParam = {
   name: string;
@@ -20,6 +21,7 @@ type MaterialParam = {
   type: MaterialType;
   description?: string | null;
   imageUrl?: string | null;
+  basePrice?: number | null;
 };
 export const createMaterial = async (params: MaterialParam) => {
   return await db.material.create({
@@ -42,17 +44,7 @@ export const deleteMaterial = async (id: string) => {
     where: { id },
   });
 };
-export const restockMaterial = async (id: string, quantityAdded: number) => {
-  const updatedMaterial = await db.material.update({
-    where: { id },
-    data: {
-      quantityInStock: {
-        increment: quantityAdded, // Add more stock
-      },
-    },
-  });
-  return updatedMaterial;
-};
+
 type MaterialQuery = {
   page?: number;
   query?: string;
@@ -144,17 +136,7 @@ export const getMaterialsSelect = async (): Promise<MaterialSelect[]> => {
   try {
     return await db.material.findMany({
       select: {
-        id: true,
-        name: true,
-        imageUrl: true,
-        quantityInStock: true,
-        unitId: true,
-        type: true,
-        unit: {
-          select: {
-            name: true,
-          },
-        },
+        ...materialSelect,
       },
     });
   } catch (error) {

@@ -4,11 +4,11 @@ import { useParams, usePathname } from "next/navigation";
 
 export const useBreadCrumb = () => {
   const pathname = usePathname();
-  const params = useParams();
+  const params = useParams()!;
   const t = useTranslations("route");
 
   // Ignore locale by slicing the first segment
-  const pathSegments = pathname?.split("/").slice(2) ?? [];
+  const pathSegments = pathname?.split("/").slice(2) || [];
 
   const breadcrumbs: Breadcrumb[] = [];
   let accumulatedPath = "";

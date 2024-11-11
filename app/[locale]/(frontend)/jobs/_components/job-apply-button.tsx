@@ -72,7 +72,7 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={"gradient"}>{t("form.apply.label")}</Button>
+        <Button variant={"blue"}>{t("form.apply.label")}</Button>
       </DialogTrigger>
       <DialogContent className="overflow-y-auto">
         <DialogHeader>
@@ -90,7 +90,7 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("name.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />
@@ -109,7 +109,7 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("email.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />
@@ -128,7 +128,7 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("phone.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />
@@ -147,7 +147,7 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("address.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />
@@ -166,7 +166,7 @@ export const JobApplyButton = ({ jobId }: JobApplyButtonProps) => {
                   <FormControl>
                     <Textarea
                       placeholder={tSchema("note.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />

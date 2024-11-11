@@ -49,6 +49,9 @@ export const ChatMessageCreateForm = ({
     },
   });
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (!values.content.length) {
+      return;
+    }
     const url = queryString.stringifyUrl({
       url: socketUrl,
       query: socketQuery,

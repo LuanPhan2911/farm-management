@@ -14,52 +14,55 @@ import { FieldSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { OrgsSelect } from "../../../_components/orgs-select";
 import { UnitsSelect } from "../../../_components/units-select";
-import { Link, useRouter } from "@/navigation";
 import { toast } from "sonner";
 import { create } from "@/actions/field";
 import { SoilType, UnitType } from "@prisma/client";
 import { SelectOptions } from "@/components/form/select-options";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useAuth } from "@clerk/nextjs";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+interface FieldCreateButtonProps {}
+export const FieldCreateButton = ({}: FieldCreateButtonProps) => {
+  const { orgId, has } = useAuth();
 
-export const FieldCreateButton = () => {
   const t = useTranslations("fields.form");
-  return (
-    <Link href={"/admin/fields/create"}>
-      <Button variant={"success"} size={"sm"}>
-        <Plus className="mr-2" />
-        {t("create.label")}
-      </Button>
-    </Link>
-  );
-};
-export const FieldCreateForm = () => {
   const tSchema = useTranslations("fields.schema");
   const formSchema = FieldSchema(tSchema);
-  const t = useTranslations("fields");
   const [isPending, startTransition] = useTransition();
-  const router = useRouter();
+  const [isOpen, setOpen] = useState(false);
+
+  const canManageField = has?.({ permission: "org:field:manage" });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      orgId,
+    },
   });
+  useEffect(() => {
+    form.setValue("orgId", orgId);
+  }, [orgId, form]);
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       create(values)
         .then(({ message, ok }) => {
           if (ok) {
             toast.success(message);
-            router.push("/admin/fields");
+            setOpen(false);
           } else {
             toast.error(message);
           }
@@ -69,58 +72,63 @@ export const FieldCreateForm = () => {
         });
     });
   };
-
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("form.create.title")}</CardTitle>
-        <CardDescription>{t("form.create.description")}</CardDescription>
-      </CardHeader>
-      <CardContent>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant={"success"} size={"sm"} disabled={!canManageField}>
+          <Plus className="mr-2" />
+          {t("create.label")}
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-5xl">
+        <DialogHeader>
+          <DialogTitle>{t("create.title")}</DialogTitle>
+          <DialogDescription>{t("create.description")}</DialogDescription>
+        </DialogHeader>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4 max-w-5xl"
-          >
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("name.label")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={tSchema("name.placeholder")}
-                      value={field.value || undefined}
-                      onChange={field.onChange}
-                      disabled={isPending}
-                    />
-                  </FormControl>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <div className="grid lg:grid-cols-2 gap-2">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("name.label")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={tSchema("name.placeholder")}
+                        value={field.value ?? undefined}
+                        onChange={field.onChange}
+                        disabled={isPending}
+                      />
+                    </FormControl>
 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="location"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("location.label")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={tSchema("location.placeholder")}
-                      value={field.value || undefined}
-                      onChange={field.onChange}
-                      disabled={isPending}
-                    />
-                  </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="location"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("location.label")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={tSchema("location.placeholder")}
+                        value={field.value ?? undefined}
+                        onChange={field.onChange}
+                        disabled={isPending}
+                      />
+                    </FormControl>
 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-2">
               <FormField
                 control={form.control}
                 name="orgId"
@@ -129,16 +137,12 @@ export const FieldCreateForm = () => {
                     <FormLabel>{tSchema("orgId.label")}</FormLabel>
                     <FormControl>
                       <OrgsSelect
-                        defaultValue={field.value}
+                        defaultValue={field.value ?? undefined}
                         onChange={field.onChange}
                         error={tSchema("orgId.error")}
                         placeholder={tSchema("orgId.placeholder")}
                         notFound={tSchema("orgId.notFound")}
                         disabled={isPending}
-                        appearance={{
-                          button: "lg:w-full",
-                          content: "lg:w-[480px]",
-                        }}
                       />
                     </FormControl>
 
@@ -146,6 +150,33 @@ export const FieldCreateForm = () => {
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="soilType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("soilType.label")}</FormLabel>
+                    <FormControl>
+                      <SelectOptions
+                        placeholder={tSchema("soilType.placeholder")}
+                        onChange={field.onChange}
+                        options={Object.values(SoilType).map((item) => {
+                          return {
+                            label: tSchema(`soilType.options.${item}`),
+                            value: item,
+                          };
+                        })}
+                        disabled={isPending}
+                        defaultValue={field.value}
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="unitId"
@@ -168,48 +199,6 @@ export const FieldCreateForm = () => {
                   </FormItem>
                 )}
               />
-            </div>
-            <div className="grid grid-cols-3 gap-4">
-              <FormField
-                control={form.control}
-                name="height"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{tSchema("height.label")}</FormLabel>
-
-                    <FormControl>
-                      <Input
-                        value={field.value || undefined}
-                        onChange={field.onChange}
-                        type="number"
-                        placeholder={tSchema("height.placeholder")}
-                      />
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="width"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{tSchema("width.label")}</FormLabel>
-
-                    <FormControl>
-                      <Input
-                        value={field.value || undefined}
-                        onChange={field.onChange}
-                        type="number"
-                        placeholder={tSchema("width.placeholder")}
-                      />
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="area"
@@ -219,7 +208,7 @@ export const FieldCreateForm = () => {
 
                     <FormControl>
                       <Input
-                        value={field.value || undefined}
+                        value={field.value ?? undefined}
                         onChange={field.onChange}
                         type="number"
                         placeholder={tSchema("area.placeholder")}
@@ -231,54 +220,51 @@ export const FieldCreateForm = () => {
                 )}
               />
             </div>
-            <FormField
-              control={form.control}
-              name="shape"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("shape.label")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={tSchema("shape.placeholder")}
-                      value={field.value || undefined}
-                      onChange={field.onChange}
-                      disabled={isPending}
-                    />
-                  </FormControl>
+            <div className="grid lg:grid-cols-2 gap-2">
+              <FormField
+                control={form.control}
+                name="shape"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("shape.label")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={tSchema("shape.placeholder")}
+                        value={field.value ?? undefined}
+                        onChange={field.onChange}
+                        disabled={isPending}
+                      />
+                    </FormControl>
 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="soilType"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("soilType.label")}</FormLabel>
-                  <FormControl>
-                    <SelectOptions
-                      placeholder={tSchema("soilType.placeholder")}
-                      onChange={field.onChange}
-                      options={Object.values(SoilType).map((item) => {
-                        return {
-                          label: tSchema(`soilType.options.${item}`),
-                          value: item,
-                        };
-                      })}
-                      disabled={isPending}
-                    />
-                  </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="note"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("note.label")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={tSchema("note.placeholder")}
+                        value={field.value ?? undefined}
+                        onChange={field.onChange}
+                        disabled={isPending}
+                      />
+                    </FormControl>
 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <DynamicDialogFooter disabled={isPending} closeButton={false} />
           </form>
         </Form>
-      </CardContent>
-    </Card>
+      </DialogContent>
+    </Dialog>
   );
 };

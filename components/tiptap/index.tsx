@@ -38,6 +38,7 @@ export const Tiptap = ({ value, onChange, disabled }: TiptapProps) => {
   const { subscript, superscript } = useEditorAttribute();
   const limit = 5000;
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: [
       StarterKit,
       Highlight,
@@ -98,13 +99,6 @@ export const Tiptap = ({ value, onChange, disabled }: TiptapProps) => {
       editor.chain().unsetSuperscript().run();
     }
   }, [editor, subscript, superscript]);
-
-  useEffect(() => {
-    if (!editor) {
-      return;
-    }
-    editor.commands.setContent(value);
-  }, [value, editor]);
 
   if (!editor) {
     return null;

@@ -26,6 +26,6 @@ export const GET = async (
 
     return NextResponse.json(soils);
   } catch (error) {
-    return NextResponse.json("Internal Error", { status: 500 });
+    return new NextResponse("Internal Error", { status: 500 });
   }
 };

@@ -12,35 +12,42 @@ import {
 } from "@/components/ui/table";
 import { useFormatter, useTranslations } from "next-intl";
 import { ActivityTable } from "@/types";
-import { ActivitiesTableAction } from "./activities-table-action";
 
 import { OrderByButton } from "@/components/buttons/order-by-button";
 
 import { SearchBar } from "@/components/search-bar";
-import { UserAvatar } from "@/components/user-avatar";
-import { useRouter } from "@/navigation";
 import { ActivityStatusValue } from "./activity-status-value";
 import { ActivityPriorityValue } from "./activity-priority-value";
-import { SelectItemContent } from "@/components/form/select-item";
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
+import {
+  SelectItemContent,
+  SelectItemContentWithoutImage,
+} from "@/components/form/select-item";
+import {
+  ActivitiesSelectCreatedBy,
+  ActivitiesTableFaceted,
+} from "./activities-table-faceted";
 
 interface ActivitiesTableProps {
   data: ActivityTable[];
   totalPage: number;
 }
 export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
-  const router = useRouter();
-  const { dateTime } = useFormatter();
+  const router = useRouterWithRole();
+  const { dateTime, number } = useFormatter();
   const t = useTranslations("activities");
+
   const handleViewDetail = (row: ActivityTable) => {
-    router.push(`/admin/activities/detail/${row.id}`);
+    router.pushDetail(`detail/${row.id}`);
   };
 
   return (
     <>
-      <div className="flex flex-col lg:flex-row gap-2 my-2 lg:items-center">
+      <ActivitiesTableFaceted />
+      <div className="flex gap-2 items-center">
         <SearchBar isPagination placeholder={t("search.placeholder")} />
+        <ActivitiesSelectCreatedBy />
       </div>
-
       <Table>
         <TableHeader>
           <TableRow>
@@ -56,12 +63,14 @@ export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
             </TableHead>
             <TableHead>{t("table.thead.status")}</TableHead>
             <TableHead>{t("table.thead.priority")}</TableHead>
-            <TableHead>{t("table.thead.estimatedDuration")}</TableHead>
+            <TableHead>{t("table.thead.crop")}</TableHead>
             <TableHead>{t("table.thead.createdBy")}</TableHead>
-            <TableHead>{t("table.thead.assignedTo")}</TableHead>
-            <TableHead>{t("table.thead.countEquipmentUsage")}</TableHead>
-            <TableHead>{t("table.thead.countMaterialUsage")}</TableHead>
-            <TableHead></TableHead>
+            <TableHead className="text-right">
+              {t("table.thead.estimatedDuration")}
+            </TableHead>
+            <TableHead className="text-right">
+              {t("table.thead.actualDuration")}
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -72,18 +81,19 @@ export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
                 className="cursor-pointer"
                 onClick={() => handleViewDetail(item)}
               >
-                <TableCell>{dateTime(item.activityDate, "short")}</TableCell>
-                <TableCell className="lg:w-[350px]">{item.name}</TableCell>
+                <TableCell>{dateTime(item.activityDate, "long")}</TableCell>
+                <TableCell>{item.name}</TableCell>
                 <TableCell>
                   <ActivityStatusValue value={item.status} />
                 </TableCell>
-
                 <TableCell>
                   <ActivityPriorityValue value={item.priority} />
                 </TableCell>
+
                 <TableCell>
-                  {item.estimatedDuration || t("table.trow.estimatedDuration")}
+                  <SelectItemContentWithoutImage title={item.crop.name} />
                 </TableCell>
+
                 <TableCell>
                   <SelectItemContent
                     imageUrl={item.createdBy.imageUrl}
@@ -91,17 +101,13 @@ export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
                     description={item.createdBy.email}
                   />
                 </TableCell>
-                <TableCell>
-                  <SelectItemContent
-                    imageUrl={item.assignedTo.imageUrl}
-                    title={item.assignedTo.name}
-                    description={item.assignedTo.email}
-                  />
+                <TableCell className="text-right">
+                  {number(item.estimatedDuration, "hour")}
                 </TableCell>
-                <TableCell>{item._count.equipmentUseds}</TableCell>
-                <TableCell>{item._count.materialUseds}</TableCell>
-                <TableCell>
-                  <ActivitiesTableAction data={item} />
+                <TableCell className="text-right">
+                  {item.actualDuration
+                    ? number(item.actualDuration, "hour")
+                    : t("table.trow.actualDuration")}
                 </TableCell>
               </TableRow>
             );

@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { UnitSuperscript } from "../../../_components/unit-with-value";
 import { useDialog } from "@/stores/use-dialog";
 import { UnitTable } from "@/types";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface UnitsTableProps {
   data: UnitTable[];
@@ -21,6 +22,8 @@ export const UnitsTable = ({ data }: UnitsTableProps) => {
   const t = useTranslations("units");
   const { onOpen, onClose, setPending } = useAlertDialog();
   const { onOpen: onOpenEdit } = useDialog();
+
+  const { isSuperAdmin } = useCurrentStaffRole();
   const handleConfirm = (rows: UnitTable[]) => {
     setPending(true);
     const ids = rows.map((row) => row.id);
@@ -122,6 +125,7 @@ export const UnitsTable = ({ data }: UnitsTableProps) => {
           onConfirm: () => handleConfirm(rows),
         });
       },
+      disabled: !isSuperAdmin,
     },
   ];
   const facetedFilters = [
