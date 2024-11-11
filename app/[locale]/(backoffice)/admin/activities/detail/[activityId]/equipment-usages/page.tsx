@@ -3,11 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getTranslations } from "next-intl/server";
 
 import { EquipmentUsageCreateButton } from "../../../../(inventory)/equipments/detail/[equipmentId]/details/[equipmentDetailId]/usages/_components/equipment-usage-create-button";
-import { EquipmentUsagesTable } from "../../../../(inventory)/equipments/detail/[equipmentId]/details/[equipmentDetailId]/usages/_components/equipment-usages-table";
 import { getEquipmentUsagesByActivity } from "@/services/equipment-usages";
-import { getActivityById } from "@/services/activities";
+import { getOnlyActivityById } from "@/services/activities";
 import { canUpdateActivityStatus } from "@/lib/permission";
 import { notFound } from "next/navigation";
+import { ActivityEquipmentUsagesTable } from "./_components/activity-equipment-usages-table";
+import { canUpdateActivity } from "@/lib/role";
 export async function generateMetadata() {
   const t = await getTranslations("activities.page.detail.equipment-usages");
   return {
@@ -36,11 +37,11 @@ const ActivityEquipmentUsagesPage = async ({
     orderBy,
     query,
   });
-  const activity = await getActivityById(params.activityId);
+  const activity = await getOnlyActivityById(params.activityId);
   if (!activity) {
     notFound();
   }
-  const canUpdateActivity = canUpdateActivityStatus(activity.status);
+  const canEdit = await canUpdateActivity(activity.cropId, params.activityId);
 
   return (
     <Card>
@@ -49,9 +50,13 @@ const ActivityEquipmentUsagesPage = async ({
       </CardHeader>
       <CardContent>
         <div className="flex justify-end">
-          <EquipmentUsageCreateButton disabled={!canUpdateActivity} />
+          <EquipmentUsageCreateButton disabled={!canEdit} />
         </div>
-        <EquipmentUsagesTable data={data} totalPage={0} totalCost={totalCost} />
+        <ActivityEquipmentUsagesTable
+          data={data}
+          totalCost={totalCost}
+          disabled={!canEdit}
+        />
       </CardContent>
     </Card>
   );

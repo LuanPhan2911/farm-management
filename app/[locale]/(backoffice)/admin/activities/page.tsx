@@ -4,6 +4,7 @@ import { parseToDate, parseToNumber } from "@/lib/utils";
 import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ActivityCreateButton } from "./_components/activity-create-button";
+import { checkRole } from "@/lib/role";
 interface ActivitiesPageProps {
   params: {};
   searchParams: {
@@ -40,6 +41,7 @@ const ActivitiesPage = async ({ searchParams }: ActivitiesPageProps) => {
     begin,
     end,
   });
+  const canCreate = checkRole("superadmin");
   return (
     <div className="flex flex-col gap-4 py-4 h-full">
       <Card>
@@ -48,7 +50,7 @@ const ActivitiesPage = async ({ searchParams }: ActivitiesPageProps) => {
         </CardHeader>
         <CardContent>
           <div className="flex justify-end">
-            <ActivityCreateButton />
+            <ActivityCreateButton disabled={!canCreate} />
           </div>
           <ActivitiesTable data={data} totalPage={totalPage} />
         </CardContent>

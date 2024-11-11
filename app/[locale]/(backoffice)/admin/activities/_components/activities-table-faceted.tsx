@@ -129,9 +129,20 @@ const ActivitiesFacetedPriority = () => {
   );
 };
 
-const ActivitiesSelectCreatedBy = () => {
+export const ActivitiesTableFaceted = () => {
+  return (
+    <div className="flex gap-2 my-2 lg:flex-row flex-col lg:items-center items-start">
+      <DatePickerWithRangeButton />
+      <div className="flex gap-2 justify-start">
+        <ActivitiesFacetedStatus />
+        <ActivitiesFacetedPriority />
+      </div>
+    </div>
+  );
+};
+export const ActivitiesSelectCreatedBy = () => {
   const { updateSearchParam, initialParam = "assignedTo" } =
-    useUpdateSearchParam("type");
+    useUpdateSearchParam("type", "assignedTo");
 
   const { isFarmer } = useCurrentStaffRole();
   const selectData: SelectData[] = [
@@ -153,18 +164,6 @@ const ActivitiesSelectCreatedBy = () => {
         placeholder="Select type"
         disabledValues={isFarmer ? ["createdBy"] : []}
       />
-    </div>
-  );
-};
-export const ActivitiesTableFaceted = () => {
-  return (
-    <div className="flex gap-2 my-2 lg:flex-row flex-col lg:items-center items-start">
-      <DatePickerWithRangeButton />
-      <ActivitiesSelectCreatedBy />
-      <div className="flex gap-2 justify-start">
-        <ActivitiesFacetedStatus />
-        <ActivitiesFacetedPriority />
-      </div>
     </div>
   );
 };

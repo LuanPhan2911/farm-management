@@ -1,11 +1,14 @@
 import { db } from "@/lib/db";
 import {
   ActivityPriorityCount,
-  ActivitySelectWithCropAndField,
   ActivityStatusCount,
   ActivityTable,
   PaginatedResponse,
   ActivityAssignedStaffWithActivityAndCost,
+  ActivitySelectWithCrop,
+  ActivityWithCountUsages,
+  ActivityWithTotalCost,
+  ActivityWithCost,
 } from "@/types";
 import { ActivityPriority, ActivityStatus, Staff } from "@prisma/client";
 import { LIMIT } from "@/configs/paginationConfig";
@@ -20,6 +23,7 @@ import { fieldSelect } from "./fields";
 import { plantSelect } from "./plants";
 import { getMaterialUsagesByActivity } from "./material-usages";
 import { getEquipmentUsagesByActivity } from "./equipment-usages";
+import { isSuperAdmin } from "@/lib/permission";
 
 type ActivityParams = {
   name: string;
@@ -182,17 +186,13 @@ export const updateActivityStatus = async (
   });
 };
 
-type ActivitySelectQuery = {
-  staffId: string;
-};
 type ActivityQuery = {
   page?: number;
   query?: string;
   orderBy?: string;
   filterString?: string;
   filterNumber?: string;
-  type?: "createdBy" | "assignedTo";
-  cropId?: string;
+  type?: string;
   begin?: Date;
   end?: Date;
 };
@@ -203,7 +203,6 @@ export const getActivities = async ({
   page = 1,
   query,
   type = "assignedTo",
-  cropId,
   begin,
   end,
 }: ActivityQuery): Promise<PaginatedResponse<ActivityTable>> => {
@@ -217,9 +216,6 @@ export const getActivities = async ({
         take: LIMIT,
         skip: (page - 1) * LIMIT,
         where: {
-          ...(cropId && {
-            cropId,
-          }),
           ...(type === "createdBy" && {
             createdById: currentStaff.id,
           }),
@@ -244,40 +240,21 @@ export const getActivities = async ({
         },
         orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
         include: {
-          assignedTo: {
-            include: {
-              staff: true,
-            },
-          },
           createdBy: true,
           crop: {
             select: {
               ...cropSelect,
-              field: {
-                select: {
-                  ...fieldSelect,
-                },
-              },
-              plant: {
-                select: {
-                  ...plantSelect,
-                },
-              },
             },
           },
-          _count: {
-            select: {
-              equipmentUseds: true,
-              materialUseds: true,
+          assignedTo: {
+            include: {
+              staff: true,
             },
           },
         },
       }),
       db.activity.count({
         where: {
-          ...(cropId && {
-            cropId,
-          }),
           ...(type === "createdBy" && {
             createdById: currentStaff.id,
           }),
@@ -314,6 +291,77 @@ export const getActivities = async ({
   }
 };
 
+type ActivityCropQuery = {
+  cropId: string;
+  query?: string;
+  orderBy?: string;
+  filterString?: string;
+  filterNumber?: string;
+  type?: string;
+  begin?: Date;
+  end?: Date;
+};
+export const getActivitiesByCrop = async ({
+  filterNumber,
+  filterString,
+  orderBy,
+  query,
+  cropId,
+  begin,
+  end,
+}: ActivityCropQuery): Promise<ActivityWithTotalCost> => {
+  try {
+    const currentStaff = await getCurrentStaff();
+    if (!currentStaff) {
+      throw new Error("Unauthorized");
+    }
+    let totalCost: number = 0;
+    const data = await db.activity.findMany({
+      where: {
+        cropId,
+        activityDate: {
+          ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
+          ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
+        },
+        name: {
+          contains: query,
+          mode: "insensitive",
+        },
+
+        ...(filterString && getObjectFilterString(filterString)),
+        ...(filterNumber && getObjectFilterNumber(filterNumber)),
+      },
+
+      orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
+    });
+    const dataWithCost: ActivityWithCost[] = data.map((item) => {
+      let actualCost: number = 0;
+      if (item.totalEquipmentCost != null) {
+        actualCost += item.totalEquipmentCost;
+      }
+      if (item.totalMaterialCost != null) {
+        actualCost += item.totalMaterialCost;
+      }
+      if (item.totalStaffCost != null) {
+        actualCost += item.totalStaffCost;
+      }
+      totalCost += actualCost;
+      return {
+        ...item,
+        actualCost,
+      };
+    });
+    return {
+      data: dataWithCost,
+      totalCost,
+    };
+  } catch (error) {
+    return {
+      data: [],
+      totalCost: 0,
+    };
+  }
+};
 export const activitySelect = {
   id: true,
   name: true,
@@ -322,22 +370,101 @@ export const activitySelect = {
   activityDate: true,
   estimatedDuration: true,
 };
-export const getActivitiesSelect = async ({
-  staffId,
-}: ActivitySelectQuery): Promise<ActivitySelectWithCropAndField[]> => {
+
+export const getActivityById = async (
+  activityId: string
+): Promise<ActivityTable | null> => {
   try {
+    const currentStaff = await getCurrentStaff();
+    if (!currentStaff) {
+      return null;
+    }
+
+    return await db.activity.findUnique({
+      where: {
+        id: activityId,
+        ...(!isSuperAdmin(currentStaff.role) && {
+          OR: [
+            {
+              createdById: currentStaff.id,
+            },
+            {
+              assignedTo: {
+                some: {
+                  staffId: currentStaff.id,
+                },
+              },
+            },
+          ],
+        }),
+      },
+      include: {
+        createdBy: true,
+        crop: {
+          select: {
+            ...cropSelect,
+          },
+        },
+        assignedTo: {
+          include: {
+            staff: true,
+          },
+        },
+      },
+    });
+  } catch (error) {
+    return null;
+  }
+};
+
+export const getOnlyActivityById = async (id: string) => {
+  return await db.activity.findUnique({
+    where: {
+      id,
+    },
+  });
+};
+
+export const getActivityByIdWithCountUsage = async (
+  id: string
+): Promise<ActivityWithCountUsages | null> => {
+  try {
+    return await db.activity.findUnique({
+      where: { id },
+      include: {
+        _count: {
+          select: {
+            assignedTo: true,
+            equipmentUseds: true,
+            materialUseds: true,
+          },
+        },
+      },
+    });
+  } catch (error) {
+    return null;
+  }
+};
+export const getActivitiesSelect = async (): Promise<
+  ActivitySelectWithCrop[]
+> => {
+  try {
+    const currentStaff = await getCurrentStaff();
+    if (!currentStaff) {
+      throw new Error("Unauthorized");
+    }
     return await db.activity.findMany({
       where: {
         OR: [
           {
             assignedTo: {
               some: {
-                staffId,
+                staffId: currentStaff.id,
               },
             },
           },
           {
-            createdById: staffId,
+            createdById: currentStaff.id,
           },
         ],
         status: {
@@ -349,11 +476,6 @@ export const getActivitiesSelect = async ({
         crop: {
           select: {
             ...cropSelect,
-            field: {
-              select: {
-                ...fieldSelect,
-              },
-            },
           },
         },
       },
@@ -362,66 +484,6 @@ export const getActivitiesSelect = async ({
     return [];
   }
 };
-
-export const getActivityById = async (
-  activityId: string
-): Promise<ActivityTable | null> => {
-  try {
-    const currentStaff = await getCurrentStaff();
-    if (!currentStaff) {
-      return null;
-    }
-    return await db.activity.findUnique({
-      where: {
-        id: activityId,
-        OR: [
-          {
-            createdById: currentStaff.id,
-          },
-          {
-            assignedTo: {
-              some: {
-                staffId: currentStaff.id,
-              },
-            },
-          },
-        ],
-      },
-      include: {
-        assignedTo: {
-          include: {
-            staff: true,
-          },
-        },
-        createdBy: true,
-        crop: {
-          select: {
-            ...cropSelect,
-            field: {
-              select: {
-                ...fieldSelect,
-              },
-            },
-            plant: {
-              select: {
-                ...plantSelect,
-              },
-            },
-          },
-        },
-        _count: {
-          select: {
-            equipmentUseds: true,
-            materialUseds: true,
-          },
-        },
-      },
-    });
-  } catch (error) {
-    return null;
-  }
-};
-
 type ActivityCountQuery = {
   begin?: Date;
   end?: Date;

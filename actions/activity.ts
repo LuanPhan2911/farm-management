@@ -32,9 +32,7 @@ export const create = async (
     return errorResponse(tSchema("errors.parse"));
   }
   try {
-    const activity = await createActivity({
-      ...validatedFields.data,
-    });
+    const activity = await createActivity(validatedFields.data);
 
     revalidatePath("/admin/activities");
     return successResponse(tStatus("success.create"), activity);
@@ -78,6 +76,7 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
 
 export const completeActivity = async (id: string): Promise<ActionResponse> => {
   const tStatus = await getTranslations("activities.status");
+
   try {
     await updateActivityStatus(id, "COMPLETED");
     revalidatePath("/admin/activities");

@@ -4,10 +4,11 @@ import { getTranslations } from "next-intl/server";
 
 import { getEquipmentUsagesByActivity } from "@/services/equipment-usages";
 import { EquipmentUsageCreateButton } from "@/app/[locale]/(backoffice)/admin/(inventory)/equipments/detail/[equipmentId]/details/[equipmentDetailId]/usages/_components/equipment-usage-create-button";
-import { EquipmentUsagesTable } from "@/app/[locale]/(backoffice)/admin/(inventory)/equipments/detail/[equipmentId]/details/[equipmentDetailId]/usages/_components/equipment-usages-table";
-import { getActivityById } from "@/services/activities";
+import { getOnlyActivityById } from "@/services/activities";
 import { notFound } from "next/navigation";
 import { canUpdateActivityStatus } from "@/lib/permission";
+import { ActivityEquipmentUsagesTable } from "@/app/[locale]/(backoffice)/admin/activities/detail/[activityId]/equipment-usages/_components/activity-equipment-usages-table";
+import { canUpdateActivity } from "@/lib/role";
 export async function generateMetadata() {
   const t = await getTranslations("activities.page.detail.equipment-usages");
   return {
@@ -15,19 +16,20 @@ export async function generateMetadata() {
   };
 }
 
-interface ActivityEquipmentUsagesPageProps {
+interface CropActivityEquipmentUsagesPageProps {
   params: {
     activityId: string;
+    cropId: string;
   };
   searchParams: {
     query?: string;
     orderBy?: string;
   };
 }
-const ActivityEquipmentUsagesPage = async ({
+const CropActivityEquipmentUsagesPage = async ({
   params,
   searchParams,
-}: ActivityEquipmentUsagesPageProps) => {
+}: CropActivityEquipmentUsagesPageProps) => {
   const t = await getTranslations(
     "crops.page.detail.activities.detail.equipment-usages"
   );
@@ -38,12 +40,8 @@ const ActivityEquipmentUsagesPage = async ({
     orderBy,
     query,
   });
-  const activity = await getActivityById(params.activityId);
-  if (!activity) {
-    notFound();
-  }
-  const canUpdateActivity = canUpdateActivityStatus(activity.status);
 
+  const canEdit = await canUpdateActivity(params.cropId, params.activityId);
   return (
     <Card>
       <CardHeader>
@@ -51,11 +49,15 @@ const ActivityEquipmentUsagesPage = async ({
       </CardHeader>
       <CardContent>
         <div className="flex justify-end">
-          <EquipmentUsageCreateButton disabled={!canUpdateActivity} />
+          <EquipmentUsageCreateButton disabled={!canEdit} />
         </div>
-        <EquipmentUsagesTable data={data} totalPage={0} totalCost={totalCost} />
+        <ActivityEquipmentUsagesTable
+          data={data}
+          totalCost={totalCost}
+          disabled={!canEdit}
+        />
       </CardContent>
     </Card>
   );
 };
-export default ActivityEquipmentUsagesPage;
+export default CropActivityEquipmentUsagesPage;

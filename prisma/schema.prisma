@@ -27,6 +27,7 @@ model Unit {
   materialUsages   MaterialUsage[]
   equipmentDetails EquipmentDetail[]
   equipmentUsages  EquipmentUsage[]
+  crops            Crop[]
 }
 
 enum UnitType {
@@ -58,9 +59,6 @@ model FloatUnit {
   pesticideDosages  Pesticide[]  @relation(name: "pesticideDosage")
 
   purchasePrices Equipment[] @relation(name: "purchasePrice")
-
-  estimatedYields Crop[] @relation("estimatedYield")
-  actualYields    Crop[] @relation("actualYield")
 
   plantFertilizerDosages PlantFertilizer[]
   plantPesticideDosages  PlantPesticide[]
@@ -532,8 +530,8 @@ model EquipmentUsage {
   updatedAt DateTime @updatedAt
 
   equipmentDetail EquipmentDetail @relation(fields: [equipmentDetailId], references: [id])
-  activity        Activity?       @relation(fields: [activityId], references: [id])
-  operator        Staff?          @relation(fields: [operatorId], references: [id]) // Operator
+  activity        Activity?       @relation(fields: [activityId], references: [id], onDelete: SetNull)
+  operator        Staff?          @relation(fields: [operatorId], references: [id], onDelete: SetNull) // Operator
 
   fuelConsumption Float?
   unitId          String?
@@ -577,7 +575,7 @@ model MaterialUsage {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  activity Activity? @relation(fields: [activityId], references: [id])
+  activity Activity? @relation(fields: [activityId], references: [id], onDelete: SetNull)
   material Material  @relation(fields: [materialId], references: [id])
   unit     Unit      @relation(fields: [unitId], references: [id])
 }
@@ -605,6 +603,14 @@ enum ActivityPriority {
   URGENT
 }
 
+enum CropStatus {
+  NEW
+  MEDIUM
+  MATURE
+  HARVEST
+  FINISH
+}
+
 model Crop {
   id   String @id @default(uuid())
   name String
@@ -618,13 +624,12 @@ model Crop {
   plantId String
   plant   Plant  @relation(fields: [plantId], references: [id])
 
-  estimatedYieldId String?
-  estimatedYield   FloatUnit? @relation(name: "estimatedYield", fields: [estimatedYieldId], references: [id], onDelete: SetNull) // Sản lượng dự kiến
+  unitId         String
+  unit           Unit   @relation(fields: [unitId], references: [id])
+  estimatedYield Float
+  actualYield    Float?
 
-  actualYieldId String?
-  actualYield   FloatUnit? @relation(name: "actualYield", fields: [actualYieldId], references: [id], onDelete: SetNull) // Sản lượng thực tế
-
-  status String? // Tình trạng mùa vụ
+  status CropStatus @default(NEW) // Tình trạng mùa vụ
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

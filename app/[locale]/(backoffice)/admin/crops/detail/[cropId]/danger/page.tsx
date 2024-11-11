@@ -12,9 +12,10 @@ import { DestroyButton } from "@/components/buttons/destroy-button";
 
 import { getCurrentStaff } from "@/services/staffs";
 
-import { isSuperAdmin } from "@/lib/permission";
-import { getCropById } from "@/services/crops";
+import { canUpdateCropStatus, isSuperAdmin } from "@/lib/permission";
+import { getCropByIdWithCount } from "@/services/crops";
 import { destroy } from "@/actions/crop";
+import { CropFinishButton } from "../../../_components/crop-edit-status-button";
 
 interface ActivityDangerPageProps {
   params: {
@@ -34,14 +35,25 @@ const ActivityDangerPage = async ({ params }: ActivityDangerPageProps) => {
   if (!currentStaff) {
     notFound();
   }
-  const data = await getCropById(params.cropId);
+  const data = await getCropByIdWithCount(params.cropId);
   if (!data) {
     notFound();
   }
-  const canDelete =
-    isSuperAdmin(currentStaff.role) && data._count.activities === 0;
+
+  const canEdit =
+    canUpdateCropStatus(data.status) && isSuperAdmin(currentStaff.role);
+  const canDelete = canEdit && data._count.activities === 0;
   return (
     <>
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("finish.title")}</CardTitle>
+          <CardDescription>{t("finish.description")}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <CropFinishButton id={data.id} disabled={!canEdit} />
+        </CardContent>
+      </Card>
       <Card>
         <CardHeader>
           <CardTitle>{t("destroy.title")}</CardTitle>

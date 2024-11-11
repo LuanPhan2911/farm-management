@@ -19,15 +19,20 @@ import { useDialog } from "@/stores/use-dialog";
 interface ActivityStaffsTableProps {
   data: ActivityAssignedStaffWithActivitySelect[];
   totalCost: number;
+  disabled?: boolean;
 }
 export const ActivityStaffsTable = ({
   data,
   totalCost,
+  disabled,
 }: ActivityStaffsTableProps) => {
   const t = useTranslations("activityAssigned");
   const { relativeTime, number } = useFormatter();
   const { onOpen } = useDialog();
   const handleEdit = (row: ActivityAssignedStaffWithActivitySelect) => {
+    if (disabled) {
+      return;
+    }
     onOpen("activityAssigned.edit", {
       activityAssigned: row,
     });
@@ -86,7 +91,7 @@ export const ActivityStaffsTable = ({
                 <TableCell>{relativeTime(assignedAt)}</TableCell>
                 <TableCell className="text-right">
                   {staff.baseHourlyWage
-                    ? number(staff.baseHourlyWage, "hour")
+                    ? number(staff.baseHourlyWage, "currency")
                     : t("table.trow.baseHourlyWage")}
                 </TableCell>
                 <TableCell className="text-right">
@@ -106,7 +111,7 @@ export const ActivityStaffsTable = ({
                 </TableCell>
 
                 <TableCell>
-                  <ActivityStaffsTableAction data={item} />
+                  <ActivityStaffsTableAction data={item} disabled={disabled} />
                 </TableCell>
               </TableRow>
             );

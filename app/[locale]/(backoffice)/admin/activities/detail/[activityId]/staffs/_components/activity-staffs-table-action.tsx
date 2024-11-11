@@ -18,9 +18,11 @@ import { ActivityStaffsEditButton } from "./activity-staffs-edit-button";
 import { canUpdateActivityStatus } from "@/lib/permission";
 interface ActivityStaffTableActionProps {
   data: ActivityAssignedStaffWithActivitySelect;
+  disabled?: boolean;
 }
 export const ActivityStaffsTableAction = ({
   data,
+  disabled,
 }: ActivityStaffTableActionProps) => {
   const t = useTranslations("activityAssigned.form");
   const params = useParams<{ activityId: string }>();
@@ -30,7 +32,7 @@ export const ActivityStaffsTableAction = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
+        <Button variant="ghost" className="h-8 w-8 p-0" disabled={disabled}>
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>

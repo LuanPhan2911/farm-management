@@ -39,7 +39,12 @@ import { CategoriesSelect } from "../../_components/categories-select";
 import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
 
-export const ActivityCreateButton = () => {
+interface ActivityCreateButtonProps {
+  disabled?: boolean;
+}
+export const ActivityCreateButton = ({
+  disabled,
+}: ActivityCreateButtonProps) => {
   const t = useTranslations("activities.form");
 
   const tSchema = useTranslations("activities.schema");
@@ -67,6 +72,7 @@ export const ActivityCreateButton = () => {
         .then(({ message, ok }) => {
           if (ok) {
             toast.success(message);
+            form.reset();
             setOpen(false);
           } else {
             toast.error(message);
@@ -78,15 +84,20 @@ export const ActivityCreateButton = () => {
     });
   };
 
+  const canCreate = !disabled;
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size={"sm"} variant={"success"} disabled={isPending}>
+        <Button
+          size={"sm"}
+          variant={"success"}
+          disabled={isPending || !canCreate}
+        >
           <Plus className="h-4 w-4 mr-2" />{" "}
           <span className="text-sm font-semibold">{t("create.label")}</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-4xl overflow-y-auto max-h-screen">
+      <DialogContent className="max-w-5xl overflow-y-auto max-h-screen">
         <DialogHeader>
           <DialogTitle>{t("create.title")}</DialogTitle>
           <DialogDescription>{t("create.description")}</DialogDescription>
@@ -110,7 +121,7 @@ export const ActivityCreateButton = () => {
                             placeholder={tSchema("name.placeholder")}
                             value={field.value ?? undefined}
                             onChange={field.onChange}
-                            disabled={isPending}
+                            disabled={isPending || !canCreate}
                           />
                         </div>
                         <CategoriesSelect
@@ -118,7 +129,7 @@ export const ActivityCreateButton = () => {
                           notFound={tSchema("name.select.notFound")}
                           placeholder={tSchema("name.select.placeholder")}
                           type="ACTIVITY"
-                          disabled={isPending}
+                          disabled={isPending || !canCreate}
                           onChange={field.onChange}
                           valueKey="name"
                           hidden
@@ -145,7 +156,7 @@ export const ActivityCreateButton = () => {
                         disabledDateRange={{
                           before: new Date(),
                         }}
-                        disabled={isPending}
+                        disabled={isPending || !canCreate}
                       />
                     </FormControl>
 
@@ -190,7 +201,7 @@ export const ActivityCreateButton = () => {
                         error={tSchema("assignedTo.error")}
                         placeholder={tSchema("assignedTo.placeholder")}
                         notFound={tSchema("assignedTo.notFound")}
-                        disabled={isPending}
+                        disabled={isPending || !canCreate}
                       />
                     </FormControl>
 
@@ -217,7 +228,7 @@ export const ActivityCreateButton = () => {
                           };
                         })}
                         defaultValue={field.value}
-                        disabled={isPending}
+                        disabled={isPending || !canCreate}
                         disabledValues={[
                           ActivityStatus.CANCELLED,
                           ActivityStatus.COMPLETED,
@@ -246,7 +257,7 @@ export const ActivityCreateButton = () => {
                           };
                         })}
                         defaultValue={field.value}
-                        disabled={isPending}
+                        disabled={isPending || !canCreate}
                       />
                     </FormControl>
 
@@ -266,7 +277,7 @@ export const ActivityCreateButton = () => {
                         placeholder={tSchema("estimatedDuration.placeholder")}
                         value={field.value ?? undefined}
                         onChange={field.onChange}
-                        disabled={isPending}
+                        disabled={isPending || !canCreate}
                         type="number"
                         min={1}
                         max={100}
@@ -288,7 +299,7 @@ export const ActivityCreateButton = () => {
                         placeholder={tSchema("actualDuration.placeholder")}
                         value={field.value ?? undefined}
                         onChange={field.onChange}
-                        disabled={isPending}
+                        disabled={isPending || !canCreate}
                         type="number"
                         min={1}
                         max={100}
@@ -311,7 +322,7 @@ export const ActivityCreateButton = () => {
                       placeholder={tSchema("description.placeholder")}
                       value={field.value ?? undefined}
                       onChange={field.onChange}
-                      disabled={isPending}
+                      disabled={isPending || !canCreate}
                     />
                   </FormControl>
 
@@ -320,7 +331,10 @@ export const ActivityCreateButton = () => {
               )}
             />
 
-            <DynamicDialogFooter disabled={isPending} closeButton={false} />
+            <DynamicDialogFooter
+              disabled={isPending || !canCreate}
+              closeButton={false}
+            />
           </form>
         </Form>
       </DialogContent>

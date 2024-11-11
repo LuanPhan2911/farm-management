@@ -1,6 +1,7 @@
 import { User } from "@clerk/nextjs/server";
 import {
   ActivityStatus,
+  CropStatus,
   EquipmentStatus,
   Staff,
   StaffRole,
@@ -24,4 +25,7 @@ export const canUpdateActivityStatus = (status: ActivityStatus) => {
 
 export const canUpdateEquipmentDetail = (status: EquipmentStatus) => {
   return status !== "WORKING";
+};
+export const canUpdateCropStatus = (status: CropStatus) => {
+  return status !== "FINISH";
 };

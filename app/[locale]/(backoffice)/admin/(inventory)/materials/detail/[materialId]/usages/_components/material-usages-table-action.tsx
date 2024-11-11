@@ -21,23 +21,25 @@ import { ActionButton } from "@/components/buttons/action-button";
 
 interface MaterialUsagesTableActionProps {
   data: MaterialUsageTable;
+  disabled?: boolean;
 }
 export const MaterialUsagesTableAction = ({
   data,
+  disabled,
 }: MaterialUsagesTableActionProps) => {
   const t = useTranslations("materialUsages.form");
   const params = useParams<{ activityId: string }>()!;
-  const { isSuperAdmin, isOnlyAdmin } = useCurrentStaffRole();
+  const { isOnlyAdmin } = useCurrentStaffRole();
   const canAssign =
     data.activity === null ||
     (data.activity && canUpdateActivityStatus(data.activity.status));
   const canUpdate = data.activity === null && isOnlyAdmin;
-  const canDelete = canUpdate && isSuperAdmin;
+  const canDelete = canUpdate;
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
+        <Button variant="ghost" className="h-8 w-8 p-0" disabled={disabled}>
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>

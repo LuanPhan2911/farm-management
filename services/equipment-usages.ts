@@ -12,10 +12,7 @@ import {
 } from "@/types";
 import { revalidatePath } from "next/cache";
 import { equipmentDetailSelect } from "./equipment-details";
-import { equipmentSelect } from "./equipments";
 import { activitySelect } from "./activities";
-import { cropSelect } from "./crops";
-import { fieldSelect } from "./fields";
 import { unitSelect } from "./units";
 
 type RevalidateEquipmentUsageParam = {
@@ -45,7 +42,6 @@ type EquipmentUsageParams = {
   duration: number;
   operatorId?: string | null;
   note?: string | null;
-  location?: string | null;
   fuelConsumption?: number | null;
   unitId?: string | null;
   fuelPrice?: number | null;
@@ -53,7 +49,6 @@ type EquipmentUsageParams = {
 };
 
 export const createEquipmentUsage = async (params: EquipmentUsageParams) => {
-  const { location, ...other } = params;
   const [updatedEquipmentDetail, equipmentUsage] = await db.$transaction([
     db.equipmentDetail.update({
       where: {
@@ -61,11 +56,10 @@ export const createEquipmentUsage = async (params: EquipmentUsageParams) => {
       },
       data: {
         status: "WORKING",
-        location,
       },
     }),
     db.equipmentUsage.create({
-      data: { ...other },
+      data: { ...params },
       include: {
         equipmentDetail: {
           select: {
@@ -197,40 +191,24 @@ export const deleteEquipmentUsage = async (id: string) => {
   return { updatedEquipmentDetail, deletedEquipmentUsage };
 };
 type EquipmentUsageQuery = {
-  equipmentDetailId?: string;
+  equipmentDetailId: string;
   page?: number;
   query?: string;
   orderBy?: string;
-  activityId?: string;
 };
 export const getEquipmentUsages = async ({
   equipmentDetailId,
   orderBy,
   page = 1,
   query,
-  activityId,
-}: EquipmentUsageQuery): Promise<
-  PaginatedResponseWithTotalCost<EquipmentUsageTableWithCost>
-> => {
+}: EquipmentUsageQuery): Promise<PaginatedResponse<EquipmentUsageTable>> => {
   try {
     const [data, count] = await db.$transaction([
       db.equipmentUsage.findMany({
         take: LIMIT,
         skip: (page - 1) * LIMIT,
         where: {
-          ...(equipmentDetailId && {
-            equipmentDetailId,
-          }),
-          ...(activityId && {
-            OR: [
-              {
-                activityId: null,
-              },
-              {
-                activityId,
-              },
-            ],
-          }),
+          equipmentDetailId,
           equipmentDetail: {
             name: {
               contains: query,
@@ -261,19 +239,7 @@ export const getEquipmentUsages = async ({
       }),
       db.equipmentUsage.count({
         where: {
-          ...(equipmentDetailId && {
-            equipmentDetailId,
-          }),
-          ...(activityId && {
-            OR: [
-              {
-                activityId: null,
-              },
-              {
-                activityId,
-              },
-            ],
-          }),
+          equipmentDetailId,
           equipmentDetail: {
             name: {
               contains: query,
@@ -283,32 +249,16 @@ export const getEquipmentUsages = async ({
         },
       }),
     ]);
-    let totalCost: number = 0;
-    const dataWithCost = data.map((item) => {
-      let actualCost = 0;
-      if (item.rentalPrice !== null) {
-        actualCost += item.rentalPrice;
-      }
-      if (item.fuelConsumption != null && item.fuelPrice !== null) {
-        actualCost += item.fuelConsumption * item.fuelPrice;
-      }
-      totalCost += actualCost;
-      return {
-        ...item,
-        actualCost,
-      };
-    });
+
     const totalPage = Math.ceil(count / LIMIT);
     return {
-      data: dataWithCost,
+      data,
       totalPage,
-      totalCost,
     };
   } catch (error) {
     return {
       data: [],
       totalPage: 0,
-      totalCost: 0,
     };
   }
 };

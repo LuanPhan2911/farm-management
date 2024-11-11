@@ -113,8 +113,8 @@
         "description": "Description"
       },
       "trow": {
-        "type": "",
-        "description": ""
+        "type": "No select",
+        "description": "No filled"
       }
     },
     "search": {
@@ -310,7 +310,7 @@
         "status": "Status"
       },
       "trow": {
-        "note": ""
+        "note": "No filled"
       }
     },
     "search": {
@@ -1094,11 +1094,6 @@
       }
     },
     "form": {
-      "viewDetail": {
-        "label": "View detail",
-        "title": "View detail",
-        "description": ""
-      },
       "create": {
         "label": "Add",
         "title": "Add field",
@@ -1651,11 +1646,11 @@
       },
       "trow": {
         "season": "Any season",
-        "fertilizerType": "",
-        "idealTemperature": "",
-        "idealHumidity": "",
-        "waterRequirement": "",
-        "growDuration": ""
+        "fertilizerType": "No select",
+        "idealTemperature": "No filled",
+        "idealHumidity": "No filled",
+        "waterRequirement": "No filled",
+        "growDuration": "No filled"
       }
     },
     "tabs": {
@@ -1848,11 +1843,11 @@
         "manufacturer": "Manufacturer"
       },
       "trow": {
-        "manufacturer": "",
-        "applicationMethod": "",
-        "frequencyOfUse": "",
-        "nutrientOfNPK": "",
-        "type": ""
+        "manufacturer": "No filled",
+        "applicationMethod": "No filled",
+        "frequencyOfUse": "No filled",
+        "nutrientOfNPK": "No filled",
+        "type": "No select"
       }
     },
     "search": {
@@ -1994,10 +1989,10 @@
         "manufacturer": "Manufacturer"
       },
       "trow": {
-        "type": "",
-        "toxicityLevel": "",
-        "manufacturer": "",
-        "applicationMethod": ""
+        "type": "No select",
+        "toxicityLevel": "No select",
+        "manufacturer": "No filled",
+        "applicationMethod": "No filled"
       }
     },
     "search": {
@@ -3190,23 +3185,24 @@
         "estimatedDuration": "Estimate duration",
         "createdBy": "CreatedBy",
         "actualDuration": "Actual duration",
-        "crop": {
-          "field": {
-            "name": "Field name"
-          },
-          "plant": {
-            "name": "Plant name"
-          }
-        },
+        "crop": "Crop info",
         "totalStaffCost": "Total staff cost",
         "totalEquipmentCost": "Total equipment cost",
-        "totalMaterialCost": "Total material cost"
+        "totalMaterialCost": "Total material cost",
+        "actualCost": "Total actual cost"
       },
       "trow": {
         "actualDuration": "No filled",
         "totalStaffCost": "No value calculator",
         "totalEquipmentCost": "No value calculator",
-        "totalEquipmentCost": "No value calculator"
+        "totalMaterialCost": "No value calculator",
+        "actualCost": "No value calculator",
+        "crop": {
+          "endDate": "No filled"
+        }
+      },
+      "tfooter": {
+        "totalCost": "Total cost"
       }
     },
     "search": {
@@ -3481,7 +3477,7 @@
     },
     "tabs": {
       "info": {
-        "label": "Info"
+        "label": "Crop info"
       },
       "activities": {
         "label": "Activities",
@@ -3489,7 +3485,7 @@
           "label": "Activity Info"
         },
         "staffs": {
-          "label": "Staffs"
+          "label": "Assigned staffs"
         },
         "equipment-usages": {
           "label": "Equipment usages"
@@ -3502,7 +3498,7 @@
         }
       },
       "danger": {
-        "label": "Danger"
+        "label": "Crop danger"
       }
     },
     "table": {
@@ -3521,8 +3517,8 @@
       },
       "trow": {
         "endDate": "No filled",
-        "estimatedYield": "",
-        "actualYield": "",
+        "estimatedYield": "No filled",
+        "actualYield": "No filled",
         "status": "No filled",
         "field": {
           "area": "No filled"
@@ -3541,17 +3537,17 @@
       "edit": {
         "label": "Edit",
         "title": "Edit crop",
-        "description": "Update of crop"
+        "description": "Update information of crop"
       },
       "destroy": {
-        "label": "Delete",
+        "label": "Delete crop",
         "title": "Delete crop?",
         "description": "Crop can only delete when no activities. This action cannot be undone!"
       },
-      "detail": {
-        "label": "Detail",
-        "title": "Crop detail",
-        "description": "Crop detail information"
+      "finish": {
+        "label": "Finish crop",
+        "title": "Finish crop?",
+        "description": "After finish crop, this crop cannot update anymore. This action cannot be undone!"
       }
     },
     "schema": {
@@ -3565,11 +3561,10 @@
         "min": "Min name length is {min} characters",
         "max": "Name's length must be less than {max} characters"
       },
-      "dateRange": {
-        "startDate": {
-          "invalid_type_error": "Value select must be date",
-          "required_error": "Start-end date range required"
-        },
+      "startDate": {
+        "invalid_type_error": "Value select must be date",
+        "required_error": "Start-end date range required",
+
         "label": "Start date -  end date",
         "placeholder": "Select date range"
       },
@@ -3587,57 +3582,56 @@
         "notFound": "Field not found",
         "error": "Fail load field"
       },
-
+      "unitId": {
+        "required_error": "Required unit for yield",
+        "placeholder": "Unit",
+        "error": "Fail load units",
+        "notFound": "Units not found",
+        "label": "Unit"
+      },
       "estimatedYield": {
-        "unitId": {
-          "required_error": "Required unit",
-          "placeholder": "Unit",
-          "error": "Fail load units",
-          "notFound": "Units not found",
-          "label": "Unit"
-        },
-        "value": {
-          "required_error": "Estimated yield value is required",
-          "invalid_type_error": "Estimated yield value must be number",
-          "min": "Min Estimated yield value is {min}",
-          "max": "Max Estimated yield value is {max}"
-        },
+        "required_error": "Estimated yield value is required",
+        "invalid_type_error": "Estimated yield value must be number",
+        "min": "Min Estimated yield value is {min}",
+        "max": "Max Estimated yield value is {max}",
         "label": "Estimated yield",
         "placeholder": "From 0 to 1 000 000 000"
       },
       "actualYield": {
-        "unitId": {
-          "required_error": "Required unit",
-          "placeholder": "Unit",
-          "error": "Fail load units",
-          "notFound": "Units not found",
-          "label": "Unit"
-        },
-        "value": {
-          "required_error": "Actual yield value is required",
-          "invalid_type_error": "Actual yield value must be number",
-          "min": "Min Actual yield value is {min}",
-          "max": "Max Actual yield value is {max}"
-        },
+        "required_error": "Actual yield value is required",
+        "invalid_type_error": "Actual yield value must be number",
+        "min": "Min Actual yield value is {min}",
+        "max": "Max Actual yield value is {max}",
+
         "label": "Actual yield",
         "placeholder": "From 0 to 1 000 000 000"
       },
       "status": {
         "label": "Status",
-        "placeholder": "Eg: Newly planted",
-        "max": "Max status length is {max}"
+        "placeholder": "Select status...",
+        "enum": "Select crop status in list",
+        "options": {
+          "NEW": "Newly planted",
+          "MEDIUM": "Medium planted",
+          "MATURE": "Mature plant",
+          "HARVEST": "Harvest",
+          "FINISH": "Finish",
+          "default": "No selected"
+        }
       }
     },
     "status": {
       "success": {
         "create": "Crop created!",
         "edit": "Crop edited!",
-        "destroy": "Crop deleted!"
+        "destroy": "Crop deleted!",
+        "finish": "Crop finished!"
       },
       "failure": {
         "create": "Something went wrong while creating crop!",
         "edit": "Something went wrong while editing crop!",
-        "destroy": "Something went wrong while deleting crop!"
+        "destroy": "Something went wrong while deleting crop!",
+        "finish": "Crop finish fail!"
       }
     },
     "notFound": {

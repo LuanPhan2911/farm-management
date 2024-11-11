@@ -1,23 +1,22 @@
-import { getActivities } from "@/services/activities";
+import { getActivitiesByCrop } from "@/services/activities";
 
-import { parseToDate, parseToNumber } from "@/lib/utils";
+import { parseToDate } from "@/lib/utils";
 import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { ActivityCreateButton } from "../../../../activities/_components/activity-create-button";
-import { ActivitiesTable } from "../../../../activities/_components/activities-table";
+import { CropActivitiesTable } from "./_components/crop-activities-table";
+import { canUpdateActivity, canUpdateCrop } from "@/lib/role";
 
 interface CropActivitiesPageProps {
   params: {
     cropId: string;
   };
   searchParams: {
-    page?: string;
     orderBy?: string;
     filterString?: string;
     filterNumber?: string;
     query?: string;
-    type?: string;
     begin?: string;
     end?: string;
   };
@@ -33,23 +32,21 @@ const CropActivitiesPage = async ({
   params,
   searchParams,
 }: CropActivitiesPageProps) => {
-  const page = parseToNumber(searchParams!.page, 1);
   const t = await getTranslations("crops.page.detail.activities");
   const begin = parseToDate(searchParams!.begin);
   const end = parseToDate(searchParams!.end);
-  const { orderBy, filterNumber, filterString, query, type } = searchParams;
+  const { orderBy, filterNumber, filterString, query } = searchParams;
 
-  const { data, totalPage } = await getActivities({
+  const { data, totalCost } = await getActivitiesByCrop({
     filterNumber,
     filterString,
     orderBy,
-    page,
     query,
     cropId: params.cropId,
-    type: type === "createdBy" ? "createdBy" : undefined,
     begin,
     end,
   });
+  const canEdit = await canUpdateActivity(params.cropId);
   return (
     <div className="flex flex-col gap-4 py-4 h-full">
       <Card>
@@ -58,9 +55,9 @@ const CropActivitiesPage = async ({
         </CardHeader>
         <CardContent>
           <div className="flex justify-end">
-            <ActivityCreateButton />
+            <ActivityCreateButton disabled={!canEdit} />
           </div>
-          <ActivitiesTable data={data} totalPage={totalPage} />
+          <CropActivitiesTable data={data} totalCost={totalCost} />
         </CardContent>
       </Card>
     </div>

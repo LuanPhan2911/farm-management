@@ -14,7 +14,7 @@ export const ActivityNavigationMenu = () => {
     activityId: string;
   }>();
   const prefix = usePrefix();
-  const { isFarmer, isAdmin } = useCurrentStaffRole();
+  const { isFarmer } = useCurrentStaffRole();
   const t = useTranslations("activities.tabs");
   if (!prefix) {
     return null;
@@ -40,7 +40,7 @@ export const ActivityNavigationMenu = () => {
     {
       href: `${getHref}/danger`,
       label: t("danger.label"),
-      disabled: isAdmin || isFarmer,
+      disabled: isFarmer,
     },
   ];
   return <CustomNavigationMenu data={menu} />;

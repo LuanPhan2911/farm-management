@@ -1,7 +1,5 @@
 "use client";
 
-import { NavPagination } from "@/components/nav-pagination";
-
 import {
   Table,
   TableBody,
@@ -13,40 +11,47 @@ import {
 } from "@/components/ui/table";
 import { useFormatter, useTranslations } from "next-intl";
 import { MaterialUsageTable, MaterialUsageTableWithCost } from "@/types";
-
 import { OrderByButton } from "@/components/buttons/order-by-button";
-
 import { SearchBar } from "@/components/search-bar";
-import { MaterialUsagesTableAction } from "./material-usages-table-action";
 import { useDialog } from "@/stores/use-dialog";
-import { UserAvatar } from "@/components/user-avatar";
-import { MaterialTypeValue } from "../../../../_components/material-type-value";
+
 import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-with-value";
 import { UsageStatusValue } from "@/components/usage-status-value";
+import { UserAvatar } from "@/components/user-avatar";
+import { MaterialTypeValue } from "@/app/[locale]/(backoffice)/admin/(inventory)/materials/_components/material-type-value";
+import { MaterialUsagesTableAction } from "@/app/[locale]/(backoffice)/admin/(inventory)/materials/detail/[materialId]/usages/_components/material-usages-table-action";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
 
-interface MaterialUsagesTableProps {
-  data: MaterialUsageTable[];
-  totalPage: number;
+interface ActivityMaterialUsagesTableProps {
+  data: MaterialUsageTableWithCost[];
+  totalCost: number;
+  disabled?: boolean;
 }
-export const MaterialUsagesTable = ({
+export const ActivityMaterialUsagesTable = ({
   data,
-  totalPage,
-}: MaterialUsagesTableProps) => {
+  totalCost,
+  disabled,
+}: ActivityMaterialUsagesTableProps) => {
   const { onOpen } = useDialog();
   const t = useTranslations("materialUsages");
   const { dateTime } = useFormatter();
   const { number } = useFormatter();
+  const { isFarmer } = useCurrentStaffRole();
+  const { push } = useRouterWithRole();
   const handleEdit = (row: MaterialUsageTable) => {
-    onOpen("materialUsage.edit", { materialUsage: row });
+    if (isFarmer) {
+      push(`materials/detail/${row.materialId}`);
+    }
+    if (!disabled) {
+      onOpen("materialUsage.edit", { materialUsage: row });
+    }
   };
-
+  const isHidden = isFarmer;
   return (
     <>
       <div className="flex flex-col lg:flex-row gap-2 my-2 lg:items-center">
-        <SearchBar
-          isPagination={totalPage > 1}
-          placeholder={t("search.placeholder")}
-        />
+        <SearchBar placeholder={t("search.placeholder")} />
       </div>
 
       <Table>
@@ -62,15 +67,20 @@ export const MaterialUsagesTable = ({
               />
             </TableHead>
             <TableHead>{t("table.thead.material.type")}</TableHead>
-            <TableHead className="text-right">
-              {t("table.thead.material.quantityInStock")}
-            </TableHead>
+
             <TableHead className="text-right">
               {t("table.thead.quantityUsed")}
             </TableHead>
-            <TableHead className="text-right">
-              {t("table.thead.actualPrice")}
-            </TableHead>
+            {!isHidden && (
+              <>
+                <TableHead className="text-right">
+                  {t("table.thead.actualPrice")}
+                </TableHead>
+                <TableHead className="text-right">
+                  {t("table.thead.actualCost")}
+                </TableHead>
+              </>
+            )}
 
             <TableHead></TableHead>
           </TableRow>
@@ -94,40 +104,52 @@ export const MaterialUsagesTable = ({
                 <TableCell>
                   <MaterialTypeValue value={item.material.type} />
                 </TableCell>
-                <TableCell className="text-right">
-                  <UnitWithValue
-                    value={item.material.quantityInStock}
-                    unit={item.unit.name}
-                  />
-                </TableCell>
+
                 <TableCell className="text-right">
                   <UnitWithValue
                     value={item.quantityUsed}
                     unit={item.unit.name}
                   />
                 </TableCell>
-                <TableCell className="text-right">
-                  {item.actualPrice
-                    ? number(item.actualPrice, "currency")
-                    : t("table.trow.actualPrice")}
-                </TableCell>
+                {!isHidden && (
+                  <>
+                    <TableCell className="text-right">
+                      {item.actualPrice
+                        ? number(item.actualPrice, "currency")
+                        : t("table.trow.actualPrice")}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {item.actualCost
+                        ? number(item.actualCost, "currency")
+                        : t("table.trow.actualCost")}
+                    </TableCell>
+                  </>
+                )}
 
                 <TableCell>
-                  <MaterialUsagesTableAction data={item} />
+                  <MaterialUsagesTableAction data={item} disabled={disabled} />
                 </TableCell>
               </TableRow>
             );
           })}
         </TableBody>
+        {!isHidden && (
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={7}>{t("table.tfooter.totalCost")}</TableCell>
+              <TableCell className="text-right">
+                {number(totalCost, "currency")}
+              </TableCell>
+              <TableCell></TableCell>
+            </TableRow>
+          </TableFooter>
+        )}
       </Table>
       {!data.length && (
         <div className="my-4 text-muted-foreground flex justify-center">
           No results.
         </div>
       )}
-      <div className="py-4">
-        <NavPagination totalPage={totalPage} />
-      </div>
     </>
   );
 };

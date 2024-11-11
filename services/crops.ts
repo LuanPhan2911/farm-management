@@ -2,86 +2,56 @@ import { LIMIT } from "@/configs/paginationConfig";
 import { db } from "@/lib/db";
 import { getObjectFilterNumber, getObjectSortOrder } from "@/lib/utils";
 import {
-  CropSelect,
   CropSelectWithField,
   CropTable,
+  CropWithCount,
   PaginatedResponse,
 } from "@/types";
-import { unitInclude, UnitValue, upsertFloatUnit } from "./units";
+import { unitInclude } from "./units";
 import { getCurrentStaff } from "./staffs";
-import { isFarmer, isOnlyAdmin } from "@/lib/permission";
+import { isFarmer, isOnlyAdmin, isSuperAdmin } from "@/lib/permission";
 import { fieldSelect } from "./fields";
 import { plantSelect } from "./plants";
+import { CropStatus } from "@prisma/client";
 
 type CropParams = {
   name: string;
-  dateRange: {
-    startDate: Date;
-    endDate?: Date | null;
-  };
+  startDate: Date;
+  endDate?: Date | null;
   fieldId: string;
   plantId: string;
-  estimatedYield?: Partial<UnitValue> | null;
-  actualYield?: Partial<UnitValue> | null;
-  status?: string | null;
+  estimatedYield: number;
+  actualYield?: number | null;
+  unitId: string;
+  status: CropStatus;
 };
 
 export const createCrop = async (params: CropParams) => {
-  return await db.$transaction(async (ctx) => {
-    const {
-      actualYield: actualYieldParam,
-      estimatedYield: estimatedYieldParam,
-      dateRange: { startDate, endDate },
-      ...other
-    } = params;
-    const estimatedYield = await upsertFloatUnit({
-      ctx,
-      data: estimatedYieldParam,
-    });
-    const actualYield = await upsertFloatUnit({
-      ctx,
-      data: actualYieldParam,
-    });
-    const crop = await ctx.crop.create({
-      data: {
-        ...other,
-        startDate,
-        endDate,
-        actualYieldId: actualYield?.id,
-        estimatedYieldId: estimatedYield?.id,
-      },
-    });
-    return crop;
+  return await db.crop.create({
+    data: {
+      ...params,
+    },
   });
 };
 export const updateCrop = async (id: string, params: CropParams) => {
-  return await db.$transaction(async (ctx) => {
-    const {
-      actualYield: actualYieldParam,
-      estimatedYield: estimatedYieldParam,
-      dateRange: { startDate, endDate },
-      ...other
-    } = params;
+  return await db.crop.update({
+    where: {
+      id,
+    },
+    data: {
+      ...params,
+    },
+  });
+};
 
-    let crop = await ctx.crop.update({
-      where: { id },
-      data: {
-        ...other,
-      },
-    });
-
-    const estimatedYield = await upsertFloatUnit({
-      ctx,
-      data: estimatedYieldParam,
-      id: crop?.estimatedYieldId,
-    });
-    const actualYield = await upsertFloatUnit({
-      ctx,
-      data: actualYieldParam,
-      id: crop?.actualYieldId,
-    });
-
-    return crop;
+export const updateCropStatus = async (id: string, status: CropStatus) => {
+  return await db.crop.update({
+    where: {
+      id,
+    },
+    data: {
+      status,
+    },
   });
 };
 export const deleteCrop = async (id: string) => {
@@ -116,16 +86,17 @@ export const getCrops = async ({
     if (!currentStaff) {
       throw new Error("Unauthorized");
     }
-    if (!orgId && isOnlyAdmin(currentStaff.role)) {
+    if (!orgId && !isSuperAdmin(currentStaff.role)) {
+      throw new Error("No field id to get crops");
+    }
+    if (!orgId) {
       fields = await db.field.findMany({
         select: {
           id: true,
         },
       });
     }
-    if (!orgId && isFarmer(currentStaff.role)) {
-      throw new Error("No field id to get crops");
-    }
+
     if (orgId) {
       fields = await db.field.findMany({
         where: {
@@ -177,16 +148,7 @@ export const getCrops = async ({
         take: LIMIT,
         skip: (page - 1) * LIMIT,
         include: {
-          actualYield: {
-            include: {
-              ...unitInclude,
-            },
-          },
-          estimatedYield: {
-            include: {
-              ...unitInclude,
-            },
-          },
+          ...unitInclude,
           plant: {
             select: {
               ...plantSelect,
@@ -259,16 +221,7 @@ export const getCropById = async (id: string): Promise<CropTable | null> => {
     return await db.crop.findUnique({
       where: { id },
       include: {
-        actualYield: {
-          include: {
-            ...unitInclude,
-          },
-        },
-        estimatedYield: {
-          include: {
-            ...unitInclude,
-          },
-        },
+        ...unitInclude,
         plant: {
           select: {
             ...plantSelect,
@@ -291,6 +244,34 @@ export const getCropById = async (id: string): Promise<CropTable | null> => {
   }
 };
 
+export const getOnlyCropById = async (id: string) => {
+  try {
+    return await db.crop.findUnique({
+      where: { id },
+    });
+  } catch (error) {
+    return null;
+  }
+};
+export const getCropByIdWithCount = async (
+  id: string
+): Promise<CropWithCount | null> => {
+  try {
+    return await db.crop.findUnique({
+      where: { id },
+      include: {
+        _count: {
+          select: {
+            activities: true,
+          },
+        },
+      },
+    });
+  } catch (error) {
+    return null;
+  }
+};
+
 export const cropSelect = {
   id: true,
   name: true,
@@ -300,6 +281,11 @@ export const cropSelect = {
 export const getCropsSelect = async (): Promise<CropSelectWithField[]> => {
   try {
     return await db.crop.findMany({
+      where: {
+        status: {
+          not: "FINISH",
+        },
+      },
       select: {
         ...cropSelect,
         field: {

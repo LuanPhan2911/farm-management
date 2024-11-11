@@ -10,10 +10,12 @@ import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { OrganizationSwitcher } from "@clerk/nextjs";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { usePrefix } from "@/hooks/use-prefix";
 
 export const Navbar = () => {
   const { isOpen, onToggle } = useDashboardSidebar();
-  const { isOnlyAdmin } = useCurrentStaffRole();
+  const { isSuperAdmin } = useCurrentStaffRole();
+  const prefix = usePrefix();
   return (
     <div
       className={cn(
@@ -49,9 +51,10 @@ export const Navbar = () => {
             appearance={{
               elements: {
                 organizationSwitcherPopoverActionButton:
-                  !isOnlyAdmin && "hidden",
+                  !isSuperAdmin && "hidden",
               },
             }}
+            afterLeaveOrganizationUrl={`${prefix}/`}
           />
         </Button>
         <ProfileButton />

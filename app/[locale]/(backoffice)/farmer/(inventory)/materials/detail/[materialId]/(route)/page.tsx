@@ -3,8 +3,6 @@ import { getMaterialById, getMaterialsSelect } from "@/services/materials";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
-import { getCurrentStaff } from "@/services/staffs";
-import { isOnlyAdmin } from "@/lib/permission";
 import { MaterialEditForm } from "@/app/[locale]/(backoffice)/admin/(inventory)/materials/_components/material-edit-button";
 
 export async function generateMetadata() {

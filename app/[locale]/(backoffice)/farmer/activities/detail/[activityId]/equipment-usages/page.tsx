@@ -3,7 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getTranslations } from "next-intl/server";
 
 import { getEquipmentUsagesByActivity } from "@/services/equipment-usages";
-import { EquipmentUsagesTable } from "@/app/[locale]/(backoffice)/admin/(inventory)/equipments/detail/[equipmentId]/details/[equipmentDetailId]/usages/_components/equipment-usages-table";
+import { ActivityEquipmentUsagesTable } from "@/app/[locale]/(backoffice)/admin/activities/detail/[activityId]/equipment-usages/_components/activity-equipment-usages-table";
+import { getOnlyActivityById } from "@/services/activities";
+import { notFound } from "next/navigation";
+import { canUpdateActivity } from "@/lib/role";
 export async function generateMetadata() {
   const t = await getTranslations("activities.page.detail.equipment-usages");
   return {
@@ -32,14 +35,22 @@ const ActivityEquipmentUsagesPage = async ({
     orderBy,
     query,
   });
-
+  const activity = await getOnlyActivityById(params.activityId);
+  if (!activity) {
+    notFound();
+  }
+  const canEdit = await canUpdateActivity(activity.cropId, params.activityId);
   return (
     <Card>
       <CardHeader>
         <CardTitle>{t("title")}</CardTitle>
       </CardHeader>
       <CardContent>
-        <EquipmentUsagesTable data={data} totalPage={0} totalCost={totalCost} />
+        <ActivityEquipmentUsagesTable
+          data={data}
+          totalCost={totalCost}
+          disabled={!canEdit}
+        />
       </CardContent>
     </Card>
   );

@@ -25,7 +25,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { CropSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UnitType } from "@prisma/client";
+import { CropStatus, UnitType } from "@prisma/client";
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
@@ -35,6 +35,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { FieldsSelect } from "../../_components/fields-select";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { SelectOptions } from "@/components/form/select-options";
 
 export const CropCreateButton = () => {
   const tSchema = useTranslations("crops.schema");
@@ -47,10 +48,9 @@ export const CropCreateButton = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      dateRange: {
-        startDate: new Date(),
-        endDate: null,
-      },
+      startDate: new Date(),
+      endDate: null,
+      status: "NEW",
     },
   });
   const [isOpen, setOpen] = useState(false);
@@ -71,16 +71,7 @@ export const CropCreateButton = () => {
         });
     });
   };
-  const handleChangeDate = (dateRange: DateRange | undefined) => {
-    if (!dateRange || !dateRange.from) {
-      return;
-    }
-    const { from: startDate, to: endDate } = dateRange;
-    form.setValue("dateRange", {
-      startDate,
-      endDate: endDate || null,
-    });
-  };
+
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -91,7 +82,7 @@ export const CropCreateButton = () => {
           </span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-4xl overflow-y-auto max-h-screen">
+      <DialogContent className="max-w-5xl overflow-y-auto max-h-screen">
         <DialogHeader>
           <DialogTitle>{t("form.create.title")}</DialogTitle>
           <DialogDescription>{t("form.create.description")}</DialogDescription>
@@ -119,30 +110,67 @@ export const CropCreateButton = () => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="dateRange"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("dateRange.label")}</FormLabel>
-                  <FormControl>
-                    <DatePickerWithRange
-                      placeholder={tSchema("dateRange.placeholder")}
-                      handleChange={(dateRange: DateRange | undefined) => {
-                        handleChangeDate(dateRange);
-                      }}
-                      date={{
-                        from: field.value.startDate,
-                        to: field.value.endDate || undefined,
-                      }}
-                      disabled={isPending}
-                      className="lg:w-full"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid lg:grid-cols-2 gap-2">
+              <FormField
+                control={form.control}
+                name="startDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("startDate.label")}</FormLabel>
+                    <FormControl>
+                      <DatePickerWithRange
+                        placeholder={tSchema("startDate.placeholder")}
+                        handleChange={(dateRange: DateRange | undefined) => {
+                          if (!dateRange || !dateRange.from) {
+                            return;
+                          }
+                          form.setValue("startDate", dateRange.from);
+                          form.setValue("endDate", dateRange.to);
+                        }}
+                        date={{
+                          from: field.value,
+                        }}
+                        disabled={isPending}
+                        className="lg:w-full"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("status.label")}</FormLabel>
+
+                    <FormControl>
+                      <SelectOptions
+                        options={Object.values(CropStatus).map((item) => {
+                          return {
+                            label: tSchema(`status.options.${item}`),
+                            value: item,
+                          };
+                        })}
+                        placeholder={tSchema("status.placeholder")}
+                        defaultValue={field.value}
+                        onChange={field.onChange}
+                        disabled={isPending}
+                        disabledValues={[
+                          CropStatus.FINISH,
+                          CropStatus.HARVEST,
+                          CropStatus.MATURE,
+                        ]}
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <div className="grid lg:grid-cols-2 gap-2">
               <FormField
                 control={form.control}
@@ -158,10 +186,6 @@ export const CropCreateButton = () => {
                         notFound={tSchema("plantId.notFound")}
                         onChange={field.onChange}
                         disabled={isPending}
-                        appearance={{
-                          button: "lg:w-full",
-                          content: "lg:w-[350px]",
-                        }}
                       />
                     </FormControl>
 
@@ -183,10 +207,6 @@ export const CropCreateButton = () => {
                         notFound={tSchema("fieldId.notFound")}
                         onChange={field.onChange}
                         disabled={isPending}
-                        appearance={{
-                          button: "lg:w-full",
-                          content: "lg:w-[350px]",
-                        }}
                       />
                     </FormControl>
 
@@ -195,126 +215,73 @@ export const CropCreateButton = () => {
                 )}
               />
             </div>
-            <div className="grid lg:grid-cols-2 gap-2">
-              <div className="grid grid-cols-4 gap-2">
-                <div className="col-span-3">
-                  <FormField
-                    control={form.control}
-                    name="estimatedYield.value"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{tSchema("estimatedYield.label")}</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder={tSchema("estimatedYield.placeholder")}
-                            value={field.value ?? undefined}
-                            onChange={field.onChange}
-                            disabled={isPending}
-                            type="number"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <FormField
-                  control={form.control}
-                  name="estimatedYield.unitId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>
-                        {tSchema("estimatedYield.unitId.label")}
-                      </FormLabel>
-                      <FormControl>
-                        <UnitsSelect
-                          onChange={field.onChange}
-                          placeholder={tSchema(
-                            "estimatedYield.unitId.placeholder"
-                          )}
-                          unitType={UnitType.WEIGHT}
-                          disabled={isPending}
-                          className="w-full"
-                          error={tSchema("estimatedYield.unitId.error")}
-                          notFound={tSchema("estimatedYield.unitId.notFound")}
-                        />
-                      </FormControl>
+            <div className="grid lg:grid-cols-3 gap-2">
+              <FormField
+                control={form.control}
+                name="unitId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("unitId.label")}</FormLabel>
+                    <FormControl>
+                      <UnitsSelect
+                        onChange={field.onChange}
+                        placeholder={tSchema("unitId.placeholder")}
+                        unitType={UnitType.WEIGHT}
+                        disabled={isPending}
+                        error={tSchema("unitId.error")}
+                        notFound={tSchema("unitId.notFound")}
+                        defaultValue={field.value}
+                      />
+                    </FormControl>
 
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className="grid grid-cols-4 gap-2">
-                <div className="col-span-3">
-                  <FormField
-                    control={form.control}
-                    name="actualYield.value"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{tSchema("actualYield.label")}</FormLabel>
-                        <FormControl>
-                          <Input
-                            value={field.value ?? undefined}
-                            onChange={field.onChange}
-                            placeholder={tSchema("actualYield.placeholder")}
-                            disabled={isPending}
-                            type="number"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <FormField
-                  control={form.control}
-                  name="actualYield.unitId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>
-                        {tSchema("actualYield.unitId.label")}
-                      </FormLabel>
-                      <FormControl>
-                        <UnitsSelect
-                          onChange={field.onChange}
-                          placeholder={tSchema(
-                            "actualYield.unitId.placeholder"
-                          )}
-                          unitType={UnitType.WEIGHT}
-                          disabled={isPending}
-                          className="w-full"
-                          error={tSchema("actualYield.unitId.error")}
-                          notFound={tSchema("actualYield.unitId.notFound")}
-                        />
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="estimatedYield"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("estimatedYield.label")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={tSchema("estimatedYield.placeholder")}
+                        value={field.value ?? undefined}
+                        onChange={field.onChange}
+                        disabled={isPending}
+                        type="number"
+                        min={0}
+                        max={1_000_000_000}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="actualYield"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("actualYield.label")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={tSchema("actualYield.placeholder")}
+                        value={field.value ?? undefined}
+                        onChange={field.onChange}
+                        disabled={isPending}
+                        type="number"
+                        min={0}
+                        max={1_000_000_000}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("status.label")}</FormLabel>
 
-                  <FormControl>
-                    <Input
-                      placeholder={tSchema("status.placeholder")}
-                      value={field.value ?? undefined}
-                      onChange={field.onChange}
-                      disabled={isPending}
-                    />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <DynamicDialogFooter disabled={isPending} />
           </form>
         </Form>

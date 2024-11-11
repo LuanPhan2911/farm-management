@@ -2,7 +2,12 @@
 
 import { errorResponse, successResponse } from "@/lib/utils";
 import { CropSchema } from "@/schemas";
-import { createCrop, deleteCrop, updateCrop } from "@/services/crops";
+import {
+  createCrop,
+  deleteCrop,
+  updateCrop,
+  updateCropStatus,
+} from "@/services/crops";
 import { ActionResponse } from "@/types";
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
@@ -59,5 +64,16 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
     return successResponse(tStatus("success.destroy"));
   } catch (error) {
     return errorResponse(tStatus("failure.destroy"));
+  }
+};
+
+export const finishCrop = async (id: string): Promise<ActionResponse> => {
+  const tStatus = await getTranslations("crops.status");
+  try {
+    await updateCropStatus(id, "FINISH");
+    revalidatePath("/admin/crops");
+    return successResponse(tStatus("success.finish"));
+  } catch (error) {
+    return errorResponse(tStatus("failure.finish"));
   }
 };

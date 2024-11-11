@@ -27,15 +27,14 @@ import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 import { ActivityPriority, ActivityStatus } from "@prisma/client";
 import { StaffsSelectMultiple } from "../../_components/staffs-select";
 import { DatePickerWithTime } from "@/components/form/date-picker-with-time";
-import { canUpdateActivityStatus } from "@/lib/permission";
 import { CropsSelect } from "../../_components/crops-select";
 import { useAuth } from "@clerk/nextjs";
-import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface ActivityEditFormProps {
   data: ActivityTable;
+  disabled?: boolean;
 }
-export const ActivityEditForm = ({ data }: ActivityEditFormProps) => {
+export const ActivityEditForm = ({ data, disabled }: ActivityEditFormProps) => {
   const tSchema = useTranslations("activities.schema");
   const formSchema = ActivitySchema(tSchema);
   const [isPending, startTransition] = useTransition();
@@ -52,8 +51,7 @@ export const ActivityEditForm = ({ data }: ActivityEditFormProps) => {
     },
   });
 
-  const { isOnlyAdmin } = useCurrentStaffRole();
-  const canEdit = canUpdateActivityStatus(data.status) && isOnlyAdmin;
+  const canEdit = !disabled;
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       edit(values, params!.activityId)
@@ -181,7 +179,7 @@ export const ActivityEditForm = ({ data }: ActivityEditFormProps) => {
                       };
                     })}
                     defaultValue={field.value}
-                    disabled={isPending}
+                    disabled={isPending || !canEdit}
                     disabledValues={[
                       ActivityStatus.CANCELLED,
                       ActivityStatus.COMPLETED,

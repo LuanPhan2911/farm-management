@@ -31,7 +31,7 @@ const EquipmentUsagesPage = async ({
   const { query, orderBy } = searchParams;
   const page = parseToNumber(searchParams!.page, 1);
 
-  const { data, totalCost, totalPage } = await getEquipmentUsages({
+  const { data, totalPage } = await getEquipmentUsages({
     equipmentDetailId: params.equipmentDetailId,
     page,
     query,
@@ -44,11 +44,7 @@ const EquipmentUsagesPage = async ({
         <CardTitle>{t("title")}</CardTitle>
       </CardHeader>
       <CardContent>
-        <EquipmentUsagesTable
-          data={data}
-          totalPage={totalPage}
-          totalCost={totalCost}
-        />
+        <EquipmentUsagesTable data={data} totalPage={totalPage} />
       </CardContent>
     </Card>
   );

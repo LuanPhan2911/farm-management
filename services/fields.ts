@@ -162,6 +162,7 @@ export const fieldSelect = {
   name: true,
   location: true,
   area: true,
+  orgId: true,
   unit: {
     select: {
       name: true,

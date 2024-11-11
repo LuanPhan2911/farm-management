@@ -2,9 +2,9 @@
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 import { CropSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UnitType } from "@prisma/client";
+import { CropStatus, UnitType } from "@prisma/client";
 import { useTranslations } from "next-intl";
-import { useEffect, useState, useTransition } from "react";
+import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -25,6 +25,9 @@ import { PlantsSelect } from "@/app/[locale]/(backoffice)/admin/_components/plan
 import { DatePickerWithRange } from "@/components/form/date-picker-with-range";
 import { DateRange } from "react-day-picker";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { SelectOptions } from "@/components/form/select-options";
+import { FieldsSelect } from "../../_components/fields-select";
+import { canUpdateCropStatus } from "@/lib/permission";
 
 interface CropEditFormProps {
   data: CropTable;
@@ -40,13 +43,10 @@ export const CropEditForm = ({ data }: CropEditFormProps) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       ...data,
-      dateRange: {
-        startDate: data.startDate,
-        endDate: data.endDate,
-      },
     },
   });
-  const { isSuperAdmin: canEdit } = useCurrentStaffRole();
+  const { isSuperAdmin } = useCurrentStaffRole();
+  const canEdit = isSuperAdmin && canUpdateCropStatus(data.status);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
@@ -63,16 +63,7 @@ export const CropEditForm = ({ data }: CropEditFormProps) => {
         });
     });
   };
-  const handleChangeDate = (dateRange: DateRange | undefined) => {
-    if (!dateRange || !dateRange.from) {
-      return;
-    }
-    const { from: startDate, to: endDate } = dateRange;
-    form.setValue("dateRange", {
-      startDate,
-      endDate: endDate || null,
-    });
-  };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -99,6 +90,63 @@ export const CropEditForm = ({ data }: CropEditFormProps) => {
         <div className="grid lg:grid-cols-2 gap-2">
           <FormField
             control={form.control}
+            name="startDate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("startDate.label")}</FormLabel>
+                <FormControl>
+                  <DatePickerWithRange
+                    placeholder={tSchema("startDate.placeholder")}
+                    handleChange={(dateRange: DateRange | undefined) => {
+                      if (!dateRange || !dateRange.from) {
+                        return;
+                      }
+                      form.setValue("startDate", dateRange.from);
+                      form.setValue("endDate", dateRange.to);
+                    }}
+                    date={{
+                      from: field.value,
+                    }}
+                    disabled={isPending || !canEdit}
+                    className="lg:w-full"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("status.label")}</FormLabel>
+
+                <FormControl>
+                  <SelectOptions
+                    options={Object.values(CropStatus).map((item) => {
+                      return {
+                        label: tSchema(`status.options.${item}`),
+                        value: item,
+                      };
+                    })}
+                    placeholder={tSchema("status.placeholder")}
+                    defaultValue={field.value}
+                    onChange={field.onChange}
+                    disabled={isPending || !canEdit}
+                    disabledValues={[CropStatus.FINISH, CropStatus.NEW]}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-2">
+          <FormField
+            control={form.control}
             name="plantId"
             render={({ field }) => (
               <FormItem>
@@ -110,7 +158,53 @@ export const CropEditForm = ({ data }: CropEditFormProps) => {
                     placeholder={tSchema("plantId.placeholder")}
                     notFound={tSchema("plantId.notFound")}
                     onChange={field.onChange}
+                    defaultValue={field.value}
+                    disabled={true}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="fieldId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("fieldId.label")}</FormLabel>
+
+                <FormControl>
+                  <FieldsSelect
+                    error={tSchema("fieldId.error")}
+                    placeholder={tSchema("fieldId.placeholder")}
+                    notFound={tSchema("fieldId.notFound")}
+                    onChange={field.onChange}
+                    disabled={true}
+                    defaultValue={field.value}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="grid lg:grid-cols-3 gap-2">
+          <FormField
+            control={form.control}
+            name="unitId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("unitId.label")}</FormLabel>
+                <FormControl>
+                  <UnitsSelect
+                    onChange={field.onChange}
+                    placeholder={tSchema("unitId.placeholder")}
+                    unitType={UnitType.WEIGHT}
                     disabled={isPending || !canEdit}
+                    error={tSchema("unitId.error")}
+                    notFound={tSchema("unitId.notFound")}
                     defaultValue={field.value}
                   />
                 </FormControl>
@@ -121,144 +215,48 @@ export const CropEditForm = ({ data }: CropEditFormProps) => {
           />
           <FormField
             control={form.control}
-            name="dateRange"
+            name="estimatedYield"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{tSchema("dateRange.label")}</FormLabel>
-
+                <FormLabel>{tSchema("estimatedYield.label")}</FormLabel>
                 <FormControl>
-                  <DatePickerWithRange
-                    placeholder={tSchema("dateRange.placeholder")}
-                    handleChange={handleChangeDate}
-                    date={{
-                      from: field.value.startDate,
-                      to: field.value.endDate || undefined,
-                    }}
+                  <Input
+                    placeholder={tSchema("estimatedYield.placeholder")}
+                    value={field.value ?? undefined}
+                    onChange={field.onChange}
                     disabled={isPending || !canEdit}
-                    className="lg:w-full"
+                    type="number"
+                    min={0}
+                    max={1_000_000_000}
                   />
                 </FormControl>
-
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="actualYield"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("actualYield.label")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={tSchema("actualYield.placeholder")}
+                    value={field.value ?? undefined}
+                    onChange={field.onChange}
+                    disabled={isPending || !canEdit}
+                    type="number"
+                    min={0}
+                    max={1_000_000_000}
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
-        <div className="grid lg:grid-cols-2 gap-2">
-          <div className="grid grid-cols-4 gap-2">
-            <div className="col-span-3">
-              <FormField
-                control={form.control}
-                name="estimatedYield.value"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{tSchema("estimatedYield.label")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={tSchema("estimatedYield.placeholder")}
-                        value={field.value ?? undefined}
-                        onChange={field.onChange}
-                        disabled={isPending || !canEdit}
-                        type="number"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <FormField
-              control={form.control}
-              name="estimatedYield.unitId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {tSchema("estimatedYield.unitId.label")}
-                  </FormLabel>
-                  <FormControl>
-                    <UnitsSelect
-                      onChange={field.onChange}
-                      placeholder={tSchema("estimatedYield.unitId.placeholder")}
-                      unitType={UnitType.WEIGHT}
-                      disabled={isPending || !canEdit}
-                      className="w-full"
-                      error={tSchema("estimatedYield.unitId.error")}
-                      notFound={tSchema("estimatedYield.unitId.notFound")}
-                      defaultValue={field.value ?? undefined}
-                    />
-                  </FormControl>
 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="grid grid-cols-4 gap-2">
-            <div className="col-span-3">
-              <FormField
-                control={form.control}
-                name="actualYield.value"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{tSchema("actualYield.label")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        value={field.value ?? undefined}
-                        onChange={field.onChange}
-                        placeholder={tSchema("actualYield.placeholder")}
-                        disabled={isPending || !canEdit}
-                        type="number"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <FormField
-              control={form.control}
-              name="actualYield.unitId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("actualYield.unitId.label")}</FormLabel>
-                  <FormControl>
-                    <UnitsSelect
-                      onChange={field.onChange}
-                      placeholder={tSchema("actualYield.unitId.placeholder")}
-                      unitType={UnitType.WEIGHT}
-                      disabled={isPending || !canEdit}
-                      className="w-full"
-                      error={tSchema("actualYield.unitId.error")}
-                      notFound={tSchema("actualYield.unitId.notFound")}
-                      defaultValue={field.value ?? undefined}
-                    />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-        <FormField
-          control={form.control}
-          name="status"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{tSchema("status.label")}</FormLabel>
-
-              <FormControl>
-                <Input
-                  placeholder={tSchema("status.placeholder")}
-                  value={field.value ?? undefined}
-                  onChange={field.onChange}
-                  disabled={isPending || !canEdit}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <DynamicDialogFooter
           disabled={isPending || !canEdit}
           closeButton={false}

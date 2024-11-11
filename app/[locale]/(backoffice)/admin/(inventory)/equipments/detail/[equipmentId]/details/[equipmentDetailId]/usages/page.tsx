@@ -5,6 +5,7 @@ import { EquipmentUsageCreateButton } from "./_components/equipment-usage-create
 import { EquipmentUsagesTable } from "./_components/equipment-usages-table";
 import { getEquipmentUsages } from "@/services/equipment-usages";
 import { parseToNumber } from "@/lib/utils";
+import { checkRole } from "@/lib/role";
 export async function generateMetadata() {
   const t = await getTranslations("equipmentUsages.page");
   return {
@@ -31,12 +32,13 @@ const EquipmentUsagesPage = async ({
   const { query, orderBy } = searchParams;
   const page = parseToNumber(searchParams!.page, 1);
 
-  const { data, totalPage, totalCost } = await getEquipmentUsages({
+  const { data, totalPage } = await getEquipmentUsages({
     equipmentDetailId: params.equipmentDetailId,
     page,
     query,
     orderBy,
   });
+  const canEdit = checkRole("superadmin");
 
   return (
     <Card>
@@ -45,13 +47,9 @@ const EquipmentUsagesPage = async ({
       </CardHeader>
       <CardContent>
         <div className="flex justify-end">
-          <EquipmentUsageCreateButton />
+          <EquipmentUsageCreateButton disabled={!canEdit} />
         </div>
-        <EquipmentUsagesTable
-          data={data}
-          totalPage={totalPage}
-          totalCost={totalCost}
-        />
+        <EquipmentUsagesTable data={data} totalPage={totalPage} />
       </CardContent>
     </Card>
   );

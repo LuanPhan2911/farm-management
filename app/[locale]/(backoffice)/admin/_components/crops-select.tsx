@@ -50,9 +50,7 @@ export const CropsSelect = (props: CropSelectProps) => {
       renderItem={(item) => (
         <SelectItemContentWithoutImage
           title={item.name}
-          description={`From ${dateToString(item.startDate)} to  ${
-            dateToString(item.endDate) || "null"
-          }`}
+          description={item.field.name}
         />
       )}
     />

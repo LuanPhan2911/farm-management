@@ -2,6 +2,7 @@ import {
   ActivityPriority,
   ActivityStatus,
   CategoryType,
+  CropStatus,
   EquipmentStatus,
   EquipmentType,
   FertilizerType,
@@ -680,38 +681,7 @@ export const PesticideSchema = (
     }).nullish(),
   });
 };
-export const CropSchema = (
-  t: (arg: string, obj?: Record<string, any>) => string
-) => {
-  return z.object({
-    name: stringSchema(t, "name", {
-      min: 2,
-      max: 100,
-    }),
-    dateRange: z.object({
-      startDate: z.date({
-        invalid_type_error: t("dateRange.startDate.invalid_type_error"),
-        required_error: t("dateRange.startDate.required_error"),
-      }),
-      endDate: z.date().nullable(),
-    }),
-    fieldId: z.string({
-      required_error: t("fieldId.required_error"),
-    }),
-    plantId: z.string({
-      required_error: t("plantId.required_error"),
-    }),
-    estimatedYield: floatUnitSchema(t, "estimatedYield", {
-      min: 0,
-      max: 1_000_000_000,
-    }),
-    actualYield: floatUnitSchema(t, "actualYield", {
-      min: 0,
-      max: 1_000_000_000,
-    }),
-    status: stringSchema(t, "status", { max: 255, required: false }).nullish(),
-  });
-};
+
 export const EquipmentSchema = (
   t: (arg: string, obj?: Record<string, any>) => string
 ) => {
@@ -810,7 +780,6 @@ export const EquipmentUsageSchema = (
     operatorId: stringSchema(t, "operatorId", {
       required: false,
     }).nullish(),
-    location: z.string().nullish(),
     fuelConsumption: numberSchema(t, "fuelConsumption", {
       min: 0,
       max: 10_000,
@@ -1143,5 +1112,39 @@ export const FileCopySchema = (
     isPublic: z.boolean().optional(),
     orgId: z.string().nullish(),
     type: z.string(),
+  });
+};
+export const CropSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    name: stringSchema(t, "name", {
+      min: 2,
+      max: 100,
+    }),
+    startDate: z.date({
+      invalid_type_error: t("startDate.invalid_type_error"),
+      required_error: t("startDate.required_error"),
+    }),
+    endDate: z.date().nullish(),
+    fieldId: z.string({
+      required_error: t("fieldId.required_error"),
+    }),
+    plantId: z.string({
+      required_error: t("plantId.required_error"),
+    }),
+    unitId: stringSchema(t, "unitId"),
+    estimatedYield: numberSchema(t, "estimatedYield", {
+      min: 0,
+      max: 1_000_000_000,
+    }),
+    actualYield: numberSchema(t, "actualYield", {
+      min: 0,
+      max: 1_000_000_000,
+      required: false,
+    }).nullish(),
+    status: z.nativeEnum(CropStatus, {
+      message: t("status.enum"),
+    }),
   });
 };

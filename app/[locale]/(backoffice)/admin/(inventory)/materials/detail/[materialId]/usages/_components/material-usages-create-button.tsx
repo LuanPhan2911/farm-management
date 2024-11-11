@@ -34,7 +34,6 @@ import { useParams } from "next/navigation";
 import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { UnitType } from "@prisma/client";
 import { ActivitiesSelect } from "@/app/[locale]/(backoffice)/admin/_components/activities-select";
-import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { MaterialsSelect } from "@/app/[locale]/(backoffice)/admin/_components/materials-select";
 
 interface MaterialUsageCreateButtonProps {
@@ -50,9 +49,6 @@ export const MaterialUsageCreateButton = ({
   const [isPending, startTransition] = useTransition();
   const [isOpen, setOpen] = useState(false);
 
-  const { isOnlyAdmin } = useCurrentStaffRole();
-
-  const canCreate = isOnlyAdmin && !disabled;
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -81,6 +77,8 @@ export const MaterialUsageCreateButton = ({
         });
     });
   };
+
+  const canCreate = !disabled;
 
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>

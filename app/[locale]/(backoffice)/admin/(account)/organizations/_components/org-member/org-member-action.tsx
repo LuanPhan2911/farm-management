@@ -32,13 +32,6 @@ export const OrgMemberAction = ({ data }: OrgMemberActionProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
-          <LinkButton
-            href={`staffs/detail/${data.publicUserData.userId}`}
-            label={t("viewProfile.label")}
-            className="w-full"
-          />
-        </DropdownMenuItem>
-        <DropdownMenuItem>
           <ActionButton
             actionFn={() =>
               destroyMember(data.publicUserData!.userId, data.organization.id)

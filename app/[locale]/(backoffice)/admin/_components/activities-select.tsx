@@ -7,9 +7,10 @@ import {
   ComboBoxCustom,
   ComboBoxCustomAppearance,
 } from "@/components/form/combo-box";
-import { ActivitySelectWithCropAndField } from "@/types";
+
 import { SelectItemContentWithoutImage } from "@/components/form/select-item";
 import { useEffect } from "react";
+import { ActivitySelectWithCrop } from "@/types";
 
 interface ActivitiesSelectProps {
   defaultValue?: string;
@@ -19,7 +20,7 @@ interface ActivitiesSelectProps {
   error: string;
   notFound: string;
   appearance?: ComboBoxCustomAppearance;
-  onSelected?: (value: ActivitySelectWithCropAndField) => void;
+  onSelected?: (value: ActivitySelectWithCrop) => void;
 }
 export const ActivitiesSelect = (props: ActivitiesSelectProps) => {
   const { data, isPending, isError, refetch } = useQuery({
@@ -34,7 +35,7 @@ export const ActivitiesSelect = (props: ActivitiesSelectProps) => {
         }
       );
       const res = await fetch(url);
-      return (await res.json()) as ActivitySelectWithCropAndField[];
+      return (await res.json()) as ActivitySelectWithCrop[];
     },
   });
   const { onSelected, defaultValue } = props;

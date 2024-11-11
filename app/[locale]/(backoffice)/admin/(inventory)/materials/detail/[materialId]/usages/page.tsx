@@ -6,6 +6,7 @@ import { getMaterialsSelect } from "@/services/materials";
 import { getTranslations } from "next-intl/server";
 import { MaterialUsageCreateButton } from "./_components/material-usages-create-button";
 import { MaterialUsagesTable } from "./_components/material-usages-table";
+import { checkRole } from "@/lib/role";
 export async function generateMetadata() {
   const t = await getTranslations("materials.page.detail.usages");
   return {
@@ -39,12 +40,13 @@ const MaterialUsagesPage = async ({
   const { query, orderBy } = searchParams;
   const page = parseToNumber(searchParams!.page, 1);
 
-  const { data, totalPage, totalCost } = await getMaterialUsages({
+  const { data, totalPage } = await getMaterialUsages({
     materialId: params.materialId,
     page,
     query,
     orderBy,
   });
+  const canEdit = checkRole("superadmin");
 
   return (
     <Card>
@@ -53,13 +55,9 @@ const MaterialUsagesPage = async ({
       </CardHeader>
       <CardContent>
         <div className="flex justify-end">
-          <MaterialUsageCreateButton />
+          <MaterialUsageCreateButton disabled={!canEdit} />
         </div>
-        <MaterialUsagesTable
-          data={data}
-          totalPage={totalPage}
-          totalCost={totalCost}
-        />
+        <MaterialUsagesTable data={data} totalPage={totalPage} />
       </CardContent>
     </Card>
   );

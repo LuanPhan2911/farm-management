@@ -1,53 +1,47 @@
 "use client";
 
-import { NavPagination } from "@/components/nav-pagination";
-
 import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import { useFormatter, useTranslations } from "next-intl";
-import { ActivityTable } from "@/types";
+import { ActivityWithCost } from "@/types";
 
 import { OrderByButton } from "@/components/buttons/order-by-button";
 
 import { SearchBar } from "@/components/search-bar";
-import { ActivityStatusValue } from "./activity-status-value";
-import { ActivityPriorityValue } from "./activity-priority-value";
-import { useRouterWithRole } from "@/hooks/use-router-with-role";
-import {
-  SelectItemContent,
-  SelectItemContentWithoutImage,
-} from "@/components/form/select-item";
-import {
-  ActivitiesSelectCreatedBy,
-  ActivitiesTableFaceted,
-} from "./activities-table-faceted";
 
-interface ActivitiesTableProps {
-  data: ActivityTable[];
-  totalPage: number;
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
+import { ActivitiesTableFaceted } from "@/app/[locale]/(backoffice)/admin/activities/_components/activities-table-faceted";
+import { ActivityStatusValue } from "@/app/[locale]/(backoffice)/admin/activities/_components/activity-status-value";
+import { ActivityPriorityValue } from "@/app/[locale]/(backoffice)/admin/activities/_components/activity-priority-value";
+
+interface CropActivitiesTableProps {
+  data: ActivityWithCost[];
+  totalCost: number;
 }
-export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
+export const CropActivitiesTable = ({
+  data,
+  totalCost,
+}: CropActivitiesTableProps) => {
   const router = useRouterWithRole();
   const { dateTime, number } = useFormatter();
   const t = useTranslations("activities");
 
-  const handleViewDetail = (row: ActivityTable) => {
+  const handleViewDetail = (row: ActivityWithCost) => {
     router.pushDetail(`detail/${row.id}`);
   };
 
   return (
     <>
       <ActivitiesTableFaceted />
-      <div className="flex gap-2 items-center">
-        <SearchBar isPagination placeholder={t("search.placeholder")} />
-        <ActivitiesSelectCreatedBy />
-      </div>
+      <SearchBar isPagination placeholder={t("search.placeholder")} />
+
       <Table>
         <TableHeader>
           <TableRow>
@@ -63,13 +57,23 @@ export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
             </TableHead>
             <TableHead>{t("table.thead.status")}</TableHead>
             <TableHead>{t("table.thead.priority")}</TableHead>
-            <TableHead>{t("table.thead.crop")}</TableHead>
-            <TableHead>{t("table.thead.createdBy")}</TableHead>
             <TableHead className="text-right">
               {t("table.thead.estimatedDuration")}
             </TableHead>
             <TableHead className="text-right">
               {t("table.thead.actualDuration")}
+            </TableHead>
+            <TableHead className="text-right">
+              {t("table.thead.totalStaffCost")}
+            </TableHead>
+            <TableHead className="text-right">
+              {t("table.thead.totalEquipmentCost")}
+            </TableHead>
+            <TableHead className="text-right">
+              {t("table.thead.totalMaterialCost")}
+            </TableHead>
+            <TableHead className="text-right">
+              {t("table.thead.actualCost")}
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -89,18 +93,6 @@ export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
                 <TableCell>
                   <ActivityPriorityValue value={item.priority} />
                 </TableCell>
-
-                <TableCell>
-                  <SelectItemContentWithoutImage title={item.crop.name} />
-                </TableCell>
-
-                <TableCell>
-                  <SelectItemContent
-                    imageUrl={item.createdBy.imageUrl}
-                    title={item.createdBy.name}
-                    description={item.createdBy.email}
-                  />
-                </TableCell>
                 <TableCell className="text-right">
                   {number(item.estimatedDuration, "hour")}
                 </TableCell>
@@ -109,19 +101,45 @@ export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
                     ? number(item.actualDuration, "hour")
                     : t("table.trow.actualDuration")}
                 </TableCell>
+                <TableCell className="text-right">
+                  {item.totalStaffCost
+                    ? number(item.totalStaffCost, "currency")
+                    : t("table.trow.totalStaffCost")}
+                </TableCell>
+                <TableCell className="text-right">
+                  {item.totalEquipmentCost
+                    ? number(item.totalEquipmentCost, "currency")
+                    : t("table.trow.totalEquipmentCost")}
+                </TableCell>
+                <TableCell className="text-right">
+                  {item.totalMaterialCost
+                    ? number(item.totalMaterialCost, "currency")
+                    : t("table.trow.totalMaterialCost")}
+                </TableCell>
+                <TableCell className="text-right">
+                  {item.actualCost
+                    ? number(item.actualCost, "currency")
+                    : t("table.trow.actualCost")}
+                </TableCell>
               </TableRow>
             );
           })}
         </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={9}>{t("table.tfooter.totalCost")}</TableCell>
+            <TableCell className="text-right">
+              {number(totalCost, "currency")}
+            </TableCell>
+            <TableCell></TableCell>
+          </TableRow>
+        </TableFooter>
       </Table>
       {!data.length && (
         <div className="my-4 text-muted-foreground flex justify-center">
           No results.
         </div>
       )}
-      <div className="py-4">
-        <NavPagination totalPage={totalPage} />
-      </div>
     </>
   );
 };

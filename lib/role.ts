@@ -2,7 +2,14 @@ import { getFieldById } from "@/services/fields";
 import { getCurrentStaff } from "@/services/staffs";
 import { auth } from "@clerk/nextjs/server";
 import { StaffRole } from "@prisma/client";
-import { isAdmin, isSuperAdmin } from "./permission";
+import {
+  canUpdateActivityStatus,
+  canUpdateCropStatus,
+  isAdmin,
+  isSuperAdmin,
+} from "./permission";
+import { getCropById } from "@/services/crops";
+import { getOnlyActivityById } from "@/services/activities";
 
 export const checkRole = (role: StaffRole) => {
   const { sessionClaims } = auth();
@@ -30,4 +37,38 @@ export const canGetField = async (fieldId: string) => {
     return null;
   }
   return data;
+};
+
+export const canUpdateCrop = async (cropId: string) => {
+  const { orgId } = auth();
+  const crop = await getCropById(cropId);
+  if (!crop) {
+    return false;
+  }
+  const isSuperAdmin = checkRole("superadmin");
+  return (
+    canUpdateCropStatus(crop.status) &&
+    (orgId === crop.field.orgId || isSuperAdmin)
+  );
+};
+export const canUpdateActivity = async (
+  cropId: string,
+  activityId?: string
+) => {
+  const { orgId, orgRole } = auth();
+  const crop = await getCropById(cropId);
+  if (!crop) {
+    return false;
+  }
+  if (activityId) {
+    const activity = await getOnlyActivityById(activityId);
+    if (!activity || !canUpdateActivityStatus(activity.status)) {
+      return false;
+    }
+  }
+  const isSuperAdmin = checkRole("superadmin");
+  return (
+    canUpdateCropStatus(crop.status) &&
+    ((orgId === crop.field.orgId && orgRole === "org:admin") || isSuperAdmin)
+  );
 };

@@ -45,7 +45,7 @@ export const MaterialsTable = ({ data, totalPage }: MaterialsTableProps) => {
         <TableHeader>
           <TableRow>
             <TableHead>{t("table.thead.imageUrl")}</TableHead>
-            <TableHead>
+            <TableHead className="min-w-[200px]">
               <OrderByButton column="name" label={t("table.thead.name")} />
             </TableHead>
             <TableHead>{t("table.thead.type")}</TableHead>

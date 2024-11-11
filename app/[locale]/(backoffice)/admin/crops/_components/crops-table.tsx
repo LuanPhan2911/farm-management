@@ -22,6 +22,7 @@ import { useUpdateSearchParam } from "@/hooks/use-update-search-param";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
 import { FieldsSelect } from "../../_components/fields-select";
 import { SelectItemContentWithoutImage } from "@/components/form/select-item";
+import { CropStatusValue } from "./crop-status-value";
 
 interface CropsTableProps {
   data: CropTable[];
@@ -93,7 +94,10 @@ export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
               {t("table.thead.field.name")}
             </TableHead>
             <TableHead className="text-right">
-              {t("table.thead.field.area")}
+              {t("table.thead.estimatedYield")}
+            </TableHead>
+            <TableHead className="text-right">
+              {t("table.thead.actualYield")}
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -112,7 +116,9 @@ export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
                     : t("table.trow.endDate")}
                 </TableCell>
                 <TableCell>{item.name}</TableCell>
-                <TableCell>{item.status || t("table.trow.status")}</TableCell>
+                <TableCell>
+                  <CropStatusValue value={item.status} />
+                </TableCell>
                 <TableCell>{item.plant.name}</TableCell>
                 <TableCell>
                   <SelectItemContentWithoutImage
@@ -121,13 +127,19 @@ export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
                   />
                 </TableCell>
                 <TableCell className="text-right">
-                  {!!item.field.area ? (
+                  <UnitWithValue
+                    value={item.estimatedYield}
+                    unit={item.unit.name}
+                  />
+                </TableCell>
+                <TableCell className="text-right">
+                  {item.actualYield ? (
                     <UnitWithValue
-                      value={item.field.area}
-                      unit={item.field.unit?.name}
+                      value={item.actualYield}
+                      unit={item.unit.name}
                     />
                   ) : (
-                    t("table.trow.field.area")
+                    t("table.trow.actualYield")
                   )}
                 </TableCell>
               </TableRow>

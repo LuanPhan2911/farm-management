@@ -38,6 +38,7 @@ import {
   Weather,
   WeatherStatus,
 } from "@prisma/client";
+
 import { Server as NetServer, Socket } from "net";
 import { NextApiResponse } from "next";
 import { Server as SocketIoServer } from "socket.io";
@@ -142,6 +143,7 @@ export type FieldSelect = {
   name: string;
   location: string | null;
   area: number | null;
+  orgId: string | null;
   unit: {
     name: string;
   } | null;
@@ -418,24 +420,6 @@ export type EquipmentUsageTableWithTotalCost = {
   totalCost: number;
 };
 
-export type CropTable = Crop & {
-  actualYield: FloatUnitTable | null;
-  estimatedYield: FloatUnitTable | null;
-  plant: PlantSelect;
-  field: FieldSelect;
-  _count: {
-    activities: number;
-  };
-};
-export type CropSelect = {
-  id: string;
-  name: string;
-  startDate: Date;
-  endDate: Date | null;
-};
-export type CropSelectWithField = CropSelect & {
-  field: FieldSelect;
-};
 export type ActivityAssignedStaff = ActivityAssigned & {
   staff: Staff;
 };
@@ -449,16 +433,17 @@ export type ActivityAssignedStaffWithActivityAndCost = {
   data: ActivityAssignedStaffWithActivitySelect[];
 };
 export type ActivityTable = Activity & {
-  assignedTo: ActivityAssignedStaff[];
   createdBy: Staff;
-  crop: CropSelect & {
-    field: FieldSelect;
-    plant: PlantSelect;
-  };
-  _count: {
-    equipmentUseds: number;
-    materialUseds: number;
-  };
+  crop: CropSelect;
+  assignedTo: ActivityAssignedStaff[];
+};
+
+export type ActivityWithCost = Activity & {
+  actualCost: number | null;
+};
+export type ActivityWithTotalCost = {
+  data: ActivityWithCost[];
+  totalCost: number;
 };
 export type ActivitySelect = {
   id: string;
@@ -468,9 +453,14 @@ export type ActivitySelect = {
   activityDate: Date;
   estimatedDuration: number;
 };
-export type ActivitySelectWithCropAndField = ActivitySelect & {
-  crop: CropSelect & {
-    field: FieldSelect;
+export type ActivitySelectWithCrop = ActivitySelect & {
+  crop: CropSelect;
+};
+export type ActivityWithCountUsages = Activity & {
+  _count: {
+    materialUseds: number;
+    equipmentUseds: number;
+    assignedTo: number;
   };
 };
 export type ActivityStatusCount = {
@@ -482,3 +472,29 @@ export type ActivityPriorityCount = {
   _count: number;
 };
 export const activityUpdateStatus = ["NEW", "PENDING", "IN_PROGRESS"] as const;
+
+export type CropTable = Crop & {
+  plant: PlantSelect;
+  field: FieldSelect;
+  _count: {
+    activities: number;
+  };
+  unit: {
+    name: string;
+  };
+};
+export type CropSelect = {
+  id: string;
+  name: string;
+  startDate: Date;
+  endDate: Date | null;
+};
+export type CropSelectWithField = CropSelect & {
+  field: FieldSelect;
+};
+
+export type CropWithCount = Crop & {
+  _count: {
+    activities: number;
+  };
+};

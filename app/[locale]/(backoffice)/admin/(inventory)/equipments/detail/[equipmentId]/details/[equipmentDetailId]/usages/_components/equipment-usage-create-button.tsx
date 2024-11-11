@@ -35,7 +35,6 @@ import { ActivitiesSelect } from "@/app/[locale]/(backoffice)/admin/_components/
 import { DatePickerWithTime } from "@/components/form/date-picker-with-time";
 import { StaffsSelect } from "@/app/[locale]/(backoffice)/admin/_components/staffs-select";
 import { Textarea } from "@/components/ui/textarea";
-import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { useAuth } from "@clerk/nextjs";
 import { EquipmentDetailsSelect } from "@/app/[locale]/(backoffice)/admin/_components/equipment-details-select";
 import { useCurrentStaff } from "@/hooks/use-current-staff";
@@ -55,7 +54,6 @@ export const EquipmentUsageCreateButton = ({
     equipmentDetailId: string;
     activityId: string;
   }>();
-  const { isOnlyAdmin } = useCurrentStaffRole();
   const { currentStaff } = useCurrentStaff();
   const { orgId } = useAuth();
 
@@ -77,7 +75,6 @@ export const EquipmentUsageCreateButton = ({
     },
   });
 
-  const canCreate = isOnlyAdmin && !disabled;
   useEffect(() => {
     if (currentStaff) {
       form.setValue("operatorId", currentStaff.id);
@@ -105,6 +102,7 @@ export const EquipmentUsageCreateButton = ({
     });
   };
 
+  const canCreate = !disabled;
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -207,10 +205,6 @@ export const EquipmentUsageCreateButton = ({
                         notFound={tSchema("activityId.notFound")}
                         defaultValue={field.value ?? undefined}
                         onSelected={(selectedActivity) => {
-                          form.setValue(
-                            "location",
-                            selectedActivity.crop.field.location
-                          );
                           form.setValue(
                             "usageStartTime",
                             new Date(selectedActivity.activityDate)

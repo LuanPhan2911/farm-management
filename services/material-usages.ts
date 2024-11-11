@@ -264,10 +264,9 @@ export const deleteMaterialUsage = async (id: string) => {
 
 type MaterialUsageQuery = {
   page?: number;
-  materialId?: string;
+  materialId: string;
   query?: string;
   orderBy?: string;
-  activityId?: string;
 };
 
 export const materialSelect = {
@@ -289,29 +288,14 @@ export const getMaterialUsages = async ({
   query,
   materialId,
   orderBy,
-  activityId,
-}: MaterialUsageQuery): Promise<
-  PaginatedResponseWithTotalCost<MaterialUsageTableWithCost>
-> => {
+}: MaterialUsageQuery): Promise<PaginatedResponse<MaterialUsageTable>> => {
   try {
     const [data, count] = await db.$transaction([
       db.materialUsage.findMany({
         take: LIMIT,
         skip: (page - 1) * LIMIT,
         where: {
-          ...(materialId && {
-            materialId,
-          }),
-          ...(activityId && {
-            OR: [
-              {
-                activityId: null,
-              },
-              {
-                activityId,
-              },
-            ],
-          }),
+          materialId,
           material: {
             name: {
               contains: query,
@@ -352,55 +336,31 @@ export const getMaterialUsages = async ({
       }),
     ]);
 
-    let totalCost: number = 0;
-    const dataWithCost = data.map((item) => {
-      if (item.actualPrice != null && item.quantityUsed !== null) {
-        totalCost += item.actualPrice * item.quantityUsed;
-        return {
-          ...item,
-          actualCost: item.actualPrice * item.quantityUsed,
-        };
-      }
-
-      return {
-        ...item,
-        actualCost: null,
-      };
-    });
-
     const totalPage = Math.ceil(count / LIMIT);
     return {
-      data: dataWithCost,
+      data,
       totalPage,
-      totalCost,
     };
   } catch (error) {
     return {
       data: [],
       totalPage: 0,
-      totalCost: 0,
     };
   }
 };
 type MaterialUsageByActivityQuery = {
-  materialId?: string;
   query?: string;
   orderBy?: string;
   activityId: string;
 };
 export const getMaterialUsagesByActivity = async ({
   query,
-  materialId,
   orderBy,
   activityId,
 }: MaterialUsageByActivityQuery): Promise<MaterialUsageTableWithTotalCost> => {
   try {
     const data = await db.materialUsage.findMany({
       where: {
-        ...(materialId && {
-          materialId,
-        }),
-
         OR: [
           {
             activityId: null,
@@ -440,21 +400,19 @@ export const getMaterialUsagesByActivity = async ({
 
     let totalCost: number = 0;
     const dataWithCost = data.map((item) => {
+      let actualCost: number = 0;
+
       if (
         item.actualPrice != null &&
         item.quantityUsed !== null &&
         item.activityId !== null
       ) {
-        totalCost += item.actualPrice * item.quantityUsed;
-        return {
-          ...item,
-          actualCost: item.actualPrice * item.quantityUsed,
-        };
+        actualCost += item.actualPrice * item.quantityUsed;
       }
-
+      totalCost += actualCost;
       return {
         ...item,
-        actualCost: null,
+        actualCost,
       };
     });
 
