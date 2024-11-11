@@ -3,11 +3,9 @@
 import { SmallCard } from "@/components/small-card";
 import { TiptapContent } from "@/components/tiptap";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Link } from "@/navigation";
 import { Job } from "@prisma/client";
 import { Calendar, DollarSign, Target, Timer, User, Users } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
@@ -23,15 +21,13 @@ export const JobCardDisplayItem = ({ data }: JobCardDisplayItemProps) => {
   return (
     <Card className="py-6">
       <CardContent>
-        <div className="flex flex-1 flex-col relative py-6 md:px-3 px-0">
-          <div className="absolute top-1 right-1 text-sm font-semibold text-muted-foreground">
+        <div className="flex flex-1 flex-col py-6 md:px-3 px-0">
+          <div className="flex justify-end">
             <Badge variant={"info"}>
               {format.relativeTime(data.createdAt)}
             </Badge>
           </div>
-          <div className="absolute top-0 left-0">
-            <JobApplyButton jobId={data.id} />
-          </div>
+
           <div className="flex mt-6 text-justify md:text-lg text-md font-semibold">
             {data.name}
           </div>
@@ -69,7 +65,7 @@ export const JobCardDisplayItem = ({ data }: JobCardDisplayItemProps) => {
               <SmallCard
                 title={tJob("expiredAt.label")}
                 icon={Timer}
-                value={format.dateTime(data.expiredAt)}
+                value={format.dateTime(data.expiredAt, "short")}
               />
             </div>
           </div>

@@ -22,8 +22,9 @@ const OrganizationsPage = async ({ searchParams }: OrganizationPageProps) => {
   const page = parseToNumber(searchParams!.page, 1);
   const t = await getTranslations("organizations.page");
   const { orderBy, query } = searchParams;
-  const { data: organizations, totalPage } = await getOrganizations({
-    currentPage: page,
+
+  const { data, totalPage } = await getOrganizations({
+    page: page,
     orderBy,
     query,
   });
@@ -38,10 +39,7 @@ const OrganizationsPage = async ({ searchParams }: OrganizationPageProps) => {
           <div className="flex justify-end">
             <OrgCreateButton />
           </div>
-          <OrgsTable
-            orgs={structuredClone(organizations)}
-            totalPage={totalPage}
-          />
+          <OrgsTable orgs={structuredClone(data)} totalPage={totalPage} />
         </CardContent>
       </Card>
     </div>

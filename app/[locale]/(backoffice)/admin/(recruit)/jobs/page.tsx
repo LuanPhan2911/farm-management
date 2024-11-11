@@ -13,6 +13,7 @@ export async function generateMetadata() {
 const JobsPage = async () => {
   const data = await getJobsTable();
   const t = await getTranslations("jobs.page");
+
   return (
     <div className="flex flex-col gap-y-4 h-full py-4">
       <Card>

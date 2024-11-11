@@ -36,22 +36,6 @@ export const PlantPesticidesDataTable = ({
       },
     },
     {
-      header: t("table.thead.pesticide.recommendedDosage"),
-      cell: ({ row }) => {
-        const data = row.original;
-
-        if (!data.pesticide.recommendedDosage?.value) {
-          return t("table.trow.pesticide.recommendedDosage");
-        }
-        return (
-          <UnitWithValue
-            value={data.pesticide.recommendedDosage?.value}
-            unit={data.pesticide.recommendedDosage?.unit?.name}
-          />
-        );
-      },
-    },
-    {
       accessorKey: "stage",
       header: ({ column }) => {
         return (
@@ -63,11 +47,40 @@ export const PlantPesticidesDataTable = ({
       },
     },
     {
-      header: t("table.thead.dosage"),
+      accessorKey: "pesticide",
+      header: () => {
+        return (
+          <p className="text-right">
+            {t("table.thead.pesticide.recommendedDosage")}
+          </p>
+        );
+      },
+      cell: ({ row }) => {
+        const data = row.original;
+
+        if (!data.pesticide.recommendedDosage?.value) {
+          return (
+            <p className="text-right">
+              {t("table.trow.pesticide.recommendedDosage")}
+            </p>
+          );
+        }
+        return (
+          <UnitWithValue
+            value={data.pesticide.recommendedDosage?.value}
+            unit={data.pesticide.recommendedDosage?.unit?.name}
+          />
+        );
+      },
+    },
+
+    {
+      accessorKey: "dosage",
+      header: () => <p className="text-right">{t("table.thead.dosage")}</p>,
       cell: ({ row }) => {
         const data = row.original;
         if (!data.dosage?.value) {
-          return t("table.trow.dosage");
+          return <p className="text-right">{t("table.trow.dosage")}</p>;
         }
         return (
           <UnitWithValue
@@ -75,14 +88,6 @@ export const PlantPesticidesDataTable = ({
             unit={data.dosage?.unit?.name}
           />
         );
-      },
-    },
-    {
-      accessorKey: "note",
-      header: t("table.thead.note"),
-      cell: ({ row }) => {
-        const data = row.original;
-        return data.note ? data.note : t("table.trow.note");
       },
     },
 

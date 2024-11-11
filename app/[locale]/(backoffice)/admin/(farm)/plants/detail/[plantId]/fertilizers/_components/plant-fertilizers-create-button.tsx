@@ -1,6 +1,7 @@
 "use client";
 
 import { create } from "@/actions/plant-fertilizer";
+import { CategoriesSelect } from "@/app/[locale]/(backoffice)/admin/_components/categories-select";
 import { FertilizersSelect } from "@/app/[locale]/(backoffice)/admin/_components/fertilizers-select";
 import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
@@ -23,6 +24,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { PlantFertilizerSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UnitType } from "@prisma/client";
@@ -42,6 +44,8 @@ export const PlantFertilizerCreateButton = () => {
   const { plantId } = useParams<{
     plantId: string;
   }>()!;
+
+  const { isOnlyAdmin: canCreate } = useCurrentStaffRole();
   const [isPending, startTransition] = useTransition();
   const [isOpen, setOpen] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -71,14 +75,14 @@ export const PlantFertilizerCreateButton = () => {
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size={"sm"} variant={"success"}>
+        <Button size={"sm"} variant={"success"} disabled={!canCreate}>
           <Plus className="h-4 w-4 mr-2" />{" "}
           <span className="text-sm font-semibold">
             {t("form.create.label")}
           </span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-4xl overflow-y-auto max-h-screen">
+      <DialogContent className="max-w-5xl">
         <DialogHeader>
           <DialogTitle>{t("form.create.title")}</DialogTitle>
           <DialogDescription>{t("form.create.description")}</DialogDescription>
@@ -99,7 +103,7 @@ export const PlantFertilizerCreateButton = () => {
                           placeholder={tSchema("fertilizerId.placeholder")}
                           error={tSchema("fertilizerId.error")}
                           notFound={tSchema("fertilizerId.notFound")}
-                          disabled={isPending}
+                          disabled={isPending || !canCreate}
                           onChange={field.onChange}
                           appearance={{
                             button: "lg:w-full h-12",
@@ -119,12 +123,26 @@ export const PlantFertilizerCreateButton = () => {
                     <FormItem>
                       <FormLabel>{tSchema("stage.label")}</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder={tSchema("stage.placeholder")}
-                          value={field.value || undefined}
-                          onChange={field.onChange}
-                          disabled={isPending}
-                        />
+                        <div className="grid grid-cols-4 gap-2">
+                          <div className="col-span-3">
+                            <Input
+                              placeholder={tSchema("stage.placeholder")}
+                              value={field.value ?? undefined}
+                              onChange={field.onChange}
+                              disabled={isPending || !canCreate}
+                            />
+                          </div>
+                          <CategoriesSelect
+                            error={tSchema("stage.select.error")}
+                            notFound={tSchema("stage.select.notFound")}
+                            placeholder={tSchema("stage.select.placeholder")}
+                            type="PLANT_STAGE"
+                            disabled={isPending || !canCreate}
+                            onChange={field.onChange}
+                            valueKey="name"
+                            hidden
+                          />
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -142,9 +160,9 @@ export const PlantFertilizerCreateButton = () => {
                           <FormControl>
                             <Input
                               placeholder={tSchema("dosage.placeholder")}
-                              value={field.value || undefined}
+                              value={field.value ?? undefined}
                               onChange={field.onChange}
-                              disabled={isPending}
+                              disabled={isPending || !canCreate}
                               type="number"
                             />
                           </FormControl>
@@ -164,7 +182,7 @@ export const PlantFertilizerCreateButton = () => {
                             onChange={field.onChange}
                             placeholder={tSchema("dosage.unitId.placeholder")}
                             unitType={UnitType.VOLUME}
-                            disabled={isPending}
+                            disabled={isPending || !canCreate}
                             className="w-full"
                             error={tSchema("dosage.unitId.error")}
                             notFound={tSchema("dosage.unitId.notFound")}
@@ -185,9 +203,9 @@ export const PlantFertilizerCreateButton = () => {
                       <FormControl>
                         <Textarea
                           placeholder={tSchema("note.placeholder")}
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
-                          disabled={isPending}
+                          disabled={isPending || !canCreate}
                         />
                       </FormControl>
                       <FormMessage />
@@ -197,7 +215,7 @@ export const PlantFertilizerCreateButton = () => {
               </div>
             </div>
 
-            <DynamicDialogFooter disabled={isPending} />
+            <DynamicDialogFooter disabled={isPending || !canCreate} />
           </form>
         </Form>
       </DialogContent>

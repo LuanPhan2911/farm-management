@@ -2,22 +2,23 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { CategoryEditButton } from "./category-edit-button";
-import { CategoryDeleteButton } from "./category-delete-button";
 import { MoreHorizontal } from "lucide-react";
 
-import { useTranslations } from "next-intl";
 import { CategoryTable } from "@/types";
+import { destroy } from "@/actions/category";
+import { DestroyButton } from "@/components/buttons/destroy-button";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 interface CategoriesTableActionProps {
   data: CategoryTable;
 }
 export const CategoriesTableAction = ({ data }: CategoriesTableActionProps) => {
-  const t = useTranslations("categories.form");
+  const { isSuperAdmin } = useCurrentStaffRole();
+
+  const canDelete = isSuperAdmin;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -27,10 +28,16 @@ export const CategoriesTableAction = ({ data }: CategoriesTableActionProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
         <DropdownMenuItem>
-          <CategoryEditButton data={data} label={t("edit.label")} />
+          <CategoryEditButton data={data} />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <CategoryDeleteButton data={data} label={t("destroy.label")} />
+          <DestroyButton
+            destroyFn={destroy}
+            id={data.id}
+            inltKey="categories"
+            className="w-full"
+            disabled={!canDelete}
+          />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

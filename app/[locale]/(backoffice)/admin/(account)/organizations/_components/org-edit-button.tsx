@@ -14,43 +14,35 @@ import { Input } from "@/components/ui/input";
 import { OrganizationSchema } from "@/schemas";
 import { Organization } from "@clerk/nextjs/server";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFormatter, useTranslations } from "next-intl";
-import { useEffect, useTransition } from "react";
+import { useTranslations } from "next-intl";
+import { useContext, useEffect, useTransition } from "react";
 
 import { FileUploader } from "react-drag-drop-files";
 import { useForm } from "react-hook-form";
-import slugify from "slugify";
 import { toast } from "sonner";
 import { z } from "zod";
+import { OrgContext } from "./org-tabs";
+import { getSlug } from "@/lib/utils";
 
 interface OrgEditFormProps {
   data: Organization;
 }
 export const OrgEditForm = ({ data }: OrgEditFormProps) => {
-  const { relativeTime } = useFormatter();
-
   const tSchema = useTranslations("organizations.schema");
   const formSchema = OrganizationSchema(tSchema);
-
   const [isPending, startTransition] = useTransition();
+  const { canManageOrg } = useContext(OrgContext);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       ...data,
-      slug: data.slug || "",
+      slug: data.slug || undefined,
     },
   });
   const orgName = form.watch("name");
   useEffect(() => {
-    form.setValue(
-      "slug",
-      slugify(orgName, {
-        lower: true,
-        replacement: "-",
-        trim: true,
-      })
-    );
+    form.setValue("slug", getSlug(orgName));
   }, [orgName, form]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
@@ -58,7 +50,6 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
       edit(values, data.id)
         .then(({ message, ok }) => {
           if (ok) {
-            form.reset();
             toast.success(message);
           } else {
             toast.error(message);
@@ -74,25 +65,25 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
       const formData = new FormData();
       formData.append("file", file);
       startTransition(() => {
-        startTransition(() => {
-          editLogo(data.id, data.createdBy, formData)
-            .then(({ message, ok }) => {
-              if (ok) {
-                toast.success(message);
-              } else {
-                toast.error(message);
-              }
-            })
-            .catch((error: Error) => {
-              toast.error("Internal error");
-            });
-        });
+        editLogo(data.id, data.createdBy, formData)
+          .then(({ message, ok }) => {
+            if (ok) {
+              toast.success(message);
+            } else {
+              toast.error(message);
+            }
+          })
+          .catch((error: Error) => {
+            toast.error("Internal error");
+          });
       });
     }
   };
+
+  const canEdit = canManageOrg;
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormItem>
           <InputClipboard label={tSchema("id.label")} value={data.id} />
         </FormItem>
@@ -106,9 +97,9 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
               <FormControl>
                 <Input
                   placeholder={tSchema("name.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
-                  disabled={isPending}
+                  disabled={isPending || !canEdit}
                 />
               </FormControl>
 
@@ -125,9 +116,9 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
               <FormControl>
                 <Input
                   placeholder={tSchema("slug.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
-                  disabled={isPending}
+                  disabled={isPending || !canEdit}
                 />
               </FormControl>
 
@@ -136,17 +127,18 @@ export const OrgEditForm = ({ data }: OrgEditFormProps) => {
           )}
         />
         <FormItem>
-          <FormLabel>{tSchema("createdAt.label")}</FormLabel>
-          <FormControl>
-            <p className="font-bold text-sm">{relativeTime(data.createdAt)}</p>
-          </FormControl>
-        </FormItem>
-        <FormItem>
           <FormLabel>{tSchema("logo.label")}</FormLabel>
-          <FileUploader handleChange={onUpload} types={["JPG", "PNG"]} />
+          <FileUploader
+            handleChange={onUpload}
+            types={["JPG", "PNG"]}
+            disabled={isPending || !canEdit}
+          />
         </FormItem>
 
-        <DynamicDialogFooter disabled={isPending} closeButton={false} />
+        <DynamicDialogFooter
+          disabled={isPending || !canEdit}
+          closeButton={false}
+        />
       </form>
     </Form>
   );

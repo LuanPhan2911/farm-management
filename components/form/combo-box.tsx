@@ -29,7 +29,7 @@ interface ComboBoxProps {
   placeholder: string;
   onChange: (value: string) => void;
   defaultValue?: string;
-  className?: string;
+  appearance?: ComboBoxCustomAppearance;
   disabled?: boolean;
 }
 export const ComboBoxDefault = ({
@@ -38,8 +38,8 @@ export const ComboBoxDefault = ({
   placeholder,
   onChange,
   defaultValue,
-  className,
   disabled,
+  appearance,
 }: ComboBoxProps) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(defaultValue);
@@ -62,7 +62,10 @@ export const ComboBoxDefault = ({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn("lg:w-[260px] w-full justify-between", className)}
+          className={cn(
+            "lg:w-[260px] w-full justify-between",
+            appearance?.button
+          )}
           disabled={disabled}
         >
           <p className="truncate text-start">
@@ -74,7 +77,9 @@ export const ComboBoxDefault = ({
           <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className={cn("lg:w-[260px] w-full p-0", className)}>
+      <PopoverContent
+        className={cn("lg:w-[260px] w-full p-0", appearance?.content)}
+      >
         <Command
           filter={(value, search) => {
             return searchData[value]?.includes(search.toLowerCase()) ? 1 : 0;
@@ -115,6 +120,7 @@ interface ComboBoxCustomProps<T extends Record<string, any>> {
   data: T[] | undefined;
   isPending: boolean;
   isError: boolean;
+  hidden?: boolean;
   refetch: (
     options?: RefetchOptions
   ) => Promise<QueryObserverResult<T[], Error>>;
@@ -130,24 +136,30 @@ interface ComboBoxCustomProps<T extends Record<string, any>> {
   appearance?: ComboBoxCustomAppearance;
   renderItemDetail?: (item: T) => React.ReactNode;
   noItemDetailMessage?: string;
+  disabledItem?: (item: T) => boolean;
 }
 export const ComboBoxCustom = <T extends Record<string, any>>({
   data: options,
+  hidden,
   labelKey,
   valueKey,
   placeholder,
   notFound,
   error,
   disabled,
-  appearance,
   defaultValue,
   noItemDetailMessage,
   isPending,
   isError,
+  appearance = {
+    button: "lg:w-full h-10",
+    content: "lg:w-[350px]",
+  },
   refetch,
   onChange,
   renderItem,
   renderItemDetail,
+  disabledItem,
 }: ComboBoxCustomProps<T>) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(defaultValue);
@@ -169,14 +181,14 @@ export const ComboBoxCustom = <T extends Record<string, any>>({
 
   if (isPending) {
     return (
-      <Skeleton className={cn("lg:w-full h-12", appearance?.button)}></Skeleton>
+      <Skeleton className={cn("lg:w-full h-10", appearance?.button)}></Skeleton>
     );
   }
   if (isError) {
     return <ErrorButton title={error} refresh={refetch} />;
   }
   return (
-    <div className="flex flex-col gap-y-2">
+    <>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -189,7 +201,7 @@ export const ComboBoxCustom = <T extends Record<string, any>>({
             )}
             disabled={disabled}
           >
-            {selectedItem ? renderItem(selectedItem) : placeholder}
+            {selectedItem && !hidden ? renderItem(selectedItem) : placeholder}
 
             <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
           </Button>
@@ -211,6 +223,7 @@ export const ComboBoxCustom = <T extends Record<string, any>>({
                     key={item[valueKey]}
                     value={item[valueKey]}
                     onSelect={handleSelect}
+                    disabled={disabledItem ? disabledItem(item) : false}
                   >
                     <Check
                       className={cn(
@@ -232,6 +245,6 @@ export const ComboBoxCustom = <T extends Record<string, any>>({
         </div>
       )}
       {selectedItem && renderItemDetail && renderItemDetail(selectedItem)}
-    </div>
+    </>
   );
 };

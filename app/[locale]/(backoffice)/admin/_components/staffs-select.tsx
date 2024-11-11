@@ -22,7 +22,7 @@ interface StaffSelectItemProps {
   email: string;
   role: StaffRole;
 }
-const StaffSelectItem = ({
+export const StaffSelectItem = ({
   email,
   imageUrl,
   name,
@@ -30,11 +30,7 @@ const StaffSelectItem = ({
 }: StaffSelectItemProps) => {
   return (
     <div className="flex items-center">
-      <UserAvatar
-        src={imageUrl || undefined}
-        size={"default"}
-        className="rounded-full"
-      />
+      <UserAvatar src={imageUrl || undefined} className="rounded-full" />
       <div className="ml-4">
         <div className="text-sm font-medium leading-none text-start">
           {name}
@@ -53,7 +49,10 @@ const StaffSelectItem = ({
 };
 
 interface StaffsSelectProps {
+  orgId?: string | null;
   adminOnly?: boolean;
+  farmerOnly?: boolean;
+  superAdminOnly?: boolean;
   onChange: (value: string | undefined) => void;
   defaultValue?: string;
   disabled?: boolean;
@@ -65,14 +64,22 @@ interface StaffsSelectProps {
 
 export const StaffsSelect = (props: StaffsSelectProps) => {
   const { data, isPending, isError, refetch } = useQuery({
-    queryKey: ["staffs_select"],
+    queryKey: ["staffs_select", props.adminOnly, props.farmerOnly, props.orgId],
     queryFn: async () => {
-      const url = queryString.stringifyUrl({
-        url: "/api/staffs/select",
-        query: {
-          adminOnly: props.adminOnly || false,
+      const url = queryString.stringifyUrl(
+        {
+          url: "/api/staffs/select",
+          query: {
+            adminOnly: props.adminOnly,
+            farmerOnly: props.farmerOnly,
+            superAdminOnly: props.superAdminOnly,
+            orgId: props.orgId,
+          },
         },
-      });
+        {
+          skipEmptyString: true,
+        }
+      );
       const res = await fetch(url);
       return (await res.json()) as Staff[];
     },
@@ -92,26 +99,50 @@ export const StaffsSelect = (props: StaffsSelectProps) => {
   );
 };
 interface StaffsSelectMultipleProps {
-  onChange: (value: string) => void;
+  orgId?: string | null;
+  adminOnly?: boolean;
+  farmerOnly?: boolean;
+  defaultValue?: string[];
+  onChange: (value?: string[]) => void;
   disabled?: boolean;
-  label: string;
+  placeholder: string;
   notFound: string;
   error: string;
-  defaultValue?: string;
   className?: string;
+  valueKey?: keyof Staff;
+  labelKey?: keyof Staff;
 }
 export const StaffsSelectMultiple = ({
+  adminOnly,
+  farmerOnly,
+  orgId,
   disabled,
-  label,
+  placeholder,
   notFound,
   error,
   onChange,
+  defaultValue,
+  labelKey,
+  valueKey,
   className,
 }: StaffsSelectMultipleProps) => {
   const { data, isPending, isError, refetch } = useQuery({
-    queryKey: ["staffs_select"],
+    queryKey: ["staffs_select", orgId, adminOnly, farmerOnly],
     queryFn: async () => {
-      const res = await fetch("/api/staffs/select");
+      const url = queryString.stringifyUrl(
+        {
+          url: "/api/staffs/select",
+          query: {
+            orgId,
+            adminOnly,
+            farmerOnly,
+          },
+        },
+        {
+          skipEmptyString: true,
+        }
+      );
+      const res = await fetch(url);
       return (await res.json()) as Staff[];
     },
   });
@@ -121,31 +152,37 @@ export const StaffsSelectMultiple = ({
       value: string;
     }>
   ) => {
-    const result = JSON.stringify(newValue.map((item) => item.value));
-    onChange(result);
+    onChange(newValue.map((item) => item.value));
   };
   if (isPending) {
-    return <Skeleton className="lg:w-[250px] w-full h-12"></Skeleton>;
+    return <Skeleton className="lg:w-full h-10"></Skeleton>;
   }
   if (isError) {
     return <ErrorButton title={error} refresh={refetch} />;
   }
   const options = data.map((item) => {
     return {
-      label: item.email,
-      value: item.email,
+      label: item[labelKey || "email"] as string,
+      value: item[valueKey || "id"] as string,
     };
   });
+  const defaultOptions = options.filter((item) => {
+    return defaultValue?.includes(item.value);
+  });
+  console.log(defaultOptions, defaultValue);
+
   return (
     <ReactSelect
-      placeholder={label}
+      placeholder={placeholder}
       options={options}
+      value={defaultOptions}
       onChange={handleChange}
       isDisabled={disabled}
       className={cn("my-react-select-container", className)}
       classNamePrefix="my-react-select"
       isMulti
       noOptionsMessage={() => notFound}
+      closeMenuOnSelect={false}
     />
   );
 };

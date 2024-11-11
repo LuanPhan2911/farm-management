@@ -55,6 +55,18 @@ export const deleteManyUnit = async (ids: string[]) => {
   return count;
 };
 
+export const unitInclude = {
+  unit: {
+    select: {
+      name: true,
+    },
+  },
+};
+
+export const unitSelect = {
+  id: true,
+  name: true,
+};
 export const getUnitsByType = async (type: UnitType): Promise<UnitSelect[]> => {
   try {
     const units = await db.unit.findMany({
@@ -62,8 +74,11 @@ export const getUnitsByType = async (type: UnitType): Promise<UnitSelect[]> => {
         type,
       },
       select: {
-        id: true,
-        name: true,
+        ...unitSelect,
+      },
+      cacheStrategy: {
+        swr: 60,
+        ttl: 60,
       },
     });
     return units;
@@ -188,6 +203,12 @@ const floatUnitRelations = {
   purchasePrices: { none: {} },
   estimatedYields: { none: {} },
   actualYields: { none: {} },
+  plantFertilizerDosages: {
+    none: {},
+  },
+  plantPesticideDosages: {
+    none: {},
+  },
 };
 const intUnitRelations = {
   humidities: { none: {} },

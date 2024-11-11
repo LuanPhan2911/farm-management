@@ -2,7 +2,6 @@
 
 import { errorResponse, successResponse } from "@/lib/utils";
 import { OrganizationMemberSchema, OrganizationSchema } from "@/schemas";
-import { getFieldByOrgId } from "@/services/fields";
 import {
   createMemberOrganization,
   createOrganization,
@@ -13,7 +12,7 @@ import {
   updateOrganization,
   updateOrganizationLogo,
 } from "@/services/organizations";
-import { getStaffByExternalId } from "@/services/staffs";
+import { getStaffById } from "@/services/staffs";
 import { ActionResponse, OrgRole } from "@/types";
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
@@ -30,20 +29,22 @@ export const create = async (
   if (!validatedFields.success) {
     return errorResponse(tSchema("errors.parse"));
   }
-  const { createdBy } = validatedFields.data;
+  const { createdBy, name, slug } = validatedFields.data;
 
   try {
-    const existingOrg = await getOrganizationBySlug(validatedFields.data.slug);
+    const existingOrg = await getOrganizationBySlug(slug);
     if (existingOrg) {
       return errorResponse(tSchema("errors.exist"));
     }
 
-    const staff = await getStaffByExternalId(createdBy);
+    const staff = await getStaffById(createdBy);
     if (!staff) {
       return errorResponse(tSchema("errors.existStaff"));
     }
     const org = await createOrganization({
-      ...validatedFields.data,
+      name,
+      createdBy: staff.externalId,
+      slug,
     });
 
     revalidatePath("/admin/organizations");
@@ -65,15 +66,15 @@ export const edit = async (
     return errorResponse(tSchema("errors.parse"));
   }
   try {
-    const existingOrg = await getOrganizationBySlug(validatedFields.data.slug);
+    const { slug, name } = validatedFields.data;
+    const existingOrg = await getOrganizationBySlug(slug);
     if (existingOrg && existingOrg.id !== orgId) {
       return errorResponse(tSchema("errors.exist"));
     }
-    const org = await updateOrganization(
-      orgId,
-      validatedFields.data.name,
-      validatedFields.data.slug
-    );
+    const org = await updateOrganization(orgId, {
+      name,
+      slug,
+    });
 
     revalidatePath(`/admin/organizations/detail/${org.id}`);
     return successResponse(tStatus("success.edit"));
@@ -102,6 +103,18 @@ export const editLogo = async (
     return errorResponse(t("status.failure.editLogo"));
   }
 };
+export const destroy = async (orgId: string): Promise<ActionResponse> => {
+  const tStatus = await getTranslations("organizations.status");
+
+  try {
+    await deleteOrganization(orgId);
+
+    revalidatePath("/admin/organizations");
+    return successResponse(tStatus("success.destroy"));
+  } catch (error) {
+    return errorResponse(tStatus("failure.destroy"));
+  }
+};
 
 export const createMember = async (
   values: z.infer<ReturnType<typeof OrganizationMemberSchema>>,
@@ -117,7 +130,7 @@ export const createMember = async (
   }
   try {
     const { memberId } = validatedFields.data;
-    const staff = await getStaffByExternalId(memberId);
+    const staff = await getStaffById(memberId);
     if (!staff) {
       return errorResponse(tSchema("error.existMember"));
     }
@@ -149,22 +162,7 @@ export const destroyMember = async (
     return errorResponse(tStatus("failure.destroyMember"));
   }
 };
-export const destroy = async (orgId: string): Promise<ActionResponse> => {
-  const tStatus = await getTranslations("organizations.status");
-  const tSchema = await getTranslations("organizations.schema");
-  try {
-    const field = await getFieldByOrgId(orgId);
-    if (field) {
-      return errorResponse(tSchema("errors.existField"));
-    }
-    await deleteOrganization(orgId);
 
-    revalidatePath("/admin/organizations");
-    return successResponse(tStatus("success.destroy"));
-  } catch (error) {
-    return errorResponse(tStatus("failure.destroy"));
-  }
-};
 export const editMemberRole = async (
   userId: string,
   orgId: string,

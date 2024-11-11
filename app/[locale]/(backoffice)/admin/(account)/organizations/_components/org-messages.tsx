@@ -9,17 +9,17 @@ import {
 import { Organization } from "@clerk/nextjs/server";
 import { useTranslations } from "next-intl";
 import { ChatMessages } from "../../messages/_components/chat-messages";
-import { Staff } from "@prisma/client";
 import { ChatMessageCreateForm } from "../../messages/_components/chat-message-create-button";
 import { SocketIndicator } from "@/components/socket-indicator";
-import { Link } from "@/navigation";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { DropdownMenuButton } from "@/components/buttons/dropdown-menu-button";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { LinkDetailButton } from "@/components/buttons/link-button";
+
 interface OrgMessages {
   org: Organization;
-  currentStaff: Staff;
 }
-export const OrgMessages = ({ org, currentStaff }: OrgMessages) => {
+export const OrgMessages = ({ org }: OrgMessages) => {
   const t = useTranslations("organizations.tabs");
 
   return (
@@ -29,21 +29,21 @@ export const OrgMessages = ({ org, currentStaff }: OrgMessages) => {
           {t("messages.title")}
           <SocketIndicator />
         </CardTitle>
-        <CardDescription>{t("messages.description")}</CardDescription>
+        <CardDescription className="flex justify-between">
+          {t("messages.description")}
+          <DropdownMenuButton>
+            <DropdownMenuItem>
+              <LinkDetailButton href={`files`} label="Uploaded files" />
+            </DropdownMenuItem>
+          </DropdownMenuButton>
+        </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4 mb-4">
-        <div className="flex justify-start">
-          <Link href={`/admin/organizations/detail/${org.id}/files`}>
-            <Button variant={"blue"} size={"sm"}>
-              Uploaded files
-            </Button>
-          </Link>
-        </div>
         <Separator />
+
         <ChatMessages
           chatId={org.id}
           apiUrl="/api/messages"
-          currentStaff={currentStaff}
           paramKey="orgId"
           paramValue={org.id}
           socketUrl="/api/socket/messages"

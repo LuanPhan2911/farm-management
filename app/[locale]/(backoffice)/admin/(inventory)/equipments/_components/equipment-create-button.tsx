@@ -2,11 +2,11 @@
 
 import { create } from "@/actions/equipment";
 import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
+import { LinkButton } from "@/components/buttons/link-button";
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 import { DatePicker } from "@/components/form/date-picker";
 import { SelectOptions } from "@/components/form/select-options";
 import { UploadImage } from "@/components/form/upload-image";
-import { Button } from "@/components/ui/button";
 
 import {
   Form,
@@ -18,7 +18,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Link, useRouter } from "@/navigation";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
 import { EquipmentSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EquipmentType, UnitType } from "@prisma/client";
@@ -32,32 +33,39 @@ import { z } from "zod";
 
 export const EquipmentCreateButton = () => {
   const t = useTranslations("equipments.form");
+  const { isOnlyAdmin: canCreate } = useCurrentStaffRole();
   return (
-    <Link href={"/admin/equipments/create"}>
-      <Button variant={"success"} size={"sm"}>
-        <Plus className="mr-2" />
-        {t("create.label")}
-      </Button>
-    </Link>
+    <LinkButton
+      href="equipments/create"
+      label={t("create.label")}
+      disabled={!canCreate}
+      icon={Plus}
+      variant={"success"}
+    />
   );
 };
 
 export const EquipmentCreateForm = () => {
   const tSchema = useTranslations("equipments.schema");
   const formSchema = EquipmentSchema(tSchema);
-  const t = useTranslations("equipments");
+
   const [isPending, startTransition] = useTransition();
-  const router = useRouter();
+  const router = useRouterWithRole();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      type: "AgriculturalMachine",
+    },
   });
+  const { isOnlyAdmin: canCreate } = useCurrentStaffRole();
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       create(values)
         .then(({ message, ok }) => {
           if (ok) {
             toast.success(message);
-            router.push("/admin/equipments");
+            router.push("equipments");
           } else {
             toast.error(message);
           }
@@ -83,7 +91,7 @@ export const EquipmentCreateForm = () => {
               <FormControl>
                 <UploadImage
                   onChange={field.onChange}
-                  disabled={isPending}
+                  disabled={isPending || !canCreate}
                   defaultValue={field.value}
                 />
               </FormControl>
@@ -100,29 +108,9 @@ export const EquipmentCreateForm = () => {
               <FormControl>
                 <Input
                   placeholder={tSchema("name.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
-                  disabled={isPending}
-                />
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="brand"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{tSchema("brand.label")}</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder={tSchema("brand.placeholder")}
-                  value={field.value || undefined}
-                  onChange={field.onChange}
-                  disabled={isPending}
+                  disabled={isPending || !canCreate}
                 />
               </FormControl>
 
@@ -147,7 +135,8 @@ export const EquipmentCreateForm = () => {
                         value: item,
                       };
                     })}
-                    disabled={isPending}
+                    defaultValue={field.value}
+                    disabled={isPending || !canCreate}
                   />
                 </FormControl>
 
@@ -164,8 +153,8 @@ export const EquipmentCreateForm = () => {
                 <FormControl>
                   <DatePicker
                     onChange={field.onChange}
-                    value={field.value}
-                    disabled={isPending}
+                    value={field.value ?? undefined}
+                    disabled={isPending || !canCreate}
                     placeholder={tSchema("purchaseDate.placeholder")}
                   />
                 </FormControl>
@@ -175,43 +164,20 @@ export const EquipmentCreateForm = () => {
             )}
           />
         </div>
-        <div className="grid grid-cols-4 gap-2">
-          <div className="col-span-3">
-            <FormField
-              control={form.control}
-              name="purchasePrice.value"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("purchasePrice.label")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={tSchema("purchasePrice.placeholder")}
-                      value={field.value || undefined}
-                      onChange={field.onChange}
-                      disabled={isPending}
-                      type="number"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+
+        <div className="grid lg:grid-cols-2 gap-2">
           <FormField
             control={form.control}
-            name="purchasePrice.unitId"
+            name="brand"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{tSchema("purchasePrice.unitId.label")}</FormLabel>
+                <FormLabel>{tSchema("brand.label")}</FormLabel>
                 <FormControl>
-                  <UnitsSelect
+                  <Input
+                    placeholder={tSchema("brand.placeholder")}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
-                    placeholder={tSchema("purchasePrice.unitId.placeholder")}
-                    unitType={UnitType.MONEY}
-                    disabled={isPending}
-                    className="w-full"
-                    error={tSchema("purchasePrice.unitId.error")}
-                    notFound={tSchema("purchasePrice.unitId.notFound")}
+                    disabled={isPending || !canCreate}
                   />
                 </FormControl>
 
@@ -219,7 +185,54 @@ export const EquipmentCreateForm = () => {
               </FormItem>
             )}
           />
+          <div className="grid grid-cols-4 gap-2">
+            <div className="col-span-3">
+              <FormField
+                control={form.control}
+                name="purchasePrice.value"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("purchasePrice.label")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={tSchema("purchasePrice.placeholder")}
+                        value={field.value ?? undefined}
+                        onChange={field.onChange}
+                        disabled={isPending || !canCreate}
+                        type="number"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <FormField
+              control={form.control}
+              name="purchasePrice.unitId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("purchasePrice.unitId.label")}</FormLabel>
+                  <FormControl>
+                    <UnitsSelect
+                      onChange={field.onChange}
+                      placeholder={tSchema("purchasePrice.unitId.placeholder")}
+                      unitType={UnitType.MONEY}
+                      disabled={isPending || !canCreate}
+                      className="w-full"
+                      error={tSchema("purchasePrice.unitId.error")}
+                      notFound={tSchema("purchasePrice.unitId.notFound")}
+                      defaultValue={field.value}
+                    />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
+
         <FormField
           control={form.control}
           name="description"
@@ -229,9 +242,9 @@ export const EquipmentCreateForm = () => {
               <FormControl>
                 <Textarea
                   placeholder={tSchema("description.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
-                  disabled={isPending}
+                  disabled={isPending || !canCreate}
                 />
               </FormControl>
 
@@ -240,48 +253,10 @@ export const EquipmentCreateForm = () => {
           )}
         />
 
-        <div className="grid lg:grid-cols-2 gap-2">
-          <FormField
-            control={form.control}
-            name="energyType"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("energyType.label")}</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={tSchema("energyType.placeholder")}
-                    value={field.value || undefined}
-                    onChange={field.onChange}
-                    disabled={isPending}
-                  />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="fuelConsumption"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("fuelConsumption.label")}</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={tSchema("fuelConsumption.placeholder")}
-                    value={field.value || undefined}
-                    onChange={field.onChange}
-                    disabled={isPending}
-                    type="number"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <DynamicDialogFooter disabled={isPending} closeButton={false} />
+        <DynamicDialogFooter
+          disabled={isPending || !canCreate}
+          closeButton={false}
+        />
       </form>
     </Form>
   );

@@ -172,13 +172,13 @@ export const getSoilsOnField = async ({
           ...(filterNumber && getObjectFilterNumber(filterNumber)),
         },
         orderBy: [
-          ...(orderBy ? getObjectSortOrder(orderBy) : []),
           {
             pinned: "desc",
           },
           {
             confirmed: "asc",
           },
+          ...(orderBy ? getObjectSortOrder(orderBy) : []),
         ],
         include: {
           confirmedBy: true,
@@ -230,32 +230,6 @@ export const getSoilById = async (id: string) => {
   } catch (error) {
     return null;
   }
-};
-
-export const getSoilUnitForGenerateSoil = async () => {
-  return await db.$transaction(async (ctx) => {
-    const moistureUnit = await ctx.unit.findFirst({
-      where: {
-        type: "PERCENT",
-      },
-      select: {
-        id: true,
-      },
-    });
-    const nutrientUnit = await ctx.unit.findFirst({
-      where: {
-        type: "NUTRIENT",
-      },
-      select: {
-        id: true,
-      },
-    });
-    const soilUnits = {
-      moistureUnitId: moistureUnit?.id,
-      nutrientUnitId: nutrientUnit?.id,
-    };
-    return soilUnits;
-  });
 };
 
 export const getSoilsForChart = async ({

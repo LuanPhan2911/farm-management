@@ -1,34 +1,33 @@
 import { LIMIT } from "@/configs/paginationConfig";
-import { OrgRole } from "@/types";
-import { clerkClient, Organization } from "@clerk/nextjs/server";
-export const getOrganizationBySlug = async (slug: string) => {
-  try {
-    const org = await clerkClient().organizations.getOrganization({
-      slug,
-    });
-    return org;
-  } catch (error) {
-    return null;
-  }
-};
+import { OrgRole, PaginatedResponse } from "@/types";
+import { clerkClient, currentUser, Organization } from "@clerk/nextjs/server";
+import { getCurrentStaff } from "./staffs";
+import { getOrganizationMembershipList } from "./users";
+import { Staff, StaffRole } from "@prisma/client";
+import { db } from "@/lib/db";
+import { isSuperAdmin } from "@/lib/permission";
+import { deleteMessagesByOrgId } from "./messages";
+import { updateFieldOrgWhenOrgDeleted } from "./fields";
 
-export const createOrganization = async (params: {
+type OrganizationParams = {
   name: string;
   createdBy: string;
   slug: string;
-}) => {
+};
+export const createOrganization = async (params: OrganizationParams) => {
   const org = await clerkClient().organizations.createOrganization({
     ...params,
   });
   return org;
 };
-export const deleteOrganization = async (orgId: string) => {
-  const org = await clerkClient().organizations.deleteOrganization(orgId);
+export const deleteOrganization = async (id: string) => {
+  const org = await clerkClient().organizations.deleteOrganization(id);
+  await deleteMessagesByOrgId(id);
+  await updateFieldOrgWhenOrgDeleted(id);
   return org;
 };
 export const updateOrganizationLogo = async (
   orgId: string,
-
   userId: string,
   file: File
 ) => {
@@ -38,14 +37,16 @@ export const updateOrganizationLogo = async (
   });
   return org;
 };
+type OrganizationUpdateParams = {
+  name: string;
+  slug: string;
+};
 export const updateOrganization = async (
   orgId: string,
-  name: string,
-  slug: string
+  params: OrganizationUpdateParams
 ) => {
   const org = await clerkClient().organizations.updateOrganization(orgId, {
-    name,
-    slug,
+    ...params,
   });
   return org;
 };
@@ -100,33 +101,33 @@ export type OrganizationMemberShipSortBy =
   | "-first_name"
   | "-last_name";
 export const getOrganizationMembership = async ({
-  currentPage,
   orgId,
-  orderBy,
 }: {
   orgId: string;
-  currentPage: number;
-  orderBy?: OrganizationMemberShipSortBy;
 }) => {
   try {
-    const { data, totalCount } =
+    const user = await currentUser();
+    if (!user) {
+      return [];
+    }
+    const { data } =
       await clerkClient().organizations.getOrganizationMembershipList({
         organizationId: orgId,
-        limit: LIMIT,
-        offset: (currentPage - 1) * LIMIT,
-        orderBy: orderBy,
+        limit: 100,
       });
+    if (isSuperAdmin(user.publicMetadata.role as StaffRole)) {
+      return data;
+    }
+    const currentUserInOrg = data.find(
+      (item) => item.publicUserData?.userId === user.id
+    );
+    if (!currentUserInOrg) {
+      return [];
+    }
 
-    const totalPage = Math.ceil(totalCount / LIMIT);
-    return {
-      data,
-      totalPage,
-    };
+    return data;
   } catch (error) {
-    return {
-      data: [],
-      totalPage: 0,
-    };
+    return [];
   }
 };
 export type OrganizationSortBy =
@@ -137,26 +138,41 @@ export type OrganizationSortBy =
   | "-name"
   | "-members_count";
 export const getOrganizations = async ({
-  currentPage,
+  page,
   orderBy,
   query,
 }: {
   query?: string;
-  currentPage: number;
+  page: number;
   orderBy?: OrganizationSortBy;
-}) => {
+}): Promise<PaginatedResponse<Organization>> => {
   try {
-    const { data, totalCount } =
-      await clerkClient().organizations.getOrganizationList({
-        includeMembersCount: true,
-        limit: LIMIT,
-        offset: (currentPage - 1) * LIMIT,
-        query,
-        orderBy,
-      });
-    const totalPage = Math.ceil(totalCount / LIMIT);
+    const currentStaff = await getCurrentStaff();
+    if (!currentStaff) {
+      throw new Error("Unauthorized");
+    }
+    if (currentStaff.role === "superadmin") {
+      const { data, totalCount } =
+        await clerkClient().organizations.getOrganizationList({
+          includeMembersCount: true,
+          limit: LIMIT,
+          offset: (page - 1) * LIMIT,
+          query,
+          orderBy,
+        });
+      const totalPage = Math.ceil(totalCount / LIMIT);
+      return {
+        data,
+        totalPage,
+      };
+    }
+
+    const { data, totalPage } = await getOrganizationMembershipList({
+      page,
+      userId: currentStaff.externalId,
+    });
     return {
-      data,
+      data: data.map((item) => item.organization),
       totalPage,
     };
   } catch (error) {
@@ -177,6 +193,16 @@ export const getOrganizationsSelect = async (): Promise<Organization[]> => {
     return [];
   }
 };
+export const getOrganizationBySlug = async (slug: string) => {
+  try {
+    const org = await clerkClient().organizations.getOrganization({
+      slug,
+    });
+    return org;
+  } catch (error) {
+    return null;
+  }
+};
 export const getOrganizationById = async (id: string) => {
   try {
     return await clerkClient().organizations.getOrganization({
@@ -185,4 +211,40 @@ export const getOrganizationById = async (id: string) => {
   } catch (error) {
     return null;
   }
+};
+
+export const getOrganizationMemberSelect = async (
+  orgId: string
+): Promise<Staff[]> => {
+  try {
+    const organizationMembers = await getOrganizationMembership({ orgId });
+    if (!organizationMembers.length) {
+      return [];
+    }
+    const externalStaffId = organizationMembers
+      .map((item) => item.publicUserData?.userId)
+      .filter((userId) => userId !== undefined);
+    const staff = await db.staff.findMany({
+      where: {
+        externalId: {
+          notIn: externalStaffId,
+        },
+      },
+    });
+    return staff;
+  } catch (error) {
+    return [];
+  }
+};
+
+export const getUserInOrganization = async (orgId: string, userId: string) => {
+  const { data } =
+    await clerkClient().organizations.getOrganizationMembershipList({
+      organizationId: orgId,
+      limit: 100,
+    });
+  const currentStaffInOrg = data.find(
+    (item) => item.publicUserData?.userId === userId
+  );
+  return currentStaffInOrg || null;
 };

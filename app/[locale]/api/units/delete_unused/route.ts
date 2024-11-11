@@ -4,20 +4,11 @@ import {
 } from "@/services/units";
 import { NextRequest, NextResponse } from "next/server";
 
-export const POST = async (
-  req: NextRequest,
-  {
-    params,
-  }: {
-    params: {
-      fieldId: string;
-    };
-  }
-) => {
+export const POST = async (req: NextRequest) => {
   try {
     const authorization = req.headers.get("authorization");
     if (!authorization || authorization !== process.env.APP_API_KEY) {
-      return NextResponse.json("Invalid App API key", { status: 401 });
+      return new NextResponse("Invalid App API key", { status: 401 });
     }
     await deleteUnusedFloatUnits();
     await deleteUnusedIntegerUnits();

@@ -131,10 +131,10 @@ export const ChatMessageCreateFileFromComputer = ({
               render={({ field }) => {
                 return (
                   <FormItem>
-                    <FormLabel>{tSchema("content.label")}</FormLabel>
+                    <FormLabel>{tSchema("contentCaption.label")}</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <div className="absolute  bottom-2 left-2">
+                        <div className="absolute bottom-2 left-2">
                           <EmojiPicker
                             onChange={(emoji) =>
                               field.onChange(`${field.value} ${emoji}`)
@@ -155,7 +155,7 @@ export const ChatMessageCreateFileFromComputer = ({
                         </div>
                         <Textarea
                           disabled={isPending}
-                          placeholder={tSchema("content.placeholder")}
+                          placeholder={tSchema("contentCaption.placeholder")}
                           {...field}
                           className="pl-14 pr-16 min-h-[56px] custom-scrollbar bg-zinc-200/90 dark:bg-zinc-700/75 border-none
                   border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-zinc-600 dark:text-zinc-400"
@@ -190,6 +190,8 @@ export const ChatMessageCreateFileFromCLoud = ({
     defaultValues: {
       content: "",
       fileUrl: undefined,
+      name: undefined,
+      type: undefined,
     },
   });
 
@@ -253,10 +255,14 @@ export const ChatMessageCreateFileFromCLoud = ({
                         notFound={tSchema("fileUrl.notFound")}
                         onChange={field.onChange}
                         disabled={isPending}
-                        defaultValue={field.value || undefined}
+                        defaultValue={field.value ?? undefined}
                         appearance={{
                           button: "lg:w-full",
                           content: "lg:w-[480px]",
+                        }}
+                        onSelected={(file) => {
+                          form.setValue("name", file.name);
+                          form.setValue("type", file.type);
                         }}
                       />
                     </FormControl>
@@ -270,7 +276,7 @@ export const ChatMessageCreateFileFromCLoud = ({
               render={({ field }) => {
                 return (
                   <FormItem>
-                    <FormLabel>{tSchema("content.label")}</FormLabel>
+                    <FormLabel>{tSchema("contentCaption.label")}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <div className="absolute  bottom-2 left-2">
@@ -294,7 +300,7 @@ export const ChatMessageCreateFileFromCLoud = ({
                         </div>
                         <Textarea
                           disabled={isPending}
-                          placeholder={tSchema("content.placeholder")}
+                          placeholder={tSchema("contentCaption.placeholder")}
                           {...field}
                           className="pl-14 pr-16 min-h-[56px] custom-scrollbar bg-zinc-200/90 dark:bg-zinc-700/75 border-none
                     border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-zinc-600 dark:text-zinc-400"

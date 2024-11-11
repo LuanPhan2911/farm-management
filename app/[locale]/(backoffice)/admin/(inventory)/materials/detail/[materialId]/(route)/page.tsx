@@ -26,6 +26,7 @@ interface MaterialDetailPageProps {
 }
 const MaterialDetailPage = async ({ params }: MaterialDetailPageProps) => {
   const data = await getMaterialById(params!.materialId);
+
   const t = await getTranslations("materials.page.detail");
   if (!data) {
     notFound();

@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { getTranslations } from "next-intl/server";
 import { SoilsBarChart } from "./_components/soils-bar-chart";
+import { canGetField } from "@/lib/role";
+import { notFound } from "next/navigation";
 interface SoilsPageProps {
   params: {
     fieldId: string;
@@ -30,6 +32,11 @@ const SoilsPage = async ({ params, searchParams }: SoilsPageProps) => {
   const begin = parseToDate(searchParams!.begin);
   const end = parseToDate(searchParams!.end);
   const t = await getTranslations("soils.page");
+
+  const field = await canGetField(params.fieldId);
+  if (!field) {
+    notFound();
+  }
   const { data, totalPage } = await getSoilsOnField({
     fieldId: params!.fieldId,
     page,

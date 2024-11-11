@@ -41,7 +41,7 @@ export const POST = async (
       !validatedWeathers.length ||
       validatedWeathers.length !== weathers.length
     ) {
-      return NextResponse.json("Something went wrong to create weathers", {
+      return new NextResponse("Something went wrong to create weathers", {
         status: 401,
       });
     }

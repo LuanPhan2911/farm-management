@@ -40,15 +40,24 @@ import { EmailTemplate } from "@/components/mail/email-template";
 import { StaffsSelectMultiple } from "../../../_components/staffs-select";
 import { Label } from "@/components/ui/label";
 import { ClipboardButton } from "@/components/buttons/clipboard-button";
-import { ScheduleSelectCron } from "./schedule-select-cron";
+import { ScheduleSelectCron } from "../../../_components/schedule-select-cron";
 import { Textarea } from "@/components/ui/textarea";
+import { useAuth } from "@clerk/nextjs";
 const initialBody = {
   receivers: ["example@gmail.com"],
   subject: "Email notification salary",
   contents: ["Notify salary..."],
   sender: "From Accountant",
 };
-export const ScheduleSendMailButton = () => {
+
+interface ScheduleSendMailButtonProps {
+  appKey?: string | undefined;
+  appUrl?: string | undefined;
+}
+export const ScheduleSendMailButton = ({
+  appKey,
+  appUrl,
+}: ScheduleSendMailButtonProps) => {
   const tSchema = useTranslations("schedules.schema");
 
   const t = useTranslations("schedules.form");
@@ -65,9 +74,9 @@ export const ScheduleSendMailButton = () => {
       description: "Schedule for automatically send email",
       cron: "",
       request: {
-        url: "[Your HOST]/en/api/mails",
+        url: `${appUrl || "[Your HOST]"}/en/api/mails`,
         headers: JSON.stringify({
-          Authorization: "Your API KEY",
+          Authorization: appKey || "[Your API KEY]",
         }),
         body: JSON.stringify(initialBody),
       },
@@ -96,11 +105,7 @@ export const ScheduleSendMailButton = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button
-          variant={"outline-blue"}
-          size={"sm"}
-          className="w-full justify-start font-bold"
-        >
+        <Button variant={"blue"} size={"sm"}>
           {t("sendMail.label")}
         </Button>
       </SheetTrigger>
@@ -154,7 +159,7 @@ export const ScheduleSendMailButton = () => {
                       <FormControl>
                         <Textarea
                           placeholder={tSchema("description.placeholder")}
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
                           disabled={isPending}
                         />
@@ -175,7 +180,7 @@ export const ScheduleSendMailButton = () => {
                           <div className="col-span-3">
                             <Input
                               placeholder={tSchema("cron.placeholder")}
-                              value={field.value || undefined}
+                              value={field.value ?? undefined}
                               onChange={field.onChange}
                               disabled={isPending}
                             />
@@ -183,7 +188,7 @@ export const ScheduleSendMailButton = () => {
                           <ScheduleSelectCron
                             onChange={field.onChange}
                             placeholder="Custom"
-                            defaultValue={field.value || undefined}
+                            defaultValue={field.value ?? undefined}
                             disabled={isPending}
                           />
                         </div>
@@ -210,7 +215,7 @@ export const ScheduleSendMailButton = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("request.url.placeholder")}
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
                           disabled={isPending}
                         />
@@ -318,21 +323,24 @@ interface ScheduleEmailSelectProps {
   disabled?: boolean;
 }
 const ScheduleEmailSelect = ({ disabled }: ScheduleEmailSelectProps) => {
-  const [value, setValue] = useState("");
+  const [emails, setEmails] = useState<string[] | undefined>([]);
+  const { orgId } = useAuth();
   const t = useTranslations("schedules.search.select.staff");
   return (
     <div>
       <Label>{t("label")} </Label>
       <div className="flex gap-x-2 items-center">
         <StaffsSelectMultiple
+          orgId={orgId}
           error={t("error")}
-          label={t("placeholder")}
+          placeholder={t("placeholder")}
           notFound={t("notFound")}
           disabled={disabled}
-          onChange={setValue}
+          onChange={setEmails}
+          valueKey="email"
           className="w-full"
         />
-        <ClipboardButton value={value} />
+        <ClipboardButton value={JSON.stringify(emails)} />
       </div>
     </div>
   );

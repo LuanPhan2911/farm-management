@@ -1,8 +1,16 @@
-import { getFieldById, getFields } from "@/services/fields";
+import { getFieldsSelect } from "@/services/fields";
 import { notFound } from "next/navigation";
-import { FieldInfo } from "../../../_components/field-info";
 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { getTranslations } from "next-intl/server";
+import { FieldEditForm } from "../../../_components/field-edit-button";
+import { canGetField } from "@/lib/role";
 
 interface FieldDetailPageProps {
   params: {
@@ -15,21 +23,32 @@ export async function generateMetadata() {
     title: t("title"),
   };
 }
-export const generateStaticParams = async () => {
-  const fields = await getFields();
-  return fields.map((field) => {
-    return { fieldId: field.id };
+export async function generateStaticParams() {
+  const plants = await getFieldsSelect();
+  return plants.map((item) => {
+    return {
+      fieldId: item.id,
+    };
   });
-};
+}
 const FieldDetailPage = async ({ params }: FieldDetailPageProps) => {
-  const field = await getFieldById(params!.fieldId);
-
-  if (!field) {
+  const data = await canGetField(params!.fieldId);
+  const t = await getTranslations("fields.tabs");
+  if (!data) {
     notFound();
   }
   return (
     <div className="flex flex-col gap-y-4 py-4 h-full">
-      <FieldInfo data={field} />
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("info.title")}</CardTitle>
+          <CardDescription>{t("info.description")}</CardDescription>
+          <h3 className="text-lg font-semibold">{data.name}</h3>
+        </CardHeader>
+        <CardContent>
+          <FieldEditForm data={data} />
+        </CardContent>
+      </Card>
     </div>
   );
 };

@@ -13,12 +13,12 @@ import {
   PaginatedResponse,
 } from "@/types";
 import { FertilizerType, Frequency } from "@prisma/client";
-import { deleteFloatUnit, UnitValue, upsertFloatUnit } from "./units";
+import { UnitValue, upsertFloatUnit } from "./units";
 
 type FertilizerParams = {
   name: string;
-  type: FertilizerType;
-  nutrientOfNPK: string;
+  type?: FertilizerType | null;
+  nutrientOfNPK?: string | null;
   composition?: string | null;
   manufacturer?: string | null;
   recommendedDosage?: Partial<UnitValue> | null;
@@ -128,14 +128,18 @@ export const getCountFertilizerType = async ({}: FertilizerQuery): Promise<
   try {
     const result = await db.fertilizer.groupBy({
       by: "type",
-
+      where: {
+        type: {
+          not: null,
+        },
+      },
       _count: {
         _all: true,
       },
     });
     return result.map((item) => {
       return {
-        type: item.type,
+        type: item.type!,
         _count: item._count._all,
       };
     });
@@ -148,6 +152,11 @@ export const getCountFertilizerFrequencyOfUse =
     try {
       const result = await db.fertilizer.groupBy({
         by: "frequencyOfUse",
+        where: {
+          frequencyOfUse: {
+            not: null,
+          },
+        },
 
         _count: {
           _all: true,
@@ -171,6 +180,7 @@ export const getFertilizersSelect = async (): Promise<FertilizerSelect[]> => {
         id: true,
         name: true,
         type: true,
+        nutrientOfNPK: true,
         frequencyOfUse: true,
         applicationMethod: true,
         recommendedDosage: {

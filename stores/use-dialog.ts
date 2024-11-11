@@ -1,5 +1,7 @@
 import {
+  ActivityAssignedStaff,
   ApplicantTable,
+  ActivityAssignedStaffWithActivitySelect,
   CategoryTable,
   CropTable,
   EquipmentDetailTable,
@@ -14,14 +16,14 @@ import {
   WeatherTable,
 } from "@/types";
 import { User } from "@clerk/nextjs/server";
-import { File } from "@prisma/client";
+import { File, Staff } from "@prisma/client";
 import { create } from "zustand";
 
 export type DialogType =
   | "category.edit"
   | "unit.edit"
   | "applicant.createStaff"
-  | "staff.editRole"
+  | "staff.edit"
   | "staff.create"
   | "weather.edit"
   | "soil.edit"
@@ -34,13 +36,15 @@ export type DialogType =
   | "plantPesticide.edit"
   | "equipmentDetail.edit"
   | "materialUsage.edit"
-  | "equipmentUsage.edit";
+  | "equipmentUsage.edit"
+  | "activityAssigned.edit";
 
 export interface DialogData {
   category?: CategoryTable;
   unit?: UnitTable;
   applicant?: ApplicantTable;
   user?: User;
+  staff?: Staff;
   weather?: WeatherTable;
   soil?: SoilTable;
   fertilizer?: FertilizerTable;
@@ -52,6 +56,7 @@ export interface DialogData {
   equipmentDetail?: EquipmentDetailTable;
   materialUsage?: MaterialUsageTable;
   equipmentUsage?: EquipmentUsageTable;
+  activityAssigned?: ActivityAssignedStaffWithActivitySelect;
 }
 interface DialogStore {
   type: DialogType | null;

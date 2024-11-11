@@ -6,11 +6,11 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/datatable/datatable-column-header";
 import { EquipmentDetailsTableAction } from "./equipment-details-table-action";
 
-import { useDialog } from "@/stores/use-dialog";
 import { EquipmentDetailTable } from "@/types";
 import { UserAvatar } from "@/components/user-avatar";
 import { EquipmentDetailStatusValue } from "./equipment-detail-status-value";
-import { useRouter } from "@/navigation";
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
+import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-with-value";
 
 interface EquipmentDetailsTableProps {
   data: EquipmentDetailTable[];
@@ -18,11 +18,11 @@ interface EquipmentDetailsTableProps {
 export const EquipmentDetailsTable = ({ data }: EquipmentDetailsTableProps) => {
   const t = useTranslations("equipmentDetails");
 
-  const router = useRouter();
-  const { dateTime } = useFormatter();
+  const router = useRouterWithRole();
+  const { dateTime, number } = useFormatter();
   const handleViewUsage = (data: EquipmentDetailTable) => {
     router.push(
-      `/admin/equipments/detail/${data.equipmentId}/details/${data.id}/usages`
+      `equipments/detail/${data.equipmentId}/details/${data.id}/usages`
     );
   };
 
@@ -39,9 +39,7 @@ export const EquipmentDetailsTable = ({ data }: EquipmentDetailsTableProps) => {
       },
       cell: ({ row }) => {
         const data = row.original;
-        return (
-          <UserAvatar src={data.equipment.imageUrl || undefined} size={"lg"} />
-        );
+        return <UserAvatar src={data.equipment.imageUrl || undefined} />;
       },
     },
     {
@@ -57,14 +55,7 @@ export const EquipmentDetailsTable = ({ data }: EquipmentDetailsTableProps) => {
     },
     {
       accessorKey: "status",
-      header: ({ column }) => {
-        return (
-          <DataTableColumnHeader
-            column={column}
-            title={t("table.thead.status")}
-          />
-        );
-      },
+      header: t("table.thead.status"),
       cell: ({ row }) => {
         const data = row.original;
         return <EquipmentDetailStatusValue status={data.status} />;
@@ -73,14 +64,7 @@ export const EquipmentDetailsTable = ({ data }: EquipmentDetailsTableProps) => {
 
     {
       accessorKey: "location",
-      header: ({ column }) => {
-        return (
-          <DataTableColumnHeader
-            column={column}
-            title={t("table.thead.location")}
-          />
-        );
-      },
+      header: t("table.thead.location"),
       cell: ({ row }) => {
         const data = row.original;
         if (!data.location) {
@@ -89,58 +73,89 @@ export const EquipmentDetailsTable = ({ data }: EquipmentDetailsTableProps) => {
         return data.location;
       },
     },
-    {
-      accessorKey: "maintenanceSchedule",
-      header: ({ column }) => {
-        return (
-          <DataTableColumnHeader
-            column={column}
-            title={t("table.thead.maintenanceSchedule")}
-          />
-        );
-      },
-      cell: ({ row }) => {
-        const data = row.original;
-        if (!data.maintenanceSchedule) {
-          return t("table.trow.maintenanceSchedule");
-        }
-        return data.maintenanceSchedule;
-      },
-    },
+
     {
       accessorKey: "lastMaintenanceDate",
-      header: ({ column }) => {
-        return (
-          <DataTableColumnHeader
-            column={column}
-            title={t("table.thead.lastMaintenanceDate")}
-          />
-        );
-      },
+      header: t("table.thead.lastMaintenanceDate"),
       cell: ({ row }) => {
         const data = row.original;
         if (!data.lastMaintenanceDate) {
           return t("table.trow.lastMaintenanceDate");
         }
-        return dateTime(data.lastMaintenanceDate);
+        return dateTime(data.lastMaintenanceDate, "long");
+      },
+    },
+    {
+      accessorKey: "energyType",
+      header: t("table.thead.energyType"),
+      cell: ({ row }) => {
+        const data = row.original;
+        if (!data.energyType) {
+          return t("table.trow.energyType");
+        }
+        return data.energyType;
+      },
+    },
+    {
+      accessorKey: "maxOperatingHours",
+      header: () => (
+        <p className="text-right">{t("table.thead.maxOperatingHours")}</p>
+      ),
+      cell: ({ row }) => {
+        const data = row.original;
+
+        return (
+          <p className="text-right">{number(data.maxOperatingHours, "hour")}</p>
+        );
       },
     },
     {
       accessorKey: "operatingHours",
-      header: ({ column }) => {
+      header: () => (
+        <p className="text-right">{t("table.thead.operatingHours")}</p>
+      ),
+      cell: ({ row }) => {
+        const data = row.original;
+
         return (
-          <DataTableColumnHeader
-            column={column}
-            title={t("table.thead.operatingHours")}
+          <p className="text-right">{number(data.operatingHours, "hour")}</p>
+        );
+      },
+    },
+
+    {
+      accessorKey: "maxFuelConsumption",
+      header: () => (
+        <p className="text-right">{t("table.thead.maxFuelConsumption")}</p>
+      ),
+      cell: ({ row }) => {
+        const data = row.original;
+        if (!data.maxFuelConsumption) {
+          return (
+            <p className="text-right">{t("table.trow.maxFuelConsumption")}</p>
+          );
+        }
+        return (
+          <UnitWithValue
+            value={data.maxFuelConsumption}
+            unit={data.unit?.name}
           />
         );
       },
+    },
+    {
+      accessorKey: "baseFuelPrice",
+      header: () => (
+        <p className="text-right">{t("table.thead.baseFuelPrice")}</p>
+      ),
       cell: ({ row }) => {
         const data = row.original;
-        if (!data.operatingHours) {
-          return t("table.trow.operatingHours");
+        if (!data.baseFuelPrice) {
+          return <p className="text-right">{t("table.trow.baseFuelPrice")}</p>;
         }
-        return data.operatingHours;
+        return (
+          <p className="text-right">{number(data.baseFuelPrice, "currency")}</p>
+        );
       },
     },
 

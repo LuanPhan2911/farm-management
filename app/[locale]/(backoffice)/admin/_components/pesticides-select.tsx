@@ -17,6 +17,8 @@ interface PesticidesSelectProps {
   notFound: string;
   error: string;
   appearance?: ComboBoxCustomAppearance;
+  valueKey?: keyof PesticideSelect;
+  labelKey?: keyof PesticideSelect;
 }
 export const PesticidesSelect = (props: PesticidesSelectProps) => {
   const tSchema = useTranslations("pesticides.schema");
@@ -35,18 +37,25 @@ export const PesticidesSelect = (props: PesticidesSelectProps) => {
       isError={isError}
       isPending={isPending}
       refetch={refetch}
-      valueKey="id"
-      labelKey="name"
+      valueKey={props.valueKey || "id"}
+      labelKey={props.labelKey || "name"}
       renderItem={(item) => (
         <SelectItemContentWithoutImage
           title={item.name}
-          description={tSchema(`type.options.${item.type}`)}
+          description={tSchema(`type.options.${item.type || "default"}`)}
         />
       )}
       noItemDetailMessage={tSchema("pesticideId.itemDetail")}
       renderItemDetail={(item) => {
         return (
           <div className="space-y-2">
+            <FormItem>
+              <FormLabel>{tSchema("type.label")}</FormLabel>
+              <InputDisabled
+                placeholder={tSchema("type.placeholder")}
+                value={tSchema(`type.options.${item.type || "default"}`)}
+              />
+            </FormItem>
             <div className="grid grid-cols-5 gap-2">
               <div className="col-span-3">
                 <FormItem>
@@ -73,16 +82,39 @@ export const PesticidesSelect = (props: PesticidesSelectProps) => {
                 </FormItem>
               </div>
             </div>
+            <div className="grid grid-cols-5 gap-2">
+              <div className="col-span-3">
+                <FormItem>
+                  <FormLabel>{tSchema("withdrawalPeriod.label")}</FormLabel>
+                  <InputDisabled
+                    placeholder={tSchema("withdrawalPeriod.placeholder")}
+                    value={item.withdrawalPeriod?.value}
+                    defaultValue={tSchema("withdrawalPeriod.value.default")}
+                  />
+                </FormItem>
+              </div>
+              <div className="col-span-2">
+                <FormItem>
+                  <FormLabel>
+                    {tSchema("recommendedDosage.unitId.label")}
+                  </FormLabel>
+                  <InputDisabled
+                    placeholder={tSchema(
+                      "recommendedDosage.unitId.placeholder"
+                    )}
+                    value={item.recommendedDosage?.unit?.name}
+                    defaultValue={tSchema("recommendedDosage.unitId.default")}
+                  />
+                </FormItem>
+              </div>
+            </div>
             <FormItem>
               <FormLabel>{tSchema("toxicityLevel.label")}</FormLabel>
               <InputDisabled
                 placeholder={tSchema("toxicityLevel.placeholder")}
-                value={
-                  item.toxicityLevel
-                    ? tSchema(`toxicityLevel.options.${item.toxicityLevel}`)
-                    : undefined
-                }
-                defaultValue={tSchema("toxicityLevel.options.default")}
+                value={tSchema(
+                  `toxicityLevel.options.${item.toxicityLevel || "default"}`
+                )}
               />
             </FormItem>
             <FormItem>

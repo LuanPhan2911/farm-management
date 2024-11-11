@@ -6,16 +6,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { UnitEditButton } from "./unit-edit-button";
-import { UnitDeleteButton } from "./unit-delete-button";
 import { MoreHorizontal } from "lucide-react";
 
-import { useTranslations } from "next-intl";
 import { UnitTable } from "@/types";
+import { DestroyButton } from "@/components/buttons/destroy-button";
+import { destroy } from "@/actions/unit";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 interface UnitsTableActionProps {
   data: UnitTable;
 }
 export const UnitsTableAction = ({ data }: UnitsTableActionProps) => {
-  const t = useTranslations("units.form");
+  const { isSuperAdmin } = useCurrentStaffRole();
+  const canDelete = isSuperAdmin;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -25,10 +27,16 @@ export const UnitsTableAction = ({ data }: UnitsTableActionProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-fit">
         <DropdownMenuItem>
-          <UnitEditButton data={data} label={t("edit.label")} />
+          <UnitEditButton data={data} />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <UnitDeleteButton data={data} label={t("destroy.label")} />
+          <DestroyButton
+            destroyFn={destroy}
+            id={data.id}
+            inltKey="units"
+            className="w-full"
+            disabled={!canDelete}
+          />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

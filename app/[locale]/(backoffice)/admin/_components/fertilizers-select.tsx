@@ -17,6 +17,8 @@ interface FertilizersSelectProps {
   notFound: string;
   error: string;
   appearance?: ComboBoxCustomAppearance;
+  valueKey?: keyof FertilizerSelect;
+  labelKey?: keyof FertilizerSelect;
 }
 export const FertilizersSelect = (props: FertilizersSelectProps) => {
   const tSchema = useTranslations("fertilizers.schema");
@@ -35,12 +37,12 @@ export const FertilizersSelect = (props: FertilizersSelectProps) => {
       isPending={isPending}
       refetch={refetch}
       data={data}
-      valueKey="id"
-      labelKey="name"
+      valueKey={props.valueKey || "id"}
+      labelKey={props.labelKey || "name"}
       renderItem={(item) => (
         <SelectItemContentWithoutImage
           title={item.name}
-          description={tSchema(`type.options.${item.type}`)}
+          description={tSchema(`type.options.${item.type || "default"}`)}
         />
       )}
       noItemDetailMessage={tSchema("fertilizerId.itemDetail")}
@@ -73,16 +75,30 @@ export const FertilizersSelect = (props: FertilizersSelectProps) => {
                 </FormItem>
               </div>
             </div>
+            <div className="grid grid-cols-2 gap-2">
+              <FormItem>
+                <FormLabel>{tSchema("type.label")}</FormLabel>
+                <InputDisabled
+                  placeholder={tSchema("type.placeholder")}
+                  value={tSchema(`type.options.${item.type || "default"}`)}
+                />
+              </FormItem>
+              <FormItem>
+                <FormLabel>{tSchema("nutrientOfNPK.label")}</FormLabel>
+                <InputDisabled
+                  placeholder={tSchema("nutrientOfNPK.placeholder")}
+                  value={item.nutrientOfNPK}
+                  defaultValue={tSchema("nutrientOfNPK.default")}
+                />
+              </FormItem>
+            </div>
             <FormItem>
               <FormLabel>{tSchema("frequencyOfUse.label")}</FormLabel>
               <InputDisabled
                 placeholder={tSchema("frequencyOfUse.placeholder")}
-                value={
-                  item.frequencyOfUse
-                    ? tSchema(`frequencyOfUse.options.${item.frequencyOfUse}`)
-                    : undefined
-                }
-                defaultValue={tSchema("frequencyOfUse.options.default")}
+                value={tSchema(
+                  `frequencyOfUse.options.${item.frequencyOfUse || "default"}`
+                )}
               />
             </FormItem>
             <FormItem>

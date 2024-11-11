@@ -10,8 +10,15 @@ import {
 import { canUpdateActivityStatus } from "@/lib/permission";
 import { db } from "@/lib/db";
 import { getObjectSortOrder } from "@/lib/utils";
-import { MaterialUsageTable, PaginatedResponse } from "@/types";
+import {
+  MaterialUsageTable,
+  MaterialUsageTableWithCost,
+  MaterialUsageTableWithTotalCost,
+  PaginatedResponse,
+  PaginatedResponseWithTotalCost,
+} from "@/types";
 import { revalidatePath } from "next/cache";
+import { activitySelect } from "./activities";
 
 type RevalidatePathParam = {
   materialId: string;
@@ -28,6 +35,7 @@ type MaterialUsageParam = {
   quantityUsed: number;
   unitId: string;
   activityId?: string | null;
+  actualPrice?: number | null;
 };
 
 export const createMaterialUsage = async (params: MaterialUsageParam) => {
@@ -80,15 +88,17 @@ export const createMaterialUsage = async (params: MaterialUsageParam) => {
 };
 type MaterialUsageUpdateParams = {
   quantityUsed: number;
+  actualPrice?: number | null;
 };
 export const updateMaterialUsage = async (
   id: string,
-  { quantityUsed: newQuantityUsed }: MaterialUsageUpdateParams
+  { quantityUsed: newQuantityUsed, actualPrice }: MaterialUsageUpdateParams
 ) => {
   const materialUsage = await db.materialUsage.findUnique({
     where: { id },
     select: {
       quantityUsed: true,
+      materialId: true,
       material: {
         select: {
           quantityInStock: true,
@@ -106,7 +116,7 @@ export const updateMaterialUsage = async (
     throw new MaterialUsageExistError();
   }
 
-  if (materialUsage.activity?.status) {
+  if (materialUsage.activity) {
     if (!canUpdateActivityStatus(materialUsage.activity.status)) {
       throw new ActivityUpdateStatusError();
     }
@@ -124,10 +134,10 @@ export const updateMaterialUsage = async (
   const [updatedUsage, updatedMaterial] = await db.$transaction([
     db.materialUsage.update({
       where: { id },
-      data: { quantityUsed: newQuantityUsed },
+      data: { quantityUsed: newQuantityUsed, actualPrice },
     }),
     db.material.update({
-      where: { id },
+      where: { id: materialUsage.materialId },
       data: {
         quantityInStock: {
           ...(quantityDifference > 0 && {
@@ -253,10 +263,25 @@ export const deleteMaterialUsage = async (id: string) => {
 };
 
 type MaterialUsageQuery = {
-  materialId: string;
   page?: number;
+  materialId: string;
   query?: string;
   orderBy?: string;
+};
+
+export const materialSelect = {
+  id: true,
+  unitId: true,
+  name: true,
+  imageUrl: true,
+  type: true,
+  quantityInStock: true,
+  basePrice: true,
+  unit: {
+    select: {
+      name: true,
+    },
+  },
 };
 export const getMaterialUsages = async ({
   page = 1,
@@ -282,17 +307,7 @@ export const getMaterialUsages = async ({
         include: {
           material: {
             select: {
-              id: true,
-              unitId: true,
-              name: true,
-              imageUrl: true,
-              type: true,
-              quantityInStock: true,
-              unit: {
-                select: {
-                  name: true,
-                },
-              },
+              ...materialSelect,
             },
           },
           unit: {
@@ -302,14 +317,7 @@ export const getMaterialUsages = async ({
           },
           activity: {
             select: {
-              id: true,
-              name: true,
-              status: true,
-              priority: true,
-              createdBy: true,
-              assignedTo: true,
-              activityDate: true,
-              note: true,
+              ...activitySelect,
             },
           },
         },
@@ -340,49 +348,18 @@ export const getMaterialUsages = async ({
     };
   }
 };
-
-export const getMaterialUsageById = async (id: string) => {
-  try {
-    return await db.materialUsage.findUnique({
-      where: { id },
-      include: {
-        material: true,
-        unit: {
-          select: {
-            name: true,
-          },
-        },
-        activity: {
-          select: {
-            id: true,
-            name: true,
-            status: true,
-            priority: true,
-            createdBy: true,
-            assignedTo: true,
-            activityDate: true,
-            note: true,
-          },
-        },
-      },
-    });
-  } catch (error) {
-    return null;
-  }
-};
-
-type MaterialUsageActivityQuery = {
-  activityId: string;
+type MaterialUsageByActivityQuery = {
   query?: string;
   orderBy?: string;
+  activityId: string;
 };
-export const getMaterialUsagesByActivityId = async ({
-  activityId,
-  orderBy,
+export const getMaterialUsagesByActivity = async ({
   query,
-}: MaterialUsageActivityQuery): Promise<MaterialUsageTable[]> => {
+  orderBy,
+  activityId,
+}: MaterialUsageByActivityQuery): Promise<MaterialUsageTableWithTotalCost> => {
   try {
-    return await db.materialUsage.findMany({
+    const data = await db.materialUsage.findMany({
       where: {
         OR: [
           {
@@ -392,6 +369,7 @@ export const getMaterialUsagesByActivityId = async ({
             activityId,
           },
         ],
+
         material: {
           name: {
             contains: query,
@@ -399,21 +377,11 @@ export const getMaterialUsagesByActivityId = async ({
           },
         },
       },
-      orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
+
       include: {
         material: {
           select: {
-            id: true,
-            unitId: true,
-            name: true,
-            imageUrl: true,
-            type: true,
-            quantityInStock: true,
-            unit: {
-              select: {
-                name: true,
-              },
-            },
+            ...materialSelect,
           },
         },
         unit: {
@@ -423,19 +391,68 @@ export const getMaterialUsagesByActivityId = async ({
         },
         activity: {
           select: {
-            id: true,
+            ...activitySelect,
+          },
+        },
+      },
+      orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
+    });
+
+    let totalCost: number = 0;
+    const dataWithCost = data.map((item) => {
+      let actualCost: number = 0;
+
+      if (
+        item.actualPrice != null &&
+        item.quantityUsed !== null &&
+        item.activityId !== null
+      ) {
+        actualCost += item.actualPrice * item.quantityUsed;
+      }
+      totalCost += actualCost;
+      return {
+        ...item,
+        actualCost,
+      };
+    });
+
+    return {
+      data: dataWithCost,
+      totalCost,
+    };
+  } catch (error) {
+    return {
+      data: [],
+      totalCost: 0,
+    };
+  }
+};
+
+export const getMaterialUsageById = async (
+  id: string
+): Promise<MaterialUsageTable | null> => {
+  try {
+    return await db.materialUsage.findUnique({
+      where: { id },
+      include: {
+        material: {
+          select: {
+            ...materialSelect,
+          },
+        },
+        unit: {
+          select: {
             name: true,
-            status: true,
-            priority: true,
-            createdBy: true,
-            assignedTo: true,
-            activityDate: true,
-            note: true,
+          },
+        },
+        activity: {
+          select: {
+            ...activitySelect,
           },
         },
       },
     });
   } catch (error) {
-    return [];
+    return null;
   }
 };

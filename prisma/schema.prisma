@@ -15,20 +15,22 @@ datasource db {
 }
 
 model Unit {
-  id             String          @id @default(uuid())
-  name           String          @unique
-  description    String?
-  type           UnitType?
-  floatUnits     FloatUnit[]
-  intUnits       IntUnit[]
-  fields         Field[]
-  soils          Soil[]
-  materials      Material[]
-  materialUsages MaterialUsage[]
+  id               String            @id @default(uuid())
+  name             String            @unique
+  description      String?
+  type             UnitType?
+  floatUnits       FloatUnit[]
+  intUnits         IntUnit[]
+  fields           Field[]
+  soils            Soil[]
+  materials        Material[]
+  materialUsages   MaterialUsage[]
+  equipmentDetails EquipmentDetail[]
+  equipmentUsages  EquipmentUsage[]
+  crops            Crop[]
 }
 
 enum UnitType {
-  AREA
   QUANTITY
   TEMPERATURE
   ATMOSPHERICPRESSURE
@@ -58,9 +60,6 @@ model FloatUnit {
 
   purchasePrices Equipment[] @relation(name: "purchasePrice")
 
-  estimatedYields Crop[] @relation("estimatedYield")
-  actualYields    Crop[] @relation("actualYield")
-
   plantFertilizerDosages PlantFertilizer[]
   plantPesticideDosages  PlantPesticide[]
 }
@@ -82,6 +81,10 @@ model IntUnit {
 
 enum CategoryType {
   PLANT
+  SEED
+  ACTIVITY
+  PLANT_STAGE
+  ENERGY
 }
 
 model Category {
@@ -133,7 +136,7 @@ model Job {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  aplicants Applicant[]
+  applicants Applicant[]
 }
 
 enum ApplicantStatus {
@@ -153,16 +156,21 @@ model Staff {
   name       String
   email      String    @unique
   imageUrl   String?
+  phone      String?
+  address    String?
   role       StaffRole
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+
+  baseHourlyWage Float?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   weatherConfirmations Weather[]
   soilConfirmations    Soil[]
   messages             Message[]
   files                File[]
-  activityCreatedBy    Activity[]       @relation(name: "createdBy")
-  activityAssignedTo   Activity[]       @relation(name: "assignedTo")
+  activityCreatedBy    Activity[]         @relation(name: "createdBy")
+  activityAssinged     ActivityAssigned[]
   equipmentUsages      EquipmentUsage[]
 }
 
@@ -176,7 +184,7 @@ model Applicant {
   note    String?
 
   jobId String
-  job   Job    @relation(fields: [jobId], references: [id])
+  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
   status ApplicantStatus @default(NEW)
 
@@ -265,26 +273,23 @@ model Field {
   id String @id @default(uuid())
 
   name     String
-  location String
-  orgId    String @unique
+  location String?
+  orgId    String?
 
   //manage width, height, area, shape
-  width  Float
-  height Float
-  area   Float
-  unitId String?
-  unit   Unit?   @relation(fields: [unitId], references: [id], onDelete: SetNull)
-  shape  String?
-
+  area     Float?
+  unitId   String?
+  unit     Unit?     @relation(fields: [unitId], references: [id], onDelete: SetNull)
+  shape    String?
   soilType SoilType?
+  note     String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  crops      Crop[]
-  weathers   Weather[]
-  soils      Soil[]
-  activities Activity[]
+  crops    Crop[]
+  weathers Weather[]
+  soils    Soil[]
 }
 
 enum Season {
@@ -292,31 +297,6 @@ enum Season {
   SUMMER
   AUTUMN
   WINTER
-}
-
-model Crop {
-  id   String @id @default(uuid())
-  name String
-
-  startDate DateTime
-  endDate   DateTime?
-
-  fieldId String
-  field   Field  @relation(fields: [fieldId], references: [id])
-
-  plantId String
-  plant   Plant  @relation(fields: [plantId], references: [id])
-
-  estimatedYieldId String?
-  estimatedYield   FloatUnit? @relation(name: "estimatedYield", fields: [estimatedYieldId], references: [id], onDelete: SetNull) // Sản lượng dự kiến
-
-  actualYieldId String?
-  actualYield   FloatUnit? @relation(name: "actualYield", fields: [actualYieldId], references: [id], onDelete: SetNull) // Sản lượng thực tế
-
-  status String? // Tình trạng mùa vụ
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model Plant {
@@ -327,12 +307,12 @@ model Plant {
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id])
 
-  growthDuration     String // Số ngày từ khi gieo trồng đến thu hoạch
+  growthDuration     String? // Số ngày từ khi gieo trồng đến thu hoạch
   season             Season? // Mùa vụ phù hợp
   idealTemperatureId String? // Nhiệt độ lý tưởng
   idealHumidityId    String? // Độ ẩm lý tưởng
   waterRequirementId String? // Lượng nước cần thiết
-  fertilizerType     FertilizerType // Loại phân bón nên sử dụng
+  fertilizerType     FertilizerType? // Loại phân bón nên sử dụng
 
   // Liên kết với các bảng khác
   idealTemperature FloatUnit? @relation(name: "idealTemperature", fields: [idealTemperatureId], references: [id], onDelete: SetNull)
@@ -364,9 +344,9 @@ model Fertilizer {
   id String @id @default(uuid())
 
   name String
-  type FertilizerType
+  type FertilizerType?
 
-  nutrientOfNPK String // NPK ratio
+  nutrientOfNPK String? // NPK ratio
   manufacturer  String?
 
   recommendedDosageId String? // Liều lượng khuyến nghị
@@ -397,7 +377,7 @@ model Pesticide {
   id String @id @default(uuid())
 
   name         String
-  type         PesticideType
+  type         PesticideType?
   ingredient   String?
   manufacturer String?
 
@@ -493,12 +473,10 @@ model Equipment {
   id              String        @id @default(uuid())
   name            String
   type            EquipmentType
-  brand           String
-  purchaseDate    DateTime
+  brand           String?
+  purchaseDate    DateTime?
   purchasePriceId String?
   purchasePrice   FloatUnit?    @relation(name: "purchasePrice", fields: [purchasePriceId], references: [id], onDelete: SetNull)
-  fuelConsumption Float? // Lượng nhiên liệu tiêu thụ
-  energyType      String? // Loại năng lượng sử dụng
   description     String?
   imageUrl        String?
 
@@ -521,8 +499,8 @@ model EquipmentDetail {
   status EquipmentStatus @default(AVAILABLE)
 
   lastMaintenanceDate DateTime?
-  maintenanceSchedule String?
-  operatingHours      Int? // Số giờ hoạt động
+  operatingHours      Float     @default(0) // Số giờ hoạt động
+  maxOperatingHours   Float
   location            String?
 
   equipmentId String
@@ -531,6 +509,12 @@ model EquipmentDetail {
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   equipmentUsages EquipmentUsage[]
+
+  maxFuelConsumption Float?
+  unitId             String?
+  unit               Unit?   @relation(fields: [unitId], references: [id])
+  energyType         String?
+  baseFuelPrice      Float?
 }
 
 model EquipmentUsage {
@@ -538,7 +522,7 @@ model EquipmentUsage {
   activityId        String?
   equipmentDetailId String
   usageStartTime    DateTime // Start time of equipment usage
-  duration          String
+  duration          Float // hour usage
   operatorId        String?
   note              String? // Additional notes
 
@@ -547,7 +531,13 @@ model EquipmentUsage {
 
   equipmentDetail EquipmentDetail @relation(fields: [equipmentDetailId], references: [id])
   activity        Activity?       @relation(fields: [activityId], references: [id], onDelete: SetNull)
-  operator        Staff?          @relation(fields: [operatorId], references: [id]) // Operator
+  operator        Staff?          @relation(fields: [operatorId], references: [id], onDelete: SetNull) // Operator
+
+  fuelConsumption Float?
+  unitId          String?
+  unit            Unit?   @relation(fields: [unitId], references: [id])
+  fuelPrice       Float?
+  rentalPrice     Float?
 }
 
 enum MaterialType {
@@ -565,8 +555,10 @@ model Material {
   quantityInStock Float // Current stock quantity
   type            MaterialType
   unitId          String
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
+
+  basePrice Float?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   materialUsages MaterialUsage[] // Relation to usage records
   unit           Unit            @relation(fields: [unitId], references: [id])
@@ -577,6 +569,7 @@ model MaterialUsage {
   activityId   String?
   materialId   String
   quantityUsed Float // Quantity used in the activity
+  actualPrice  Float?
   unitId       String
 
   createdAt DateTime @default(now())
@@ -610,26 +603,79 @@ enum ActivityPriority {
   URGENT
 }
 
+enum CropStatus {
+  NEW
+  MEDIUM
+  MATURE
+  HARVEST
+  FINISH
+}
+
+model Crop {
+  id   String @id @default(uuid())
+  name String
+
+  startDate DateTime
+  endDate   DateTime?
+
+  fieldId String
+  field   Field  @relation(fields: [fieldId], references: [id])
+
+  plantId String
+  plant   Plant  @relation(fields: [plantId], references: [id])
+
+  unitId         String
+  unit           Unit   @relation(fields: [unitId], references: [id])
+  estimatedYield Float
+  actualYield    Float?
+
+  status CropStatus @default(NEW) // Tình trạng mùa vụ
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  activities Activity[]
+}
+
+model ActivityAssigned {
+  id         String   @id @default(uuid())
+  activityId String
+  staffId    String
+  assignedAt DateTime @default(now())
+
+  actualWork Float? // actual hour working
+  hourlyWage Float? // hour wage
+
+  activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  staff    Staff    @relation(fields: [staffId], references: [id], onDelete: Cascade)
+
+  @@unique([activityId, staffId])
+}
+
 model Activity {
-  id                String           @id @default(uuid())
-  name              String
-  description       String?
-  fieldId           String
-  activityDate      DateTime // Scheduled or actual date of the activity
-  status            ActivityStatus   @default(NEW)
-  priority          ActivityPriority @default(LOW) // Enum: "Low", "Medium", "High", "Urgent"
-  estimatedDuration String? // Estimated duration in hours
-  actualDuration    String? // Actual duration in hours
-  note              String?
-  createdById       String
-  assignedToId      String
+  id           String           @id @default(uuid())
+  name         String
+  description  String?
+  cropId       String
+  activityDate DateTime // Scheduled or actual date of the activity
+  status       ActivityStatus   @default(NEW)
+  priority     ActivityPriority @default(LOW) // Enum: "Low", "Medium", "High", "Urgent"
+
+  estimatedDuration Float // Estimated duration in hours
+  actualDuration    Float? // Actual duration in hours
+
+  createdById String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   equipmentUseds EquipmentUsage[] // Relation to equipment used
   materialUseds  MaterialUsage[]
-  createdBy      Staff            @relation(name: "createdBy", fields: [createdById], references: [id])
-  assignedTo     Staff            @relation(name: "assignedTo", fields: [assignedToId], references: [id])
-  field          Field            @relation(fields: [fieldId], references: [id])
+  createdBy      Staff              @relation(name: "createdBy", fields: [createdById], references: [id])
+  crop           Crop               @relation(fields: [cropId], references: [id])
+  assignedTo     ActivityAssigned[]
+
+  totalStaffCost     Float?
+  totalMaterialCost  Float?
+  totalEquipmentCost Float?
 }

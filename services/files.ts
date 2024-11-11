@@ -2,11 +2,12 @@ import { LIMIT } from "@/configs/paginationConfig";
 import { db } from "@/lib/db";
 import { getObjectSortOrder } from "@/lib/utils";
 import { FileSelect, FileWithOwner, PaginatedResponse } from "@/types";
+import { File } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 import { UTApi } from "uploadthing/server";
-export const utapi = new UTApi({
-  defaultKeyType: "fileKey",
-  apiKey: process.env.UPLOADTHING_SECRET,
-});
+import { getCurrentStaff } from "./staffs";
+import { addDays } from "date-fns";
+export const utapi = new UTApi();
 type FileParams = {
   name: string;
   type: string;
@@ -16,7 +17,14 @@ type FileParams = {
   isPublic?: boolean;
   orgId?: string | null;
 };
-
+export const revalidatePathFile = (file: File) => {
+  revalidatePath("/admin/my-files");
+  revalidatePath("/admin/public-files");
+  revalidatePath("/admin/messages/files");
+  if (file.orgId) {
+    revalidatePath(`/admin/organizations/detail/${file.orgId}/files`);
+  }
+};
 export const createFile = async (params: FileParams) => {
   return await db.file.create({
     data: {
@@ -25,7 +33,8 @@ export const createFile = async (params: FileParams) => {
   });
 };
 type FileUrlParams = {
-  name?: string;
+  name?: string | null;
+  type?: string | null;
   url: string;
   ownerId: string;
   isPublic?: boolean;
@@ -36,16 +45,17 @@ export const createFileFromUrl = async (params: FileUrlParams) => {
   if (uploadedFile.error) {
     throw new Error("Fail create file uploadthing");
   }
-  const { ownerId, isPublic, orgId, name: initialName } = params;
-  const { key, type, url, name: defaultName } = uploadedFile.data;
+  const { ownerId, isPublic, orgId, name: initName, type: initType } = params;
+  const { key, url, name: defaultName, type: defaultType } = uploadedFile.data;
+
   return await createFile({
     ownerId,
     isPublic,
     orgId,
     key,
-    type,
+    name: initName || defaultName,
+    type: initType || defaultType,
     url,
-    name: initialName ? initialName : defaultName,
   });
 };
 export const updateFileDeleted = async (
@@ -82,6 +92,9 @@ export const deleteManyFileDeleted = async () => {
   const fileKeys = await db.file.findMany({
     where: {
       deleted: true,
+      deletedAt: {
+        lte: addDays(new Date(), -30),
+      },
     },
     select: {
       key: true,
@@ -153,59 +166,8 @@ export const getMessageFiles = async ({
             mode: "insensitive",
           },
           deleted: false,
-        },
-      }),
-    ]);
-    const totalPage = Math.ceil(count / LIMIT);
-    return {
-      data: files,
-      totalPage,
-    };
-  } catch (error) {
-    return {
-      data: [],
-      totalPage: 0,
-    };
-  }
-};
-export const getFilesByOrgId = async ({
-  page = 1,
-  orgId,
-  query,
-  orderBy,
-}: {
-  page?: number;
-  orgId: string;
-  query?: string;
-  orderBy?: string;
-}): Promise<PaginatedResponse<FileWithOwner>> => {
-  try {
-    const [files, count] = await db.$transaction([
-      db.file.findMany({
-        take: LIMIT,
-        skip: (page - 1) * LIMIT,
-        where: {
-          orgId,
-          isPublic: false,
-          deleted: false,
-          name: {
-            contains: query,
-            mode: "insensitive",
-          },
-        },
-        include: {
-          owner: true,
-        },
-        orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
-      }),
-      db.file.count({
-        where: {
-          orgId,
-          isPublic: false,
-          deleted: false,
-          name: {
-            contains: query,
-            mode: "insensitive",
+          messageId: {
+            not: null,
           },
         },
       }),
@@ -276,24 +238,25 @@ export const getPublicFiles = async ({
   }
 };
 export const getFilesByOwnerId = async ({
-  ownerId,
   page = 1,
   orderBy,
   query,
 }: {
   page?: number;
-  ownerId: string;
   orderBy?: string;
   query?: string;
 }): Promise<PaginatedResponse<FileWithOwner>> => {
   try {
+    const currentStaff = await getCurrentStaff();
+    if (!currentStaff) {
+      throw new Error("Unauthorized");
+    }
     const [files, count] = await db.$transaction([
       db.file.findMany({
         take: LIMIT,
         skip: (page - 1) * LIMIT,
         where: {
-          ownerId,
-          orgId: null,
+          ownerId: currentStaff.id,
           messageId: null,
           isPublic: false,
           deleted: false,
@@ -309,8 +272,7 @@ export const getFilesByOwnerId = async ({
       }),
       db.file.count({
         where: {
-          ownerId,
-          orgId: null,
+          ownerId: currentStaff.id,
           message: null,
           isPublic: false,
           deleted: false,
@@ -335,23 +297,25 @@ export const getFilesByOwnerId = async ({
 };
 // deleted files contain deleted from my-files, message files from org or all
 export const getFilesDeletedByOwnerId = async ({
-  ownerId,
   page = 1,
   orderBy,
   query,
 }: {
   page?: number;
-  ownerId: string;
   orderBy?: string;
   query?: string;
 }): Promise<PaginatedResponse<FileWithOwner>> => {
   try {
+    const currentStaff = await getCurrentStaff();
+    if (!currentStaff) {
+      throw new Error("Unauthorized");
+    }
     const [files, count] = await db.$transaction([
       db.file.findMany({
         take: LIMIT,
         skip: (page - 1) * LIMIT,
         where: {
-          ownerId,
+          ownerId: currentStaff.id,
           deleted: true,
           name: {
             contains: query,
@@ -365,7 +329,7 @@ export const getFilesDeletedByOwnerId = async ({
       }),
       db.file.count({
         where: {
-          ownerId,
+          ownerId: currentStaff.id,
           orgId: null,
           isPublic: false,
           deleted: true,

@@ -24,6 +24,7 @@ const EquipmentDetailPage = async ({ params }: EquipmentDetailPageProps) => {
   if (!data) {
     notFound();
   }
+
   return (
     <div className="flex flex-col gap-4 py-4 h-full">
       <Card>

@@ -17,7 +17,7 @@ export const POST = async (
   try {
     const authorization = req.headers.get("authorization");
     if (!authorization || authorization !== process.env.APP_API_KEY) {
-      return NextResponse.json("Invalid App API key", { status: 401 });
+      return new NextResponse("Invalid App API key", { status: 401 });
     }
     const tSchema = await getTranslations("soils.schema");
     const paramsSchema = SoilSchema(tSchema);

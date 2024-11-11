@@ -1,7 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-
 import { EquipmentSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
@@ -27,34 +25,9 @@ import { SelectOptions } from "@/components/form/select-options";
 import { DatePicker } from "@/components/form/date-picker";
 import { UnitsSelect } from "../../../_components/units-select";
 import { UploadImage } from "@/components/form/upload-image";
-import { Link } from "@/navigation";
-import { Edit } from "lucide-react";
 
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
-
-interface EquipmentEditButtonProps {
-  data: EquipmentTable;
-  label: string;
-}
-export const EquipmentEditButton = ({
-  data,
-  label,
-}: EquipmentEditButtonProps) => {
-  return (
-    <Link
-      href={`/admin/equipments/detail/${data.id}`}
-      className="w-full"
-      onClick={(e) => {
-        e.stopPropagation();
-      }}
-    >
-      <Button variant={"edit"} size={"sm"} className="w-full">
-        <Edit className="w-4 h-4 mr-2" />
-        {label}
-      </Button>
-    </Link>
-  );
-};
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface EquipmentEditFormProps {
   data: EquipmentTable;
@@ -67,6 +40,8 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
   const params = useParams<{
     equipmentId: string;
   }>();
+
+  const { isOnlyAdmin: canEdit } = useCurrentStaffRole();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -103,9 +78,9 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
               <FormLabel>{tSchema("imageUrl.label")}</FormLabel>
               <FormControl>
                 <UploadImage
-                  defaultValue={field.value}
                   onChange={field.onChange}
-                  disabled={isPending}
+                  disabled={isPending || !canEdit}
+                  defaultValue={field.value}
                 />
               </FormControl>
               <FormMessage />
@@ -121,29 +96,9 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
               <FormControl>
                 <Input
                   placeholder={tSchema("name.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
-                  disabled={isPending}
-                />
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="brand"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{tSchema("brand.label")}</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder={tSchema("brand.placeholder")}
-                  value={field.value || undefined}
-                  onChange={field.onChange}
-                  disabled={isPending}
+                  disabled={isPending || !canEdit}
                 />
               </FormControl>
 
@@ -169,7 +124,7 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
                       };
                     })}
                     defaultValue={field.value}
-                    disabled={isPending}
+                    disabled={isPending || !canEdit}
                   />
                 </FormControl>
 
@@ -186,8 +141,8 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
                 <FormControl>
                   <DatePicker
                     onChange={field.onChange}
-                    value={field.value}
-                    disabled={isPending}
+                    value={field.value ?? undefined}
+                    disabled={isPending || !canEdit}
                     placeholder={tSchema("purchaseDate.placeholder")}
                   />
                 </FormControl>
@@ -197,44 +152,20 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
             )}
           />
         </div>
-        <div className="grid grid-cols-4 gap-2">
-          <div className="col-span-3">
-            <FormField
-              control={form.control}
-              name="purchasePrice.value"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("purchasePrice.label")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={tSchema("purchasePrice.placeholder")}
-                      value={field.value || undefined}
-                      onChange={field.onChange}
-                      disabled={isPending}
-                      type="number"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+
+        <div className="grid lg:grid-cols-2 gap-2">
           <FormField
             control={form.control}
-            name="purchasePrice.unitId"
+            name="brand"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{tSchema("purchasePrice.unitId.label")}</FormLabel>
+                <FormLabel>{tSchema("brand.label")}</FormLabel>
                 <FormControl>
-                  <UnitsSelect
+                  <Input
+                    placeholder={tSchema("brand.placeholder")}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
-                    placeholder={tSchema("purchasePrice.unitId.placeholder")}
-                    unitType={UnitType.MONEY}
-                    disabled={isPending}
-                    className="w-full"
-                    error={tSchema("purchasePrice.unitId.error")}
-                    notFound={tSchema("purchasePrice.unitId.notFound")}
-                    defaultValue={field.value}
+                    disabled={isPending || !canEdit}
                   />
                 </FormControl>
 
@@ -242,7 +173,54 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
               </FormItem>
             )}
           />
+          <div className="grid grid-cols-4 gap-2">
+            <div className="col-span-3">
+              <FormField
+                control={form.control}
+                name="purchasePrice.value"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("purchasePrice.label")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={tSchema("purchasePrice.placeholder")}
+                        value={field.value ?? undefined}
+                        onChange={field.onChange}
+                        disabled={isPending || !canEdit}
+                        type="number"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <FormField
+              control={form.control}
+              name="purchasePrice.unitId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("purchasePrice.unitId.label")}</FormLabel>
+                  <FormControl>
+                    <UnitsSelect
+                      onChange={field.onChange}
+                      placeholder={tSchema("purchasePrice.unitId.placeholder")}
+                      unitType={UnitType.MONEY}
+                      disabled={isPending || !canEdit}
+                      className="w-full"
+                      error={tSchema("purchasePrice.unitId.error")}
+                      notFound={tSchema("purchasePrice.unitId.notFound")}
+                      defaultValue={field.value}
+                    />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
+
         <FormField
           control={form.control}
           name="description"
@@ -252,9 +230,9 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
               <FormControl>
                 <Textarea
                   placeholder={tSchema("description.placeholder")}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
-                  disabled={isPending}
+                  disabled={isPending || !canEdit}
                 />
               </FormControl>
 
@@ -263,48 +241,10 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
           )}
         />
 
-        <div className="grid lg:grid-cols-2 gap-2">
-          <FormField
-            control={form.control}
-            name="energyType"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("energyType.label")}</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={tSchema("energyType.placeholder")}
-                    value={field.value || undefined}
-                    onChange={field.onChange}
-                    disabled={isPending}
-                  />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="fuelConsumption"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("fuelConsumption.label")}</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={tSchema("fuelConsumption.placeholder")}
-                    value={field.value || undefined}
-                    onChange={field.onChange}
-                    disabled={isPending}
-                    type="number"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <DynamicDialogFooter disabled={isPending} closeButton={false} />
+        <DynamicDialogFooter
+          disabled={isPending || !canEdit}
+          closeButton={false}
+        />
       </form>
     </Form>
   );

@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { checkRole } from "@/lib/role";
 
 interface JobEditPageProps {
   params: {
@@ -32,7 +33,8 @@ export async function generateStaticParams() {
 const JobEditPage = async ({ params }: JobEditPageProps) => {
   const data = await getJobById(params!.jobId);
   const t = await getTranslations("jobs.form.edit");
-  if (!data) {
+
+  if (!data || !checkRole("superadmin")) {
     return notFound();
   }
   return (

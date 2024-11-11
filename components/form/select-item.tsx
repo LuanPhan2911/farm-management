@@ -1,11 +1,12 @@
 "use client";
 
+import { ReactNode } from "react";
 import { UserAvatar } from "../user-avatar";
 
 interface SelectItemProps {
   imageUrl: string | null;
   title: string;
-  description?: string | null | undefined;
+  description?: string | null | undefined | ReactNode;
 }
 
 export const SelectItemContent = ({
@@ -14,19 +15,15 @@ export const SelectItemContent = ({
   description,
 }: SelectItemProps) => {
   return (
-    <div className="flex items-center p-1 gap-x-2">
-      <UserAvatar
-        src={imageUrl || undefined}
-        className="rounded-full"
-        size={"default"}
-      />
-      <div className="w-full">
+    <div className="flex items-center gap-x-2">
+      <UserAvatar src={imageUrl || undefined} className="rounded-full" />
+      <div className="flex flex-col gap-y-1">
         <div className="text-sm font-medium leading-none text-start">
           {title}
         </div>
-        <p className="text-sm text-muted-foreground text-start">
+        <div className="text-sm text-muted-foreground text-start">
           {description}
-        </p>
+        </div>
       </div>
     </div>
   );
@@ -40,7 +37,7 @@ export const SelectItemContentWithoutImage = ({
   description,
 }: SelectItemContentWithoutImageProps) => {
   return (
-    <div className="w-full flex flex-col p-1 gap-y-1">
+    <div className="w-full flex flex-col gap-y-1">
       <div className="text-sm font-medium leading-none text-start">{title}</div>
       <p className="text-xs text-muted-foreground text-start">{description}</p>
     </div>

@@ -3,12 +3,10 @@ import {
   DynamicDialog,
   DynamicDialogFooter,
 } from "@/components/dialog/dynamic-dialog";
-import { Button } from "@/components/ui/button";
 import { FertilizerSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FertilizerType, Frequency, UnitType } from "@prisma/client";
-import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -28,38 +26,32 @@ import { FertilizerTable } from "@/types";
 import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { edit } from "@/actions/fertilizer";
 import { Textarea } from "@/components/ui/textarea";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { EditButton } from "@/components/buttons/edit-button";
 
 interface FertilizerEditButtonProps {
   data: FertilizerTable;
-  label: string;
 }
 
-export const FertilizerEditButton = ({
-  data,
-  label,
-}: FertilizerEditButtonProps) => {
-  const { onOpen } = useDialog();
+export const FertilizerEditButton = ({ data }: FertilizerEditButtonProps) => {
+  const { isOnlyAdmin: canEdit } = useCurrentStaffRole();
   return (
-    <Button
+    <EditButton
+      inltKey="fertilizers"
+      type="fertilizer.edit"
       className="w-full"
-      onClick={(e) => {
-        e.stopPropagation();
-        onOpen("fertilizer.edit", {
-          fertilizer: data,
-        });
+      data={{
+        fertilizer: data,
       }}
-      size={"sm"}
-      variant={"edit"}
-    >
-      <Edit className="w-4 h-4 mr-2" />
-      {label}
-    </Button>
+      disabled={!canEdit}
+    />
   );
 };
 export const FertilizerEditDialog = () => {
   const { isOpen, type, data, onClose } = useDialog();
   const isOpenDialog = isOpen && type === "fertilizer.edit";
 
+  const { isOnlyAdmin: canEdit } = useCurrentStaffRole();
   const tSchema = useTranslations("fertilizers.schema");
   const t = useTranslations("fertilizers");
   const formSchema = FertilizerSchema(tSchema);
@@ -99,47 +91,50 @@ export const FertilizerEditDialog = () => {
       isOpen={isOpenDialog}
       title={t("form.edit.title")}
       description={t("form.edit.description")}
-      className="max-w-4xl overflow-y-auto max-h-screen"
+      className="max-w-6xl"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("name.label")}</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={tSchema("name.placeholder")}
-                    value={field.value || undefined}
-                    onChange={field.onChange}
-                    disabled={isPending}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="nutrientOfNPK"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("nutrientOfNPK.label")}</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={tSchema("nutrientOfNPK.placeholder")}
-                    value={field.value || undefined}
-                    onChange={field.onChange}
-                    disabled={isPending}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <div className="grid lg:grid-cols-2 gap-2">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("name.label")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={tSchema("name.placeholder")}
+                      value={field.value ?? undefined}
+                      onChange={field.onChange}
+                      disabled={isPending || !canEdit}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="manufacturer"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("manufacturer.label")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={tSchema("manufacturer.placeholder")}
+                      value={field.value ?? undefined}
+                      onChange={field.onChange}
+                      disabled={isPending || !canEdit}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="grid lg:grid-cols-3 gap-2">
             <FormField
               control={form.control}
               name="type"
@@ -157,7 +152,31 @@ export const FertilizerEditDialog = () => {
                         };
                       })}
                       defaultValue={field.value}
-                      disabled={isPending}
+                      disabled={isPending || !canEdit}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="frequencyOfUse"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("frequencyOfUse.label")}</FormLabel>
+                  <FormControl>
+                    <SelectOptions
+                      placeholder={tSchema("frequencyOfUse.placeholder")}
+                      onChange={field.onChange}
+                      options={Object.keys(Frequency).map((item) => {
+                        return {
+                          label: tSchema(`frequencyOfUse.options.${item}`),
+                          value: item,
+                        };
+                      })}
+                      defaultValue={field.value}
+                      disabled={isPending || !canEdit}
                     />
                   </FormControl>
                   <FormMessage />
@@ -177,9 +196,9 @@ export const FertilizerEditDialog = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("recommendedDosage.placeholder")}
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
-                          disabled={isPending}
+                          disabled={isPending || !canEdit}
                           type="number"
                         />
                       </FormControl>
@@ -203,7 +222,7 @@ export const FertilizerEditDialog = () => {
                           "recommendedDosage.unitId.placeholder"
                         )}
                         unitType={UnitType.VOLUME}
-                        disabled={isPending}
+                        disabled={isPending || !canEdit}
                         className="w-full"
                         error={tSchema("recommendedDosage.unitId.error")}
                         notFound={tSchema("recommendedDosage.unitId.notFound")}
@@ -217,7 +236,26 @@ export const FertilizerEditDialog = () => {
               />
             </div>
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+          <div className="grid lg:grid-cols-2 gap-2">
+            <FormField
+              control={form.control}
+              name="nutrientOfNPK"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tSchema("nutrientOfNPK.label")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={tSchema("nutrientOfNPK.placeholder")}
+                      value={field.value ?? undefined}
+                      onChange={field.onChange}
+                      disabled={isPending || !canEdit}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="applicationMethod"
@@ -227,34 +265,9 @@ export const FertilizerEditDialog = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("applicationMethod.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
-                      disabled={isPending}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="frequencyOfUse"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tSchema("frequencyOfUse.label")}</FormLabel>
-                  <FormControl>
-                    <SelectOptions
-                      placeholder={tSchema("frequencyOfUse.placeholder")}
-                      onChange={field.onChange}
-                      defaultValue={field.value}
-                      options={Object.keys(Frequency).map((item) => {
-                        return {
-                          label: tSchema(`frequencyOfUse.options.${item}`),
-                          value: item,
-                        };
-                      })}
-                      disabled={isPending}
+                      disabled={isPending || !canEdit}
                     />
                   </FormControl>
                   <FormMessage />
@@ -272,9 +285,9 @@ export const FertilizerEditDialog = () => {
                 <div className="flex gap-x-2">
                   <FormControl>
                     <Textarea
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
-                      disabled={isPending}
+                      disabled={isPending || !canEdit}
                       placeholder={tSchema("composition.placeholder")}
                     />
                   </FormControl>
@@ -284,25 +297,7 @@ export const FertilizerEditDialog = () => {
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="manufacturer"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("manufacturer.label")}</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={tSchema("manufacturer.placeholder")}
-                    value={field.value || undefined}
-                    onChange={field.onChange}
-                    disabled={isPending}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <DynamicDialogFooter disabled={isPending} />
+          <DynamicDialogFooter disabled={isPending || !canEdit} />
         </form>
       </Form>
     </DynamicDialog>

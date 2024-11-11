@@ -25,6 +25,8 @@ import { SoilType, UnitType } from "@prisma/client";
 import { SelectOptions } from "@/components/form/select-options";
 
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
+import { useAuth } from "@clerk/nextjs";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface FieldEditFormProps {
   data: FieldTable;
@@ -32,9 +34,14 @@ interface FieldEditFormProps {
 export const FieldEditForm = ({ data }: FieldEditFormProps) => {
   const tSchema = useTranslations("fields.schema");
   const formSchema = FieldSchema(tSchema);
-  const t = useTranslations("fields");
   const [isPending, startTransition] = useTransition();
+  const { isSuperAdmin } = useCurrentStaffRole();
+  const { has, orgId } = useAuth();
+  //edit field: manage field org || (field.orgId=null && isSuperadmin)
 
+  const hasPermission =
+    has?.({ permission: "org:field:manage" }) && data.orgId === orgId;
+  const canManageField = hasPermission || (!data.orgId && isSuperAdmin);
   const params = useParams<{
     fieldId: string;
   }>();
@@ -65,47 +72,50 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4 max-w-5xl"
+        className="space-y-4 max-w-6xl"
       >
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{tSchema("name.label")}</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder={tSchema("name.placeholder")}
-                  value={field.value || undefined}
-                  onChange={field.onChange}
-                  disabled={isPending}
-                />
-              </FormControl>
+        <div className="grid lg:grid-cols-2 gap-2">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("name.label")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={tSchema("name.placeholder")}
+                    value={field.value ?? undefined}
+                    onChange={field.onChange}
+                    disabled={isPending || !canManageField}
+                  />
+                </FormControl>
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="location"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{tSchema("location.label")}</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder={tSchema("name.placeholder")}
-                  value={field.value || undefined}
-                  onChange={field.onChange}
-                  disabled={isPending}
-                />
-              </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="location"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("location.label")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={tSchema("name.placeholder")}
+                    value={field.value ?? undefined}
+                    onChange={field.onChange}
+                    disabled={isPending || !canManageField}
+                  />
+                </FormControl>
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="orgId"
@@ -114,12 +124,12 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
                 <FormLabel>{tSchema("orgId.label")}</FormLabel>
                 <FormControl>
                   <OrgsSelect
-                    defaultValue={field.value}
+                    defaultValue={field.value ?? undefined}
                     onChange={field.onChange}
                     error={tSchema("orgId.error")}
                     placeholder={tSchema("orgId.placeholder")}
                     notFound={tSchema("orgId.notFound")}
-                    disabled={isPending}
+                    disabled={isPending || !canManageField}
                     appearance={{
                       button: "lg:w-full",
                       content: "lg:w-[480px]",
@@ -131,6 +141,33 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="soilType"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("soilType.label")}</FormLabel>
+                <FormControl>
+                  <SelectOptions
+                    placeholder={tSchema("soilType.placeholder")}
+                    onChange={field.onChange}
+                    options={Object.values(SoilType).map((item) => {
+                      return {
+                        label: tSchema(`soilType.options.${item}`),
+                        value: item,
+                      };
+                    })}
+                    disabled={isPending || !canManageField}
+                    defaultValue={field.value}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="unitId"
@@ -145,51 +182,7 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
                     placeholder={tSchema("unitId.placeholder")}
                     error={tSchema("unitId.error")}
                     notFound={tSchema("unitId.notFound")}
-                    disabled={isPending}
-                  />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="grid grid-cols-3 gap-4">
-          <FormField
-            control={form.control}
-            name="height"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("height.label")}</FormLabel>
-
-                <FormControl>
-                  <Input
-                    value={field.value || undefined}
-                    onChange={field.onChange}
-                    type="number"
-                    placeholder={tSchema("height.placeholder")}
-                    disabled={isPending}
-                  />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="width"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("width.label")}</FormLabel>
-
-                <FormControl>
-                  <Input
-                    value={field.value || undefined}
-                    onChange={field.onChange}
-                    type="number"
-                    placeholder={tSchema("width.placeholder")}
-                    disabled={isPending}
+                    disabled={isPending || !canManageField}
                   />
                 </FormControl>
 
@@ -206,11 +199,11 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
 
                 <FormControl>
                   <Input
-                    value={field.value || undefined}
+                    value={field.value ?? undefined}
                     onChange={field.onChange}
                     type="number"
                     placeholder={tSchema("area.placeholder")}
-                    disabled={isPending}
+                    disabled={isPending || !canManageField}
                   />
                 </FormControl>
 
@@ -219,52 +212,51 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
             )}
           />
         </div>
-        <FormField
-          control={form.control}
-          name="shape"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{tSchema("shape.label")}</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder={tSchema("shape.placeholder")}
-                  value={field.value || undefined}
-                  onChange={field.onChange}
-                  disabled={isPending}
-                />
-              </FormControl>
+        <div className="grid lg:grid-cols-2 gap-2">
+          <FormField
+            control={form.control}
+            name="shape"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("shape.label")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={tSchema("shape.placeholder")}
+                    value={field.value ?? undefined}
+                    onChange={field.onChange}
+                    disabled={isPending || !canManageField}
+                  />
+                </FormControl>
 
-              <FormMessage />
-            </FormItem>
-          )}
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="note"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("note.label")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={tSchema("note.placeholder")}
+                    value={field.value ?? undefined}
+                    onChange={field.onChange}
+                    disabled={isPending || !canManageField}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <DynamicDialogFooter
+          disabled={isPending || !canManageField}
+          closeButton={false}
         />
-        <FormField
-          control={form.control}
-          name="soilType"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{tSchema("soilType.label")}</FormLabel>
-              <FormControl>
-                <SelectOptions
-                  placeholder={tSchema("soilType.placeholder")}
-                  onChange={field.onChange}
-                  options={Object.values(SoilType).map((item) => {
-                    return {
-                      label: tSchema(`soilType.options.${item}`),
-                      value: item,
-                    };
-                  })}
-                  disabled={isPending}
-                  defaultValue={field.value}
-                />
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <DynamicDialogFooter disabled={isPending} closeButton={false} />
       </form>
     </Form>
   );

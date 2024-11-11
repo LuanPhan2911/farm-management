@@ -3,12 +3,10 @@ import {
   DynamicDialog,
   DynamicDialogFooter,
 } from "@/components/dialog/dynamic-dialog";
-import { Button } from "@/components/ui/button";
 import { PlantPesticideSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UnitType } from "@prisma/client";
-import { Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -28,32 +26,28 @@ import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units
 import { edit } from "@/actions/plant-pesticide";
 import { Textarea } from "@/components/ui/textarea";
 import { PesticidesSelect } from "@/app/[locale]/(backoffice)/admin/_components/pesticides-select";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { EditButton } from "@/components/buttons/edit-button";
+import { CategoriesSelect } from "@/app/[locale]/(backoffice)/admin/_components/categories-select";
 
 interface PlantPesticideEditButtonProps {
   data: PlantPesticideTable;
-  label: string;
 }
 
 export const PlantPesticideEditButton = ({
   data,
-  label,
 }: PlantPesticideEditButtonProps) => {
-  const { onOpen } = useDialog();
+  const { isOnlyAdmin: canEdit } = useCurrentStaffRole();
   return (
-    <Button
+    <EditButton
+      inltKey="plantPesticides"
+      type="plantPesticide.edit"
       className="w-full"
-      onClick={(e) => {
-        e.stopPropagation();
-        onOpen("plantPesticide.edit", {
-          plantPesticide: data,
-        });
+      data={{
+        plantPesticide: data,
       }}
-      size={"sm"}
-      variant={"edit"}
-    >
-      <Edit className="w-4 h-4 mr-2" />
-      {label}
-    </Button>
+      disabled={!canEdit}
+    />
   );
 };
 export const PlantPesticideEditDialog = () => {
@@ -64,6 +58,7 @@ export const PlantPesticideEditDialog = () => {
   const t = useTranslations("plantPesticides");
   const formSchema = PlantPesticideSchema(tSchema);
 
+  const { isOnlyAdmin: canEdit } = useCurrentStaffRole();
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -116,7 +111,7 @@ export const PlantPesticideEditDialog = () => {
                         placeholder={tSchema("pesticideId.placeholder")}
                         error={tSchema("pesticideId.error")}
                         notFound={tSchema("pesticideId.notFound")}
-                        disabled={isPending}
+                        disabled={isPending || !canEdit}
                         onChange={field.onChange}
                         appearance={{
                           button: "lg:w-full h-12",
@@ -137,12 +132,26 @@ export const PlantPesticideEditDialog = () => {
                   <FormItem>
                     <FormLabel>{tSchema("stage.label")}</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder={tSchema("stage.placeholder")}
-                        value={field.value || undefined}
-                        onChange={field.onChange}
-                        disabled={isPending}
-                      />
+                      <div className="grid grid-cols-4 gap-2">
+                        <div className="col-span-3">
+                          <Input
+                            placeholder={tSchema("stage.placeholder")}
+                            value={field.value ?? undefined}
+                            onChange={field.onChange}
+                            disabled={isPending || !canEdit}
+                          />
+                        </div>
+                        <CategoriesSelect
+                          error={tSchema("stage.select.error")}
+                          notFound={tSchema("stage.select.notFound")}
+                          placeholder={tSchema("stage.select.placeholder")}
+                          type="PLANT_STAGE"
+                          disabled={isPending || !canEdit}
+                          onChange={field.onChange}
+                          valueKey="name"
+                          hidden
+                        />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -160,9 +169,9 @@ export const PlantPesticideEditDialog = () => {
                         <FormControl>
                           <Input
                             placeholder={tSchema("dosage.placeholder")}
-                            value={field.value || undefined}
+                            value={field.value ?? undefined}
                             onChange={field.onChange}
-                            disabled={isPending}
+                            disabled={isPending || !canEdit}
                             type="number"
                           />
                         </FormControl>
@@ -182,7 +191,7 @@ export const PlantPesticideEditDialog = () => {
                           onChange={field.onChange}
                           placeholder={tSchema("dosage.unitId.placeholder")}
                           unitType={UnitType.VOLUME}
-                          disabled={isPending}
+                          disabled={isPending || !canEdit}
                           className="w-full"
                           error={tSchema("dosage.unitId.error")}
                           notFound={tSchema("dosage.unitId.notFound")}
@@ -204,9 +213,9 @@ export const PlantPesticideEditDialog = () => {
                     <FormControl>
                       <Textarea
                         placeholder={tSchema("note.placeholder")}
-                        value={field.value || undefined}
+                        value={field.value ?? undefined}
                         onChange={field.onChange}
-                        disabled={isPending}
+                        disabled={isPending || !canEdit}
                       />
                     </FormControl>
                     <FormMessage />
@@ -216,7 +225,7 @@ export const PlantPesticideEditDialog = () => {
             </div>
           </div>
 
-          <DynamicDialogFooter disabled={isPending} />
+          <DynamicDialogFooter disabled={isPending || !canEdit} />
         </form>
       </Form>
     </DynamicDialog>

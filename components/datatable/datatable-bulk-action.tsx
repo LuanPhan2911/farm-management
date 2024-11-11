@@ -18,6 +18,7 @@ interface DataTableBulkActionProps<TData> {
   actions: {
     label: string;
     action: (rows: TData[]) => void;
+    disabled?: boolean;
   }[];
 }
 export function DataTableBulkAction<TData>({
@@ -48,6 +49,7 @@ export function DataTableBulkAction<TData>({
             <DropdownMenuItem
               key={act.label}
               onClick={() => handleClick(act.action)}
+              disabled={act.disabled}
             >
               {act.label}
             </DropdownMenuItem>

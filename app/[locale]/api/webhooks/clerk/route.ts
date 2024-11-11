@@ -1,13 +1,11 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
-import {
-  createStaff,
-  deleteStaff,
-  updateStaff,
-  upsertStaff,
-} from "@/services/staffs";
+import { createStaff, upsertStaff } from "@/services/staffs";
 import { StaffRole } from "@prisma/client";
+import { deleteMessagesByOrgId } from "@/services/messages";
+import { updateFieldOrgWhenOrgDeleted } from "@/services/fields";
+import { mergeName } from "@/lib/utils";
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
@@ -55,33 +53,12 @@ export async function POST(req: Request) {
     });
   }
 
-  if (evt.type === "user.created") {
-    const role = evt.data.public_metadata?.role;
-    const user = evt.data;
-    const name = `${user.first_name || ""} ${user.last_name || ""}`.trim();
-    const email = user.email_addresses[0].email_address;
-    if (!role) {
-      return new Response("", { status: 200 });
-    }
-
-    await createStaff(user.id, {
-      email,
-      name,
-      imageUrl: user.image_url,
-      role: role as StaffRole,
-    });
-  }
   if (evt.type === "user.updated") {
     const user = evt.data;
-    const name = `${user.first_name || ""} ${user.last_name || ""}`.trim();
+    const name = mergeName(user.first_name, user.last_name);
     const role = evt.data.public_metadata?.role;
 
-    if (!role) {
-      await updateStaff(user.id, {
-        imageUrl: user.image_url,
-        name,
-      });
-    } else {
+    if (role) {
       await upsertStaff(user.id, {
         email: user.email_addresses[0].email_address,
         name,
@@ -91,10 +68,11 @@ export async function POST(req: Request) {
     }
   }
 
-  if (evt.type === "user.deleted") {
+  if (evt.type === "organization.deleted") {
     const id = evt.data.id;
     if (id) {
-      await deleteStaff(id);
+      await deleteMessagesByOrgId(id);
+      await updateFieldOrgWhenOrgDeleted(id);
     }
   }
   return new Response("", { status: 200 });

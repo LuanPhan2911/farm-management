@@ -1,18 +1,16 @@
 "use client";
 
-import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 
 import queryString from "query-string";
-import { ErrorButton } from "@/components/buttons/error-button";
 import {
   ComboBoxCustom,
   ComboBoxCustomAppearance,
 } from "@/components/form/combo-box";
-import { ActivitySelect } from "@/types";
-import { useFormatter } from "next-intl";
-import { ActivityStatusValue } from "../activities/_components/activity-status-value";
-import { ActivityPriorityValue } from "../activities/_components/activity-priority-value";
+
+import { SelectItemContentWithoutImage } from "@/components/form/select-item";
+import { useEffect } from "react";
+import { ActivitySelectWithCrop } from "@/types";
 
 interface ActivitiesSelectProps {
   defaultValue?: string;
@@ -22,6 +20,7 @@ interface ActivitiesSelectProps {
   error: string;
   notFound: string;
   appearance?: ComboBoxCustomAppearance;
+  onSelected?: (value: ActivitySelectWithCrop) => void;
 }
 export const ActivitiesSelect = (props: ActivitiesSelectProps) => {
   const { data, isPending, isError, refetch } = useQuery({
@@ -36,9 +35,19 @@ export const ActivitiesSelect = (props: ActivitiesSelectProps) => {
         }
       );
       const res = await fetch(url);
-      return (await res.json()) as ActivitySelect[];
+      return (await res.json()) as ActivitySelectWithCrop[];
     },
   });
+  const { onSelected, defaultValue } = props;
+  useEffect(() => {
+    const selected = data?.find((item) => item.id === defaultValue);
+
+    if (!selected) {
+      return;
+    }
+    onSelected?.(selected);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, defaultValue]);
 
   return (
     <ComboBoxCustom
@@ -50,30 +59,13 @@ export const ActivitiesSelect = (props: ActivitiesSelectProps) => {
       isPending={isPending}
       refetch={refetch}
       renderItem={(item) => {
-        return <ActivitiesSelectItem {...item} />;
+        return (
+          <SelectItemContentWithoutImage
+            title={item.name}
+            description={item.crop.name}
+          />
+        );
       }}
     />
-  );
-};
-interface ActivitiesSelectItemProps extends ActivitySelect {}
-const ActivitiesSelectItem = ({
-  activityDate,
-  name,
-  priority,
-  status,
-  note,
-}: ActivitiesSelectItemProps) => {
-  const { relativeTime } = useFormatter();
-  return (
-    <div className="w-full flex flex-col gap-y-1">
-      <div className="text-sm font-medium leading-none text-start">{name}</div>
-      <div className=" flex items-center gap-x-1">
-        <ActivityStatusValue value={status} />
-        <ActivityPriorityValue value={priority} />
-        <p className="text-xs text-muted-foreground">
-          {relativeTime(activityDate)}
-        </p>
-      </div>
-    </div>
   );
 };

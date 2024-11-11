@@ -8,19 +8,19 @@ export const POST = async (req: NextRequest) => {
   try {
     const authorization = req.headers.get("authorization");
     if (!authorization || authorization !== process.env.APP_API_KEY) {
-      return NextResponse.json("Invalid App API key", { status: 401 });
+      return new NextResponse("Invalid App API key", { status: 401 });
     }
     const tSchema = await getTranslations("mails.schema");
     const data = (await req.json()) as Record<string, any>;
     const paramSchema = SendEmailSchema(tSchema);
     const validatedField = paramSchema.safeParse(data);
     if (!validatedField.success) {
-      return NextResponse.json("Error parse", { status: 400 });
+      return new NextResponse("Error parse", { status: 400 });
     }
 
     await sendEmail(validatedField.data);
     return NextResponse.json("Send email success");
   } catch (error) {
-    return NextResponse.json("Internal Error", { status: 500 });
+    return new NextResponse("Internal Error", { status: 500 });
   }
 };

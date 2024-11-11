@@ -2,44 +2,31 @@
 import { DataTable } from "@/components/datatable";
 import { DataTableColumnHeader } from "@/components/datatable/datatable-column-header";
 
-import { Checkbox } from "@radix-ui/react-checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
 import { FieldTable } from "@/types";
-import { FieldsTableAction } from "./fields-table-action";
 import { UnitWithValue } from "../../../_components/unit-with-value";
-import { useRouter } from "@/navigation";
+
 import { SoilType } from "@prisma/client";
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
+import { UsageStatusValue } from "@/components/usage-status-value";
 
 interface FieldsDataTableProps {
   data: FieldTable[];
 }
 
 export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
+  const { push } = useRouterWithRole();
   const t = useTranslations("fields");
-  const router = useRouter();
+
   const columns: ColumnDef<FieldTable>[] = [
     {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
+      accessorKey: "orgId",
+      header: t("table.thead.orgId"),
+      cell: ({ row }) => {
+        const data = row.original;
+        return <UsageStatusValue status={!!data.orgId} />;
+      },
     },
     {
       accessorKey: "name",
@@ -52,27 +39,24 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
         );
       },
     },
-
     {
       accessorKey: "location",
-      header: ({ column }) => {
-        return (
-          <DataTableColumnHeader
-            column={column}
-            title={t("table.thead.location")}
-          />
-        );
+      header: t("table.thead.location"),
+
+      cell: ({ row }) => {
+        const data = row.original;
+        if (!data.location) {
+          return t("table.trow.location");
+        }
+        return data.location;
       },
     },
+
     {
       accessorKey: "soilType",
-      header: ({ column }) => {
-        return (
-          <DataTableColumnHeader
-            column={column}
-            title={t("table.thead.soilType")}
-          />
-        );
+      header: t("table.thead.soilType"),
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
       },
       cell: ({ row }) => {
         const data = row.original;
@@ -82,57 +66,18 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
         return t(`schema.soilType.options.${data.soilType}`);
       },
     },
-    {
-      accessorKey: "height",
-      header: ({ column }) => {
-        return (
-          <DataTableColumnHeader
-            column={column}
-            title={t("table.thead.height")}
-          />
-        );
-      },
-      cell: ({ row }) => {
-        const data = row.original;
-        return <UnitWithValue value={data.height} unit={data.unit?.name} />;
-      },
-    },
-    {
-      accessorKey: "width",
-      header: ({ column }) => {
-        return (
-          <DataTableColumnHeader
-            column={column}
-            title={t("table.thead.width")}
-          />
-        );
-      },
-      cell: ({ row }) => {
-        const data = row.original;
-        return <UnitWithValue value={data.width} unit={data.unit?.name} />;
-      },
-    },
+
     {
       accessorKey: "area",
-      header: ({ column }) => {
-        return (
-          <DataTableColumnHeader
-            column={column}
-            title={t("table.thead.area")}
-          />
-        );
+      header: () => {
+        return <p className="text-right">{t("table.thead.area")}</p>;
       },
       cell: ({ row }) => {
         const data = row.original;
-        const unit = data.unit?.name ? `${data.unit.name}2` : "";
-        return <UnitWithValue value={data.area} unit={unit} />;
-      },
-    },
-    {
-      id: "actions",
-      cell: ({ row }) => {
-        const data = row.original;
-        return <FieldsTableAction data={data} />;
+        if (!data.area) {
+          return <p className="text-right">{t("table.trow.area")}</p>;
+        }
+        return <UnitWithValue value={data.area} unit={data.unit?.name} />;
       },
     },
   ];
@@ -149,7 +94,7 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
     },
   ];
   const onViewDetail = (item: FieldTable) => {
-    router.push(`/admin/fields/detail/${item.id}`);
+    push(`fields/detail/${item.id}`);
   };
   return (
     <DataTable
@@ -159,8 +104,8 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
         value: "name",
         placeholder: t("search.placeholder"),
       }}
-      onViewDetail={onViewDetail}
       facetedFilters={facetedFilters}
+      onViewDetail={onViewDetail}
     />
   );
 };

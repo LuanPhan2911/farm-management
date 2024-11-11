@@ -20,6 +20,6 @@ export const MaterialTypeValue = ({ value }: MaterialTypeValueProps) => {
     return <Badge variant={"edit"}>{t(`options.${value}`)}</Badge>;
   }
   if (value === "OTHER") {
-    return <Badge variant={"destructive"}>{t(`options.${value}`)}</Badge>;
+    return <Badge variant={"success"}>{t(`options.${value}`)}</Badge>;
   }
 };

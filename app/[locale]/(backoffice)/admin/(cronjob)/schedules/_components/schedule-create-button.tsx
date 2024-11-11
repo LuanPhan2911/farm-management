@@ -37,9 +37,16 @@ import {
 import { JSONEditorReact } from "@/components/vanila-json-editor";
 import { DynamicSheetFooter } from "@/components/dialog/dynamic-sheet";
 import { Textarea } from "@/components/ui/textarea";
-import { ScheduleSelectCron } from "./schedule-select-cron";
+import { ScheduleSelectCron } from "../../../_components/schedule-select-cron";
 
-export const ScheduleCreateButton = () => {
+interface ScheduleCreateButtonProps {
+  appKey?: string | undefined;
+  appUrl?: string | undefined;
+}
+export const ScheduleCreateButton = ({
+  appKey,
+  appUrl,
+}: ScheduleCreateButtonProps) => {
   const tSchema = useTranslations("schedules.schema");
   const t = useTranslations("schedules.form");
 
@@ -54,8 +61,10 @@ export const ScheduleCreateButton = () => {
       description: null,
       cron: "",
       request: {
-        url: "",
-        headers: "",
+        url: `${appUrl}/en/api/[Your Route]`,
+        headers: JSON.stringify({
+          Authorization: appKey || "[Your API KEY]",
+        }),
         body: "",
       },
     },
@@ -108,7 +117,7 @@ export const ScheduleCreateButton = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("name.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />
@@ -127,7 +136,7 @@ export const ScheduleCreateButton = () => {
                   <FormControl>
                     <Textarea
                       placeholder={tSchema("description.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />
@@ -144,11 +153,11 @@ export const ScheduleCreateButton = () => {
                 <FormItem>
                   <FormLabel>{tSchema("cron.label")}</FormLabel>
                   <FormControl>
-                    <div className="grid grid-cols-4 gap-2">
+                    <div className="grid grid-cols-4">
                       <div className="col-span-3">
                         <Input
                           placeholder={tSchema("cron.placeholder")}
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
                           disabled={isPending}
                         />
@@ -156,7 +165,7 @@ export const ScheduleCreateButton = () => {
                       <ScheduleSelectCron
                         onChange={field.onChange}
                         placeholder="Custom"
-                        defaultValue={field.value || undefined}
+                        defaultValue={field.value ?? undefined}
                         disabled={isPending}
                       />
                     </div>
@@ -183,7 +192,7 @@ export const ScheduleCreateButton = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("request.url.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />

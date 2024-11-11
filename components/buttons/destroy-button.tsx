@@ -8,6 +8,7 @@ import { Button } from "../ui/button";
 import { Trash } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRouter } from "@/navigation";
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
 
 interface DestroyButtonProps {
   destroyFn: (id: string) => Promise<ActionResponse>;
@@ -27,7 +28,7 @@ export const DestroyButton = ({
 }: DestroyButtonProps) => {
   const { onOpen, onClose, setPending } = useAlertDialog();
   const t = useTranslations(`${inltKey}.form`);
-  const router = useRouter();
+  const router = useRouterWithRole();
   const onConfirm = async () => {
     setPending(true);
     destroyFn(id)

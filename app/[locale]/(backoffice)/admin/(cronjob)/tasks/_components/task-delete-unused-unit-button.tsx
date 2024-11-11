@@ -38,7 +38,14 @@ import { JSONEditorReact } from "@/components/vanila-json-editor";
 import { DynamicSheetFooter } from "@/components/dialog/dynamic-sheet";
 import { UnitsUnused } from "../../../_components/units-unused";
 
-export const TaskDeleteUnusedUnitButton = () => {
+interface TaskDeleteUnusedUnitButtonProps {
+  appKey?: string | undefined;
+  appUrl?: string | undefined;
+}
+export const TaskDeleteUnusedUnitButton = ({
+  appKey,
+  appUrl,
+}: TaskDeleteUnusedUnitButtonProps) => {
   const tSchema = useTranslations("tasks.schema");
   const t = useTranslations("tasks.form");
 
@@ -52,9 +59,9 @@ export const TaskDeleteUnusedUnitButton = () => {
       name: "delete_unused_unit_task",
       scheduled_for: new Date().toISOString(),
       request: {
-        url: "[Your HOST]/en/api/units/delete_unused",
+        url: `${appUrl || "[Your HOST]"}/en/api/units/delete_unused`,
         headers: JSON.stringify({
-          Authorization: "Your API KEY",
+          Authorization: appKey || "[Your API KEY]",
         }),
         body: "",
       },
@@ -81,11 +88,7 @@ export const TaskDeleteUnusedUnitButton = () => {
   return (
     <Sheet open={isOpen} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button
-          variant={"outline-green"}
-          size={"sm"}
-          className="w-full justify-start font-bold"
-        >
+        <Button variant={"destroy"} size={"sm"}>
           {t("destroyUnusedUnit.label")}
         </Button>
       </SheetTrigger>
@@ -158,7 +161,7 @@ export const TaskDeleteUnusedUnitButton = () => {
                   <FormControl>
                     <Input
                       placeholder={tSchema("request.url.placeholder")}
-                      value={field.value || undefined}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       disabled={isPending}
                     />

@@ -41,13 +41,21 @@ import { EmailTemplate } from "@/components/mail/email-template";
 import { StaffsSelectMultiple } from "../../../_components/staffs-select";
 import { Label } from "@/components/ui/label";
 import { ClipboardButton } from "@/components/buttons/clipboard-button";
+import { useAuth } from "@clerk/nextjs";
 const initialBody = {
   receivers: ["example@gmail.com"],
   subject: "Email notification salary",
   contents: ["Notify salary..."],
   sender: "From Accountant",
 };
-export const TaskSendMailButton = () => {
+interface TaskSendMailButtonProps {
+  appKey?: string | undefined;
+  appUrl?: string | undefined;
+}
+export const TaskSendMailButton = ({
+  appKey,
+  appUrl,
+}: TaskSendMailButtonProps) => {
   const tSchema = useTranslations("tasks.schema");
 
   const t = useTranslations("tasks.form");
@@ -63,9 +71,9 @@ export const TaskSendMailButton = () => {
       name: "send_mail_task",
       scheduled_for: new Date().toISOString(),
       request: {
-        url: "[Your HOST]/en/api/mails",
+        url: `${appUrl || "[Your HOST]"}/en/api/mails`,
         headers: JSON.stringify({
-          Authorization: "Your API KEY",
+          Authorization: appKey || "[Your API KEY]",
         }),
         body: JSON.stringify(initialBody),
       },
@@ -94,11 +102,7 @@ export const TaskSendMailButton = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button
-          variant={"outline-blue"}
-          size={"sm"}
-          className="w-full justify-start font-bold"
-        >
+        <Button variant={"blue"} size={"sm"}>
           {t("sendMail.label")}
         </Button>
       </SheetTrigger>
@@ -176,7 +180,7 @@ export const TaskSendMailButton = () => {
                       <FormControl>
                         <Input
                           placeholder={tSchema("request.url.placeholder")}
-                          value={field.value || undefined}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
                           disabled={isPending}
                         />
@@ -281,21 +285,24 @@ interface TaskEmailSelectProps {
   disabled?: boolean;
 }
 const TaskEmailSelect = ({ disabled }: TaskEmailSelectProps) => {
-  const [value, setValue] = useState("");
+  const [emails, setEmails] = useState<string[] | undefined>([]);
   const t = useTranslations("tasks.search.select.staff");
+  const { orgId } = useAuth();
   return (
     <div>
       <Label>{t("label")} </Label>
       <div className="flex gap-x-2 items-center">
         <StaffsSelectMultiple
+          orgId={orgId}
           error={t("error")}
-          label={t("placeholder")}
+          placeholder={t("placeholder")}
           notFound={t("notFound")}
           disabled={disabled}
-          onChange={setValue}
+          onChange={setEmails}
           className="w-full"
+          valueKey="email"
         />
-        <ClipboardButton value={value} />
+        <ClipboardButton value={JSON.stringify(emails)} />
       </div>
     </div>
   );

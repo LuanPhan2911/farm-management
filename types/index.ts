@@ -1,5 +1,6 @@
 import {
   Activity,
+  ActivityAssigned,
   ActivityPriority,
   ActivityStatus,
   ApplicantStatus,
@@ -32,19 +33,18 @@ import {
   Soil,
   SoilType,
   Staff,
-  StaffRole,
   ToxicityLevel,
   Unit,
   Weather,
   WeatherStatus,
 } from "@prisma/client";
+
 import { Server as NetServer, Socket } from "net";
 import { NextApiResponse } from "next";
 import { Server as SocketIoServer } from "socket.io";
-import { z } from "zod";
 
-export type OrgRole = "org:member" | "org:admin";
-
+export type OrgRole = "org:member" | "org:admin" | "org:field_staff";
+export const orgRoles = ["org:admin", "org:member", "org:field_staff"] as const;
 export type NextApiResponseServerIo<T> = NextApiResponse<T> & {
   socket: Socket & {
     server: NetServer & {
@@ -60,6 +60,9 @@ export type ActionResponse = {
 export type PaginatedResponse<T> = {
   data: T[];
   totalPage: number;
+};
+export type PaginatedResponseWithTotalCost<T> = PaginatedResponse<T> & {
+  totalCost: number;
 };
 export type PaginatedWithCursorResponse<T> = {
   items: T[];
@@ -88,6 +91,7 @@ export type CategoryTable = Category & {};
 export type CategorySelect = {
   id: string;
   name: string;
+  description: string | null;
 };
 export type JobTable = {
   id: string;
@@ -97,6 +101,9 @@ export type JobTable = {
   gender: Gender;
   published: boolean;
   expiredAt: Date;
+  _count: {
+    applicants: number;
+  };
 };
 export type JobCard = {
   id: string;
@@ -129,12 +136,17 @@ export type ApplicantTable = {
   status: ApplicantStatus;
 };
 export type FieldTable = Field & {
-  unit: Unit | null;
+  unit: UnitSelect | null;
 };
 export type FieldSelect = {
   id: string;
   name: string;
-  location: string;
+  location: string | null;
+  area: number | null;
+  orgId: string | null;
+  unit: {
+    name: string;
+  } | null;
 };
 
 export type WeatherTable = Weather & {
@@ -222,7 +234,8 @@ export type FertilizerFrequencyCount = {
 export type FertilizerSelect = {
   id: string;
   name: string;
-  type: FertilizerType;
+  type: FertilizerType | null;
+  nutrientOfNPK: string | null;
   frequencyOfUse: Frequency | null;
   applicationMethod: string | null;
   recommendedDosage: FloatUnitTable | null;
@@ -243,20 +256,13 @@ export type PesticideToxicityLevelCount = {
 export type PesticideSelect = {
   id: string;
   name: string;
-  type: PesticideType;
+  type: PesticideType | null;
   toxicityLevel: ToxicityLevel | null;
   applicationMethod: string | null;
+  withdrawalPeriod: IntUnitTable | null;
   recommendedDosage: FloatUnitTable | null;
 };
 
-export type CropTable = Crop & {
-  actualYield: FloatUnitTable | null;
-  estimatedYield: FloatUnitTable | null;
-  plant: {
-    id: string;
-    name: string;
-  };
-};
 export type TaskStatus = "queued" | "working" | "success" | "failure";
 export type TaskResponse = {
   id: string;
@@ -329,6 +335,7 @@ export type MaterialSelect = {
   unit: {
     name: string;
   };
+  basePrice: number | null;
 };
 export type MaterialUsageTable = MaterialUsage & {
   material: MaterialSelect;
@@ -338,6 +345,19 @@ export type MaterialUsageTable = MaterialUsage & {
   activity: ActivitySelect | null;
 };
 
+export type MaterialUsageTableWithCost = MaterialUsage & {
+  material: MaterialSelect;
+  unit: {
+    name: string;
+  };
+  activity: ActivitySelect | null;
+  actualCost: number | null;
+};
+
+export type MaterialUsageTableWithTotalCost = {
+  data: MaterialUsageTableWithCost[];
+  totalCost: number;
+};
 export type MaterialTypeCount = {
   type: MaterialType;
   _count: number;
@@ -354,24 +374,27 @@ export type EquipmentSelect = {
   imageUrl: string | null;
 };
 export type EquipmentDetailTable = EquipmentDetail & {
-  equipment: {
+  equipment: EquipmentSelect;
+  unit: {
     name: string;
-    type: EquipmentType;
-    imageUrl: string | null;
-  };
+  } | null;
 };
+
 export type EquipmentDetailSelect = {
   id: string;
   name: string | null;
   equipmentId: string;
   status: EquipmentStatus;
   location: string | null;
-  equipment: {
-    name: string;
-    type: EquipmentType;
-    imageUrl: string | null;
-  };
+  baseFuelPrice: number | null;
+  maxFuelConsumption: number | null;
 };
+
+export type EquipmentDetailSelectWithEquipmentAndUnit =
+  EquipmentDetailSelect & {
+    equipment: EquipmentSelect;
+    unit: UnitSelect | null;
+  };
 
 export type EquipmentTypeCount = {
   type: EquipmentType;
@@ -379,32 +402,66 @@ export type EquipmentTypeCount = {
 };
 
 export type EquipmentUsageTable = EquipmentUsage & {
+  unit: UnitSelect | null;
   equipmentDetail: EquipmentDetailSelect;
   activity: ActivitySelect | null;
   operator: Staff | null;
 };
+export type EquipmentUsageTableWithCost = EquipmentUsage & {
+  unit: UnitSelect | null;
+  equipmentDetail: EquipmentDetailSelect;
+  activity: ActivitySelect | null;
+  operator: Staff | null;
+  actualCost: number | null;
+};
 
+export type EquipmentUsageTableWithTotalCost = {
+  data: EquipmentUsageTableWithCost[];
+  totalCost: number;
+};
+
+export type ActivityAssignedStaff = ActivityAssigned & {
+  staff: Staff;
+};
+export type ActivityAssignedStaffWithActivitySelect = ActivityAssigned & {
+  activity: ActivitySelect;
+  staff: Staff;
+  actualCost: number | null;
+};
+export type ActivityAssignedStaffWithActivityAndCost = {
+  totalCost: number;
+  data: ActivityAssignedStaffWithActivitySelect[];
+};
 export type ActivityTable = Activity & {
-  assignedTo: Staff;
   createdBy: Staff;
-  field: {
-    name: string;
-    location: string;
-  };
-  _count: {
-    equipmentUseds: number;
-    materialUseds: number;
-  };
+  crop: CropSelect;
+  assignedTo: ActivityAssignedStaff[];
+};
+
+export type ActivityWithCost = Activity & {
+  actualCost: number | null;
+};
+export type ActivityWithTotalCost = {
+  data: ActivityWithCost[];
+  totalCost: number;
 };
 export type ActivitySelect = {
   id: string;
   name: string;
   status: ActivityStatus;
   priority: ActivityPriority;
-  createdBy: Staff;
-  assignedTo: Staff;
   activityDate: Date;
-  note: string | null;
+  estimatedDuration: number;
+};
+export type ActivitySelectWithCrop = ActivitySelect & {
+  crop: CropSelect;
+};
+export type ActivityWithCountUsages = Activity & {
+  _count: {
+    materialUseds: number;
+    equipmentUseds: number;
+    assignedTo: number;
+  };
 };
 export type ActivityStatusCount = {
   status: ActivityStatus;
@@ -415,3 +472,29 @@ export type ActivityPriorityCount = {
   _count: number;
 };
 export const activityUpdateStatus = ["NEW", "PENDING", "IN_PROGRESS"] as const;
+
+export type CropTable = Crop & {
+  plant: PlantSelect;
+  field: FieldSelect;
+  _count: {
+    activities: number;
+  };
+  unit: {
+    name: string;
+  };
+};
+export type CropSelect = {
+  id: string;
+  name: string;
+  startDate: Date;
+  endDate: Date | null;
+};
+export type CropSelectWithField = CropSelect & {
+  field: FieldSelect;
+};
+
+export type CropWithCount = Crop & {
+  _count: {
+    activities: number;
+  };
+};

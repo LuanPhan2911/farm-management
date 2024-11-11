@@ -1,14 +1,19 @@
 import { db } from "@/lib/db";
 
 import { FertilizerType, Season } from "@prisma/client";
-import { UnitValue, upsertFloatUnit, upsertIntUnit } from "./units";
+import {
+  unitInclude,
+  UnitValue,
+  upsertFloatUnit,
+  upsertIntUnit,
+} from "./units";
 import { PlantSelect } from "@/types";
 
 type PlantParams = {
   name: string;
   categoryId: string;
-  growthDuration: string;
-  fertilizerType: FertilizerType;
+  growthDuration?: string | null;
+  fertilizerType?: FertilizerType | null;
   imageUrl?: string | null;
   season?: Season | null;
   idealTemperature?: Partial<UnitValue> | null;
@@ -91,29 +96,17 @@ export const getPlants = async () => {
       include: {
         idealTemperature: {
           include: {
-            unit: {
-              select: {
-                name: true,
-              },
-            },
+            ...unitInclude,
           },
         },
         idealHumidity: {
           include: {
-            unit: {
-              select: {
-                name: true,
-              },
-            },
+            ...unitInclude,
           },
         },
         waterRequirement: {
           include: {
-            unit: {
-              select: {
-                name: true,
-              },
-            },
+            ...unitInclude,
           },
         },
         category: true,
@@ -133,29 +126,17 @@ export const getPlantById = async (id: string) => {
       include: {
         idealTemperature: {
           include: {
-            unit: {
-              select: {
-                name: true,
-              },
-            },
+            ...unitInclude,
           },
         },
         idealHumidity: {
           include: {
-            unit: {
-              select: {
-                name: true,
-              },
-            },
+            ...unitInclude,
           },
         },
         waterRequirement: {
           include: {
-            unit: {
-              select: {
-                name: true,
-              },
-            },
+            ...unitInclude,
           },
         },
         category: true,
@@ -168,13 +149,16 @@ export const getPlantById = async (id: string) => {
   }
 };
 
+export const plantSelect = {
+  id: true,
+  name: true,
+  imageUrl: true,
+};
 export const getPlantsSelect = async (): Promise<PlantSelect[]> => {
   try {
     return await db.plant.findMany({
       select: {
-        id: true,
-        name: true,
-        imageUrl: true,
+        ...plantSelect,
       },
     });
   } catch (error) {
