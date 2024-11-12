@@ -19,8 +19,6 @@ import {
 } from "@/lib/utils";
 import { getCurrentStaff } from "./staffs";
 import { cropSelect } from "./crops";
-import { fieldSelect } from "./fields";
-import { plantSelect } from "./plants";
 import { getMaterialUsagesByActivity } from "./material-usages";
 import { getEquipmentUsagesByActivity } from "./equipment-usages";
 import { isSuperAdmin } from "@/lib/permission";
@@ -216,6 +214,19 @@ export const getActivities = async ({
         take: LIMIT,
         skip: (page - 1) * LIMIT,
         where: {
+          activityDate: {
+            ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
+            ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
+          },
+          name: {
+            contains: query,
+            mode: "insensitive",
+          },
+          crop: {
+            status: {
+              not: "FINISH",
+            },
+          },
           ...(type === "createdBy" && {
             createdById: currentStaff.id,
           }),
@@ -226,15 +237,6 @@ export const getActivities = async ({
               },
             },
           }),
-          activityDate: {
-            ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
-            ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
-          },
-          name: {
-            contains: query,
-            mode: "insensitive",
-          },
-
           ...(filterString && getObjectFilterString(filterString)),
           ...(filterNumber && getObjectFilterNumber(filterNumber)),
         },
@@ -255,6 +257,19 @@ export const getActivities = async ({
       }),
       db.activity.count({
         where: {
+          activityDate: {
+            ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
+            ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
+          },
+          name: {
+            contains: query,
+            mode: "insensitive",
+          },
+          crop: {
+            status: {
+              not: "FINISH",
+            },
+          },
           ...(type === "createdBy" && {
             createdById: currentStaff.id,
           }),
@@ -265,14 +280,6 @@ export const getActivities = async ({
               },
             },
           }),
-          name: {
-            contains: query,
-            mode: "insensitive",
-          },
-          activityDate: {
-            ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
-            ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
-          },
           ...(filterString && getObjectFilterString(filterString)),
           ...(filterNumber && getObjectFilterNumber(filterNumber)),
         },
@@ -397,6 +404,9 @@ export const getActivityById = async (
             },
           ],
         }),
+        status: {
+          in: ["NEW", "PENDING", "IN_PROGRESS"],
+        },
       },
       include: {
         createdBy: true,
@@ -467,6 +477,11 @@ export const getActivitiesSelect = async (): Promise<
             createdById: currentStaff.id,
           },
         ],
+        crop: {
+          status: {
+            not: "FINISH",
+          },
+        },
         status: {
           in: ["NEW", "IN_PROGRESS", "PENDING"],
         },

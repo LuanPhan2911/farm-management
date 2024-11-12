@@ -12,10 +12,8 @@ import { db } from "@/lib/db";
 import { getObjectSortOrder } from "@/lib/utils";
 import {
   MaterialUsageTable,
-  MaterialUsageTableWithCost,
   MaterialUsageTableWithTotalCost,
   PaginatedResponse,
-  PaginatedResponseWithTotalCost,
 } from "@/types";
 import { revalidatePath } from "next/cache";
 import { activitySelect } from "./activities";
@@ -283,6 +281,7 @@ export const materialSelect = {
     },
   },
 };
+
 export const getMaterialUsages = async ({
   page = 1,
   query,

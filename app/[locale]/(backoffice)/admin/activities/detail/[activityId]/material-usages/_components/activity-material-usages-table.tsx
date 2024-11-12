@@ -13,7 +13,6 @@ import { useFormatter, useTranslations } from "next-intl";
 import { MaterialUsageTable, MaterialUsageTableWithCost } from "@/types";
 import { OrderByButton } from "@/components/buttons/order-by-button";
 import { SearchBar } from "@/components/search-bar";
-import { useDialog } from "@/stores/use-dialog";
 
 import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-with-value";
 import { UsageStatusValue } from "@/components/usage-status-value";
@@ -33,21 +32,15 @@ export const ActivityMaterialUsagesTable = ({
   totalCost,
   disabled,
 }: ActivityMaterialUsagesTableProps) => {
-  const { onOpen } = useDialog();
   const t = useTranslations("materialUsages");
   const { dateTime } = useFormatter();
   const { number } = useFormatter();
-  const { isFarmer } = useCurrentStaffRole();
+  const { isFarmer: isHidden } = useCurrentStaffRole();
   const { push } = useRouterWithRole();
   const handleEdit = (row: MaterialUsageTable) => {
-    if (isFarmer) {
-      push(`materials/detail/${row.materialId}`);
-    }
-    if (!disabled) {
-      onOpen("materialUsage.edit", { materialUsage: row });
-    }
+    push(`materials/detail/${row.materialId}`);
   };
-  const isHidden = isFarmer;
+
   return (
     <>
       <div className="flex flex-col lg:flex-row gap-2 my-2 lg:items-center">
@@ -60,7 +53,7 @@ export const ActivityMaterialUsagesTable = ({
             <TableHead>{t("table.thead.activity.usage")}</TableHead>
             <TableHead>{t("table.thead.createdAt")}</TableHead>
             <TableHead>{t("table.thead.material.imageUrl")}</TableHead>
-            <TableHead className="w-[200px]">
+            <TableHead>
               <OrderByButton
                 column="material.name"
                 label={t("table.thead.material.name")}

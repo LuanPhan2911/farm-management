@@ -548,13 +548,16 @@ enum MaterialType {
 }
 
 model Material {
-  id              String       @id @default(uuid())
+  id              String  @id @default(uuid())
   name            String // Name of the material (e.g., "Fertilizer Type A")
   description     String?
   imageUrl        String?
   quantityInStock Float // Current stock quantity
-  type            MaterialType
-  unitId          String
+
+  unitId String
+
+  type   MaterialType
+  typeId String?
 
   basePrice Float?
   createdAt DateTime @default(now())

@@ -16,7 +16,7 @@ import { useAuth } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { useEffect, useTransition } from "react";
+import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -41,18 +41,11 @@ export const ActivityStaffsCreateButton = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      assignedTo: !assignedStaffs.length
-        ? undefined
-        : assignedStaffs.map((item) => item.id),
+      assignedTo: assignedStaffs.map((item) => item.id),
       activityId: params?.activityId,
     },
   });
-  useEffect(() => {
-    form.setValue(
-      "assignedTo",
-      assignedStaffs.map((item) => item.id)
-    );
-  }, [assignedStaffs, form]);
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       upsertAssigned(values)

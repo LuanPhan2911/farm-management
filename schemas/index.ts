@@ -823,6 +823,7 @@ export const MaterialSchema = (
     type: z.nativeEnum(MaterialType, {
       message: t("type.enum"),
     }),
+    typeId: z.string().nullish(),
     description: stringSchema(t, "description", {
       max: 255,
       required: false,
@@ -890,11 +891,9 @@ export const ActivitySchema = (
       required: false,
     }).nullish(),
 
-    assignedTo: z
-      .array(z.string(), {
-        required_error: t("assignedTo.required_error"),
-      })
-      .min(1, t("assignedTo.min", { min: 1 })),
+    assignedTo: z.array(z.string(), {
+      required_error: t("assignedTo.required_error"),
+    }),
   });
 };
 
@@ -903,11 +902,9 @@ export const ActivityAssignedSchema = (
 ) => {
   return z.object({
     activityId: z.string(),
-    assignedTo: z
-      .array(z.string(), {
-        required_error: t("assignedTo.required_error"),
-      })
-      .min(1, t("assignedTo.min", { min: 1 })),
+    assignedTo: z.array(z.string(), {
+      required_error: t("assignedTo.required_error"),
+    }),
   });
 };
 export const ActivityAssignedUpdateSchema = (

@@ -2,6 +2,7 @@ import { LIMIT } from "@/configs/paginationConfig";
 import { db } from "@/lib/db";
 import { getObjectFilterNumber, getObjectSortOrder } from "@/lib/utils";
 import {
+  CropMaterialUsage,
   CropSelectWithField,
   CropTable,
   CropWithCount,
@@ -9,10 +10,12 @@ import {
 } from "@/types";
 import { unitInclude } from "./units";
 import { getCurrentStaff } from "./staffs";
-import { isFarmer, isOnlyAdmin, isSuperAdmin } from "@/lib/permission";
+import { isSuperAdmin } from "@/lib/permission";
 import { fieldSelect } from "./fields";
 import { plantSelect } from "./plants";
 import { CropStatus } from "@prisma/client";
+import { fertilizerSelect } from "./fertilizers";
+import { pesticideSelect } from "./pesticides";
 
 type CropParams = {
   name: string;
@@ -278,12 +281,46 @@ export const cropSelect = {
   startDate: true,
   endDate: true,
 };
-export const getCropsSelect = async (): Promise<CropSelectWithField[]> => {
+type CropSelectQuery = {
+  orgId?: string;
+};
+export const getCropsSelect = async ({
+  orgId,
+}: CropSelectQuery): Promise<CropSelectWithField[]> => {
   try {
+    let fields;
+    const currentStaff = await getCurrentStaff();
+    if (!currentStaff) {
+      throw new Error("Unauthorized");
+    }
+    if (!orgId && !isSuperAdmin(currentStaff.role)) {
+      throw new Error("No field id to get crops");
+    }
+    if (!orgId) {
+      fields = await db.field.findMany({
+        select: {
+          id: true,
+        },
+      });
+    }
+
+    if (orgId) {
+      fields = await db.field.findMany({
+        where: {
+          orgId,
+        },
+        select: {
+          id: true,
+        },
+      });
+    }
     return await db.crop.findMany({
       where: {
         status: {
           not: "FINISH",
+        },
+        fieldId: {
+          in: fields?.map((item) => item.id),
         },
       },
       select: {
@@ -300,5 +337,85 @@ export const getCropsSelect = async (): Promise<CropSelectWithField[]> => {
     });
   } catch (error) {
     return [];
+  }
+};
+
+export const cropMaterial = {
+  id: true,
+  name: true,
+  imageUrl: true,
+  type: true,
+  typeId: true,
+  unit: {
+    select: {
+      name: true,
+    },
+  },
+};
+
+type CropMaterialUsageQuery = {
+  cropId: string;
+  page?: number;
+};
+export const getCropMaterialUsage = async ({
+  cropId,
+  page = 1,
+}: CropMaterialUsageQuery): Promise<PaginatedResponse<CropMaterialUsage>> => {
+  try {
+    const activities = await db.activity.findMany({
+      where: {
+        cropId,
+        status: "COMPLETED",
+      },
+      select: {
+        id: true,
+      },
+    });
+    let [data, count] = await db.$transaction([
+      db.materialUsage.findMany({
+        take: LIMIT,
+        skip: (page - 1) * LIMIT,
+        where: {
+          activityId: {
+            in: activities.map((item) => item.id),
+          },
+          material: {
+            type: {
+              in: ["FERTILIZER", "PESTICIDE"],
+            },
+          },
+        },
+        include: {
+          material: {
+            select: {
+              ...cropMaterial,
+            },
+          },
+          unit: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      }),
+      db.materialUsage.count({
+        where: {
+          activityId: {
+            in: activities.map((item) => item.id),
+          },
+        },
+      }),
+    ]);
+
+    const totalPage = Math.ceil(count / LIMIT);
+    return {
+      data,
+      totalPage,
+    };
+  } catch (error) {
+    return {
+      data: [],
+      totalPage: 0,
+    };
   }
 };

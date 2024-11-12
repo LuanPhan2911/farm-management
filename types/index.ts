@@ -358,6 +358,7 @@ export type MaterialUsageTableWithTotalCost = {
   data: MaterialUsageTableWithCost[];
   totalCost: number;
 };
+
 export type MaterialTypeCount = {
   type: MaterialType;
   _count: number;
@@ -496,5 +497,22 @@ export type CropSelectWithField = CropSelect & {
 export type CropWithCount = Crop & {
   _count: {
     activities: number;
+  };
+};
+
+export type CropMaterial = {
+  id: string;
+  name: string;
+  imageUrl: string | null;
+  type: MaterialType;
+  typeId: string | null;
+  unit: {
+    name: string;
+  };
+};
+export type CropMaterialUsage = MaterialUsage & {
+  material: CropMaterial;
+  unit: {
+    name: string;
   };
 };

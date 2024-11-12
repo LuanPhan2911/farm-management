@@ -8,6 +8,7 @@ import { FormItem, FormLabel } from "@/components/ui/form";
 import { PesticideSelect } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
+import { useEffect } from "react";
 
 interface PesticidesSelectProps {
   onChange: (value: string | undefined) => void;
@@ -19,6 +20,7 @@ interface PesticidesSelectProps {
   appearance?: ComboBoxCustomAppearance;
   valueKey?: keyof PesticideSelect;
   labelKey?: keyof PesticideSelect;
+  onSelected?: (value: PesticideSelect) => void;
 }
 export const PesticidesSelect = (props: PesticidesSelectProps) => {
   const tSchema = useTranslations("pesticides.schema");
@@ -29,6 +31,17 @@ export const PesticidesSelect = (props: PesticidesSelectProps) => {
       return (await res.json()) as PesticideSelect[];
     },
   });
+
+  const { onSelected, defaultValue } = props;
+  useEffect(() => {
+    const selected = data?.find((item) => item.id === defaultValue);
+
+    if (!selected) {
+      return;
+    }
+    onSelected?.(selected);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, defaultValue]);
 
   return (
     <ComboBoxCustom

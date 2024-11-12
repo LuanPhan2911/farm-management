@@ -22,6 +22,7 @@ type MaterialParam = {
   description?: string | null;
   imageUrl?: string | null;
   basePrice?: number | null;
+  typeId?: string | null;
 };
 export const createMaterial = async (params: MaterialParam) => {
   return await db.material.create({

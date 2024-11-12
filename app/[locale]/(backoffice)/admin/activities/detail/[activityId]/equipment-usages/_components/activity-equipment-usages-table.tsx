@@ -16,7 +16,6 @@ import { OrderByButton } from "@/components/buttons/order-by-button";
 
 import { SearchBar } from "@/components/search-bar";
 
-import { useDialog } from "@/stores/use-dialog";
 import { UsageStatusValue } from "@/components/usage-status-value";
 import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-with-value";
 import { EquipmentDetailStatusValue } from "@/app/[locale]/(backoffice)/admin/(inventory)/equipments/detail/[equipmentId]/_components/equipment-detail-status-value";
@@ -34,20 +33,14 @@ export const ActivityEquipmentUsagesTable = ({
   totalCost,
   disabled,
 }: ActivityEquipmentUsagesTableProps) => {
-  const { onOpen } = useDialog();
   const t = useTranslations("equipmentUsages");
   const { dateTime, number } = useFormatter();
   const { push } = useRouterWithRole();
-  const { isFarmer } = useCurrentStaffRole();
+  const { isFarmer: isHidden } = useCurrentStaffRole();
   const handleEdit = (row: EquipmentUsageTable) => {
-    if (isFarmer) {
-      push(`equipments/detail/${row.equipmentDetail.equipmentId}/details`);
-    }
-    if (!disabled) {
-      onOpen("equipmentUsage.edit", { equipmentUsage: row });
-    }
+    push(`equipments/detail/${row.equipmentDetail.equipmentId}/details`);
   };
-  const isHidden = isFarmer;
+
   return (
     <>
       <div className="flex flex-col lg:flex-row gap-2 my-2 lg:items-center">

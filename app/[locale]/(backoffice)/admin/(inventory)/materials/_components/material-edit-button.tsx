@@ -48,7 +48,7 @@ export const MaterialEditForm = ({ data }: MaterialEditFormProps) => {
     },
   });
   const { isOnlyAdmin: canEdit } = useCurrentStaffRole();
-  const materialType = form.watch("type");
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       edit(values, params!.materialId)
@@ -65,6 +65,7 @@ export const MaterialEditForm = ({ data }: MaterialEditFormProps) => {
     });
   };
 
+  const materialType = form.watch("type");
   return (
     <Form {...form}>
       <form
@@ -82,7 +83,10 @@ export const MaterialEditForm = ({ data }: MaterialEditFormProps) => {
                   <FormControl>
                     <SelectOptions
                       placeholder={tSchema("type.placeholder")}
-                      onChange={field.onChange}
+                      onChange={(value) => {
+                        field.onChange(value);
+                        form.setValue("typeId", undefined);
+                      }}
                       options={Object.values(MaterialType).map((item) => {
                         return {
                           label: tSchema(`type.options.${item}`),
@@ -100,22 +104,22 @@ export const MaterialEditForm = ({ data }: MaterialEditFormProps) => {
             />
             <FormField
               control={form.control}
-              name="name"
+              name="typeId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{tSchema("name.select.label")}</FormLabel>
+                  <FormLabel>{tSchema("typeId.label")}</FormLabel>
                   <FormControl>
                     <MaterialNameSelect
                       onChange={field.onChange}
                       type={materialType}
-                      error={tSchema("name.select.error")}
-                      notFound={tSchema("name.select.notFound")}
-                      placeholder={tSchema("name.select.placeholder")}
-                      appearance={{
-                        button: "lg:w-full h-12",
-                        content: "lg:w-[350px]",
+                      error={tSchema("typeId.error")}
+                      notFound={tSchema("typeId.notFound")}
+                      placeholder={tSchema("typeId.placeholder")}
+                      disabled={isPending || !canEdit}
+                      onSelected={(selected) => {
+                        form.setValue("name", selected.label);
                       }}
-                      disabled={isPending}
+                      defaultValue={field.value || undefined}
                     />
                   </FormControl>
 

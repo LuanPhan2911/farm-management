@@ -2912,6 +2912,12 @@
           "OTHER": "Other"
         }
       },
+      "typeId": {
+        "label": "Select material name",
+        "error": "Fail load material name",
+        "notFound": "Material name not found",
+        "placeholder": "Select..."
+      },
 
       "unitId": {
         "required_error": "Required unit",

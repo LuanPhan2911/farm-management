@@ -29,6 +29,8 @@ export const create = async (
     revalidatePath(`/admin/materials`);
     return successResponse(tStatus("success.create"));
   } catch (error) {
+    console.log(error);
+
     return errorResponse(tStatus("failure.create"));
   }
 };

@@ -7,6 +7,7 @@ import { NextApiRequest } from "next";
 import { getOrganizationMembership } from "./organizations";
 import { getObjectSortOrder } from "@/lib/utils";
 import { PaginatedResponse } from "@/types";
+import { checkRole } from "@/lib/role";
 
 type StaffParams = {
   email: string;
@@ -161,6 +162,10 @@ type StaffSelectQuery = {
 export const getStaffsSelect = async (params?: StaffSelectQuery) => {
   try {
     let staffExternalIds;
+    const isSuperAdmin = checkRole("superadmin");
+    if (!isSuperAdmin && !params?.orgId) {
+      throw new Error("Only superadmin get staff without org id");
+    }
     if (params?.orgId) {
       const staffInOrg = await getOrganizationMembership({
         orgId: params.orgId,

@@ -125,6 +125,7 @@ export const ActivityEditForm = ({ data, disabled }: ActivityEditFormProps) => {
                 <FormLabel>{tSchema("cropId.label")}</FormLabel>
                 <FormControl>
                   <CropsSelect
+                    orgId={orgId || undefined}
                     defaultValue={field.value}
                     onChange={field.onChange}
                     error={tSchema("cropId.error")}
@@ -148,7 +149,7 @@ export const ActivityEditForm = ({ data, disabled }: ActivityEditFormProps) => {
                   <StaffsSelectMultiple
                     orgId={orgId}
                     onChange={field.onChange}
-                    defaultValue={field.value}
+                    defaultValue={field.value || undefined}
                     error={tSchema("assignedTo.error")}
                     placeholder={tSchema("assignedTo.placeholder")}
                     notFound={tSchema("assignedTo.notFound")}
