@@ -50,17 +50,13 @@ export const ActivityEquipmentUsagesTable = ({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{t("table.thead.activity.usage")}</TableHead>
-
-            <TableHead>{t("table.thead.equipmentDetail.name")}</TableHead>
-            <TableHead>{t("table.thead.equipmentDetail.status")}</TableHead>
-
-            <TableHead>
-              <OrderByButton
-                column="usageStartTime"
-                label={t("table.thead.usageStartTime")}
-              />
+            <TableHead className="min-w-[200px]">
+              {t("table.thead.equipmentDetail.name")}
             </TableHead>
+
+            <TableHead>{t("table.thead.activity.usage")}</TableHead>
+            <TableHead>{t("table.thead.equipmentDetail.status")}</TableHead>
+            <TableHead>{t("table.thead.usageStartTime")}</TableHead>
             <TableHead className="text-right">
               {t("table.thead.duration")}
             </TableHead>
@@ -92,23 +88,24 @@ export const ActivityEquipmentUsagesTable = ({
                 className="cursor-pointer"
                 onClick={() => handleEdit(item)}
               >
+                <TableHead>{item.equipmentDetail.name}</TableHead>
+
                 <TableCell className="font-semibold">
                   <UsageStatusValue status={!!item.activity} />
                 </TableCell>
 
-                <TableCell>{item.equipmentDetail.name}</TableCell>
                 <TableCell>
                   <EquipmentDetailStatusValue
                     status={item.equipmentDetail.status}
                   />
                 </TableCell>
-
                 <TableCell>{dateTime(item.usageStartTime, "long")}</TableCell>
+
                 <TableCell className="text-right">
                   {number(item.duration, "hour")}
                 </TableCell>
                 <TableCell className="text-right">
-                  {item.fuelConsumption ? (
+                  {item.fuelConsumption !== null ? (
                     <UnitWithValue
                       value={item.fuelConsumption}
                       unit={item.unit?.name}
@@ -120,17 +117,17 @@ export const ActivityEquipmentUsagesTable = ({
                 {!isHidden && (
                   <>
                     <TableCell className="text-right">
-                      {item.fuelPrice
+                      {item.fuelPrice !== null
                         ? number(item.fuelPrice, "currency")
                         : t("table.trow.fuelPrice")}
                     </TableCell>
                     <TableCell className="text-right">
-                      {item.rentalPrice
+                      {item.rentalPrice !== null
                         ? number(item.rentalPrice, "currency")
                         : t("table.trow.rentalPrice")}
                     </TableCell>
                     <TableCell className="text-right">
-                      {item.actualCost
+                      {item.actualCost !== null
                         ? number(item.actualCost, "currency")
                         : t("table.trow.actualCost")}
                     </TableCell>

@@ -1,12 +1,13 @@
 "use server";
 
+import { CropUpdateStatusFinishError } from "@/errors";
 import { errorResponse, successResponse } from "@/lib/utils";
 import { CropSchema } from "@/schemas";
 import {
   createCrop,
   deleteCrop,
   updateCrop,
-  updateCropStatus,
+  updateCropStatusFinish,
 } from "@/services/crops";
 import { ActionResponse } from "@/types";
 import { getTranslations } from "next-intl/server";
@@ -69,11 +70,15 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
 
 export const finishCrop = async (id: string): Promise<ActionResponse> => {
   const tStatus = await getTranslations("crops.status");
+  const tSchema = await getTranslations("crops.schema");
   try {
-    await updateCropStatus(id, "FINISH");
+    await updateCropStatusFinish(id);
     revalidatePath("/admin/crops");
     return successResponse(tStatus("success.finish"));
   } catch (error) {
+    if (error instanceof CropUpdateStatusFinishError) {
+      return successResponse(tSchema("errors.cropUpdateStatusFinish"));
+    }
     return errorResponse(tStatus("failure.finish"));
   }
 };

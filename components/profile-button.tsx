@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 
 export const ProfileButton = () => {
   return (
-    <Button size={"icon"} variant={"outline"}>
+    <Button size={"icon"} variant={"ghost"}>
       <UserButton
         appearance={{
           elements: {

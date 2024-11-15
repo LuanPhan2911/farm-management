@@ -1,7 +1,12 @@
 import { LIMIT } from "@/configs/paginationConfig";
 import { db } from "@/lib/db";
-import { getObjectFilterNumber, getObjectSortOrder } from "@/lib/utils";
 import {
+  getObjectFilterNumber,
+  getObjectFilterString,
+  getObjectSortOrder,
+} from "@/lib/utils";
+import {
+  CropActivity,
   CropMaterialUsage,
   CropSelectWithField,
   CropTable,
@@ -16,6 +21,7 @@ import { plantSelect } from "./plants";
 import { CropStatus } from "@prisma/client";
 import { fertilizerSelect } from "./fertilizers";
 import { pesticideSelect } from "./pesticides";
+import { CropUpdateStatusFinishError } from "@/errors";
 
 type CropParams = {
   name: string;
@@ -47,13 +53,29 @@ export const updateCrop = async (id: string, params: CropParams) => {
   });
 };
 
-export const updateCropStatus = async (id: string, status: CropStatus) => {
+export const updateCropStatusFinish = async (id: string) => {
+  const crop = await db.crop.findUnique({
+    where: {
+      id,
+      status: {
+        not: "FINISH",
+      },
+      activities: {
+        every: {
+          status: "COMPLETED",
+        },
+      },
+    },
+  });
+  if (!crop) {
+    throw new CropUpdateStatusFinishError();
+  }
   return await db.crop.update({
     where: {
       id,
     },
     data: {
-      status,
+      status: "FINISH",
     },
   });
 };

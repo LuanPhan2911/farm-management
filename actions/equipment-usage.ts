@@ -2,7 +2,7 @@
 
 import { ActivityUpdateStatusError, EquipmentUsageExistError } from "@/errors";
 import { errorResponse, successResponse } from "@/lib/utils";
-import { EquipmentUsageSchema } from "@/schemas";
+import { EquipmentUsageSchema, EquipmentUsageUpdateSchema } from "@/schemas";
 import { getEquipmentDetailById } from "@/services/equipment-details";
 import {
   assignEquipmentUsage,
@@ -49,37 +49,20 @@ export const create = async (
   }
 };
 export const edit = async (
-  values: z.infer<ReturnType<typeof EquipmentUsageSchema>>,
+  values: z.infer<ReturnType<typeof EquipmentUsageUpdateSchema>>,
   id: string
 ): Promise<ActionResponse> => {
   const tSchema = await getTranslations("equipmentUsages.schema");
   const tStatus = await getTranslations("equipmentUsages.status");
-  const paramsSchema = EquipmentUsageSchema(tSchema);
+  const paramsSchema = EquipmentUsageUpdateSchema(tSchema);
   const validatedFields = paramsSchema.safeParse(values);
 
   if (!validatedFields.success) {
     return errorResponse(tSchema("errors.parse"));
   }
   try {
-    const {
-      duration,
-      note,
-      usageStartTime,
-      fuelConsumption,
-      fuelPrice,
-      rentalPrice,
-      unitId,
-      operatorId,
-    } = validatedFields.data;
     const equipmentUsage = await updateEquipmentUsage(id, {
-      duration,
-      note,
-      usageStartTime,
-      fuelConsumption,
-      fuelPrice,
-      rentalPrice,
-      unitId,
-      operatorId,
+      ...validatedFields.data,
     });
 
     revalidatePathEquipmentUsage({

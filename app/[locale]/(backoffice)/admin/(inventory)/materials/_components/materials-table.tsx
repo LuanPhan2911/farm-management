@@ -16,10 +16,10 @@ import { MaterialTable } from "@/types";
 import { OrderByButton } from "@/components/buttons/order-by-button";
 
 import { SearchBar } from "@/components/search-bar";
-import { UserAvatar } from "@/components/user-avatar";
 import { MaterialsTableFaceted } from "./materials-table-faceted";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
 import { MaterialTypeValue } from "./material-type-value";
+import { SelectItemContent } from "@/components/form/select-item";
 
 interface MaterialsTableProps {
   data: MaterialTable[];
@@ -44,7 +44,6 @@ export const MaterialsTable = ({ data, totalPage }: MaterialsTableProps) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{t("table.thead.imageUrl")}</TableHead>
             <TableHead className="min-w-[200px]">
               <OrderByButton column="name" label={t("table.thead.name")} />
             </TableHead>
@@ -53,10 +52,7 @@ export const MaterialsTable = ({ data, totalPage }: MaterialsTableProps) => {
               {t("table.thead.basePrice")}
             </TableHead>
             <TableHead className="text-right">
-              <OrderByButton
-                column="quantityInStock"
-                label={t("table.thead.quantityInStock")}
-              />
+              {t("table.thead.quantityInStock")}
             </TableHead>
             <TableHead>{t("table.thead.unitId")}</TableHead>
           </TableRow>
@@ -70,9 +66,11 @@ export const MaterialsTable = ({ data, totalPage }: MaterialsTableProps) => {
                 onClick={() => handleViewDetail(item)}
               >
                 <TableCell>
-                  <UserAvatar src={item.imageUrl || undefined} />
+                  <SelectItemContent
+                    imageUrl={item.imageUrl}
+                    title={item.name}
+                  />
                 </TableCell>
-                <TableCell>{item.name}</TableCell>
                 <TableCell>
                   <MaterialTypeValue value={item.type} />
                 </TableCell>

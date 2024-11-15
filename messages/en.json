@@ -114,7 +114,7 @@
       },
       "trow": {
         "type": "No select",
-        "description": "No filled"
+        "description": "Not filled"
       }
     },
     "search": {
@@ -310,7 +310,7 @@
         "status": "Status"
       },
       "trow": {
-        "note": "No filled"
+        "note": "Not filled"
       }
     },
     "search": {
@@ -609,7 +609,7 @@
         "joinedAt": "Joined at"
       },
       "trow": {
-        "name": "No filled",
+        "name": "Not filled",
         "lastSignedInAt": "Never",
         "lastActiveAt": "Never"
       }
@@ -727,11 +727,11 @@
         "hourlyWage": "Actual hourly wage"
       },
       "trow": {
-        "phone": "No filled",
-        "address": "No filled",
-        "baseHourlyWage": "No filled",
-        "actualWork": "No filled",
-        "hourlyWage": "No filled"
+        "phone": "Not filled",
+        "address": "Not filled",
+        "baseHourlyWage": "Not filled",
+        "actualWork": "Not filled",
+        "hourlyWage": "Not filled"
       }
     },
     "search": {
@@ -1054,8 +1054,8 @@
       },
       "trow": {
         "soilType": "No select",
-        "location": "No filled",
-        "area": "No filled"
+        "location": "Not filled",
+        "area": "Not filled"
       }
     },
     "tabs": {
@@ -1215,10 +1215,10 @@
         "confirmedBy": "ConfirmedBy"
       },
       "trow": {
-        "temperature": "No filled",
-        "humidity": "No filled",
-        "atmosphericPressure": "No filled",
-        "rainfall": "No filled",
+        "temperature": "Not filled",
+        "humidity": "Not filled",
+        "atmosphericPressure": "Not filled",
+        "rainfall": "Not filled",
         "confirmedAt": "No confirmed",
         "confirmedBy": "No confirmed"
       }
@@ -1647,10 +1647,10 @@
       "trow": {
         "season": "Any season",
         "fertilizerType": "No select",
-        "idealTemperature": "No filled",
-        "idealHumidity": "No filled",
-        "waterRequirement": "No filled",
-        "growDuration": "No filled"
+        "idealTemperature": "Not filled",
+        "idealHumidity": "Not filled",
+        "waterRequirement": "Not filled",
+        "growDuration": "Not filled"
       }
     },
     "tabs": {
@@ -1843,10 +1843,10 @@
         "manufacturer": "Manufacturer"
       },
       "trow": {
-        "manufacturer": "No filled",
-        "applicationMethod": "No filled",
-        "frequencyOfUse": "No filled",
-        "nutrientOfNPK": "No filled",
+        "manufacturer": "Not filled",
+        "applicationMethod": "Not filled",
+        "frequencyOfUse": "Not filled",
+        "nutrientOfNPK": "Not filled",
         "type": "No select"
       }
     },
@@ -1902,7 +1902,7 @@
           "ORGANIC": "Organic",
           "INORGANIC": "Inorganic",
           "BIO": "Bio",
-          "default": "No filled"
+          "default": "Not filled"
         }
       },
       "nutrientOfNPK": {
@@ -1911,13 +1911,13 @@
         "required_error": "NPK ratio is required!",
         "min": "Min NPK ratio length is {min} characters",
         "max": "Max NPK ratio's length is {max} characters",
-        "default": "No filled"
+        "default": "Not filled"
       },
       "composition": {
         "label": "Composition",
         "placeholder": "Other composition is such as Mn, Bo...",
         "max": "Max composition length is {max} characters",
-        "default": "No filled"
+        "default": "Not filled"
       },
       "manufacturer": {
         "label": "Manufacturer",
@@ -1928,7 +1928,7 @@
         "label": "Method",
         "placeholder": "Eg: Root watering, spray on leaves",
         "max": "Max method length is {max} characters",
-        "default": "No filled"
+        "default": "Not filled"
       },
       "frequencyOfUse": {
         "label": "Frequency of use",
@@ -1957,7 +1957,7 @@
           "invalid_type_error": "Dosage value must be number",
           "min": "Min dosage value is {min}",
           "max": "Max dosage value is {max}",
-          "default": "No filled"
+          "default": "Not filled"
         },
         "label": "Recommended dosage",
         "placeholder": "From 0 to 100"
@@ -1991,8 +1991,8 @@
       "trow": {
         "type": "No select",
         "toxicityLevel": "No select",
-        "manufacturer": "No filled",
-        "applicationMethod": "No filled"
+        "manufacturer": "Not filled",
+        "applicationMethod": "Not filled"
       }
     },
     "search": {
@@ -2046,7 +2046,7 @@
           "FUNGICIDE": "Fungicide",
           "default": "No selected"
         },
-        "default": "No filled"
+        "default": "Not filled"
       },
       "ingredient": {
         "label": "Ingredient",
@@ -2073,7 +2073,7 @@
           "int": "Withdrawal period value must be integer",
           "min": "Min Withdrawal period value is {min}",
           "max": "Max Withdrawal period value is {max}",
-          "default": "No filled"
+          "default": "Not filled"
         },
         "label": "Withdrawal period",
         "placeholder": "Eg: 3 months"
@@ -2103,7 +2103,7 @@
           "invalid_type_error": "Dosage value must be number",
           "min": "Min dosage value is {min}",
           "max": "Max dosage value is {max}",
-          "default": "No filled"
+          "default": "Not filled"
         },
         "label": "Recommended dosage",
         "placeholder": "From 0 to 100"
@@ -2112,7 +2112,7 @@
         "label": "Method",
         "placeholder": "Eg: Root watering, spray on leaves",
         "max": "Max method length is {max} characters",
-        "default": "No filled"
+        "default": "Not filled"
       },
       "pesticideId": {
         "itemDetail": "Please select item in popover to display pesticide detail"
@@ -2146,9 +2146,9 @@
         "dosage": "Plant dosage"
       },
       "trow": {
-        "dosage": "No filled",
+        "dosage": "Not filled",
         "fertilizer": {
-          "recommendedDosage": "No filled"
+          "recommendedDosage": "Not filled"
         }
       }
     },
@@ -2248,9 +2248,9 @@
         "dosage": "Plant dosage"
       },
       "trow": {
-        "dosage": "No filled",
+        "dosage": "Not filled",
         "pesticide": {
-          "recommendedDosage": "No filled"
+          "recommendedDosage": "Not filled"
         }
       }
     },
@@ -2376,8 +2376,8 @@
         "purchasePrice": "Purchase price"
       },
       "trow": {
-        "purchaseDate": "No filled",
-        "purchasePrice": "No filled"
+        "purchaseDate": "Not filled",
+        "purchasePrice": "Not filled"
       }
     },
     "search": {
@@ -2522,11 +2522,11 @@
         }
       },
       "trow": {
-        "location": "No filled",
+        "location": "Not filled",
         "lastMaintenanceDate": "Never",
-        "maxFuelConsumption": "No filled",
-        "energyType": "No filled",
-        "baseFuelPrice": "No filled"
+        "maxFuelConsumption": "Not filled",
+        "energyType": "Not filled",
+        "baseFuelPrice": "Not filled"
       }
     },
     "search": {
@@ -2651,17 +2651,15 @@
     "table": {
       "thead": {
         "equipmentDetail": {
-          "name": "Name",
+          "name": "Equipment name",
           "status": "Status",
           "imageUrl": "Image",
           "location": "Location"
         },
         "activity": {
-          "name": "Activity name",
-          "status": "Activity Status",
-          "usage": "Usage"
+          "usage": "Activity"
         },
-        "usageStartTime": "Created date",
+        "usageStartTime": "Usage date",
         "duration": "Duration",
         "operator": "Operator",
         "fuelConsumption": "Fuel consumption",
@@ -2677,13 +2675,13 @@
           "unused": "Unused"
         },
         "equipmentDetail": {
-          "location": "No filled"
+          "location": "Not filled"
         },
         "operator": "No operator",
-        "fuelConsumption": "No filled",
-        "fuelPrice": "No filled",
-        "rentalPrice": "No filled",
-        "actualCost": "No value calculator"
+        "fuelConsumption": "Not filled",
+        "fuelPrice": "Not filled",
+        "rentalPrice": "Not filled",
+        "actualCost": "No value "
       },
       "tfooter": {
         "totalCost": "Total cost of current page"
@@ -2855,7 +2853,7 @@
         "countUsages": "Count usages"
       },
       "trow": {
-        "basePrice": "No filled"
+        "basePrice": "Not filled"
       }
     },
     "search": {
@@ -2979,11 +2977,10 @@
     "table": {
       "thead": {
         "activity": {
-          "usage": "Usage"
+          "usage": "Activity"
         },
         "material": {
-          "imageUrl": "Image",
-          "name": "Name",
+          "name": "Material name",
           "type": "Type",
           "quantityInStock": "Quantity remained"
         },
@@ -2994,8 +2991,8 @@
         "actualCost": "Actual  cost"
       },
       "trow": {
-        "actualPrice": "No filled",
-        "actualCost": "No filled"
+        "actualPrice": "Not filled",
+        "actualCost": "Not filled"
       },
       "tfooter": {
         "totalCost": "Total cost of current page"
@@ -3185,26 +3182,26 @@
     "table": {
       "thead": {
         "activityDate": "Activity date",
-        "name": "Name",
+        "name": "Activity name",
         "status": "Status",
         "priority": "Priority",
-        "estimatedDuration": "Estimate duration",
+        "estimatedDuration": "Estimated duration",
         "createdBy": "CreatedBy",
         "actualDuration": "Actual duration",
         "crop": "Crop info",
-        "totalStaffCost": "Total staff cost",
-        "totalEquipmentCost": "Total equipment cost",
-        "totalMaterialCost": "Total material cost",
-        "actualCost": "Total actual cost"
+        "totalStaffCost": "Staff cost",
+        "totalEquipmentCost": "Equipment cost",
+        "totalMaterialCost": "Material cost",
+        "actualCost": "Actual cost"
       },
       "trow": {
-        "actualDuration": "No filled",
-        "totalStaffCost": "No value calculator",
-        "totalEquipmentCost": "No value calculator",
-        "totalMaterialCost": "No value calculator",
-        "actualCost": "No value calculator",
+        "actualDuration": "Not filled",
+        "totalStaffCost": "No value",
+        "totalEquipmentCost": "No value",
+        "totalMaterialCost": "No value",
+        "actualCost": "No value",
         "crop": {
-          "endDate": "No filled"
+          "endDate": "Not filled"
         }
       },
       "tfooter": {
@@ -3235,23 +3232,16 @@
         "title": "Edit activity",
         "description": "Update of activity"
       },
-      "viewDetail": {
-        "label": "View detail"
-      },
+
       "destroy": {
         "label": "Delete activity",
         "title": "Delete activity?",
-        "description": "Activity can only delete when no material used and no equipment used. Are you absolutely sure? This action can not be undone!"
+        "description": "Are you absolutely sure? This action can not be undone!"
       },
       "complete": {
         "label": "Finish activity",
         "title": "Finish activity?",
-        "description": "After marking finish this activity. This activity can not be updated! Are you absolutely sure? This action can not be undone!"
-      },
-      "cancel": {
-        "label": "Cancel Activity",
-        "title": "Cancel activity?",
-        "description": "After cancel, material usage will not restore, equipment used will be available. Are you absolutely sure? This action can not be undone!"
+        "description": "Are you absolutely sure? This action can not be undone!"
       }
     },
     "schema": {
@@ -3262,7 +3252,8 @@
         "existStaff": "Staff is not existed",
         "existActivity": "Activity is not exist",
         "invalidActivityStatus": "Activity status is in list:[new, in progress, pending] is possible update",
-        "updatePermission": "No permission update"
+        "updatePermission": "No permission update",
+        "updateStatusCompleted": "Activity have already completed or some assigned staffs's hourly wage is no filled "
       },
       "name": {
         "label": "Activity name",
@@ -3301,8 +3292,7 @@
           "NEW": "New",
           "PENDING": "Pending",
           "IN_PROGRESS": "In progress",
-          "COMPLETED": "Completed",
-          "CANCELLED": "Cancelled"
+          "COMPLETED": "Completed"
         },
         "label": "Status",
         "placeholder": "Select status...",
@@ -3368,6 +3358,23 @@
       "title": "Activity not found",
       "description": "Sorry, we couldn’t find the activity you’re looking for.",
       "backLabel": "Go to activities page"
+    },
+    "danger": {
+      "complete": {
+        "title": "Complete activity",
+        "description": {
+          "completed": "After activity status completed, this activity CANNOT ate anymore",
+          "hourlyWage": "CANNOT complete activity when Hourly Wage of assigned staffs are no filled",
+          "actualDuration": "If no Actual Duration of activity , Estimated Duration will be used",
+          "actualWork": "If no Actual Work of assigned staffs, Actual Duration of activity will be used"
+        }
+      },
+      "destroy": {
+        "title": "Delete activity",
+        "description": {
+          "usages": "Only delete activity when no equipment usages and material usages"
+        }
+      }
     }
   },
   "activityAssigned": {
@@ -3384,10 +3391,10 @@
         "actualCost": "Actual Cost"
       },
       "trow": {
-        "baseHourlyWage": "No filled",
-        "actualWork": "No filled",
-        "hourlyWage": "No filled",
-        "actualCost": "No value calculator"
+        "baseHourlyWage": "Not filled",
+        "actualWork": "Not filled",
+        "hourlyWage": "Not filled",
+        "actualCost": "No value "
       },
       "tfooter": {
         "total": "Total actual cost"
@@ -3509,26 +3516,19 @@
     },
     "table": {
       "thead": {
+        "name": "Crop name",
         "startDate": "Start date",
-        "endDate": "End date",
-        "name": "Name",
+        "endDate": "Finish date",
         "plant": "Plant",
-        "estimatedYield": "Estimated Yield",
-        "actualYield": "Actual Yield",
-        "status": "Status",
+        "status": "Crop status",
         "field": {
-          "name": "Field name",
-          "area": "Field area"
+          "name": "Field"
         }
       },
       "trow": {
-        "endDate": "No filled",
-        "estimatedYield": "No filled",
-        "actualYield": "No filled",
-        "status": "No filled",
-        "field": {
-          "area": "No filled"
-        }
+        "endDate": "Not finished",
+        "estimatedYield": "Not filled",
+        "actualYield": "Not filled"
       }
     },
     "search": {
@@ -3558,7 +3558,8 @@
     },
     "schema": {
       "errors": {
-        "parse": "Invalid crops!"
+        "parse": "Invalid crops!",
+        "cropUpdateStatusFinish": "Crop has already finish or some activities in crop are not completed"
       },
       "name": {
         "label": "Crop name",
@@ -3644,6 +3645,20 @@
       "title": "Crop not found",
       "description": "Sorry, we couldn’t find the crop you’re looking for.",
       "backLabel": "Go to crops page"
+    },
+    "danger": {
+      "finish": {
+        "title": "Finish crop",
+        "description": {
+          "activityComplete": "All activity in crop must be COMPLETED status"
+        }
+      },
+      "destroy": {
+        "title": "Delete crop",
+        "description": {
+          "activityCount": "Crop only can delete when no activities set"
+        }
+      }
     }
   },
   "tasks": {
@@ -4166,5 +4181,12 @@
     "my-files": "My Files",
     "public-files": "Public Files",
     "my-trash": "My trash"
+  },
+  "command-menu": {
+    "title": "Search features...",
+    "label": "Search...",
+    "notFound": "No results found.",
+    "placeholder": "Type a command or search...",
+    "suggestionsGroup": "Suggestions"
   }
 }

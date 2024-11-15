@@ -20,6 +20,7 @@ import { useRouterWithRole } from "@/hooks/use-router-with-role";
 import { ActivitiesTableFaceted } from "@/app/[locale]/(backoffice)/admin/activities/_components/activities-table-faceted";
 import { ActivityStatusValue } from "@/app/[locale]/(backoffice)/admin/activities/_components/activity-status-value";
 import { ActivityPriorityValue } from "@/app/[locale]/(backoffice)/admin/activities/_components/activity-priority-value";
+import { DatePickerWithRangeButton } from "@/components/buttons/date-picker-range-button";
 
 interface CropActivitiesTableProps {
   data: ActivityWithCost[];
@@ -39,12 +40,17 @@ export const CropActivitiesTable = ({
 
   return (
     <>
-      <ActivitiesTableFaceted />
-      <SearchBar isPagination placeholder={t("search.placeholder")} />
-
+      <div className="flex gap-x-2 items-center flex-wrap">
+        <SearchBar isPagination placeholder={t("search.placeholder")} />
+        <DatePickerWithRangeButton />
+        <ActivitiesTableFaceted />
+      </div>
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead className="min-w-[200px]">
+              <OrderByButton column="name" label={t("table.thead.name")} />
+            </TableHead>
             <TableHead>
               <OrderByButton
                 column="activityDate"
@@ -52,9 +58,7 @@ export const CropActivitiesTable = ({
                 defaultValue="desc"
               />
             </TableHead>
-            <TableHead>
-              <OrderByButton column="name" label={t("table.thead.name")} />
-            </TableHead>
+
             <TableHead>{t("table.thead.status")}</TableHead>
             <TableHead>{t("table.thead.priority")}</TableHead>
             <TableHead className="text-right">
@@ -63,16 +67,16 @@ export const CropActivitiesTable = ({
             <TableHead className="text-right">
               {t("table.thead.actualDuration")}
             </TableHead>
-            <TableHead className="text-right">
+            <TableHead className="whitespace-nowrap">
               {t("table.thead.totalStaffCost")}
             </TableHead>
-            <TableHead className="text-right">
+            <TableHead className="whitespace-nowrap">
               {t("table.thead.totalEquipmentCost")}
             </TableHead>
-            <TableHead className="text-right">
+            <TableHead className="whitespace-nowrap">
               {t("table.thead.totalMaterialCost")}
             </TableHead>
-            <TableHead className="text-right">
+            <TableHead className="whitespace-nowrap">
               {t("table.thead.actualCost")}
             </TableHead>
           </TableRow>
@@ -85,8 +89,11 @@ export const CropActivitiesTable = ({
                 className="cursor-pointer"
                 onClick={() => handleViewDetail(item)}
               >
-                <TableCell>{dateTime(item.activityDate, "long")}</TableCell>
-                <TableCell>{item.name}</TableCell>
+                <TableHead>{item.name}</TableHead>
+                <TableCell className="font-semibold">
+                  {dateTime(item.activityDate, "long")}
+                </TableCell>
+
                 <TableCell>
                   <ActivityStatusValue value={item.status} />
                 </TableCell>
@@ -102,22 +109,22 @@ export const CropActivitiesTable = ({
                     : t("table.trow.actualDuration")}
                 </TableCell>
                 <TableCell className="text-right">
-                  {item.totalStaffCost
+                  {item.totalStaffCost !== null
                     ? number(item.totalStaffCost, "currency")
                     : t("table.trow.totalStaffCost")}
                 </TableCell>
                 <TableCell className="text-right">
-                  {item.totalEquipmentCost
+                  {item.totalEquipmentCost !== null
                     ? number(item.totalEquipmentCost, "currency")
                     : t("table.trow.totalEquipmentCost")}
                 </TableCell>
                 <TableCell className="text-right">
-                  {item.totalMaterialCost
+                  {item.totalMaterialCost !== null
                     ? number(item.totalMaterialCost, "currency")
                     : t("table.trow.totalMaterialCost")}
                 </TableCell>
                 <TableCell className="text-right">
-                  {item.actualCost
+                  {item.actualCost !== null
                     ? number(item.actualCost, "currency")
                     : t("table.trow.actualCost")}
                 </TableCell>
@@ -131,7 +138,6 @@ export const CropActivitiesTable = ({
             <TableCell className="text-right">
               {number(totalCost, "currency")}
             </TableCell>
-            <TableCell></TableCell>
           </TableRow>
         </TableFooter>
       </Table>

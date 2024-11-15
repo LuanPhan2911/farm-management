@@ -9,7 +9,7 @@ import {
   MaterialUsageUpdateQuantityError,
 } from "@/errors";
 import { errorResponse, successResponse } from "@/lib/utils";
-import { MaterialUsageSchema } from "@/schemas";
+import { MaterialUsageSchema, MaterialUsageUpdateSchema } from "@/schemas";
 import {
   assignMaterialUsage,
   createMaterialUsage,
@@ -61,12 +61,12 @@ export const create = async (
   }
 };
 export const edit = async (
-  values: z.infer<ReturnType<typeof MaterialUsageSchema>>,
+  values: z.infer<ReturnType<typeof MaterialUsageUpdateSchema>>,
   id: string
 ): Promise<ActionResponse> => {
   const tSchema = await getTranslations("materialUsages.schema");
   const tStatus = await getTranslations("materialUsages.status");
-  const paramsSchema = MaterialUsageSchema(tSchema);
+  const paramsSchema = MaterialUsageUpdateSchema(tSchema);
   const validatedFields = paramsSchema.safeParse(values);
 
   if (!validatedFields.success) {

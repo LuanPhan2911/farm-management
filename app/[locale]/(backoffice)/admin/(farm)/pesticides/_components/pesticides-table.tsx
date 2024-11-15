@@ -47,12 +47,10 @@ export const PesticidesTable = ({ data, totalPage }: PesticidesTableProps) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>
+            <TableHead className="min-w-[200px]">
               <OrderByButton column="name" label={t("table.thead.name")} />
             </TableHead>
-            <TableHead>
-              <OrderByButton column="type" label={t("table.thead.type")} />
-            </TableHead>
+            <TableHead>{t("table.thead.type")}</TableHead>
             <TableHead>{t("table.thead.toxicityLevel")}</TableHead>
             <TableHead>{t("table.thead.applicationMethod")}</TableHead>
             <TableHead>{t("table.thead.manufacturer")}</TableHead>

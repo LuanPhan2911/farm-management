@@ -1,5 +1,6 @@
 "use server";
 
+import { ActivityUpdateStatusCompletedError } from "@/errors";
 import { errorResponse, successResponse } from "@/lib/utils";
 import {
   ActivityAssignedSchema,
@@ -12,7 +13,7 @@ import {
   deleteActivityAssigned,
   updateActivity,
   updateActivityAssigned,
-  updateActivityStatus,
+  updateActivityStatusComplete,
   upsertActivityAssigned,
 } from "@/services/activities";
 import { ActionResponse } from "@/types";
@@ -76,23 +77,16 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
 
 export const completeActivity = async (id: string): Promise<ActionResponse> => {
   const tStatus = await getTranslations("activities.status");
-
+  const tSchema = await getTranslations("activities.schema");
   try {
-    await updateActivityStatus(id, "COMPLETED");
+    await updateActivityStatusComplete(id, "COMPLETED");
     revalidatePath("/admin/activities");
     return successResponse(tStatus("success.complete"));
   } catch (error) {
+    if (error instanceof ActivityUpdateStatusCompletedError) {
+      return errorResponse(tSchema("errors.updateStatusCompleted"));
+    }
     return errorResponse(tStatus("failure.complete"));
-  }
-};
-export const cancelActivity = async (id: string): Promise<ActionResponse> => {
-  const tStatus = await getTranslations("activities.status");
-  try {
-    await updateActivityStatus(id, "CANCELLED");
-    revalidatePath("/admin/activities");
-    return successResponse(tStatus("success.cancel"));
-  } catch (error) {
-    return errorResponse(tStatus("failure.cancel"));
   }
 };
 
@@ -131,9 +125,9 @@ export const deleteAssigned = async (
       staffId,
     });
     revalidatePath(`/admin/activities/detail/${activityId}/staffs`);
-    return successResponse(tStatus("success.delete"));
+    return successResponse(tStatus("success.destroy"));
   } catch (error) {
-    return errorResponse(tStatus("failure.delete"));
+    return errorResponse(tStatus("failure.destroy"));
   }
 };
 

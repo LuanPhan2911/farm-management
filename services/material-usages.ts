@@ -294,6 +294,7 @@ export const getMaterialUsages = async ({
         take: LIMIT,
         skip: (page - 1) * LIMIT,
         where: {
+          activityId: null,
           materialId,
           material: {
             name: {

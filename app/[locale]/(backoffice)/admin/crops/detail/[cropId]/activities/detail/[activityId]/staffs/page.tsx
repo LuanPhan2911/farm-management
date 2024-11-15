@@ -1,13 +1,8 @@
-import {
-  getActivityAssignedStaffs,
-  getOnlyActivityById,
-} from "@/services/activities";
+import { getActivityAssignedStaffs } from "@/services/activities";
 import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ActivityStaffsCreateButton } from "@/app/[locale]/(backoffice)/admin/activities/detail/[activityId]/staffs/_components/activity-staffs-create-button";
 import { ActivityStaffsTable } from "@/app/[locale]/(backoffice)/admin/activities/detail/[activityId]/staffs/_components/activity-staffs-table";
-import { notFound } from "next/navigation";
-import { canUpdateActivityStatus } from "@/lib/permission";
 import { canUpdateActivity } from "@/lib/role";
 
 export async function generateMetadata() {

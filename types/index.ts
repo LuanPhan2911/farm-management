@@ -202,6 +202,9 @@ export type PlantSelect = {
   id: string;
   name: string;
   imageUrl: string | null;
+  category: {
+    name: string;
+  };
 };
 export type PlantFertilizerTable = PlantFertilizer & {
   fertilizer: {
@@ -421,22 +424,22 @@ export type EquipmentUsageTableWithTotalCost = {
   totalCost: number;
 };
 
-export type ActivityAssignedStaff = ActivityAssigned & {
+export type AssignedStaff = ActivityAssigned & {
   staff: Staff;
 };
-export type ActivityAssignedStaffWithActivitySelect = ActivityAssigned & {
-  activity: ActivitySelect;
+export type AssignedStaffWithCost = ActivityAssigned & {
   staff: Staff;
+  activity: ActivitySelect;
   actualCost: number | null;
 };
-export type ActivityAssignedStaffWithActivityAndCost = {
+export type AssignedStaffWithTotalCost = {
   totalCost: number;
-  data: ActivityAssignedStaffWithActivitySelect[];
+  data: AssignedStaffWithCost[];
 };
 export type ActivityTable = Activity & {
   createdBy: Staff;
   crop: CropSelect;
-  assignedTo: ActivityAssignedStaff[];
+  assignedTo: AssignedStaff[];
 };
 
 export type ActivityWithCost = Activity & {
@@ -516,3 +519,5 @@ export type CropMaterialUsage = MaterialUsage & {
     name: string;
   };
 };
+
+export type CropActivity = Activity & {};

@@ -3,7 +3,7 @@ import {
   DynamicDialog,
   DynamicDialogFooter,
 } from "@/components/dialog/dynamic-dialog";
-import { MaterialUsageSchema } from "@/schemas";
+import { MaterialUsageSchema, MaterialUsageUpdateSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UnitType } from "@prisma/client";
@@ -54,7 +54,7 @@ export const MaterialUsageEditDialog = () => {
 
   const tSchema = useTranslations("materialUsages.schema");
   const t = useTranslations("materialUsages.form");
-  const formSchema = MaterialUsageSchema(tSchema);
+  const formSchema = MaterialUsageUpdateSchema(tSchema);
 
   const [maxQuantityUsed, setMaxQuantityUsed] = useState<number | undefined>(
     undefined
@@ -75,7 +75,6 @@ export const MaterialUsageEditDialog = () => {
       form.reset({
         activityId,
         actualPrice,
-        materialId,
         quantityUsed,
         unitId,
       });

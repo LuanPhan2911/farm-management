@@ -1,12 +1,11 @@
-import { getActivitiesByCrop } from "@/services/activities";
-
-import { parseToDate } from "@/lib/utils";
+import { parseToDate, parseToNumber } from "@/lib/utils";
 import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { ActivityCreateButton } from "../../../../activities/_components/activity-create-button";
+import { canUpdateActivity } from "@/lib/role";
 import { CropActivitiesTable } from "./_components/crop-activities-table";
-import { canUpdateActivity, canUpdateCrop } from "@/lib/role";
+import { getActivitiesByCrop } from "@/services/activities";
 
 interface CropActivitiesPageProps {
   params: {
@@ -15,10 +14,10 @@ interface CropActivitiesPageProps {
   searchParams: {
     orderBy?: string;
     filterString?: string;
-    filterNumber?: string;
     query?: string;
     begin?: string;
     end?: string;
+    page?: string;
   };
 }
 export async function generateMetadata() {
@@ -35,16 +34,16 @@ const CropActivitiesPage = async ({
   const t = await getTranslations("crops.page.detail.activities");
   const begin = parseToDate(searchParams!.begin);
   const end = parseToDate(searchParams!.end);
-  const { orderBy, filterNumber, filterString, query } = searchParams;
+
+  const { orderBy, filterString, query } = searchParams;
 
   const { data, totalCost } = await getActivitiesByCrop({
-    filterNumber,
-    filterString,
-    orderBy,
-    query,
     cropId: params.cropId,
     begin,
     end,
+    filterString,
+    orderBy,
+    query,
   });
   const canEdit = await canUpdateActivity(params.cropId);
   return (

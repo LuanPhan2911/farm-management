@@ -208,6 +208,7 @@ export const getEquipmentUsages = async ({
         take: LIMIT,
         skip: (page - 1) * LIMIT,
         where: {
+          activityId: null,
           equipmentDetailId,
           equipmentDetail: {
             name: {

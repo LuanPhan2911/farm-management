@@ -10,14 +10,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
-import { ActivityAssignedStaffWithActivitySelect } from "@/types";
+import { AssignedStaffWithCost } from "@/types";
 import { MoreHorizontal, Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { ActivityStaffsEditButton } from "./activity-staffs-edit-button";
 import { canUpdateActivityStatus } from "@/lib/permission";
 interface ActivityStaffTableActionProps {
-  data: ActivityAssignedStaffWithActivitySelect;
+  data: AssignedStaffWithCost;
   disabled?: boolean;
 }
 export const ActivityStaffsTableAction = ({

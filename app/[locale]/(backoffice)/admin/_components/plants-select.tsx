@@ -34,7 +34,11 @@ export const PlantsSelect = (props: PlantsSelectProps) => {
       valueKey="id"
       labelKey="name"
       renderItem={(item) => (
-        <SelectItemContent imageUrl={item.imageUrl} title={item.name} />
+        <SelectItemContent
+          imageUrl={item.imageUrl}
+          title={item.name}
+          description={item.category.name}
+        />
       )}
     />
   );

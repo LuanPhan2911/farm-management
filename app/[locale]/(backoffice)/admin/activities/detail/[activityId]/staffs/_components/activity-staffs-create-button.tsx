@@ -11,7 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { ActivityAssignedSchema } from "@/schemas";
-import { ActivityAssignedStaffWithActivitySelect } from "@/types";
+import { AssignedStaffWithCost } from "@/types";
 import { useAuth } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
@@ -22,7 +22,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 interface ActivityStaffsCreateButtonProps {
-  data: ActivityAssignedStaffWithActivitySelect[];
+  data: AssignedStaffWithCost[];
   disabled?: boolean;
 }
 export const ActivityStaffsCreateButton = ({

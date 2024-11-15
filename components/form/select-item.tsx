@@ -17,11 +17,11 @@ export const SelectItemContent = ({
   return (
     <div className="flex items-center gap-x-2">
       <UserAvatar src={imageUrl || undefined} className="rounded-full" />
-      <div className="flex flex-col gap-y-1">
-        <div className="text-sm font-medium leading-none text-start">
+      <div className="flex flex-col">
+        <div className="text-sm font-semibold leading-none text-start whitespace-nowrap">
           {title}
         </div>
-        <div className="text-sm text-muted-foreground text-start">
+        <div className="text-sm text-muted-foreground text-start whitespace-nowrap">
           {description}
         </div>
       </div>
@@ -38,8 +38,12 @@ export const SelectItemContentWithoutImage = ({
 }: SelectItemContentWithoutImageProps) => {
   return (
     <div className="w-full flex flex-col gap-y-1">
-      <div className="text-sm font-medium leading-none text-start">{title}</div>
-      <p className="text-xs text-muted-foreground text-start">{description}</p>
+      <div className="text-sm font-semibold leading-none text-start">
+        {title}
+      </div>
+      <p className="whitespace-nowrap text-xs text-muted-foreground text-start">
+        {description}
+      </p>
     </div>
   );
 };

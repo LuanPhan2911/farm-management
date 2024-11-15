@@ -21,6 +21,7 @@ import { includeString } from "@/lib/utils";
 import { UserAvatar } from "@/components/user-avatar";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
 import { UnitWithValue } from "../../../_components/unit-with-value";
+import { SelectItemContent } from "@/components/form/select-item";
 
 interface EquipmentsTableProps {
   data: EquipmentTable[];
@@ -50,12 +51,10 @@ export const EquipmentsTable = ({ data, totalPage }: EquipmentsTableProps) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{t("table.thead.imageUrl")}</TableHead>
-            <TableHead>
+            <TableHead className="min-w-[200px]">
               <OrderByButton column="name" label={t("table.thead.name")} />
             </TableHead>
             <TableHead>{t("table.thead.type")}</TableHead>
-            <TableHead>{t("table.thead.brand")}</TableHead>
             <TableHead>{t("table.thead.purchaseDate")}</TableHead>
             <TableHead className="text-right">
               {t("table.thead.purchasePrice")}
@@ -74,12 +73,15 @@ export const EquipmentsTable = ({ data, totalPage }: EquipmentsTableProps) => {
                 onClick={() => handleViewDetail(item)}
               >
                 <TableCell>
-                  <UserAvatar src={item.imageUrl || undefined} />
+                  <SelectItemContent
+                    imageUrl={item.imageUrl}
+                    title={item.name}
+                    description={item.brand}
+                  />
                 </TableCell>
-                <TableCell>{item.name}</TableCell>
+
                 <TableCell>{t(`schema.type.options.${item.type}`)}</TableCell>
 
-                <TableCell>{item.brand}</TableCell>
                 <TableCell>
                   {item.purchaseDate
                     ? dateTime(item.purchaseDate, "long")

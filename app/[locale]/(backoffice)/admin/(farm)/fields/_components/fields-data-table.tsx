@@ -21,14 +21,6 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
 
   const columns: ColumnDef<FieldTable>[] = [
     {
-      accessorKey: "orgId",
-      header: t("table.thead.orgId"),
-      cell: ({ row }) => {
-        const data = row.original;
-        return <UsageStatusValue status={!!data.orgId} />;
-      },
-    },
-    {
       accessorKey: "name",
       header: ({ column }) => {
         return (
@@ -49,6 +41,14 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
           return t("table.trow.location");
         }
         return data.location;
+      },
+    },
+    {
+      accessorKey: "orgId",
+      header: t("table.thead.orgId"),
+      cell: ({ row }) => {
+        const data = row.original;
+        return <UsageStatusValue status={!!data.orgId} />;
       },
     },
 

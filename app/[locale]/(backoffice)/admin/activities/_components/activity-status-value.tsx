@@ -21,7 +21,4 @@ export const ActivityStatusValue = ({ value }: ActivityStatusValueProps) => {
   if (value === "COMPLETED") {
     return <Badge variant={"success"}>{t(`options.${value}`)}</Badge>;
   }
-  if (value === "CANCELLED") {
-    return <Badge variant={"destructive"}>{t(`options.${value}`)}</Badge>;
-  }
 };

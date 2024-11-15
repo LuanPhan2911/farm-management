@@ -10,7 +10,6 @@ import { useQuery } from "@tanstack/react-query";
 
 import { useParams, useSearchParams } from "next/navigation";
 import queryString from "query-string";
-import { DatePickerWithRangeButton } from "@/components/buttons/date-picker-range-button";
 import { SelectData, SelectOptions } from "@/components/form/select-options";
 import { useUpdateSearchParam } from "@/hooks/use-update-search-param";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
@@ -132,11 +131,8 @@ const ActivitiesFacetedPriority = () => {
 export const ActivitiesTableFaceted = () => {
   return (
     <div className="flex gap-2 my-2 lg:flex-row flex-col lg:items-center items-start">
-      <DatePickerWithRangeButton />
-      <div className="flex gap-2 justify-start">
-        <ActivitiesFacetedStatus />
-        <ActivitiesFacetedPriority />
-      </div>
+      <ActivitiesFacetedStatus />
+      <ActivitiesFacetedPriority />
     </div>
   );
 };

@@ -596,7 +596,6 @@ enum ActivityStatus {
   PENDING
   IN_PROGRESS
   COMPLETED
-  CANCELLED
 }
 
 enum ActivityPriority {

@@ -764,6 +764,44 @@ export const EquipmentUsageSchema = (
 ) => {
   return z.object({
     equipmentDetailId: stringSchema(t, "equipmentDetailId", { required: true }),
+    activityId: stringSchema(t, "activityId"),
+    usageStartTime: z.date({
+      invalid_type_error: t("usageStartTime.invalid_type_error"),
+      required_error: t("usageStartTime.required_error"),
+    }),
+    duration: numberSchema(t, "duration", {
+      min: 0,
+      max: 100,
+    }),
+    note: stringSchema(t, "note", {
+      max: 255,
+      required: false,
+    }).nullish(),
+    operatorId: stringSchema(t, "operatorId", {
+      required: false,
+    }).nullish(),
+    fuelConsumption: numberSchema(t, "fuelConsumption", {
+      min: 0,
+      max: 10_000,
+      required: false,
+    }).nullish(),
+    unitId: stringSchema(t, "unitId", { required: false }).nullish(),
+    fuelPrice: numberSchema(t, "fuelPrice", {
+      min: 0,
+      max: 1_000_000,
+      required: false,
+    }).nullish(),
+    rentalPrice: numberSchema(t, "rentalPrice", {
+      min: 0,
+      max: 10_000_000,
+      required: false,
+    }).nullish(),
+  });
+};
+export const EquipmentUsageUpdateSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
     activityId: stringSchema(t, "activityId", { required: false }).nullish(),
     usageStartTime: z.date({
       invalid_type_error: t("usageStartTime.invalid_type_error"),
@@ -840,6 +878,24 @@ export const MaterialUsageSchema = (
   return z.object({
     unitId: stringSchema(t, "unitId", { required: true }),
     materialId: stringSchema(t, "materialId", { required: true }),
+    activityId: stringSchema(t, "activityId"),
+    quantityUsed: numberSchema(t, "quantityUsed", {
+      min: 1,
+      max: 1_000,
+      required: true,
+      int: true,
+    }),
+    actualPrice: numberSchema(t, "actualPrice", {
+      min: 0,
+      max: 10_000_000,
+      required: false,
+    }).nullish(),
+  });
+};
+export const MaterialUsageUpdateSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
     activityId: stringSchema(t, "activityId", { required: false }).nullish(),
     quantityUsed: numberSchema(t, "quantityUsed", {
       min: 1,
@@ -852,6 +908,7 @@ export const MaterialUsageSchema = (
       max: 10_000_000,
       required: false,
     }).nullish(),
+    unitId: stringSchema(t, "unitId", { required: true }),
   });
 };
 

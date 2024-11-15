@@ -6,13 +6,12 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import { useFormatter, useTranslations } from "next-intl";
-import { MaterialUsageTable, MaterialUsageTableWithCost } from "@/types";
+import { MaterialUsageTable } from "@/types";
 
 import { OrderByButton } from "@/components/buttons/order-by-button";
 
@@ -23,6 +22,7 @@ import { UserAvatar } from "@/components/user-avatar";
 import { MaterialTypeValue } from "../../../../_components/material-type-value";
 import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-with-value";
 import { UsageStatusValue } from "@/components/usage-status-value";
+import { SelectItemContent } from "@/components/form/select-item";
 
 interface MaterialUsagesTableProps {
   data: MaterialUsageTable[];
@@ -52,16 +52,16 @@ export const MaterialUsagesTable = ({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{t("table.thead.activity.usage")}</TableHead>
-            <TableHead>{t("table.thead.createdAt")}</TableHead>
-            <TableHead>{t("table.thead.material.imageUrl")}</TableHead>
             <TableHead className="w-[200px]">
               <OrderByButton
                 column="material.name"
                 label={t("table.thead.material.name")}
               />
             </TableHead>
+            <TableHead>{t("table.thead.activity.usage")}</TableHead>
+
             <TableHead>{t("table.thead.material.type")}</TableHead>
+            <TableHead>{t("table.thead.createdAt")}</TableHead>
             <TableHead className="text-right">
               {t("table.thead.material.quantityInStock")}
             </TableHead>
@@ -84,16 +84,19 @@ export const MaterialUsagesTable = ({
                 onClick={() => handleEdit(item)}
               >
                 <TableCell>
+                  <SelectItemContent
+                    imageUrl={item.material.imageUrl}
+                    title={item.material.name}
+                  />
+                </TableCell>
+                <TableCell>
                   <UsageStatusValue status={!!item.activityId} />
                 </TableCell>
-                <TableCell>{dateTime(item.createdAt, "long")}</TableCell>
-                <TableCell>
-                  <UserAvatar src={item.material.imageUrl || undefined} />
-                </TableCell>
-                <TableCell>{item.material.name}</TableCell>
+
                 <TableCell>
                   <MaterialTypeValue value={item.material.type} />
                 </TableCell>
+                <TableCell>{dateTime(item.createdAt, "long")}</TableCell>
                 <TableCell className="text-right">
                   <UnitWithValue
                     value={item.material.quantityInStock}

@@ -13,6 +13,7 @@ import { ActivityTable } from "@/types";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -29,6 +30,8 @@ import { StaffsSelectMultiple } from "../../_components/staffs-select";
 import { DatePickerWithTime } from "@/components/form/date-picker-with-time";
 import { CropsSelect } from "../../_components/crops-select";
 import { useAuth } from "@clerk/nextjs";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Hint } from "@/components/hint";
 
 interface ActivityEditFormProps {
   data: ActivityTable;
@@ -181,10 +184,7 @@ export const ActivityEditForm = ({ data, disabled }: ActivityEditFormProps) => {
                     })}
                     defaultValue={field.value}
                     disabled={isPending || !canEdit}
-                    disabledValues={[
-                      ActivityStatus.CANCELLED,
-                      ActivityStatus.COMPLETED,
-                    ]}
+                    disabledValues={[ActivityStatus.COMPLETED]}
                   />
                 </FormControl>
 
@@ -237,6 +237,7 @@ export const ActivityEditForm = ({ data, disabled }: ActivityEditFormProps) => {
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="actualDuration"
@@ -251,12 +252,12 @@ export const ActivityEditForm = ({ data, disabled }: ActivityEditFormProps) => {
                     disabled={isPending || !canEdit}
                   />
                 </FormControl>
-
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
+
         <FormField
           control={form.control}
           name="description"

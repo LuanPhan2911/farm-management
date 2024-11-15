@@ -231,10 +231,7 @@ export const ActivityCreateButton = ({
                         })}
                         defaultValue={field.value}
                         disabled={isPending || !canCreate}
-                        disabledValues={[
-                          ActivityStatus.CANCELLED,
-                          ActivityStatus.COMPLETED,
-                        ]}
+                        disabledValues={[ActivityStatus.COMPLETED]}
                       />
                     </FormControl>
 

@@ -4,7 +4,7 @@ import {
   ActivityStatusCount,
   ActivityTable,
   PaginatedResponse,
-  ActivityAssignedStaffWithActivityAndCost,
+  AssignedStaffWithTotalCost,
   ActivitySelectWithCrop,
   ActivityWithCountUsages,
   ActivityWithTotalCost,
@@ -19,9 +19,12 @@ import {
 } from "@/lib/utils";
 import { getCurrentStaff } from "./staffs";
 import { cropSelect } from "./crops";
-import { getMaterialUsagesByActivity } from "./material-usages";
-import { getEquipmentUsagesByActivity } from "./equipment-usages";
 import { isSuperAdmin } from "@/lib/permission";
+import {
+  ActivityExistError,
+  ActivityUpdateStatusCompletedError,
+} from "@/errors";
+import _ from "lodash";
 
 type ActivityParams = {
   name: string;
@@ -46,15 +49,25 @@ export const createActivity = async (params: ActivityParams) => {
   if (!currentStaff) {
     throw new Error("Unauthorized");
   }
+  const assignedStaffs = await db.staff.findMany({
+    where: {
+      id: {
+        in: assignedTo,
+      },
+    },
+  });
+
   const activity = await db.activity.create({
     data: {
       ...other,
       createdById: currentStaff.id,
       assignedTo: {
         createMany: {
-          data: assignedTo.map((staffId) => {
+          data: assignedStaffs.map(({ id, baseHourlyWage }) => {
             return {
-              staffId,
+              staffId: id,
+              hourlyWage: baseHourlyWage,
+              actualWork: params.actualDuration,
             };
           }),
           skipDuplicates: true,
@@ -90,19 +103,37 @@ export const updateActivity = async (
 ) => {
   const { assignedTo, ...other } = params;
 
+  const assignedStaffs = await db.staff.findMany({
+    where: {
+      id: {
+        in: assignedTo,
+      },
+    },
+  });
   const updatedActivity = await db.activity.update({
     where: { id },
     data: {
       ...other,
       assignedTo: {
         createMany: {
-          data: assignedTo.map((staffId) => {
+          data: assignedStaffs.map(({ id, baseHourlyWage }) => {
             return {
-              staffId,
+              staffId: id,
+              hourlyWage: baseHourlyWage,
+              actualWork: params.actualDuration,
             };
           }),
           skipDuplicates: true,
         },
+        updateMany: {
+          data: {
+            actualWork: params.actualDuration,
+          },
+          where: {
+            actualWork: null,
+          },
+        },
+
         deleteMany: {
           staffId: {
             notIn: assignedTo,
@@ -134,22 +165,34 @@ export const deleteActivity = async (id: string) => {
  *
  * @param id
  * @param status
- * 1. Update activity status to complete | cancelled
+ * 1. Update activity status to complete
  * 2. Update equipment detail used in activity, equipment usages duration will be add to operating hour
+ * 3. Update activity actual duration when null
+ * 4. Update assigned staff when no actual work
  */
-export const updateActivityStatus = async (
+export const updateActivityStatusComplete = async (
   id: string,
-  status: "COMPLETED" | "CANCELLED"
+  status: "COMPLETED"
 ) => {
-  const { totalCost: totalStaffCost } = await getActivityAssignedStaffs(id);
-  const { totalCost: totalMaterialCost } = await getMaterialUsagesByActivity({
-    activityId: id,
+  const activity = await db.activity.findUnique({
+    where: {
+      id,
+      status: {
+        not: "COMPLETED",
+      },
+      assignedTo: {
+        none: {
+          hourlyWage: null,
+        },
+      },
+    },
   });
-  const { totalCost: totalEquipmentCost } = await getEquipmentUsagesByActivity({
-    activityId: id,
-  });
+  if (!activity) {
+    throw new ActivityUpdateStatusCompletedError();
+  }
 
   return await db.$transaction(async (ctx) => {
+    //update equipment detail operating hour
     const equipmentUseds = await ctx.equipmentUsage.findMany({
       where: { activityId: id },
       select: {
@@ -157,17 +200,6 @@ export const updateActivityStatus = async (
         duration: true,
       },
     });
-
-    const activity = await ctx.activity.update({
-      where: { id },
-      data: {
-        status,
-        totalEquipmentCost,
-        totalMaterialCost,
-        totalStaffCost,
-      },
-    });
-
     const updateEquipmentDetailPromises = equipmentUseds.map((item) => {
       return ctx.equipmentDetail.update({
         where: { id: item.equipmentDetailId },
@@ -180,7 +212,84 @@ export const updateActivityStatus = async (
       });
     });
     await Promise.all(updateEquipmentDetailPromises);
-    return activity;
+
+    const actualDuration =
+      activity.actualDuration ?? activity.estimatedDuration;
+
+    const updateAssignedStaff = await ctx.activityAssigned.updateMany({
+      data: {
+        actualWork: actualDuration,
+      },
+      where: {
+        activityId: id,
+        actualWork: null,
+      },
+    });
+    // get total staff cost, material cost, equipment cost
+
+    const assignedStaffs = await ctx.activityAssigned.findMany({
+      where: {
+        activityId: id,
+      },
+      select: {
+        actualWork: true,
+        hourlyWage: true,
+      },
+    });
+    const equipmentUsages = await ctx.equipmentUsage.findMany({
+      where: {
+        activityId: id,
+      },
+      select: {
+        fuelConsumption: true,
+        fuelPrice: true,
+        rentalPrice: true,
+      },
+    });
+    const materialUsages = await ctx.materialUsage.findMany({
+      where: {
+        activityId: id,
+      },
+      select: {
+        actualPrice: true,
+        quantityUsed: true,
+      },
+    });
+    const totalStaffCost = _.sumBy(assignedStaffs, (item) => {
+      if (item.actualWork === null || item.hourlyWage === null) {
+        return 0;
+      }
+      return item.actualWork * item.hourlyWage;
+    });
+    const totalMaterialCost = _.sumBy(materialUsages, (item) => {
+      if (item.actualPrice === null) {
+        return 0;
+      }
+      return item.actualPrice * item.quantityUsed;
+    });
+
+    const totalEquipmentCost = _.sumBy(equipmentUsages, (item) => {
+      const { fuelConsumption, fuelPrice } = item;
+      const rentalPrice = item.rentalPrice ?? 0;
+      if (fuelConsumption === null || fuelPrice === null) {
+        return rentalPrice;
+      }
+      return fuelConsumption * fuelPrice + rentalPrice;
+    });
+
+    //update activity actual duration
+    const updatedActivity = await ctx.activity.update({
+      where: { id },
+      data: {
+        status,
+        actualDuration,
+        totalEquipmentCost,
+        totalMaterialCost,
+        totalStaffCost,
+      },
+    });
+
+    return updatedActivity;
   });
 };
 
@@ -193,6 +302,7 @@ type ActivityQuery = {
   type?: string;
   begin?: Date;
   end?: Date;
+  cropId?: string;
 };
 export const getActivities = async ({
   filterNumber,
@@ -203,17 +313,22 @@ export const getActivities = async ({
   type = "assignedTo",
   begin,
   end,
+  cropId,
 }: ActivityQuery): Promise<PaginatedResponse<ActivityTable>> => {
   try {
     const currentStaff = await getCurrentStaff();
     if (!currentStaff) {
       throw new Error("Unauthorized");
     }
+
     const [data, count] = await db.$transaction([
       db.activity.findMany({
         take: LIMIT,
         skip: (page - 1) * LIMIT,
         where: {
+          ...(cropId && {
+            cropId,
+          }),
           activityDate: {
             ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
             ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
@@ -298,77 +413,6 @@ export const getActivities = async ({
   }
 };
 
-type ActivityCropQuery = {
-  cropId: string;
-  query?: string;
-  orderBy?: string;
-  filterString?: string;
-  filterNumber?: string;
-  type?: string;
-  begin?: Date;
-  end?: Date;
-};
-export const getActivitiesByCrop = async ({
-  filterNumber,
-  filterString,
-  orderBy,
-  query,
-  cropId,
-  begin,
-  end,
-}: ActivityCropQuery): Promise<ActivityWithTotalCost> => {
-  try {
-    const currentStaff = await getCurrentStaff();
-    if (!currentStaff) {
-      throw new Error("Unauthorized");
-    }
-    let totalCost: number = 0;
-    const data = await db.activity.findMany({
-      where: {
-        cropId,
-        activityDate: {
-          ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
-          ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
-        },
-        name: {
-          contains: query,
-          mode: "insensitive",
-        },
-
-        ...(filterString && getObjectFilterString(filterString)),
-        ...(filterNumber && getObjectFilterNumber(filterNumber)),
-      },
-
-      orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
-    });
-    const dataWithCost: ActivityWithCost[] = data.map((item) => {
-      let actualCost: number = 0;
-      if (item.totalEquipmentCost != null) {
-        actualCost += item.totalEquipmentCost;
-      }
-      if (item.totalMaterialCost != null) {
-        actualCost += item.totalMaterialCost;
-      }
-      if (item.totalStaffCost != null) {
-        actualCost += item.totalStaffCost;
-      }
-      totalCost += actualCost;
-      return {
-        ...item,
-        actualCost,
-      };
-    });
-    return {
-      data: dataWithCost,
-      totalCost,
-    };
-  } catch (error) {
-    return {
-      data: [],
-      totalCost: 0,
-    };
-  }
-};
 export const activitySelect = {
   id: true,
   name: true,
@@ -455,9 +499,9 @@ export const getActivityByIdWithCountUsage = async (
     return null;
   }
 };
-export const getActivitiesSelect = async (): Promise<
-  ActivitySelectWithCrop[]
-> => {
+export const getActivitiesSelect = async (
+  id?: string
+): Promise<ActivitySelectWithCrop[]> => {
   try {
     const currentStaff = await getCurrentStaff();
     if (!currentStaff) {
@@ -475,6 +519,9 @@ export const getActivitiesSelect = async (): Promise<
           },
           {
             createdById: currentStaff.id,
+          },
+          {
+            id,
           },
         ],
         crop: {
@@ -602,20 +649,57 @@ type ActivityAssignedParams = {
 export const upsertActivityAssigned = async (
   params: ActivityAssignedParams
 ) => {
+  const { activityId, assignedTo } = params;
+
+  if (!assignedTo.length) {
+    return await db.activityAssigned.deleteMany({
+      where: {
+        activityId,
+      },
+    });
+  }
+
+  const activity = await db.activity.findUnique({
+    where: {
+      id: activityId,
+      status: {
+        not: "COMPLETED",
+      },
+    },
+  });
+  if (!activity) {
+    throw new ActivityExistError();
+  }
+  const assignedStaffs = await db.staff.findMany({
+    where: {
+      id: { in: assignedTo },
+    },
+  });
   return await db.$transaction([
     db.activityAssigned.createMany({
-      data: params.assignedTo.map((staffId) => {
+      data: assignedStaffs.map((staff) => {
         return {
-          staffId,
-          activityId: params.activityId,
+          staffId: staff.id,
+          activityId: activityId,
+          hourlyWage: staff.baseHourlyWage,
+          actualWork: activity.actualDuration,
         };
       }),
       skipDuplicates: true,
     }),
+    db.activityAssigned.updateMany({
+      data: {
+        actualWork: activity.actualDuration,
+      },
+      where: {
+        activityId,
+        actualWork: null,
+      },
+    }),
     db.activityAssigned.deleteMany({
       where: {
         staffId: {
-          notIn: params.assignedTo,
+          notIn: assignedTo,
         },
       },
     }),
@@ -658,7 +742,7 @@ export const getActivityAssignedStaffsSelect = async (
 };
 export const getActivityAssignedStaffs = async (
   activityId: string
-): Promise<ActivityAssignedStaffWithActivityAndCost> => {
+): Promise<AssignedStaffWithTotalCost> => {
   try {
     const activityAssigned = await db.activityAssigned.findMany({
       where: {
@@ -714,4 +798,75 @@ export const updateActivityAssigned = async (
       ...params,
     },
   });
+};
+
+type ActivityCropQuery = {
+  cropId: string;
+  query?: string;
+  orderBy?: string;
+  filterString?: string;
+  filterNumber?: string;
+  begin?: Date;
+  end?: Date;
+};
+export const getActivitiesByCrop = async ({
+  filterNumber,
+  filterString,
+  orderBy,
+  query,
+  cropId,
+  begin,
+  end,
+}: ActivityCropQuery): Promise<ActivityWithTotalCost> => {
+  try {
+    const currentStaff = await getCurrentStaff();
+    if (!currentStaff) {
+      throw new Error("Unauthorized");
+    }
+    let totalCost: number = 0;
+    const data = await db.activity.findMany({
+      where: {
+        cropId,
+        activityDate: {
+          ...(begin && { gte: begin }), // Include 'gte' (greater than or equal) if 'begin' is provided
+          ...(end && { lte: end }), // Include 'lte' (less than or equal) if 'end' is provided
+        },
+        name: {
+          contains: query,
+          mode: "insensitive",
+        },
+
+        ...(filterString && getObjectFilterString(filterString)),
+        ...(filterNumber && getObjectFilterNumber(filterNumber)),
+      },
+
+      orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
+    });
+    const dataWithCost: ActivityWithCost[] = data.map((item) => {
+      let actualCost: number = 0;
+      if (item.totalEquipmentCost != null) {
+        actualCost += item.totalEquipmentCost;
+      }
+      if (item.totalMaterialCost != null) {
+        actualCost += item.totalMaterialCost;
+      }
+      if (item.totalStaffCost != null) {
+        actualCost += item.totalStaffCost;
+      }
+      totalCost += actualCost;
+      return {
+        ...item,
+        actualCost,
+      };
+    });
+    return {
+      data: dataWithCost,
+      totalCost,
+    };
+  } catch (error) {
+    return {
+      data: [],
+      totalCost: 0,
+    };
+  }
 };

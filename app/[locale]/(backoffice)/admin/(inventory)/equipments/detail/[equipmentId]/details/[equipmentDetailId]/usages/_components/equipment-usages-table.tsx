@@ -50,9 +50,8 @@ export const EquipmentUsagesTable = ({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{t("table.thead.activity.usage")}</TableHead>
-
             <TableHead>{t("table.thead.equipmentDetail.name")}</TableHead>
+            <TableHead>{t("table.thead.activity.usage")}</TableHead>
             <TableHead>{t("table.thead.equipmentDetail.status")}</TableHead>
 
             <TableHead>
@@ -85,11 +84,12 @@ export const EquipmentUsagesTable = ({
                 className="cursor-pointer"
                 onClick={() => handleEdit(item)}
               >
+                <TableHead className="whitespace-nowrap">
+                  {item.equipmentDetail.name}
+                </TableHead>
                 <TableCell className="font-semibold">
                   <UsageStatusValue status={!!item.activity} />
                 </TableCell>
-
-                <TableCell>{item.equipmentDetail.name}</TableCell>
                 <TableCell>
                   <EquipmentDetailStatusValue
                     status={item.equipmentDetail.status}
@@ -97,6 +97,7 @@ export const EquipmentUsagesTable = ({
                 </TableCell>
 
                 <TableCell>{dateTime(item.usageStartTime, "long")}</TableCell>
+
                 <TableCell className="text-right">
                   {number(item.duration, "hour")}
                 </TableCell>

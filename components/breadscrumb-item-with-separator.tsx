@@ -31,7 +31,7 @@ export const BreadcrumbItemWithSeparator = ({
               <Link href={href}>{truncateString(label, 25)}</Link>
             </BreadcrumbLink>
           ) : (
-            <BreadcrumbPage className="max-w-20 truncate md:max-w-none font-semibold text-[16px] capitalize">
+            <BreadcrumbPage className="text-green-400 max-w-20 truncate md:max-w-none font-semibold text-[16px] capitalize">
               {truncateString(label, 25)}
             </BreadcrumbPage>
           )}

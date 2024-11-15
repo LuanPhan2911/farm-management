@@ -72,6 +72,9 @@ export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead className="min-w-[250px]">
+              <OrderByButton column="name" label={t("table.thead.name")} />
+            </TableHead>
             <TableHead>
               <OrderByButton
                 column="startDate"
@@ -85,19 +88,13 @@ export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
                 label={t("table.thead.endDate")}
               />
             </TableHead>
-            <TableHead className="w-[200px]">
-              <OrderByButton column="name" label={t("table.thead.name")} />
-            </TableHead>
+
             <TableHead>{t("table.thead.status")}</TableHead>
-            <TableHead>{t("table.thead.plant")}</TableHead>
-            <TableHead className="w-[200px]">
+            <TableHead className="min-w-[200px]">
+              {t("table.thead.plant")}
+            </TableHead>
+            <TableHead className="min-w-[250px]">
               {t("table.thead.field.name")}
-            </TableHead>
-            <TableHead className="text-right">
-              {t("table.thead.estimatedYield")}
-            </TableHead>
-            <TableHead className="text-right">
-              {t("table.thead.actualYield")}
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -109,38 +106,30 @@ export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
                 className="cursor-pointer"
                 onClick={() => handleEdit(item)}
               >
-                <TableCell>{dateTime(item.startDate, "short")}</TableCell>
-                <TableCell>
+                <TableHead className="whitespace-nowrap">{item.name}</TableHead>
+                <TableCell className="font-semibold">
+                  {dateTime(item.startDate, "long")}
+                </TableCell>
+                <TableCell className="font-semibold">
                   {item.endDate
-                    ? dateTime(item.endDate, "short")
+                    ? dateTime(item.endDate, "long")
                     : t("table.trow.endDate")}
                 </TableCell>
-                <TableCell>{item.name}</TableCell>
+
                 <TableCell>
                   <CropStatusValue value={item.status} />
                 </TableCell>
-                <TableCell>{item.plant.name}</TableCell>
+                <TableCell>
+                  <SelectItemContentWithoutImage
+                    title={item.plant.name}
+                    description={item.plant.category.name}
+                  />
+                </TableCell>
                 <TableCell>
                   <SelectItemContentWithoutImage
                     title={item.field.name}
                     description={item.field.location}
                   />
-                </TableCell>
-                <TableCell className="text-right">
-                  <UnitWithValue
-                    value={item.estimatedYield}
-                    unit={item.unit.name}
-                  />
-                </TableCell>
-                <TableCell className="text-right">
-                  {item.actualYield ? (
-                    <UnitWithValue
-                      value={item.actualYield}
-                      unit={item.unit.name}
-                    />
-                  ) : (
-                    t("table.trow.actualYield")
-                  )}
                 </TableCell>
               </TableRow>
             );

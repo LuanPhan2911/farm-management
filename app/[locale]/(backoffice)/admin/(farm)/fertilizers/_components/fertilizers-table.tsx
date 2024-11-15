@@ -52,12 +52,10 @@ export const FertilizersTable = ({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>
+            <TableHead className="min-w-[200px]">
               <OrderByButton column="name" label={t("table.thead.name")} />
             </TableHead>
-            <TableHead>
-              <OrderByButton column="type" label={t("table.thead.type")} />
-            </TableHead>
+            <TableHead>{t("table.thead.type")}</TableHead>
             <TableHead>{t("table.thead.nutrientOfNPK")}</TableHead>
             <TableHead>{t("table.thead.frequencyOfUse")}</TableHead>
             <TableHead>{t("table.thead.applicationMethod")}</TableHead>
@@ -73,7 +71,7 @@ export const FertilizersTable = ({
                 className="cursor-pointer"
                 onClick={() => handleEdit(item)}
               >
-                <TableCell>{item.name}</TableCell>
+                <TableHead>{item.name}</TableHead>
                 <TableCell>
                   {item.type
                     ? t(`schema.type.options.${item.type}`)
