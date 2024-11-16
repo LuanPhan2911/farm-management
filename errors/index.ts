@@ -105,3 +105,11 @@ export class CropUpdateStatusFinishError extends Error {
     this.data = data;
   }
 }
+
+export class CropEndDateInvalidError extends Error {
+  data?: any;
+  constructor(data?: any, message = "") {
+    super(message);
+    this.data = data;
+  }
+}

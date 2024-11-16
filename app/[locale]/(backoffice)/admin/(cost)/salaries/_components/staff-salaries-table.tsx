@@ -43,7 +43,7 @@ export const StaffSalariesTable = ({ data }: StaffSalariesTableProps) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{t("table.thead.name")}</TableHead>
+            <TableHead>{t("table.thead.staff")}</TableHead>
             <TableHead>{t("table.thead.phone")}</TableHead>
             <TableHead>{t("table.thead.address")}</TableHead>
             <TableHead className="text-right">
@@ -104,7 +104,7 @@ export const StaffSalariesTable = ({ data }: StaffSalariesTableProps) => {
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableHead colSpan={5}>{t("table.tfooter.totalSalary")}</TableHead>
+            <TableHead colSpan={5}>{t("table.tfooter.total")}</TableHead>
             <TableCell className="text-right">
               {number(totalHourlyWork, "hour")}
             </TableCell>

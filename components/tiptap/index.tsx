@@ -109,12 +109,16 @@ export const Tiptap = ({ value, onChange, disabled }: TiptapProps) => {
       <EditorStyled className="rounded-md border border-input px-3 py-2 flex flex-col gap-y-2">
         <Toolbar editor={editor} disabled={disabled} />
         <Separator orientation="horizontal" className="h-[3px]" />
-        <EditorContent
-          editor={editor}
-          className="min-h-[100px] w-full h-fit"
-          disabled={disabled}
-          onClick={() => editor.chain().focus()}
-        />
+        {disabled ? (
+          <TiptapContent content={value} />
+        ) : (
+          <EditorContent
+            editor={editor}
+            className="min-h-[100px] w-full h-fit"
+            disabled={disabled}
+            onClick={() => editor.chain().focus()}
+          />
+        )}
       </EditorStyled>
     </>
   );
@@ -126,7 +130,7 @@ export const TiptapContent = ({ content }: TiptapContentProps) => {
   return (
     <EditorStyled>
       <div
-        className="min-h-[80px] w-full rounded-md border border-input px-3 py-2"
+        className="min-h-[100px] w-full rounded-md border border-input px-3 py-2"
         dangerouslySetInnerHTML={{
           __html: content,
         }}

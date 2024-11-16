@@ -443,9 +443,6 @@ export const getActivityById = async (
             },
           ],
         }),
-        status: {
-          in: ["NEW", "PENDING", "IN_PROGRESS"],
-        },
       },
       include: {
         createdBy: true,

@@ -277,7 +277,11 @@ export const JobCreateForm = () => {
             <FormItem>
               <FormLabel>{tSchema("description.label")}</FormLabel>
               <FormControl>
-                <Tiptap value={field.value} onChange={field.onChange} />
+                <Tiptap
+                  value={field.value}
+                  onChange={field.onChange}
+                  disabled={isPending}
+                />
               </FormControl>
 
               <FormMessage />
@@ -291,7 +295,11 @@ export const JobCreateForm = () => {
             <FormItem>
               <FormLabel>{tSchema("requirement.label")}</FormLabel>
               <FormControl>
-                <Tiptap value={field.value} onChange={field.onChange} />
+                <Tiptap
+                  value={field.value}
+                  onChange={field.onChange}
+                  disabled={isPending}
+                />
               </FormControl>
 
               <FormMessage />
@@ -305,7 +313,11 @@ export const JobCreateForm = () => {
             <FormItem>
               <FormLabel>{tSchema("rights.label")}</FormLabel>
               <FormControl>
-                <Tiptap value={field.value} onChange={field.onChange} />
+                <Tiptap
+                  value={field.value}
+                  onChange={field.onChange}
+                  disabled={isPending}
+                />
               </FormControl>
 
               <FormMessage />

@@ -21,7 +21,8 @@ import { plantSelect } from "./plants";
 import { CropStatus } from "@prisma/client";
 import { fertilizerSelect } from "./fertilizers";
 import { pesticideSelect } from "./pesticides";
-import { CropUpdateStatusFinishError } from "@/errors";
+import { CropEndDateInvalidError, CropUpdateStatusFinishError } from "@/errors";
+import { isBefore } from "date-fns";
 
 type CropParams = {
   name: string;
@@ -70,12 +71,34 @@ export const updateCropStatusFinish = async (id: string) => {
   if (!crop) {
     throw new CropUpdateStatusFinishError();
   }
+  if (crop.endDate === null && isBefore(new Date(), crop.startDate)) {
+    throw new CropEndDateInvalidError();
+  }
   return await db.crop.update({
     where: {
       id,
     },
     data: {
       status: "FINISH",
+      endDate: crop.endDate ?? new Date(),
+      actualYield: crop.actualYield ?? crop.estimatedYield,
+    },
+  });
+};
+
+type CropLearnedLessons = {
+  learnedLessons?: string | null;
+};
+export const updateCropLearnedLessons = async (
+  id: string,
+  params: CropLearnedLessons
+) => {
+  return await db.crop.update({
+    where: {
+      id,
+    },
+    data: {
+      ...params,
     },
   });
 };

@@ -353,6 +353,15 @@ export type MaterialSelect = {
   };
   basePrice: number | null;
 };
+
+export type MaterialUsedChart = {
+  month: Date;
+  totalCost: number;
+};
+export type MaterialMostUsedChart = {
+  name: string;
+  quantityUsed: number;
+};
 export type MaterialUsageTable = MaterialUsage & {
   material: MaterialSelect;
   unit: {
@@ -424,6 +433,22 @@ export type EquipmentUsageTableWithCost = EquipmentUsage & {
   activity: ActivitySelect | null;
   operator: Staff | null;
   actualCost: number;
+};
+export type EquipmentUsageWithActivity = EquipmentUsage & {
+  activity: ActivitySelect | null;
+};
+export type EquipmentDetailUsageCost = EquipmentDetail & {
+  equipment: EquipmentSelect;
+  equipmentUsages: EquipmentUsageWithActivity[];
+  _count: {
+    equipmentUsages: number;
+  };
+  unit: {
+    name: string;
+  } | null;
+  totalCost: number;
+  totalFuelConsumption: number;
+  totalRentalPrice: number;
 };
 
 export type AssignedStaff = ActivityAssigned & {

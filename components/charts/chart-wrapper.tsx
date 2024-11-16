@@ -18,7 +18,7 @@ export const ChartWrapper = ({ query, renderQuery, children }: ChartProps) => {
         query: query || {},
       }}
     >
-      <div className="flex flex-col gap-y-4 my-4 shadow-lg">
+      <div className="flex flex-col gap-y-4">
         {renderQuery?.()}
         {children}
       </div>

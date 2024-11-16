@@ -7,7 +7,6 @@ import { DataTableColumnHeader } from "@/components/datatable/datatable-column-h
 import { EquipmentDetailsTableAction } from "./equipment-details-table-action";
 
 import { EquipmentDetailTable } from "@/types";
-import { UserAvatar } from "@/components/user-avatar";
 import { EquipmentDetailStatusValue } from "./equipment-detail-status-value";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
 import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-with-value";
@@ -44,7 +43,7 @@ export const EquipmentDetailsTable = ({ data }: EquipmentDetailsTableProps) => {
           <SelectItemContent
             imageUrl={data.equipment.imageUrl}
             title={data.name || data.equipment.name}
-            description={data.location}
+            description={data.location || t("table.trow.location")}
           />
         );
       },

@@ -61,7 +61,7 @@ export const StaffSalariesChartContent = () => {
       chartConfig={chartConfig}
       refetch={refetch}
       t={t}
-      XAxisKey="month"
+      xAxisKey="month"
       labelFormatter={(label) =>
         dateTime(new Date(label), {
           month: "long",
@@ -132,7 +132,7 @@ export const StaffHourlyWorksChartContent = () => {
       chartConfig={chartConfig}
       refetch={refetch}
       t={t}
-      XAxisKey="month"
+      xAxisKey="month"
       labelFormatter={(label) =>
         dateTime(new Date(label), {
           month: "long",

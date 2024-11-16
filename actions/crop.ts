@@ -1,12 +1,13 @@
 "use server";
 
-import { CropUpdateStatusFinishError } from "@/errors";
+import { CropEndDateInvalidError, CropUpdateStatusFinishError } from "@/errors";
 import { errorResponse, successResponse } from "@/lib/utils";
-import { CropSchema } from "@/schemas";
+import { CropLearnedLessonsSchema, CropSchema } from "@/schemas";
 import {
   createCrop,
   deleteCrop,
   updateCrop,
+  updateCropLearnedLessons,
   updateCropStatusFinish,
 } from "@/services/crops";
 import { ActionResponse } from "@/types";
@@ -50,10 +51,34 @@ export const edit = async (
     const crop = await updateCrop(id, validatedFields.data);
 
     revalidatePath(`/admin/crops`);
+    revalidatePath(`/admin/crops/detail/${id}`);
 
     return successResponse(tStatus("success.edit"));
   } catch (error) {
     return errorResponse(tStatus("failure.edit"));
+  }
+};
+export const editLearnedLessons = async (
+  values: z.infer<ReturnType<typeof CropLearnedLessonsSchema>>,
+  id: string
+): Promise<ActionResponse> => {
+  const tSchema = await getTranslations("crops.schema");
+  const tStatus = await getTranslations("crops.status");
+  const paramsSchema = CropLearnedLessonsSchema(tSchema);
+  const validatedFields = paramsSchema.safeParse(values);
+
+  if (!validatedFields.success) {
+    return errorResponse(tSchema("errors.parse"));
+  }
+  try {
+    const crop = await updateCropLearnedLessons(id, validatedFields.data);
+
+    revalidatePath(`/admin/crops`);
+    revalidatePath(`/admin/crops/detail/${id}/learned-lessons`);
+
+    return successResponse(tStatus("success.editLearnedLessons"));
+  } catch (error) {
+    return errorResponse(tStatus("failure.editLearnedLessons"));
   }
 };
 export const destroy = async (id: string): Promise<ActionResponse> => {
@@ -77,7 +102,10 @@ export const finishCrop = async (id: string): Promise<ActionResponse> => {
     return successResponse(tStatus("success.finish"));
   } catch (error) {
     if (error instanceof CropUpdateStatusFinishError) {
-      return successResponse(tSchema("errors.cropUpdateStatusFinish"));
+      return errorResponse(tSchema("errors.cropUpdateStatusFinish"));
+    }
+    if (error instanceof CropEndDateInvalidError) {
+      return errorResponse(tSchema("errors.endDateInValid"));
     }
     return errorResponse(tStatus("failure.finish"));
   }

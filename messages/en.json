@@ -2496,11 +2496,14 @@
   },
   "equipmentDetails": {
     "page": {
-      "title": "Manage equipment details"
+      "title": "Manage equipment details",
+      "cost": {
+        "title": "Equipment detail usage cost"
+      }
     },
     "table": {
       "thead": {
-        "name": "Name",
+        "name": "Equipment detail",
         "status": "Status",
         "location": "Location",
         "lastMaintenanceDate": "Last maintenance",
@@ -2519,6 +2522,16 @@
         "maxFuelConsumption": "Not filled",
         "energyType": "Not filled",
         "baseFuelPrice": "Not filled"
+      },
+      "tfooter": {
+        "total": "Total"
+      },
+      "cost": {
+        "thead": {
+          "totalFuelConsumption": "Total fuel consumption",
+          "totalRentalPrice": "Total rental price",
+          "totalCost": "Total cost"
+        }
       }
     },
     "search": {
@@ -2821,6 +2834,9 @@
         "usages": {
           "title": "Material usages"
         }
+      },
+      "cost": {
+        "title": "Total material cost"
       }
     },
     "tabs": {
@@ -2836,16 +2852,57 @@
     },
     "table": {
       "thead": {
-        "imageUrl": "Image",
-        "name": "Name",
+        "material": "Material",
         "type": "Type",
-        "quantityInStock": "Quantity in stock",
-        "unitId": "Unit",
-        "basePrice": "Base price",
-        "countUsages": "Count usages"
+        "updatedAt": "Latest update",
+        "_count": {
+          "materialUsages": "Activity used"
+        },
+        "quantityInStock": "Quantity remained",
+        "basePrice": "Base price"
       },
       "trow": {
-        "basePrice": "Not filled"
+        "description": "No description",
+        "basePrice": "No filled"
+      },
+      "cost": {
+        "thead": {
+          "totalQuantityUsed": "Total quantity used",
+          "totalCost": "Total cost"
+        }
+      },
+      "tfooter": {
+        "total": "Total actual cost"
+      }
+    },
+    "chart": {
+      "materialUsage": {
+        "title": "Total material cost in 3 latest month",
+        "fields": {
+          "totalCost": "Total cost"
+        },
+        "error": {
+          "title": "Refresh",
+          "description": "Something went wrong when load material usage cost"
+        },
+        "notFound": {
+          "title": "No material usage cost data for generate chart",
+          "description": ""
+        }
+      },
+      "materialMostUsage": {
+        "title": "Top materials have the most quantity used",
+        "fields": {
+          "quantityUsed": "Quantity used"
+        },
+        "error": {
+          "title": "Refresh",
+          "description": "Something went wrong when load material"
+        },
+        "notFound": {
+          "title": "No material data for generate chart",
+          "description": ""
+        }
       }
     },
     "search": {
@@ -2855,6 +2912,9 @@
           "placeholder": "Material type",
           "error": "Fail load material count"
         }
+      },
+      "cost": {
+        "placeholder": "Search by material name..."
       }
     },
     "form": {
@@ -3494,6 +3554,9 @@
           "label": "Activity danger"
         }
       },
+      "learnedLessons": {
+        "label": "Learned lessons"
+      },
       "danger": {
         "label": "Crop danger"
       }
@@ -3529,21 +3592,27 @@
         "title": "Edit crop",
         "description": "Update information of crop"
       },
+      "editLearnedLessons": {
+        "label": "Edit learned lessons",
+        "title": "Edit crop learned lessons",
+        "description": "Update learned lessons of crop"
+      },
       "destroy": {
         "label": "Delete crop",
         "title": "Delete crop?",
-        "description": "Crop can only delete when no activities. This action cannot be undone!"
+        "description": "This action cannot be undone!"
       },
       "finish": {
         "label": "Finish crop",
         "title": "Finish crop?",
-        "description": "After finish crop, this crop cannot update anymore. This action cannot be undone!"
+        "description": "This action cannot be undone!"
       }
     },
     "schema": {
       "errors": {
         "parse": "Invalid crops!",
-        "cropUpdateStatusFinish": "Crop has already finish or some activities in crop are not completed"
+        "cropUpdateStatusFinish": "Crop has already finish or some activities in crop are not completed",
+        "endDateInValid": "End date is invalid, start date crop value after current date"
       },
       "name": {
         "label": "Crop name",
@@ -3609,6 +3678,11 @@
           "FINISH": "Finish",
           "default": "No selected"
         }
+      },
+      "learnedLessons": {
+        "label": "Crop learned lessons",
+        "placeholder": "Learned lessons",
+        "max": "Name's length must be less than {max} characters"
       }
     },
     "status": {
@@ -3616,13 +3690,15 @@
         "create": "Crop created!",
         "edit": "Crop edited!",
         "destroy": "Crop deleted!",
-        "finish": "Crop finished!"
+        "finish": "Crop finished!",
+        "editLearnedLessons": "Learned lessons edited!"
       },
       "failure": {
         "create": "Something went wrong while creating crop!",
         "edit": "Something went wrong while editing crop!",
         "destroy": "Something went wrong while deleting crop!",
-        "finish": "Crop finish fail!"
+        "finish": "Crop finish fail!",
+        "editLearnedLessons": "Crop learned lessons update fail!"
       }
     },
     "notFound": {
@@ -3634,13 +3710,19 @@
       "finish": {
         "title": "Finish crop",
         "description": {
-          "activityComplete": "All activity in crop must be COMPLETED status"
+          "note": "Please read all alert messages before finish crop",
+          "learnedLessons": "If no filled learned lessons, please FILL it before finish crop",
+          "activityComplete": "All activity in crop must be COMPLETED status",
+          "endDateValid": "End date crop must be AFTER start date crop",
+          "endDate": "If no end date crop value, Current Date will be updated",
+          "actualYield": "If no actual yield value, Estimated Yield value will be updated",
+          "finish": "After finish crop, this crop CANNOT update anymore!!!"
         }
       },
       "destroy": {
         "title": "Delete crop",
         "description": {
-          "activityCount": "Crop only can delete when no activities set"
+          "activityCount": "Crop ONLY can delete when no activities in crop"
         }
       }
     }
@@ -3661,7 +3743,7 @@
     "table": {
       "title": "All staff salaries",
       "thead": {
-        "name": "Staff",
+        "staff": "Staff",
         "address": "Address",
         "phone": "Phone number",
         "baseHourlyWage": "Base hourly wage",
@@ -3677,7 +3759,7 @@
         "phone": "Not filled"
       },
       "tfooter": {
-        "totalSalary": "Total staff salary"
+        "total": "Total staff salary"
       },
       "detail": {
         "title": "Staff salary detail",
@@ -3688,7 +3770,6 @@
           "priority": "Priority",
           "activityDate": "Activity date",
           "assignedAt": "Assigned date",
-
           "hourlyWage": "Hourly wage",
           "actualWork": "Hourly work",
           "actualCost": "Salary"
@@ -3696,9 +3777,6 @@
         "trow": {
           "actualWork": "Not filled",
           "hourlyWage": "Not filled"
-        },
-        "tfooter": {
-          "totalSalary": "Total salary"
         }
       }
     },
@@ -4200,6 +4278,7 @@
     "/admin/crops/detail/activities/detail/material-usages": "Material usages",
     "/admin/crops/detail/activities/detail/equipment-usages": "Equipment usages",
     "/admin/crops/detail/activities/detail/danger": "Activity Danger",
+    "/admin/crops/detail/learned-lessons": "Learned lessons",
     "/admin/crops/detail/danger": "Crop danger",
     "/admin/activities": "Activities",
     "/admin/activities/create": "Create",
@@ -4211,6 +4290,8 @@
 
     "/admin/salaries": "Salaries",
     "/admin/salaries/detail": "Staff salaries detail",
+    "/admin/material-cost": "Total material cost",
+    "/admin/equipment-cost": "Total equipment cost",
 
     "/admin/tasks": "Tasks",
     "/admin/schedules": "Schedules",
@@ -4268,6 +4349,9 @@
     "crops": "Crops",
     "cost": "Cost",
     "salaries": "Salaries",
+    "material-cost": "Material cost",
+    "equipment-cost": "Equipment cost",
+
     "users": "Users",
     "staffs": "Staffs",
     "organizations": "Organizations",

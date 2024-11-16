@@ -1,63 +1,68 @@
 "use client";
 
-import { NavPagination } from "@/components/nav-pagination";
-
 import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import { useFormatter, useTranslations } from "next-intl";
-import { MaterialTable } from "@/types";
-
-import { OrderByButton } from "@/components/buttons/order-by-button";
+import { MaterialWithCost } from "@/types";
 
 import { SearchBar } from "@/components/search-bar";
-import { MaterialsTableFaceted } from "./materials-table-faceted";
+
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
-import { MaterialTypeValue } from "./material-type-value";
 import { SelectItemContent } from "@/components/form/select-item";
+import { MaterialTypeValue } from "../../../(inventory)/materials/_components/material-type-value";
 import { UnitWithValue } from "../../../_components/unit-with-value";
+import { DatePickerWithRangeButton } from "@/components/buttons/date-picker-range-button";
+import { endOfMonth, startOfMonth } from "date-fns";
+import _ from "lodash";
 
-interface MaterialsTableProps {
-  data: MaterialTable[];
-  totalPage: number;
+interface MaterialCostTableProps {
+  data: MaterialWithCost[];
 }
-export const MaterialsTable = ({ data, totalPage }: MaterialsTableProps) => {
-  const router = useRouterWithRole();
-
+export const MaterialCostsTable = ({ data }: MaterialCostTableProps) => {
   const t = useTranslations("materials");
   const { number, dateTime } = useFormatter();
-  const handleViewDetail = (row: MaterialTable) => {
-    router.push(`materials/detail/${row.id}`);
-  };
-
+  const router = useRouterWithRole();
+  const totalCost = _.sumBy(data, (item) => item.totalCost);
   return (
     <>
       <div className="flex flex-col lg:flex-row gap-2 my-2 lg:items-center">
-        <SearchBar isPagination placeholder={t("search.placeholder")} />
-        <MaterialsTableFaceted />
+        <SearchBar isPagination placeholder={t("search.cost.placeholder")} />
+        <DatePickerWithRangeButton
+          begin={startOfMonth(new Date())}
+          end={endOfMonth(new Date())}
+        />
       </div>
 
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead className="min-w-[200px]">
-              <OrderByButton column="name" label={t("table.thead.material")} />
+              {t("table.thead.material")}
             </TableHead>
             <TableHead>{t("table.thead.type")}</TableHead>
             <TableHead>{t("table.thead.updatedAt")}</TableHead>
             <TableHead className="text-right">
-              {t("table.thead._count.materialUsages")}
-            </TableHead>
-            <TableHead className="text-right">
               {t("table.thead.basePrice")}
             </TableHead>
             <TableHead className="text-right">
+              {t("table.thead._count.materialUsages")}
+            </TableHead>
+            <TableHead className="text-right">
               {t("table.thead.quantityInStock")}
+            </TableHead>
+
+            <TableHead className="text-right">
+              {t("table.cost.thead.totalQuantityUsed")}
+            </TableHead>
+            <TableHead className="text-right">
+              {t("table.cost.thead.totalCost")}
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -67,7 +72,9 @@ export const MaterialsTable = ({ data, totalPage }: MaterialsTableProps) => {
               <TableRow
                 key={item.id}
                 className="cursor-pointer"
-                onClick={() => handleViewDetail(item)}
+                onClick={() => {
+                  router.push(`materials/detail/${item.id}`);
+                }}
               >
                 <TableCell>
                   <SelectItemContent
@@ -83,32 +90,46 @@ export const MaterialsTable = ({ data, totalPage }: MaterialsTableProps) => {
                 </TableCell>
                 <TableCell>{dateTime(item.updatedAt, "long")}</TableCell>
                 <TableCell className="text-right">
-                  {item._count.materialUsages}
-                </TableCell>
-                <TableCell className="text-right">
-                  {item.basePrice
+                  {item.basePrice !== null
                     ? number(item.basePrice, "currency")
                     : t("table.trow.basePrice")}
                 </TableCell>
                 <TableCell className="text-right">
+                  {item._count.materialUsages}
+                </TableCell>
+                <TableCell className="text-right font-semibold">
                   <UnitWithValue
                     value={item.quantityInStock}
                     unit={item.unit.name}
                   />
                 </TableCell>
+                <TableCell className="text-right font-semibold">
+                  <UnitWithValue
+                    value={item.totalQuantityUsed}
+                    unit={item.unit.name}
+                  />
+                </TableCell>
+                <TableCell className="text-right font-semibold">
+                  {number(item.totalCost, "currency")}
+                </TableCell>
               </TableRow>
             );
           })}
         </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableHead colSpan={7}>{t("table.tfooter.total")}</TableHead>
+            <TableCell className="text-right">
+              {number(totalCost, "currency")}
+            </TableCell>
+          </TableRow>
+        </TableFooter>
       </Table>
       {!data.length && (
         <div className="my-4 text-muted-foreground flex justify-center">
           No results.
         </div>
       )}
-      <div className="py-4">
-        <NavPagination totalPage={totalPage} />
-      </div>
     </>
   );
 };

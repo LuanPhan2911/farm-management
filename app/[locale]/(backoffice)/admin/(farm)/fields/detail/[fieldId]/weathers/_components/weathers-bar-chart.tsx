@@ -98,7 +98,7 @@ const WeathersBarChartContent = () => {
       chartConfig={chartConfig}
       refetch={refetch}
       t={t}
-      XAxisKey="createdAt"
+      xAxisKey="createdAt"
       labelFormatter={(label) => dateTime(new Date(label), "short")}
       tickFormatter={(value) => dateTime(new Date(value), "short")}
       data={data}

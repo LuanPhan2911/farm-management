@@ -739,7 +739,7 @@ export const EquipmentDetailSchema = (
       int: true,
     }),
     location: stringSchema(t, "location", {
-      max: 255,
+      max: 100,
       required: false,
     }).nullish(),
     maxFuelConsumption: numberSchema(t, "maxFuelConsumption", {
@@ -863,7 +863,7 @@ export const MaterialSchema = (
     }),
     typeId: z.string().nullish(),
     description: stringSchema(t, "description", {
-      max: 255,
+      max: 100,
       required: false,
     }).nullish(),
     imageUrl: stringSchema(t, "imageUrl", {
@@ -1200,5 +1200,16 @@ export const CropSchema = (
     status: z.nativeEnum(CropStatus, {
       message: t("status.enum"),
     }),
+  });
+};
+
+export const CropLearnedLessonsSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    learnedLessons: stringSchema(t, "learnedLessons", {
+      max: 5000,
+      required: false,
+    }).nullish(),
   });
 };

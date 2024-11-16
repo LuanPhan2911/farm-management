@@ -33,6 +33,7 @@ interface DatePickerWithRangeProps
   disabled?: boolean;
   disabledDateRange?: Matcher | Matcher[];
   placeholder?: string;
+  hideSelect?: boolean;
 }
 export function DatePickerWithRange({
   className,
@@ -41,6 +42,7 @@ export function DatePickerWithRange({
   disabledDateRange,
   handleChange,
   placeholder,
+  hideSelect = false,
 }: DatePickerWithRangeProps) {
   const { dateTime } = useFormatter();
 
@@ -76,37 +78,38 @@ export function DatePickerWithRange({
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
-          <Select
-            onValueChange={(value) => {
-              handleChange({
-                from: new Date(value),
-                to: endOfMonth(value),
-              });
-            }}
-            value={
-              date?.from ? startOfMonth(date.from).toISOString() : undefined
-            }
-          >
-            <SelectTrigger>
-              <SelectValue placeholder={placeholder || "Select"} />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              {eachMonths.map((item) => {
-                return (
-                  <SelectItem
-                    value={item.toISOString()}
-                    key={item.toISOString()}
-                  >
-                    <span className="font-semibold text-green-500">
-                      {dateTime(item, { month: "long" })}
-                    </span>
-                    {` (${dateTime(item)} - ${dateTime(endOfMonth(item))})`}
-                  </SelectItem>
-                );
-              })}
-            </SelectContent>
-          </Select>
-
+          {!hideSelect && (
+            <Select
+              onValueChange={(value) => {
+                handleChange({
+                  from: new Date(value),
+                  to: endOfMonth(value),
+                });
+              }}
+              value={
+                date?.from ? startOfMonth(date.from).toISOString() : undefined
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder={placeholder || "Select"} />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                {eachMonths.map((item) => {
+                  return (
+                    <SelectItem
+                      value={item.toISOString()}
+                      key={item.toISOString()}
+                    >
+                      <span className="font-semibold text-green-500">
+                        {dateTime(item, { month: "long" })}
+                      </span>
+                      {` (${dateTime(item)} - ${dateTime(endOfMonth(item))})`}
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+          )}
           <Calendar
             initialFocus
             mode="range"

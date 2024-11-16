@@ -7,14 +7,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
 import { DestroyButton } from "@/components/buttons/destroy-button";
 
-import { getCurrentStaff } from "@/services/staffs";
-
-import { canUpdateCropStatus, isSuperAdmin } from "@/lib/permission";
-import { getCropByIdWithCount } from "@/services/crops";
 import { destroy } from "@/actions/crop";
 import { useTranslations } from "next-intl";
 import { CropFinishButton } from "../../../../_components/crop-edit-status-button";
@@ -38,12 +32,36 @@ export const CropDangerCard = ({
       <Card>
         <CardHeader>
           <CardTitle>{tDanger("finish.title")}</CardTitle>
+          <CardDescription>
+            {tDanger("finish.description.note")}
+          </CardDescription>
         </CardHeader>
         <CardContent>
+          <CustomAlert
+            variant={"success"}
+            description={tDanger("finish.description.learnedLessons")}
+          />
+          <CustomAlert
+            variant={"info"}
+            description={tDanger("finish.description.endDate")}
+          />
+          <CustomAlert
+            variant={"info"}
+            description={tDanger("finish.description.actualYield")}
+          />
+          <CustomAlert
+            variant={"destructive"}
+            description={tDanger("finish.description.endDateValid")}
+          />
           <CustomAlert
             variant={"destructive"}
             description={tDanger("finish.description.activityComplete")}
           />
+          <CustomAlert
+            variant={"destructive"}
+            description={tDanger("finish.description.finish")}
+          />
+
           <CropFinishButton id={id} disabled={!canEdit} />
         </CardContent>
       </Card>

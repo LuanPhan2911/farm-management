@@ -19,6 +19,7 @@ import { ActivityPriorityValue } from "@/app/[locale]/(backoffice)/admin/activit
 import _ from "lodash";
 import { cn } from "@/lib/utils";
 import { StaffSelectItem } from "@/app/[locale]/(backoffice)/admin/_components/staffs-select";
+import { useRouterWithRole } from "@/hooks/use-router-with-role";
 
 interface StaffSalaryDetailTableProps {
   data: StaffWithSalaryAndActivity[];
@@ -29,6 +30,7 @@ export const StaffSalariesDetailTable = ({
   const t = useTranslations("salaries");
 
   const { number, dateTime } = useFormatter();
+  const router = useRouterWithRole();
   const totalSalary = _.sumBy(data, (item) => {
     return item.actualCost;
   });
@@ -37,6 +39,7 @@ export const StaffSalariesDetailTable = ({
       ? item.actualWork
       : 0
   );
+
   return (
     <>
       <div className="py-4 flex gap-2 lg:flex-row flex-col items-start lg:items-center">
@@ -77,7 +80,13 @@ export const StaffSalariesDetailTable = ({
           {data.map((item) => {
             const { status } = item.activity;
             return (
-              <TableRow key={item.id}>
+              <TableRow
+                key={item.id}
+                className="cursor-pointer"
+                onClick={() => {
+                  router.push(`activities/detail/${item.activityId}`);
+                }}
+              >
                 <TableCell>
                   <StaffSelectItem
                     email={item.staff.email}
@@ -125,9 +134,7 @@ export const StaffSalariesDetailTable = ({
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableHead colSpan={6}>
-              {t("table.detail.tfooter.totalSalary")}
-            </TableHead>
+            <TableHead colSpan={6}>{t("table.tfooter.total")}</TableHead>
             <TableCell className="text-right">
               {number(totalHourlyWork, "hour")}
             </TableCell>

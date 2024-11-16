@@ -1,43 +1,32 @@
 "use client";
 
 import { BarChartContent } from "@/components/charts/bar-chart";
-import { ChartContext, ChartWrapper } from "@/components/charts/chart-wrapper";
+import { ChartWrapper } from "@/components/charts/chart-wrapper";
 import { ChartConfig } from "@/components/ui/chart";
-import { SalaryChart } from "@/types";
+import { dataToChartConfig } from "@/lib/utils";
+import { MaterialUsedChart, MaterialMostUsedChart } from "@/types";
 import { useQuery } from "@tanstack/react-query";
-import { format } from "date-fns";
+import { endOfMonth, format, startOfMonth } from "date-fns";
 import { useFormatter, useTranslations } from "next-intl";
 import queryString from "query-string";
-import { useContext } from "react";
 
-interface StaffSalaryDetailChartProps {
-  staffId: string;
-}
-export const StaffSalaryDetailChart = ({
-  staffId,
-}: StaffSalaryDetailChartProps) => {
+export const MaterialUsageCostChart = () => {
   return (
-    <ChartWrapper
-      query={{
-        staffId,
-      }}
-    >
-      <StaffSalaryDetailChartContent />
+    <ChartWrapper>
+      <MaterialUsageCostChartContent />
     </ChartWrapper>
   );
 };
 
-export const StaffSalaryDetailChartContent = () => {
-  const t = useTranslations("salaries.chart.salaryDetail");
+export const MaterialUsageCostChartContent = () => {
+  const t = useTranslations("materials.chart.materialUsage");
 
-  const { query } = useContext(ChartContext);
   const { data, isPending, isError, refetch } = useQuery({
-    queryKey: ["salaries_detail_chart", query],
+    queryKey: ["material_usage"],
     queryFn: async () => {
       const url = queryString.stringifyUrl(
         {
-          url: `/api/staffs/salaries/detail/chart`,
-          query,
+          url: `/api/materials/usages/chart`,
         },
         {
           skipEmptyString: true,
@@ -45,13 +34,13 @@ export const StaffSalaryDetailChartContent = () => {
         }
       );
       const res = await fetch(url);
-      return (await res.json()) as SalaryChart[];
+      return (await res.json()) as MaterialUsedChart[];
     },
   });
   const { dateTime } = useFormatter();
   const chartConfig = {
-    totalSalary: {
-      label: t("fields.totalSalary"),
+    totalCost: {
+      label: t("fields.totalCost"),
       color: "hsl(var(--chart-1))",
     },
   } satisfies ChartConfig;
@@ -62,6 +51,7 @@ export const StaffSalaryDetailChartContent = () => {
           "MMMM yyyy"
         )}`
       : null;
+
   return (
     <BarChartContent
       isError={isError}
@@ -88,30 +78,23 @@ export const StaffSalaryDetailChartContent = () => {
     />
   );
 };
-export const StaffHourlyWorkChart = ({
-  staffId,
-}: StaffSalaryDetailChartProps) => {
+export const MaterialMostUsageChart = () => {
   return (
-    <ChartWrapper
-      query={{
-        staffId,
-      }}
-    >
-      <StaffHourlyWorkChartContent />
+    <ChartWrapper>
+      <MaterialMostUsageChartContent />
     </ChartWrapper>
   );
 };
 
-export const StaffHourlyWorkChartContent = () => {
-  const t = useTranslations("salaries.chart.hourlyWorkDetail");
-  const { query } = useContext(ChartContext);
+export const MaterialMostUsageChartContent = () => {
+  const t = useTranslations("materials.chart.materialMostUsage");
+
   const { data, isPending, isError, refetch } = useQuery({
-    queryKey: ["salaries_detail_chart", query],
+    queryKey: ["material_most_usages"],
     queryFn: async () => {
       const url = queryString.stringifyUrl(
         {
-          url: `/api/staffs/salaries/detail/chart`,
-          query,
+          url: `/api/materials/most_usages/chart`,
         },
         {
           skipEmptyString: true,
@@ -119,25 +102,21 @@ export const StaffHourlyWorkChartContent = () => {
         }
       );
       const res = await fetch(url);
-      return (await res.json()) as SalaryChart[];
+      return (await res.json()) as MaterialMostUsedChart[];
     },
   });
 
-  const { dateTime } = useFormatter();
   const chartConfig = {
-    totalHourlyWork: {
-      label: t("fields.totalHourlyWork"),
+    quantityUsed: {
+      label: t("fields.quantityUsed"),
       color: "hsl(var(--chart-2))",
     },
   } satisfies ChartConfig;
 
-  const description =
-    data && data.length > 0
-      ? `${format(data[0].month, "MMMM yyyy")} - ${format(
-          data[data.length - 1].month,
-          "MMMM yyyy"
-        )}`
-      : null;
+  const description = `${format(
+    startOfMonth(new Date()),
+    "dd MMM yyyy"
+  )} - ${format(endOfMonth(new Date()), "dd MMM yyyy")}`;
   return (
     <BarChartContent
       isError={isError}
@@ -145,21 +124,9 @@ export const StaffHourlyWorkChartContent = () => {
       chartConfig={chartConfig}
       refetch={refetch}
       t={t}
-      xAxisKey="month"
-      labelFormatter={(label) =>
-        dateTime(new Date(label), {
-          month: "long",
-        })
-      }
-      tickFormatter={(value) =>
-        dateTime(new Date(value), {
-          month: "long",
-        })
-      }
+      xAxisKey="name"
       data={data}
-      chartData={(data) => {
-        return data;
-      }}
+      chartData={(data) => data}
       description={description}
     />
   );

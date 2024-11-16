@@ -36,8 +36,7 @@ interface BarChartContentProps<T extends Record<string, any>> {
   ) => Promise<QueryObserverResult<T[], Error>>;
 
   chartConfig: ChartConfig;
-
-  XAxisKey: keyof T;
+  xAxisKey: keyof T;
   chartData: (data: T[]) => any[] | undefined;
   t: (key: string, object?: Record<string, any>) => string;
   tickFormatter?: ((value: any, index: number) => string) | undefined;
@@ -45,13 +44,14 @@ interface BarChartContentProps<T extends Record<string, any>> {
     | ((label: any, payload: Payload<ValueType, NameType>[]) => ReactNode)
     | undefined;
   description?: string | null;
+  layout?: "horizontal" | "vertical";
 }
 export const BarChartContent = <T extends Record<string, any>>({
   data,
   isError,
   isPending,
   chartConfig,
-  XAxisKey,
+  xAxisKey,
   tickFormatter,
   labelFormatter,
   chartData,
@@ -86,36 +86,63 @@ export const BarChartContent = <T extends Record<string, any>>({
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-          <BarChart accessibilityLayer data={chartData(data)}>
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey={XAxisKey as string}
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickFormatter={tickFormatter}
-            />
-            <YAxis />
-            <ChartTooltip
-              content={<ChartTooltipContent indicator="line" />}
-              labelFormatter={labelFormatter}
-              cursor={false}
-            />
-            <ChartLegend content={<ChartLegendContent />} />
-            {Object.keys(chartConfig).map((key) => {
-              return (
-                <Bar
-                  dataKey={key}
-                  fill={`var(--color-${key})`}
-                  radius={4}
-                  key={key}
-                />
-              );
-            })}
-          </BarChart>
-        </ChartContainer>
+        <HorizonBarChart
+          axisKey={xAxisKey as string}
+          chartConfig={chartConfig}
+          data={chartData(data)}
+          labelFormatter={labelFormatter}
+          tickFormatter={tickFormatter}
+        />
       </CardContent>
     </Card>
+  );
+};
+
+interface BarChartProps {
+  chartConfig: ChartConfig;
+  data: any[] | undefined;
+  tickFormatter?: ((value: any, index: number) => string) | undefined;
+  labelFormatter?:
+    | ((label: any, payload: Payload<ValueType, NameType>[]) => ReactNode)
+    | undefined;
+  axisKey: string;
+}
+const HorizonBarChart = ({
+  chartConfig,
+  axisKey,
+  data,
+  labelFormatter,
+  tickFormatter,
+}: BarChartProps) => {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <BarChart accessibilityLayer data={data} layout="horizontal">
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey={axisKey}
+          tickLine={false}
+          tickMargin={10}
+          axisLine={false}
+          tickFormatter={tickFormatter}
+        />
+        <YAxis />
+        <ChartTooltip
+          content={<ChartTooltipContent indicator="line" />}
+          labelFormatter={labelFormatter}
+          cursor={false}
+        />
+        <ChartLegend content={<ChartLegendContent />} />
+        {Object.keys(chartConfig).map((key) => {
+          return (
+            <Bar
+              dataKey={key}
+              fill={`var(--color-${key})`}
+              radius={4}
+              key={key}
+            />
+          );
+        })}
+      </BarChart>
+    </ChartContainer>
   );
 };

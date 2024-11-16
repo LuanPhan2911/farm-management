@@ -28,20 +28,20 @@ export const ActivityDangerCard = ({
         </CardHeader>
         <CardContent>
           <CustomAlert
-            variant={"destructive"}
-            description={tDanger("complete.description.completed")}
-          />
-          <CustomAlert
-            variant={"destructive"}
-            description={tDanger("complete.description.hourlyWage")}
-          />
-          <CustomAlert
             variant={"info"}
             description={tDanger("complete.description.actualWork")}
           />
           <CustomAlert
             variant={"info"}
             description={tDanger("complete.description.actualDuration")}
+          />
+          <CustomAlert
+            variant={"destructive"}
+            description={tDanger("complete.description.completed")}
+          />
+          <CustomAlert
+            variant={"destructive"}
+            description={tDanger("complete.description.hourlyWage")}
           />
 
           <ActivityCompletedButton activityId={id} disabled={!canEdit} />

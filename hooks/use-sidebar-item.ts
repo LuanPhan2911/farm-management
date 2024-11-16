@@ -1,8 +1,10 @@
 import {
   BadgeDollarSign,
   CreditCard,
+  Currency,
   DollarSign,
   LucideIcon,
+  Pickaxe,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import {
@@ -73,6 +75,16 @@ export const useSidebarItem = () => {
           icon: CreditCard,
           title: t("salaries"),
           href: "/admin/salaries",
+        },
+        {
+          icon: Currency,
+          title: t("material-cost"),
+          href: "/admin/material-cost",
+        },
+        {
+          icon: Pickaxe,
+          title: t("equipment-cost"),
+          href: "/admin/equipment-cost",
         },
       ],
       title: t("cost"),
