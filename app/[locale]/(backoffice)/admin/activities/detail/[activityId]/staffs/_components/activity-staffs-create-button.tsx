@@ -1,6 +1,6 @@
 "use client";
 
-import { upsertAssigned } from "@/actions/activity";
+import { upsertAssigned } from "@/actions/activity-assigned";
 import { StaffsSelectMultiple } from "@/app/[locale]/(backoffice)/admin/_components/staffs-select";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,7 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { ActivityAssignedSchema } from "@/schemas";
-import { AssignedStaffWithCost } from "@/types";
+import { StaffWithSalaryAndActivity } from "@/types";
 import { useAuth } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
@@ -22,7 +22,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 interface ActivityStaffsCreateButtonProps {
-  data: AssignedStaffWithCost[];
+  data: StaffWithSalaryAndActivity[];
   disabled?: boolean;
 }
 export const ActivityStaffsCreateButton = ({

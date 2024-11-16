@@ -1,8 +1,7 @@
 import { LIMIT } from "@/configs/paginationConfig";
 import { db } from "@/lib/db";
-import { clerkClient, currentUser, getAuth } from "@clerk/nextjs/server";
+import { currentUser, getAuth } from "@clerk/nextjs/server";
 import { Staff, StaffRole } from "@prisma/client";
-import { UserOrderBy } from "./users";
 import { NextApiRequest } from "next";
 import { getOrganizationMembership } from "./organizations";
 import { getObjectSortOrder } from "@/lib/utils";
@@ -164,7 +163,7 @@ export const getStaffsSelect = async (params?: StaffSelectQuery) => {
     let staffExternalIds;
     const isSuperAdmin = checkRole("superadmin");
     if (!isSuperAdmin && !params?.orgId) {
-      throw new Error("Only superadmin get staff without org id");
+      throw new Error("Only SuperAdmin get staff without org id");
     }
     if (params?.orgId) {
       const staffInOrg = await getOrganizationMembership({

@@ -22,21 +22,22 @@ import { EquipmentDetailStatusValue } from "@/app/[locale]/(backoffice)/admin/(i
 import { EquipmentUsagesTableAction } from "@/app/[locale]/(backoffice)/admin/(inventory)/equipments/detail/[equipmentId]/details/[equipmentDetailId]/usages/_components/equipment-usages-table-action";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
+import _ from "lodash";
 
 interface ActivityEquipmentUsagesTableProps {
   data: EquipmentUsageTableWithCost[];
-  totalCost: number;
+
   disabled?: boolean;
 }
 export const ActivityEquipmentUsagesTable = ({
   data,
-  totalCost,
   disabled,
 }: ActivityEquipmentUsagesTableProps) => {
   const t = useTranslations("equipmentUsages");
   const { dateTime, number } = useFormatter();
   const { push } = useRouterWithRole();
   const { isFarmer: isHidden } = useCurrentStaffRole();
+  const totalCost = _.sumBy(data, (item) => item.actualCost);
   const handleEdit = (row: EquipmentUsageTable) => {
     push(`equipments/detail/${row.equipmentDetail.equipmentId}/details`);
   };

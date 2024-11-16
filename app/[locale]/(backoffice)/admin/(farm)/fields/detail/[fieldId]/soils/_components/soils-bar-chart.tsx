@@ -28,7 +28,7 @@ export const SoilsBarChart = () => {
       }}
       renderQuery={() => {
         return (
-          <div>
+          <>
             <DatePickerInRange
               value={dateRange}
               defaultValue={dateRange}
@@ -38,7 +38,7 @@ export const SoilsBarChart = () => {
               }}
               inDays={inDays}
             />
-          </div>
+          </>
         );
       }}
     >

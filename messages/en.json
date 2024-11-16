@@ -1237,10 +1237,6 @@
       "notFound": {
         "title": "No weathers data for generate chart",
         "description": "Only confirmed weathers data was displayed and data is filtered by date range you selected"
-      },
-      "hidden": {
-        "title": "Chart will be hidden",
-        "description": "Click icon eye in the right corner to show chart"
       }
     },
     "search": {
@@ -1461,10 +1457,6 @@
       "notFound": {
         "title": "No soils data for generate chart",
         "description": "Only confirmed soils data was displayed and data is filtered by date range you selected"
-      },
-      "hidden": {
-        "title": "Chart will be hidden",
-        "description": "Click icon eye in the right corner to show chart"
       }
     },
     "search": {
@@ -3153,10 +3145,6 @@
         "notFound": {
           "title": "No data for generate chart",
           "description": "No activity have in date range "
-        },
-        "hidden": {
-          "title": "Chart will be hidden",
-          "description": "Click icon eye in the right corner to show chart"
         }
       },
       "countPriority": {
@@ -3172,10 +3160,6 @@
         "notFound": {
           "title": "No data for generate chart",
           "description": "No activity have in date range "
-        },
-        "hidden": {
-          "title": "Chart will be hidden",
-          "description": "Click icon eye in the right corner to show chart"
         }
       }
     },
@@ -3661,6 +3645,122 @@
       }
     }
   },
+  "salaries": {
+    "page": {
+      "title": "Staff salaries",
+      "detail": {
+        "title": "Staff salary detail"
+      }
+    },
+    "search": {
+      "placeholder": "Search by staff name...",
+      "detail": {
+        "placeholder": "Search by activity name..."
+      }
+    },
+    "table": {
+      "title": "All staff salaries",
+      "thead": {
+        "name": "Staff",
+        "address": "Address",
+        "phone": "Phone number",
+        "baseHourlyWage": "Base hourly wage",
+        "_count": {
+          "activityAssigned": "Activity participant"
+        },
+        "totalHourlyWork": "Total hourly work",
+        "salary": "Salary"
+      },
+      "trow": {
+        "baseHourlyWage": "Not filled",
+        "address": "Not filled",
+        "phone": "Not filled"
+      },
+      "tfooter": {
+        "totalSalary": "Total staff salary"
+      },
+      "detail": {
+        "title": "Staff salary detail",
+        "thead": {
+          "staff": "Staff",
+          "name": "Activity name",
+          "status": "Status",
+          "priority": "Priority",
+          "activityDate": "Activity date",
+          "assignedAt": "Assigned date",
+
+          "hourlyWage": "Hourly wage",
+          "actualWork": "Hourly work",
+          "actualCost": "Salary"
+        },
+        "trow": {
+          "actualWork": "Not filled",
+          "hourlyWage": "Not filled"
+        },
+        "tfooter": {
+          "totalSalary": "Total salary"
+        }
+      }
+    },
+    "chart": {
+      "totalSalary": {
+        "title": "Total staff salaries in 3 latest month",
+        "fields": {
+          "totalSalary": "Salary"
+        },
+        "error": {
+          "title": "Refresh",
+          "description": "Something went wrong when load salaries"
+        },
+        "notFound": {
+          "title": "No salaries data for generate chart",
+          "description": ""
+        }
+      },
+      "totalHourlyWork": {
+        "title": "Total staff hourly work in 3 latest month",
+        "fields": {
+          "totalHourlyWork": "Hourly work"
+        },
+        "error": {
+          "title": "Refresh",
+          "description": "Something went wrong when load hourly work"
+        },
+        "notFound": {
+          "title": "No hourly work data for generate chart",
+          "description": ""
+        }
+      },
+      "salaryDetail": {
+        "title": "Staff salary in 3 latest month",
+        "fields": {
+          "totalSalary": "Salary"
+        },
+        "error": {
+          "title": "Refresh",
+          "description": "  Something went wrong when load salaries"
+        },
+        "notFound": {
+          "title": "No salaries data for generate chart",
+          "description": ""
+        }
+      },
+      "hourlyWorkDetail": {
+        "title": "Staff hourly work in 3 latest month",
+        "fields": {
+          "totalHourlyWork": "Hourly work"
+        },
+        "error": {
+          "title": "Refresh",
+          "description": "Something went wrong when load hourly work"
+        },
+        "notFound": {
+          "title": "No hourly work data for generate chart",
+          "description": ""
+        }
+      }
+    }
+  },
   "tasks": {
     "page": {
       "title": "Manage Tasks"
@@ -4109,6 +4209,9 @@
     "/admin/activities/detail/material-usages": "Material Usages",
     "/admin/activities/detail/danger": "Danger",
 
+    "/admin/salaries": "Salaries",
+    "/admin/salaries/detail": "Staff salaries detail",
+
     "/admin/tasks": "Tasks",
     "/admin/schedules": "Schedules",
     "/admin/messages": "All messages",
@@ -4119,6 +4222,7 @@
 
     "/farmer": "Farmer",
     "/farmer/staffs": "Staffs",
+    "/farmer/salaries": "Salaries",
 
     "/farmer/organizations": "Organization",
     "/farmer/organizations/detail": "Detail",
@@ -4162,6 +4266,8 @@
     "dashboard": "Dashboard",
     "activities": "Activities",
     "crops": "Crops",
+    "cost": "Cost",
+    "salaries": "Salaries",
     "users": "Users",
     "staffs": "Staffs",
     "organizations": "Organizations",

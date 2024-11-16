@@ -12,7 +12,7 @@ import { db } from "@/lib/db";
 import { getObjectSortOrder } from "@/lib/utils";
 import {
   MaterialUsageTable,
-  MaterialUsageTableWithTotalCost,
+  MaterialUsageTableWithCost,
   PaginatedResponse,
 } from "@/types";
 import { revalidatePath } from "next/cache";
@@ -357,7 +357,7 @@ export const getMaterialUsagesByActivity = async ({
   query,
   orderBy,
   activityId,
-}: MaterialUsageByActivityQuery): Promise<MaterialUsageTableWithTotalCost> => {
+}: MaterialUsageByActivityQuery): Promise<MaterialUsageTableWithCost[]> => {
   try {
     const data = await db.materialUsage.findMany({
       where: {
@@ -398,33 +398,27 @@ export const getMaterialUsagesByActivity = async ({
       orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
     });
 
-    let totalCost: number = 0;
-    const dataWithCost = data.map((item) => {
-      let actualCost: number = 0;
-
+    const dataWithCost: MaterialUsageTableWithCost[] = data.map((item) => {
       if (
-        item.actualPrice != null &&
-        item.quantityUsed !== null &&
-        item.activityId !== null
+        item.actualPrice === null ||
+        item.quantityUsed === null ||
+        item.activityId === null
       ) {
-        actualCost += item.actualPrice * item.quantityUsed;
+        return {
+          ...item,
+          actualCost: 0,
+        };
       }
-      totalCost += actualCost;
+
       return {
         ...item,
-        actualCost,
+        actualCost: item.actualPrice * item.quantityUsed,
       };
     });
 
-    return {
-      data: dataWithCost,
-      totalCost,
-    };
+    return dataWithCost;
   } catch (error) {
-    return {
-      data: [],
-      totalCost: 0,
-    };
+    return [];
   }
 };
 

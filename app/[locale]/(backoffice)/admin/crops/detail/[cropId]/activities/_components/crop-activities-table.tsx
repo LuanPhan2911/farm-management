@@ -21,19 +21,17 @@ import { ActivitiesTableFaceted } from "@/app/[locale]/(backoffice)/admin/activi
 import { ActivityStatusValue } from "@/app/[locale]/(backoffice)/admin/activities/_components/activity-status-value";
 import { ActivityPriorityValue } from "@/app/[locale]/(backoffice)/admin/activities/_components/activity-priority-value";
 import { DatePickerWithRangeButton } from "@/components/buttons/date-picker-range-button";
+import _ from "lodash";
 
 interface CropActivitiesTableProps {
   data: ActivityWithCost[];
-  totalCost: number;
 }
-export const CropActivitiesTable = ({
-  data,
-  totalCost,
-}: CropActivitiesTableProps) => {
+export const CropActivitiesTable = ({ data }: CropActivitiesTableProps) => {
   const router = useRouterWithRole();
   const { dateTime, number } = useFormatter();
   const t = useTranslations("activities");
 
+  const totalCost = _.sumBy(data, (item) => item.actualCost);
   const handleViewDetail = (row: ActivityWithCost) => {
     router.pushDetail(`detail/${row.id}`);
   };

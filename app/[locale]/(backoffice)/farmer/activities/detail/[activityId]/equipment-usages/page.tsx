@@ -30,7 +30,7 @@ const ActivityEquipmentUsagesPage = async ({
   const t = await getTranslations("activities.page.detail.equipment-usages");
   const { query, orderBy } = searchParams;
 
-  const { data, totalCost } = await getEquipmentUsagesByActivity({
+  const data = await getEquipmentUsagesByActivity({
     activityId: params.activityId,
     orderBy,
     query,
@@ -46,11 +46,7 @@ const ActivityEquipmentUsagesPage = async ({
         <CardTitle>{t("title")}</CardTitle>
       </CardHeader>
       <CardContent>
-        <ActivityEquipmentUsagesTable
-          data={data}
-          totalCost={totalCost}
-          disabled={!canEdit}
-        />
+        <ActivityEquipmentUsagesTable data={data} disabled={!canEdit} />
       </CardContent>
     </Card>
   );

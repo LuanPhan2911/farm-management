@@ -27,7 +27,7 @@ export const WeathersBarChart = () => {
       }}
       renderQuery={() => {
         return (
-          <div>
+          <>
             <DatePickerInRange
               value={dateRange}
               defaultValue={dateRange}
@@ -37,7 +37,7 @@ export const WeathersBarChart = () => {
               }}
               inDays={inDays}
             />
-          </div>
+          </>
         );
       }}
     >

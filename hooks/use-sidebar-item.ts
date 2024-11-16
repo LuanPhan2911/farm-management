@@ -1,4 +1,9 @@
-import { LucideIcon } from "lucide-react";
+import {
+  BadgeDollarSign,
+  CreditCard,
+  DollarSign,
+  LucideIcon,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import {
   ArchiveRestore,
@@ -60,6 +65,17 @@ export const useSidebarItem = () => {
       items: [],
       title: t("activities"),
       href: "/admin/activities",
+    },
+    {
+      icon: DollarSign,
+      items: [
+        {
+          icon: CreditCard,
+          title: t("salaries"),
+          href: "/admin/salaries",
+        },
+      ],
+      title: t("cost"),
     },
     {
       icon: Users,
@@ -179,6 +195,12 @@ export const useSidebarItem = () => {
       icon: Building,
       title: t("organizations"),
       href: "/farmer/organizations",
+      items: [],
+    },
+    {
+      icon: DollarSign,
+      title: t("salaries"),
+      href: "/farmer/salaries",
       items: [],
     },
     {

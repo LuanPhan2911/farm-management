@@ -23,13 +23,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { AssignedStaffWithCost } from "@/types";
-import { editAssigned } from "@/actions/activity";
+import { StaffWithSalaryAndActivity } from "@/types";
+import { editAssigned } from "@/actions/activity-assigned";
 import { canUpdateActivityStatus } from "@/lib/permission";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
 interface ActivityStaffEditButtonProps {
-  data: AssignedStaffWithCost;
+  data: StaffWithSalaryAndActivity;
   disabled?: boolean;
 }
 

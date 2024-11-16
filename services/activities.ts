@@ -4,13 +4,11 @@ import {
   ActivityStatusCount,
   ActivityTable,
   PaginatedResponse,
-  AssignedStaffWithTotalCost,
   ActivitySelectWithCrop,
   ActivityWithCountUsages,
-  ActivityWithTotalCost,
   ActivityWithCost,
 } from "@/types";
-import { ActivityPriority, ActivityStatus, Staff } from "@prisma/client";
+import { ActivityPriority, ActivityStatus } from "@prisma/client";
 import { LIMIT } from "@/configs/paginationConfig";
 import {
   getObjectFilterNumber,
@@ -20,10 +18,7 @@ import {
 import { getCurrentStaff } from "./staffs";
 import { cropSelect } from "./crops";
 import { isSuperAdmin } from "@/lib/permission";
-import {
-  ActivityExistError,
-  ActivityUpdateStatusCompletedError,
-} from "@/errors";
+import { ActivityUpdateStatusCompletedError } from "@/errors";
 import _ from "lodash";
 
 type ActivityParams = {
@@ -642,164 +637,6 @@ export const getCountActivityPriority = async ({
   }
 };
 
-type ActivityAssignedParams = {
-  activityId: string;
-  assignedTo: string[];
-};
-export const upsertActivityAssigned = async (
-  params: ActivityAssignedParams
-) => {
-  const { activityId, assignedTo } = params;
-
-  if (!assignedTo.length) {
-    return await db.activityAssigned.deleteMany({
-      where: {
-        activityId,
-      },
-    });
-  }
-
-  const activity = await db.activity.findUnique({
-    where: {
-      id: activityId,
-      status: {
-        not: "COMPLETED",
-      },
-    },
-  });
-  if (!activity) {
-    throw new ActivityExistError();
-  }
-  const assignedStaffs = await db.staff.findMany({
-    where: {
-      id: { in: assignedTo },
-    },
-  });
-  return await db.$transaction([
-    db.activityAssigned.createMany({
-      data: assignedStaffs.map((staff) => {
-        return {
-          staffId: staff.id,
-          activityId: activityId,
-          hourlyWage: staff.baseHourlyWage,
-          actualWork: activity.actualDuration,
-        };
-      }),
-      skipDuplicates: true,
-    }),
-    db.activityAssigned.updateMany({
-      data: {
-        actualWork: activity.actualDuration,
-      },
-      where: {
-        activityId,
-        actualWork: null,
-      },
-    }),
-    db.activityAssigned.deleteMany({
-      where: {
-        staffId: {
-          notIn: assignedTo,
-        },
-      },
-    }),
-  ]);
-};
-
-export const deleteActivityAssigned = async ({
-  activityId,
-  staffId,
-}: {
-  activityId: string;
-  staffId: string;
-}) => {
-  return await db.activityAssigned.delete({
-    where: {
-      activityId_staffId: {
-        activityId,
-        staffId,
-      },
-    },
-  });
-};
-
-export const getActivityAssignedStaffsSelect = async (
-  activityId: string
-): Promise<Staff[]> => {
-  try {
-    const activityAssigned = await db.activityAssigned.findMany({
-      where: {
-        activityId,
-      },
-      include: {
-        staff: true,
-      },
-    });
-    return activityAssigned.map((item) => item.staff);
-  } catch (error) {
-    return [];
-  }
-};
-export const getActivityAssignedStaffs = async (
-  activityId: string
-): Promise<AssignedStaffWithTotalCost> => {
-  try {
-    const activityAssigned = await db.activityAssigned.findMany({
-      where: {
-        activityId,
-      },
-      include: {
-        staff: true,
-        activity: {
-          select: {
-            ...activitySelect,
-          },
-        },
-      },
-    });
-    let totalCost: number = 0;
-    const activityAssignedWithCost = activityAssigned.map((item) => {
-      if (item.actualWork !== null && item.hourlyWage !== null) {
-        totalCost += item.actualWork * item.hourlyWage;
-        return {
-          ...item,
-          actualCost: item.actualWork * item.hourlyWage,
-        };
-      }
-      return {
-        ...item,
-        actualCost: null,
-      };
-    });
-
-    return {
-      data: activityAssignedWithCost,
-      totalCost,
-    };
-  } catch (error) {
-    return {
-      data: [],
-      totalCost: 0,
-    };
-  }
-};
-
-type ActivityAssignedUpdateParams = {
-  actualWork?: number | null;
-  hourlyWage?: number | null;
-};
-export const updateActivityAssigned = async (
-  id: string,
-  params: ActivityAssignedUpdateParams
-) => {
-  return await db.activityAssigned.update({
-    where: { id },
-    data: {
-      ...params,
-    },
-  });
-};
-
 type ActivityCropQuery = {
   cropId: string;
   query?: string;
@@ -817,13 +654,12 @@ export const getActivitiesByCrop = async ({
   cropId,
   begin,
   end,
-}: ActivityCropQuery): Promise<ActivityWithTotalCost> => {
+}: ActivityCropQuery): Promise<ActivityWithCost[]> => {
   try {
     const currentStaff = await getCurrentStaff();
     if (!currentStaff) {
       throw new Error("Unauthorized");
     }
-    let totalCost: number = 0;
     const data = await db.activity.findMany({
       where: {
         cropId,
@@ -842,6 +678,7 @@ export const getActivitiesByCrop = async ({
 
       orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
     });
+
     const dataWithCost: ActivityWithCost[] = data.map((item) => {
       let actualCost: number = 0;
       if (item.totalEquipmentCost != null) {
@@ -853,20 +690,14 @@ export const getActivitiesByCrop = async ({
       if (item.totalStaffCost != null) {
         actualCost += item.totalStaffCost;
       }
-      totalCost += actualCost;
+
       return {
         ...item,
         actualCost,
       };
     });
-    return {
-      data: dataWithCost,
-      totalCost,
-    };
+    return dataWithCost;
   } catch (error) {
-    return {
-      data: [],
-      totalCost: 0,
-    };
+    return [];
   }
 };

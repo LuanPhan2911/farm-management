@@ -37,7 +37,7 @@ const CropActivitiesPage = async ({
 
   const { orderBy, filterString, query } = searchParams;
 
-  const { data, totalCost } = await getActivitiesByCrop({
+  const data = await getActivitiesByCrop({
     cropId: params.cropId,
     begin,
     end,
@@ -56,7 +56,7 @@ const CropActivitiesPage = async ({
           <div className="flex justify-end">
             <ActivityCreateButton disabled={!canEdit} />
           </div>
-          <CropActivitiesTable data={data} totalCost={totalCost} />
+          <CropActivitiesTable data={data} />
         </CardContent>
       </Card>
     </div>

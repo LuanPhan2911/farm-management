@@ -1,6 +1,6 @@
 import {
   ApplicantTable,
-  AssignedStaffWithCost,
+  StaffWithSalaryAndActivity,
   CategoryTable,
   CropTable,
   EquipmentDetailTable,
@@ -55,7 +55,7 @@ export interface DialogData {
   equipmentDetail?: EquipmentDetailTable;
   materialUsage?: MaterialUsageTable;
   equipmentUsage?: EquipmentUsageTable;
-  activityAssigned?: AssignedStaffWithCost;
+  activityAssigned?: StaffWithSalaryAndActivity;
 }
 interface DialogStore {
   type: DialogType | null;

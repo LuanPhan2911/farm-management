@@ -22,15 +22,15 @@ import { MaterialUsagesTableAction } from "@/app/[locale]/(backoffice)/admin/(in
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
 import { SelectItemContent } from "@/components/form/select-item";
+import _ from "lodash";
 
 interface ActivityMaterialUsagesTableProps {
   data: MaterialUsageTableWithCost[];
-  totalCost: number;
+
   disabled?: boolean;
 }
 export const ActivityMaterialUsagesTable = ({
   data,
-  totalCost,
   disabled,
 }: ActivityMaterialUsagesTableProps) => {
   const t = useTranslations("materialUsages");
@@ -38,6 +38,8 @@ export const ActivityMaterialUsagesTable = ({
   const { number } = useFormatter();
   const { isFarmer: isHidden } = useCurrentStaffRole();
   const { push } = useRouterWithRole();
+
+  const totalCost = _.sumBy(data, (item) => item.actualCost);
   const handleEdit = (row: MaterialUsageTable) => {
     push(`materials/detail/${row.materialId}`);
   };

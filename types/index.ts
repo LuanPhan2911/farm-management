@@ -61,9 +61,7 @@ export type PaginatedResponse<T> = {
   data: T[];
   totalPage: number;
 };
-export type PaginatedResponseWithTotalCost<T> = PaginatedResponse<T> & {
-  totalCost: number;
-};
+
 export type PaginatedWithCursorResponse<T> = {
   items: T[];
   nextCursor?: string | null | number;
@@ -328,6 +326,21 @@ export type MaterialTable = Material & {
     materialUsages: number;
   };
 };
+
+export type MaterialWithCost = Material & {
+  unit: {
+    name: string;
+  };
+  _count: {
+    materialUsages: number;
+  };
+  materialUsages: MaterialUsageWithActivity[];
+  totalQuantityUsed: number;
+  totalCost: number;
+};
+export type MaterialUsageWithActivity = MaterialUsage & {
+  activity: ActivitySelect | null;
+};
 export type MaterialSelect = {
   id: string;
   name: string;
@@ -354,12 +367,7 @@ export type MaterialUsageTableWithCost = MaterialUsage & {
     name: string;
   };
   activity: ActivitySelect | null;
-  actualCost: number | null;
-};
-
-export type MaterialUsageTableWithTotalCost = {
-  data: MaterialUsageTableWithCost[];
-  totalCost: number;
+  actualCost: number;
 };
 
 export type MaterialTypeCount = {
@@ -394,11 +402,10 @@ export type EquipmentDetailSelect = {
   maxFuelConsumption: number | null;
 };
 
-export type EquipmentDetailSelectWithEquipmentAndUnit =
-  EquipmentDetailSelect & {
-    equipment: EquipmentSelect;
-    unit: UnitSelect | null;
-  };
+export type EquipmentDetailSelectWithUnit = EquipmentDetailSelect & {
+  equipment: EquipmentSelect;
+  unit: UnitSelect | null;
+};
 
 export type EquipmentTypeCount = {
   type: EquipmentType;
@@ -416,26 +423,13 @@ export type EquipmentUsageTableWithCost = EquipmentUsage & {
   equipmentDetail: EquipmentDetailSelect;
   activity: ActivitySelect | null;
   operator: Staff | null;
-  actualCost: number | null;
-};
-
-export type EquipmentUsageTableWithTotalCost = {
-  data: EquipmentUsageTableWithCost[];
-  totalCost: number;
+  actualCost: number;
 };
 
 export type AssignedStaff = ActivityAssigned & {
   staff: Staff;
 };
-export type AssignedStaffWithCost = ActivityAssigned & {
-  staff: Staff;
-  activity: ActivitySelect;
-  actualCost: number | null;
-};
-export type AssignedStaffWithTotalCost = {
-  totalCost: number;
-  data: AssignedStaffWithCost[];
-};
+
 export type ActivityTable = Activity & {
   createdBy: Staff;
   crop: CropSelect;
@@ -443,12 +437,9 @@ export type ActivityTable = Activity & {
 };
 
 export type ActivityWithCost = Activity & {
-  actualCost: number | null;
+  actualCost: number;
 };
-export type ActivityWithTotalCost = {
-  data: ActivityWithCost[];
-  totalCost: number;
-};
+
 export type ActivitySelect = {
   id: string;
   name: string;
@@ -476,6 +467,25 @@ export type ActivityPriorityCount = {
   _count: number;
 };
 export const activityUpdateStatus = ["NEW", "PENDING", "IN_PROGRESS"] as const;
+
+export type StaffWithSalary = Staff & {
+  salary: number;
+  hourlyWork: number;
+  _count: {
+    activityAssigned: number;
+  };
+};
+export type StaffWithSalaryAndActivity = ActivityAssigned & {
+  activity: ActivitySelect;
+  actualCost: number;
+  staff: Staff;
+};
+
+export type SalaryChart = {
+  month: Date;
+  totalSalary: number;
+  totalHourlyWork: number;
+};
 
 export type CropTable = Crop & {
   plant: PlantSelect;

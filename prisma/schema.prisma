@@ -170,7 +170,7 @@ model Staff {
   messages             Message[]
   files                File[]
   activityCreatedBy    Activity[]         @relation(name: "createdBy")
-  activityAssinged     ActivityAssigned[]
+  activityAssigned     ActivityAssigned[]
   equipmentUsages      EquipmentUsage[]
 }
 
@@ -591,13 +591,6 @@ enum ActivityType {
   OTHER
 }
 
-enum ActivityStatus {
-  NEW
-  PENDING
-  IN_PROGRESS
-  COMPLETED
-}
-
 enum ActivityPriority {
   LOW
   MEDIUM
@@ -652,6 +645,13 @@ model ActivityAssigned {
   staff    Staff    @relation(fields: [staffId], references: [id], onDelete: Cascade)
 
   @@unique([activityId, staffId])
+}
+
+enum ActivityStatus {
+  NEW
+  PENDING
+  IN_PROGRESS
+  COMPLETED
 }
 
 model Activity {

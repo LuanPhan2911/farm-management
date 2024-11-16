@@ -9,10 +9,13 @@ import {
   MaterialSelect,
   MaterialTable,
   MaterialTypeCount,
+  MaterialWithCost,
   PaginatedResponse,
 } from "@/types";
 import { MaterialType } from "@prisma/client";
 import { materialSelect } from "./material-usages";
+import { activitySelect } from "./activities";
+import _ from "lodash";
 
 type MaterialParam = {
   name: string;
@@ -160,6 +163,94 @@ export const getCountMaterialType = async (): Promise<MaterialTypeCount[]> => {
         _count: item._count._all,
       };
     });
+  } catch (error) {
+    return [];
+  }
+};
+
+type MaterialUsageCostQuery = {
+  begin?: Date;
+  end?: Date;
+  query?: string;
+};
+export const getMaterialUsageCost = async ({
+  begin,
+  end,
+  query,
+}: MaterialUsageCostQuery): Promise<MaterialWithCost[]> => {
+  try {
+    const materials = await db.material.findMany({
+      where: {
+        name: {
+          contains: query,
+          mode: "insensitive",
+        },
+        materialUsages: {
+          some: {
+            activity: {
+              status: "COMPLETED",
+              activityDate: {
+                gte: begin,
+                lte: end,
+              },
+            },
+          },
+        },
+      },
+      include: {
+        _count: {
+          select: {
+            materialUsages: true,
+          },
+        },
+        materialUsages: {
+          include: {
+            activity: {
+              select: {
+                ...activitySelect,
+              },
+            },
+          },
+        },
+        unit: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    const materialWithCosts: MaterialWithCost[] = materials.map((material) => {
+      const { materialUsages } = material;
+      return {
+        ...material,
+        totalQuantityUsed: _.sumBy(
+          materialUsages,
+          ({ activity, quantityUsed }) => {
+            if (!activity || activity.status !== "COMPLETED") {
+              return 0;
+            }
+            return quantityUsed;
+          }
+        ),
+        totalCost: _.sumBy(
+          materialUsages,
+          ({ activity, actualPrice, quantityUsed }) => {
+            if (
+              !activity ||
+              activity.status !== "COMPLETED" ||
+              actualPrice === null
+            ) {
+              return 0;
+            }
+
+            return quantityUsed * actualPrice;
+          }
+        ),
+      };
+    });
+
+    return materialWithCosts;
   } catch (error) {
     return [];
   }

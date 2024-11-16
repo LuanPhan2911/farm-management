@@ -9,29 +9,26 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { UserAvatar } from "@/components/user-avatar";
 import { useFormatter, useTranslations } from "next-intl";
-import { StaffMetadataRole } from "@/app/[locale]/(backoffice)/admin/_components/staff-metadata-role";
 import { ActivityStaffsTableAction } from "./activity-staffs-table-action";
-import { AssignedStaffWithCost } from "@/types";
+import { StaffWithSalaryAndActivity } from "@/types";
 import { useDialog } from "@/stores/use-dialog";
-import { SelectItemContent } from "@/components/form/select-item";
 import { StaffSelectItem } from "@/app/[locale]/(backoffice)/admin/_components/staffs-select";
+import _ from "lodash";
 
 interface ActivityStaffsTableProps {
-  data: AssignedStaffWithCost[];
-  totalCost: number;
+  data: StaffWithSalaryAndActivity[];
   disabled?: boolean;
 }
 export const ActivityStaffsTable = ({
   data,
-  totalCost,
   disabled,
 }: ActivityStaffsTableProps) => {
   const t = useTranslations("activityAssigned");
   const { relativeTime, number } = useFormatter();
   const { onOpen } = useDialog();
-  const handleEdit = (row: AssignedStaffWithCost) => {
+  const totalCost = _.sumBy(data, (item) => item.actualCost);
+  const handleEdit = (row: StaffWithSalaryAndActivity) => {
     if (disabled) {
       return;
     }

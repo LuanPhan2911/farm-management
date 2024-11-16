@@ -1,8 +1,5 @@
 import { db } from "@/lib/db";
-import {
-  EquipmentDetailSelectWithEquipmentAndUnit,
-  EquipmentDetailTable,
-} from "@/types";
+import { EquipmentDetailSelectWithUnit, EquipmentDetailTable } from "@/types";
 import { EquipmentStatus } from "@prisma/client";
 import { equipmentSelect } from "./equipments";
 import { unitSelect } from "./units";
@@ -127,7 +124,7 @@ export const getEquipmentDetailById = async (
 
 export const getEquipmentDetailsSelect = async (
   defaultId?: string
-): Promise<EquipmentDetailSelectWithEquipmentAndUnit[]> => {
+): Promise<EquipmentDetailSelectWithUnit[]> => {
   try {
     return await db.equipmentDetail.findMany({
       where: {

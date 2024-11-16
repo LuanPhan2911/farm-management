@@ -86,8 +86,6 @@ export const edit = async (
 
     return successResponse(tStatus("success.edit"));
   } catch (error) {
-    console.log(error);
-
     if (error instanceof MaterialUsageExistError) {
       return errorResponse(tSchema("errors.existMaterial"));
     }

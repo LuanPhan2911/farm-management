@@ -31,7 +31,7 @@ const ActivityMaterialUsagesPage = async ({
   const t = await getTranslations("activities.page.detail.material-usages");
   const { query, orderBy } = searchParams;
 
-  const { data, totalCost } = await getMaterialUsagesByActivity({
+  const data = await getMaterialUsagesByActivity({
     activityId: params.activityId,
     orderBy,
     query,
@@ -47,11 +47,7 @@ const ActivityMaterialUsagesPage = async ({
         <CardTitle>{t("title")}</CardTitle>
       </CardHeader>
       <CardContent>
-        <ActivityMaterialUsagesTable
-          data={data}
-          totalCost={totalCost}
-          disabled={!canEdit}
-        />
+        <ActivityMaterialUsagesTable data={data} disabled={!canEdit} />
       </CardContent>
     </Card>
   );

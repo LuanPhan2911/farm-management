@@ -6,9 +6,7 @@ import { getObjectSortOrder } from "@/lib/utils";
 import {
   EquipmentUsageTable,
   EquipmentUsageTableWithCost,
-  EquipmentUsageTableWithTotalCost,
   PaginatedResponse,
-  PaginatedResponseWithTotalCost,
 } from "@/types";
 import { revalidatePath } from "next/cache";
 import { equipmentDetailSelect } from "./equipment-details";
@@ -273,7 +271,7 @@ export const getEquipmentUsagesByActivity = async ({
   activityId,
   orderBy,
   query,
-}: EquipmentUsageActivityQuery): Promise<EquipmentUsageTableWithTotalCost> => {
+}: EquipmentUsageActivityQuery): Promise<EquipmentUsageTableWithCost[]> => {
   try {
     const data = await db.equipmentUsage.findMany({
       where: {
@@ -315,13 +313,12 @@ export const getEquipmentUsagesByActivity = async ({
       orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
     });
 
-    let totalCost: number = 0;
     const dataWithCost = data.map((item) => {
       let actualCost = 0;
       if (item.activityId === null) {
         return {
           ...item,
-          actualCost: null,
+          actualCost: 0,
         };
       }
       if (item.rentalPrice !== null) {
@@ -330,20 +327,14 @@ export const getEquipmentUsagesByActivity = async ({
       if (item.fuelConsumption != null && item.fuelPrice !== null) {
         actualCost += item.fuelConsumption * item.fuelPrice;
       }
-      totalCost += actualCost;
+
       return {
         ...item,
         actualCost,
       };
     });
-    return {
-      data: dataWithCost,
-      totalCost,
-    };
+    return dataWithCost;
   } catch (error) {
-    return {
-      data: [],
-      totalCost: 0,
-    };
+    return [];
   }
 };
