@@ -1,4 +1,3 @@
-import { getFieldsSelect } from "@/services/fields";
 import { notFound } from "next/navigation";
 
 import {
@@ -9,8 +8,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { getTranslations } from "next-intl/server";
-import { FieldEditForm } from "../../../_components/field-edit-button";
 import { canGetField } from "@/lib/role";
+import { FieldEditLocationForm } from "../../../_components/field-edit-loction-form";
+import { getFieldLocations } from "@/services/fields";
 
 interface FieldDetailPageProps {
   params: {
@@ -18,14 +18,15 @@ interface FieldDetailPageProps {
   };
 }
 export async function generateMetadata() {
-  const t = await getTranslations("fields.page.detail");
+  const t = await getTranslations("fields.page.detail.locations");
   return {
     title: t("title"),
   };
 }
 
-const FieldDetailPage = async ({ params }: FieldDetailPageProps) => {
+const FieldLocationPage = async ({ params }: FieldDetailPageProps) => {
   const data = await canGetField(params!.fieldId);
+  const locations = await getFieldLocations();
   const t = await getTranslations("fields.tabs");
   if (!data) {
     notFound();
@@ -34,16 +35,15 @@ const FieldDetailPage = async ({ params }: FieldDetailPageProps) => {
     <div className="flex flex-col gap-y-4 py-4 h-full">
       <Card>
         <CardHeader>
-          <CardTitle>{t("info.title")}</CardTitle>
-          <CardDescription>{t("info.description")}</CardDescription>
-          <h3 className="text-lg font-semibold">{data.name}</h3>
+          <CardTitle>{t("locations.title")}</CardTitle>
+          <CardDescription>{t("locations.description")}</CardDescription>
         </CardHeader>
         <CardContent>
-          <FieldEditForm data={data} />
+          <FieldEditLocationForm data={data} locations={locations} />
         </CardContent>
       </Card>
     </div>
   );
 };
 
-export default FieldDetailPage;
+export default FieldLocationPage;

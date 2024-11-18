@@ -46,7 +46,6 @@ export const JobCreateButton = () => {
 };
 export const JobCreateForm = () => {
   const tSchema = useTranslations("jobs.schema");
-
   const formSchema = JobSchema(tSchema);
   const [isPending, startTransition] = useTransition();
 

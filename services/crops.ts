@@ -1,12 +1,7 @@
 import { LIMIT } from "@/configs/paginationConfig";
 import { db } from "@/lib/db";
+import { getObjectFilterNumber, getObjectSortOrder } from "@/lib/utils";
 import {
-  getObjectFilterNumber,
-  getObjectFilterString,
-  getObjectSortOrder,
-} from "@/lib/utils";
-import {
-  CropActivity,
   CropMaterialUsage,
   CropSelectWithField,
   CropTable,
@@ -19,8 +14,6 @@ import { isSuperAdmin } from "@/lib/permission";
 import { fieldSelect } from "./fields";
 import { plantSelect } from "./plants";
 import { CropStatus } from "@prisma/client";
-import { fertilizerSelect } from "./fertilizers";
-import { pesticideSelect } from "./pesticides";
 import { CropEndDateInvalidError, CropUpdateStatusFinishError } from "@/errors";
 import { isBefore } from "date-fns";
 

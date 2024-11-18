@@ -7,6 +7,7 @@ import slugify from "slugify";
 import { twMerge } from "tailwind-merge";
 import * as cronParser from "cron-parser";
 import _ from "lodash";
+import { LatLngTuple } from "leaflet";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -414,4 +415,18 @@ export function dataToChartConfig<T extends Record<string, any>>(
       },
     };
   }, {} as Record<string, any>);
+}
+
+export function getLocationLatLng(
+  latitude: number | null,
+  longitude: number | null
+): LatLngTuple | undefined {
+  if (latitude === null || longitude === null) {
+    return undefined;
+  }
+  return [latitude, longitude];
+}
+
+export function getLatLng(latitude: number, longitude: number): LatLngTuple {
+  return [latitude, longitude];
 }

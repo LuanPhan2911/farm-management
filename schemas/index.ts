@@ -426,10 +426,6 @@ export const FieldSchema = (
       min: 3,
       max: 100,
     }),
-    location: stringSchema(t, "location", {
-      max: 100,
-      required: false,
-    }).nullish(),
     orgId: stringSchema(t, "orgId", {
       required: false,
     }).nullish(),
@@ -1211,5 +1207,35 @@ export const CropLearnedLessonsSchema = (
       max: 5000,
       required: false,
     }).nullish(),
+  });
+};
+
+export const FieldLocationSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    latitude: numberSchema(t, "latitude", {
+      min: -90,
+      max: 90,
+      required: false,
+    }).nullish(),
+    longitude: numberSchema(t, "longitude", {
+      min: -180,
+      max: 180,
+      required: false,
+    }).nullish(),
+    location: stringSchema(t, "location", {
+      required: false,
+    }).nullish(),
+  });
+};
+
+export const LocationSelectSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    city: stringSchema(t, "city", { required: false }).nullish(),
+    district: stringSchema(t, "district", { required: false }).nullish(),
+    town: stringSchema(t, "town", { required: false }).nullish(),
   });
 };

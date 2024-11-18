@@ -31,8 +31,7 @@ const FieldDangerPage = async ({ params }: FieldDangerPageProps) => {
   }
 
   const canDelete =
-    (isAdminOrg && data.orgId === orgId) ||
-    (!data.orgId && isSuperAdmin(currentStaff.role));
+    (isAdminOrg && data.orgId === orgId) || isSuperAdmin(currentStaff.role);
   return (
     <Card>
       <CardHeader>

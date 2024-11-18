@@ -1,15 +1,17 @@
 import { db } from "@/lib/db";
-import { FieldSelect, FieldTable } from "@/types";
+import { FieldLocation, FieldSelect, FieldTable } from "@/types";
 import { SoilType } from "@prisma/client";
-import { getCurrentStaff } from "./staffs";
-import { isAdmin, isFarmer, isOnlyAdmin, isSuperAdmin } from "@/lib/permission";
-import { getUserInOrganization } from "./organizations";
-import { unitInclude, unitSelect } from "./units";
-import { auth } from "@clerk/nextjs/server";
+import { isSuperAdmin } from "@/lib/permission";
+import {
+  getOnlyOrganizations,
+  getOrganizationById,
+  hasStaffGetDataWithOrgId,
+} from "./organizations";
+import { unitSelect } from "./units";
+import { truncateByDomain } from "recharts/types/util/ChartUtils";
 
 type FieldParams = {
   name: string;
-  location?: string | null;
   orgId?: string | null;
   area?: number | null;
   unitId?: string | null;
@@ -48,6 +50,24 @@ export const updateFieldOrgWhenOrgDeleted = async (orgId: string) => {
     },
   });
 };
+
+type FieldLocationParams = {
+  location?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+};
+
+export const updateFieldLocation = async (
+  id: string,
+  params: FieldLocationParams
+) => {
+  return await db.field.update({
+    where: { id },
+    data: {
+      ...params,
+    },
+  });
+};
 export const deleteField = async (id: string) => {
   const field = await db.field.delete({
     where: { id },
@@ -66,60 +86,22 @@ export const getFields = async ({
 }: FieldQuery): Promise<FieldTable[]> => {
   try {
     // check user in org
-    const currentStaff = await getCurrentStaff();
-    if (!currentStaff) {
+    const { canAccess, currentStaff } = await hasStaffGetDataWithOrgId(orgId, {
+      canAdminGetDataWithNullOrg: true,
+    });
+    if (!canAccess || !currentStaff) {
       return [];
-    }
-    if (orgId === null && isFarmer(currentStaff.role)) {
-      return [];
-    }
-    if (orgId === null && isSuperAdmin(currentStaff.role)) {
-      return await db.field.findMany({
-        include: {
-          unit: {
-            select: {
-              ...unitSelect,
-            },
-          },
-        },
-        orderBy: [
-          {
-            orgId: "desc",
-          },
-        ],
-      });
-    }
-    if (orgId === null && isAdmin(currentStaff.role)) {
-      return await db.field.findMany({
-        where: {
-          orgId: null,
-        },
-        include: {
-          unit: {
-            select: {
-              ...unitSelect,
-            },
-          },
-        },
-      });
-    }
-
-    if (
-      orgId !== null &&
-      (isFarmer(currentStaff.role) || isAdmin(currentStaff.role))
-    ) {
-      const userInOrg = getUserInOrganization(orgId, currentStaff.externalId);
-      if (!userInOrg) {
-        return [];
-      }
     }
 
     //if is superadmin return field with null orgId
-
     // if admin, farmer return field just field on org
+
+    const organizations = await getOnlyOrganizations();
     const fields = await db.field.findMany({
       where: {
-        orgId,
+        ...(!isSuperAdmin(currentStaff.role) && {
+          orgId,
+        }),
       },
       include: {
         unit: {
@@ -128,8 +110,26 @@ export const getFields = async ({
           },
         },
       },
+      orderBy: [
+        {
+          orgId: "desc",
+        },
+        {
+          createdAt: "desc",
+        },
+      ],
     });
-    return fields;
+
+    const fieldWithOrganization: FieldTable[] = fields.map((field) => {
+      return {
+        ...field,
+        organization:
+          structuredClone(
+            organizations.find((item) => item.id === field.orgId)
+          ) || null,
+      };
+    });
+    return fieldWithOrganization;
   } catch (error) {
     return [];
   }
@@ -150,8 +150,17 @@ export const getFieldById = async (id: string): Promise<FieldTable | null> => {
         },
       },
     });
+    if (!field) {
+      return null;
+    }
+    const organization =
+      field.orgId !== null ? await getOrganizationById(field.orgId) : null;
 
-    return field;
+    const fieldWithOrg = {
+      ...field,
+      organization: structuredClone(organization),
+    };
+    return fieldWithOrg;
   } catch (error) {
     return null;
   }
@@ -182,6 +191,34 @@ export const getFieldsSelect = async (): Promise<FieldSelect[]> => {
       },
     });
     return fields;
+  } catch (error) {
+    return [];
+  }
+};
+
+export const getFieldLocations = async (): Promise<FieldLocation[]> => {
+  try {
+    return await db.field.findMany({
+      where: {
+        NOT: {
+          latitude: null,
+          longitude: null,
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        location: true,
+        latitude: true,
+        longitude: true,
+        area: true,
+        unit: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
   } catch (error) {
     return [];
   }

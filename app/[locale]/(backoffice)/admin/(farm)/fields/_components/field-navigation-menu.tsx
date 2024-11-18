@@ -33,6 +33,10 @@ export const FieldNavigationMenu = ({ data }: FieldNavigationMenuProps) => {
       label: t("info.label"),
     },
     {
+      href: `${getHref}/locations`,
+      label: t("locations.label"),
+    },
+    {
       href: `${getHref}/weathers`,
       label: t("weathers.label"),
       disabled,

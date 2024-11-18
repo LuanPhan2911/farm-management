@@ -1041,7 +1041,10 @@
     "page": {
       "title": "Manage fields",
       "detail": {
-        "title": "Field detail"
+        "title": "Field detail",
+        "locations": {
+          "title": "Field location"
+        }
       }
     },
     "table": {
@@ -1050,11 +1053,13 @@
         "location": "Location",
         "orgId": "Organization",
         "soilType": "Soil type",
-        "area": "Field Area"
+        "area": "Field Area",
+        "createdAt": "Created at",
+        "updatedAt": "Latest updated at"
       },
       "trow": {
         "soilType": "No select",
-        "location": "Not filled",
+        "location": "Not filled location",
         "area": "Not filled"
       }
     },
@@ -1078,6 +1083,11 @@
         "label": "Soils",
         "title": "Soils",
         "description": "Soils of field"
+      },
+      "locations": {
+        "label": "Locations",
+        "title": "Locations",
+        "description": "Field locations"
       },
       "danger": {
         "label": "Danger",
@@ -1113,9 +1123,56 @@
         "label": "Delete all selected",
         "title": "Delete all selected fields?",
         "description": "Are you absolutely sure? This action can not be undone!"
+      },
+      "editLocation": {
+        "title": "Update field location",
+        "description": "Update location, latitude, longitude which selected in map for current field"
       }
     },
     "schema": {
+      "locations": {
+        "errors": {
+          "parse": "Invalid fields!",
+          "nullLatLng": "Sorry, your location selected is null latitude or null longitude"
+        },
+        "latitude": {
+          "label": "Latitude",
+          "placeholder": "Lat",
+          "invalid_type_error": "Latitude value must be number",
+          "min": "Latitude value must be greater than {min} value",
+          "max": "Latitude value must be less than {max} value"
+        },
+        "longitude": {
+          "label": "Longitude",
+          "placeholder": "Lng",
+          "invalid_type_error": "Longitude value must be number",
+          "min": "Longitude value must be greater than {min} value",
+          "max": "Longitude value must be less than {max} value"
+        },
+        "location": {
+          "label": "Location",
+          "placeholder": "Field location",
+          "min": "Min field location is {min} characters!",
+          "required_error": "Field location is required!",
+          "max": "Field location's length must be less than {max} characters",
+          "default": "Not filled location"
+        },
+        "city": {
+          "notFound": "Province not found",
+          "placeholder": "City",
+          "label": "Select city"
+        },
+        "district": {
+          "notFound": "District not found",
+          "placeholder": "District",
+          "label": "Select district"
+        },
+        "town": {
+          "notFound": "Town not found",
+          "placeholder": "Town",
+          "label": "Select town"
+        }
+      },
       "errors": {
         "parse": "Invalid fields!",
         "existOrg": "OrgId is not exist."
@@ -1127,13 +1184,7 @@
         "min": "Min field name is {min} characters!",
         "max": "Field name's length must be less than {max} characters"
       },
-      "location": {
-        "label": "Location",
-        "placeholder": "Field location",
-        "min": "Min field location is {min} characters!",
-        "required_error": "Field location is required!",
-        "max": "Field location's length must be less than {max} characters"
-      },
+
       "orgId": {
         "label": "Organization",
         "placeholder": "Select organization...",
@@ -1184,11 +1235,13 @@
       "success": {
         "create": "Field created!",
         "edit": "Field edited!",
+        "editLocation": "Edit location",
         "destroy": "Field deleted!"
       },
       "failure": {
         "create": "Something went wrong while creating field!",
         "edit": "Something went wrong while editing field!",
+        "editLocation": "Fail edit location",
         "destroy": "Something went wrong while deleting field!"
       }
     },
@@ -1196,6 +1249,10 @@
       "title": "Field not found",
       "description": "Sorry, we couldn’t find the field you’re looking for.",
       "backLabel": "Go to fields page"
+    },
+    "other": {
+      "myLocation": "You are hear",
+      "popupCreateLocation": "Create field location here"
     }
   },
   "weathers": {
@@ -4247,6 +4304,7 @@
     "/admin/organizations/detail/files": "Uploaded files",
     "/admin/fields": "Field",
     "/admin/fields/detail": "Detail",
+    "/admin/fields/detail/locations": "Locations",
     "/admin/fields/detail/danger": "Danger",
     "/admin/fields/detail/weathers": "Weathers",
     "/admin/fields/detail/soils": "Soils",

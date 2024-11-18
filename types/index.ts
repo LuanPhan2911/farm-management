@@ -1,3 +1,4 @@
+import { Organization } from "@clerk/nextjs/server";
 import {
   Activity,
   ActivityAssigned,
@@ -135,6 +136,7 @@ export type ApplicantTable = {
 };
 export type FieldTable = Field & {
   unit: UnitSelect | null;
+  organization: Organization | null;
 };
 export type FieldSelect = {
   id: string;
@@ -142,6 +144,18 @@ export type FieldSelect = {
   location: string | null;
   area: number | null;
   orgId: string | null;
+  unit: {
+    name: string;
+  } | null;
+};
+
+export type FieldLocation = {
+  id: string;
+  name: string;
+  location: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  area: number | null;
   unit: {
     name: string;
   } | null;
@@ -554,5 +568,3 @@ export type CropMaterialUsage = MaterialUsage & {
     name: string;
   };
 };
-
-export type CropActivity = Activity & {};
