@@ -13,6 +13,8 @@ import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/equipment";
 import { getCurrentStaff } from "@/services/staffs";
 import { isSuperAdmin } from "@/lib/permission";
+import { CustomAlert } from "@/components/cards/custom-alert";
+import { DestroyButtonWithConfirmCode } from "@/components/buttons/destroy-button-with-confirm-code";
 
 interface EquipmentDangerPageProps {
   params: {
@@ -27,7 +29,7 @@ export async function generateMetadata() {
 }
 
 const EquipmentDangerPage = async ({ params }: EquipmentDangerPageProps) => {
-  const t = await getTranslations("equipments.form");
+  const t = await getTranslations("equipments.danger");
   const currentStaff = await getCurrentStaff();
   const data = await getEquipmentById(params.equipmentId);
   if (!data || !currentStaff) {
@@ -39,14 +41,22 @@ const EquipmentDangerPage = async ({ params }: EquipmentDangerPageProps) => {
     <Card>
       <CardHeader>
         <CardTitle>{t("destroy.title")}</CardTitle>
-        <CardDescription>{t("destroy.description")}</CardDescription>
       </CardHeader>
       <CardContent>
-        <DestroyButton
+        <CustomAlert
+          variant={"info"}
+          description={t("destroy.description.canDelete")}
+        />
+        <CustomAlert
+          variant={"destructive"}
+          description={t("destroy.description.deleteWhen")}
+        />
+        <DestroyButtonWithConfirmCode
           destroyFn={destroy}
           id={data.id}
           inltKey="equipments"
           disabled={!canDelete}
+          confirmCode="DELETE_EQUIPMENT"
         />
       </CardContent>
     </Card>

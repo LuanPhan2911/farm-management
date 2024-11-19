@@ -170,7 +170,7 @@ model Staff {
   messages             Message[]
   files                File[]
   activityCreatedBy    Activity[]         @relation(name: "createdBy")
-  activityAssinged     ActivityAssigned[]
+  activityAssigned     ActivityAssigned[]
   equipmentUsages      EquipmentUsage[]
 }
 
@@ -272,9 +272,8 @@ model Soil {
 model Field {
   id String @id @default(uuid())
 
-  name     String
-  location String?
-  orgId    String?
+  name  String
+  orgId String?
 
   //manage width, height, area, shape
   area     Float?
@@ -283,6 +282,12 @@ model Field {
   shape    String?
   soilType SoilType?
   note     String?
+
+  location     String?
+  latitude     Float?
+  longitude    Float?
+  latestCropId String?
+  latestCrop   Crop?   @relation(name: "latestCrop", fields: [latestCropId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -548,13 +553,16 @@ enum MaterialType {
 }
 
 model Material {
-  id              String       @id @default(uuid())
+  id              String  @id @default(uuid())
   name            String // Name of the material (e.g., "Fertilizer Type A")
   description     String?
   imageUrl        String?
   quantityInStock Float // Current stock quantity
-  type            MaterialType
-  unitId          String
+
+  unitId String
+
+  type   MaterialType
+  typeId String?
 
   basePrice Float?
   createdAt DateTime @default(now())
@@ -586,14 +594,6 @@ enum ActivityType {
   EQUIPMENT
   WATERING
   OTHER
-}
-
-enum ActivityStatus {
-  NEW
-  PENDING
-  IN_PROGRESS
-  COMPLETED
-  CANCELLED
 }
 
 enum ActivityPriority {
@@ -634,7 +634,10 @@ model Crop {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  activities Activity[]
+  learnedLessons String?
+
+  activities       Activity[]
+  latestCropFields Field[]    @relation(name: "latestCrop")
 }
 
 model ActivityAssigned {
@@ -650,6 +653,13 @@ model ActivityAssigned {
   staff    Staff    @relation(fields: [staffId], references: [id], onDelete: Cascade)
 
   @@unique([activityId, staffId])
+}
+
+enum ActivityStatus {
+  NEW
+  PENDING
+  IN_PROGRESS
+  COMPLETED
 }
 
 model Activity {

@@ -20,6 +20,10 @@ import { SearchBar } from "@/components/search-bar";
 import { useSearchParams } from "next/navigation";
 import { includeString } from "@/lib/utils";
 import { useDialog } from "@/stores/use-dialog";
+import {
+  FertilizerFrequencyValue,
+  FertilizerTypeValue,
+} from "./fertilizer-status-value";
 
 interface FertilizersTableProps {
   data: FertilizerTable[];
@@ -52,14 +56,12 @@ export const FertilizersTable = ({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>
+            <TableHead className="min-w-[200px]">
               <OrderByButton column="name" label={t("table.thead.name")} />
             </TableHead>
-            <TableHead>
-              <OrderByButton column="type" label={t("table.thead.type")} />
-            </TableHead>
-            <TableHead>{t("table.thead.nutrientOfNPK")}</TableHead>
+            <TableHead>{t("table.thead.type")}</TableHead>
             <TableHead>{t("table.thead.frequencyOfUse")}</TableHead>
+            <TableHead>{t("table.thead.nutrientOfNPK")}</TableHead>
             <TableHead>{t("table.thead.applicationMethod")}</TableHead>
             <TableHead>{t("table.thead.manufacturer")}</TableHead>
             <TableHead></TableHead>
@@ -73,20 +75,19 @@ export const FertilizersTable = ({
                 className="cursor-pointer"
                 onClick={() => handleEdit(item)}
               >
-                <TableCell>{item.name}</TableCell>
+                <TableHead>{item.name}</TableHead>
                 <TableCell>
-                  {item.type
-                    ? t(`schema.type.options.${item.type}`)
-                    : t("table.trow.type")}
+                  <FertilizerTypeValue value={item.type || undefined} />
+                </TableCell>
+                <TableCell>
+                  <FertilizerFrequencyValue
+                    value={item.frequencyOfUse || undefined}
+                  />
                 </TableCell>
                 <TableCell>
                   {item.nutrientOfNPK || t("table.trow.nutrientOfNPK")}
                 </TableCell>
-                <TableCell>
-                  {item.frequencyOfUse
-                    ? t(`schema.frequencyOfUse.options.${item.frequencyOfUse}`)
-                    : t("table.trow.frequencyOfUse")}
-                </TableCell>
+
                 <TableCell>
                   {item.applicationMethod
                     ? item.applicationMethod

@@ -38,13 +38,16 @@ export const OrderByButton = ({
     setValue(toggleValue);
   };
   return (
-    <Button size={"sm"} variant={"ghost"} onClick={handleClick} className="p-0">
+    <div
+      onClick={handleClick}
+      className="flex items-center cursor-pointer whitespace-nowrap"
+    >
       {label}
       {value === "desc" ? (
         <ArrowDown className="h-4 w-4 ml-2" />
       ) : (
         <ArrowUp className="h-4 w-4 ml-2" />
       )}
-    </Button>
+    </div>
   );
 };

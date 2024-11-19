@@ -1,6 +1,6 @@
 "use client";
 
-import { Link, usePathname, useRouter } from "@/navigation";
+import { usePathname, useRouter } from "@/navigation";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -51,7 +51,7 @@ export const CustomNavigationMenu = ({ data }: CustomNavigationMenuProps) => {
                           isActive={href === pathname}
                           key={href}
                           disabled={disabled}
-                          className="w-full justify-start"
+                          className="w-full justify-start border-t"
                         />
                       );
                     })}

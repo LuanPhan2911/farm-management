@@ -55,6 +55,11 @@ export const CropNavigationMenu = () => {
       }),
     },
     {
+      href: `${getHref}/learned-lessons`,
+      label: t("learnedLessons.label"),
+      disabled: isFarmer,
+    },
+    {
       href: `${getHref}/danger`,
       label: t("danger.label"),
       disabled: isAdmin || isFarmer,

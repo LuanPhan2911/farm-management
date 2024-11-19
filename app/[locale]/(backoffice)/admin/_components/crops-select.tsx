@@ -5,12 +5,12 @@ import {
   ComboBoxCustomAppearance,
 } from "@/components/form/combo-box";
 import { SelectItemContentWithoutImage } from "@/components/form/select-item";
-import { dateToString } from "@/lib/utils";
 import { CropSelectWithField } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import queryString from "query-string";
 
 interface CropSelectProps {
+  orgId?: string;
   defaultValue?: string;
   onChange: (value: string | undefined) => void;
   placeholder: string;
@@ -23,12 +23,16 @@ interface CropSelectProps {
 }
 export const CropsSelect = (props: CropSelectProps) => {
   const { data, isPending, isError, refetch } = useQuery({
-    queryKey: ["crops_select"],
+    queryKey: ["crops_select", props.orgId],
     queryFn: async () => {
       const url = queryString.stringifyUrl(
         {
           url: "/api/crops/select",
+          query: {
+            orgId: props.orgId,
+          },
         },
+
         {
           skipEmptyString: true,
         }

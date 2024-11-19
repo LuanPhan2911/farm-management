@@ -6,7 +6,6 @@ import { getMaterialsSelect } from "@/services/materials";
 import { getTranslations } from "next-intl/server";
 import { MaterialUsageCreateButton } from "./_components/material-usages-create-button";
 import { MaterialUsagesTable } from "./_components/material-usages-table";
-import { checkRole } from "@/lib/role";
 export async function generateMetadata() {
   const t = await getTranslations("materials.page.detail.usages");
   return {
@@ -14,14 +13,6 @@ export async function generateMetadata() {
   };
 }
 
-export async function generateStaticParams() {
-  const materials = await getMaterialsSelect();
-  return materials.map((item) => {
-    return {
-      materialId: item.id,
-    };
-  });
-}
 interface MaterialUsagesPageProps {
   params: {
     materialId: string;
@@ -46,7 +37,6 @@ const MaterialUsagesPage = async ({
     query,
     orderBy,
   });
-  const canEdit = checkRole("superadmin");
 
   return (
     <Card>
@@ -55,7 +45,7 @@ const MaterialUsagesPage = async ({
       </CardHeader>
       <CardContent>
         <div className="flex justify-end">
-          <MaterialUsageCreateButton disabled={!canEdit} />
+          <MaterialUsageCreateButton />
         </div>
         <MaterialUsagesTable data={data} totalPage={totalPage} />
       </CardContent>

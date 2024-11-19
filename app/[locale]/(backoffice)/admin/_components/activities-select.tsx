@@ -23,13 +23,18 @@ interface ActivitiesSelectProps {
   onSelected?: (value: ActivitySelectWithCrop) => void;
 }
 export const ActivitiesSelect = (props: ActivitiesSelectProps) => {
+  const { onSelected, defaultValue } = props;
   const { data, isPending, isError, refetch } = useQuery({
-    queryKey: ["activities_select"],
+    queryKey: ["activities_select", defaultValue],
     queryFn: async () => {
       const url = queryString.stringifyUrl(
         {
           url: "/api/activities/select",
+          query: {
+            id: defaultValue,
+          },
         },
+
         {
           skipEmptyString: true,
         }
@@ -38,7 +43,7 @@ export const ActivitiesSelect = (props: ActivitiesSelectProps) => {
       return (await res.json()) as ActivitySelectWithCrop[];
     },
   });
-  const { onSelected, defaultValue } = props;
+
   useEffect(() => {
     const selected = data?.find((item) => item.id === defaultValue);
 

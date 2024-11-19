@@ -33,7 +33,7 @@ const CropActivityMaterialUsagesPage = async ({
   const t = await getTranslations("activities.page.detail.material-usages");
   const { query, orderBy } = searchParams;
 
-  const { data, totalCost } = await getMaterialUsagesByActivity({
+  const data = await getMaterialUsagesByActivity({
     activityId: params.activityId,
     orderBy,
     query,
@@ -50,11 +50,7 @@ const CropActivityMaterialUsagesPage = async ({
         <div className="flex justify-end">
           <MaterialUsageCreateButton disabled={!canEdit} />
         </div>
-        <ActivityMaterialUsagesTable
-          data={data}
-          totalCost={totalCost}
-          disabled={!canEdit}
-        />
+        <ActivityMaterialUsagesTable data={data} disabled={!canEdit} />
       </CardContent>
     </Card>
   );

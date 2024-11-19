@@ -8,6 +8,10 @@ import { PlantPesticidesTableAction } from "./plant-pesticides-table-action";
 import { DataTable } from "@/components/datatable";
 import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-with-value";
 import { useDialog } from "@/stores/use-dialog";
+import {
+  PesticideToxicLevelValue,
+  PesticideTypeValue,
+} from "../../../../../pesticides/_components/pesticide-status-value";
 
 interface PlantPesticidesDataTableProps {
   data: PlantPesticideTable[];
@@ -32,7 +36,19 @@ export const PlantPesticidesDataTable = ({
       cell: ({ row }) => {
         const data = row.original;
 
-        return tSchema(`type.options.${data.pesticide.type}`);
+        return <PesticideTypeValue value={data.pesticide.type || undefined} />;
+      },
+    },
+    {
+      header: t("table.thead.pesticide.toxicityLevel"),
+      cell: ({ row }) => {
+        const data = row.original;
+
+        return (
+          <PesticideToxicLevelValue
+            value={data.pesticide.toxicityLevel || undefined}
+          />
+        );
       },
     },
     {

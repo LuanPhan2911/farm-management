@@ -9,11 +9,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { PesticideTable } from "@/types";
 import { MoreHorizontal } from "lucide-react";
-import { useTranslations } from "next-intl";
 import { PesticideEditButton } from "./pesticide-edit-button";
 import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/pesticide";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { DestroyButtonWithConfirmCode } from "@/components/buttons/destroy-button-with-confirm-code";
 interface PesticidesTableActionProps {
   data: PesticideTable;
 }
@@ -31,12 +31,13 @@ export const PesticidesTableAction = ({ data }: PesticidesTableActionProps) => {
           <PesticideEditButton data={data} />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <DestroyButton
+          <DestroyButtonWithConfirmCode
             destroyFn={destroy}
             id={data.id}
             inltKey="pesticides"
             disabled={!canDelete}
             className="w-full"
+            confirmCode="DELETE_PESTICIDE"
           />
         </DropdownMenuItem>
       </DropdownMenuContent>

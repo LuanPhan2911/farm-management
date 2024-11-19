@@ -52,18 +52,18 @@ export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
         <TableHeader>
           <TableRow>
             <TableHead>
+              <OrderByButton column="name" label={t("table.thead.name")} />
+            </TableHead>
+            <TableHead>
               <OrderByButton
                 column="activityDate"
                 label={t("table.thead.activityDate")}
                 defaultValue="desc"
               />
             </TableHead>
-            <TableHead>
-              <OrderByButton column="name" label={t("table.thead.name")} />
-            </TableHead>
+
             <TableHead>{t("table.thead.status")}</TableHead>
             <TableHead>{t("table.thead.priority")}</TableHead>
-            <TableHead>{t("table.thead.crop")}</TableHead>
             <TableHead>{t("table.thead.createdBy")}</TableHead>
             <TableHead className="text-right">
               {t("table.thead.estimatedDuration")}
@@ -81,17 +81,14 @@ export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
                 className="cursor-pointer"
                 onClick={() => handleViewDetail(item)}
               >
+                <TableHead>{item.name}</TableHead>
                 <TableCell>{dateTime(item.activityDate, "long")}</TableCell>
-                <TableCell>{item.name}</TableCell>
+
                 <TableCell>
                   <ActivityStatusValue value={item.status} />
                 </TableCell>
                 <TableCell>
                   <ActivityPriorityValue value={item.priority} />
-                </TableCell>
-
-                <TableCell>
-                  <SelectItemContentWithoutImage title={item.crop.name} />
                 </TableCell>
 
                 <TableCell>

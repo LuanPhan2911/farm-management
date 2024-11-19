@@ -14,6 +14,7 @@ import { destroy } from "@/actions/staff";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { StaffEditButton } from "./staff-edit-button";
 import { useCurrentStaff } from "@/hooks/use-current-staff";
+import { DestroyButtonWithConfirmCode } from "@/components/buttons/destroy-button-with-confirm-code";
 interface StaffsTableActionProps {
   data: Staff;
 }
@@ -37,13 +38,14 @@ export const StaffsTableAction = ({ data }: StaffsTableActionProps) => {
           <StaffEditButton data={data} disabled={!canEdit} />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <DestroyButton
+          <DestroyButtonWithConfirmCode
             destroyFn={destroy}
             id={data.id}
             inltKey="staffs"
             className="w-full"
             disabled={!canDelete}
             redirectHref="staffs"
+            confirmCode="DELETE_STAFF"
           />
         </DropdownMenuItem>
       </DropdownMenuContent>

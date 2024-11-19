@@ -8,6 +8,7 @@ import { FormItem, FormLabel } from "@/components/ui/form";
 import { FertilizerSelect } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
+import { useEffect } from "react";
 
 interface FertilizersSelectProps {
   onChange: (value: string | undefined) => void;
@@ -19,6 +20,7 @@ interface FertilizersSelectProps {
   appearance?: ComboBoxCustomAppearance;
   valueKey?: keyof FertilizerSelect;
   labelKey?: keyof FertilizerSelect;
+  onSelected?: (value: FertilizerSelect) => void;
 }
 export const FertilizersSelect = (props: FertilizersSelectProps) => {
   const tSchema = useTranslations("fertilizers.schema");
@@ -29,6 +31,16 @@ export const FertilizersSelect = (props: FertilizersSelectProps) => {
       return (await res.json()) as FertilizerSelect[];
     },
   });
+  const { onSelected, defaultValue } = props;
+  useEffect(() => {
+    const selected = data?.find((item) => item.id === defaultValue);
+
+    if (!selected) {
+      return;
+    }
+    onSelected?.(selected);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, defaultValue]);
 
   return (
     <ComboBoxCustom

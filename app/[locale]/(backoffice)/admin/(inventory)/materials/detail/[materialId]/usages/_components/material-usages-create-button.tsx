@@ -88,7 +88,7 @@ export const MaterialUsageCreateButton = ({
           <span className="text-sm font-semibold">{t("create.label")}</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-5xl">
+      <DialogContent className="max-w-4xl">
         <DialogHeader>
           <DialogTitle>{t("create.title")}</DialogTitle>
           <DialogDescription>{t("create.description")}</DialogDescription>

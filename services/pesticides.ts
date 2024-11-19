@@ -195,33 +195,36 @@ export const getCountPesticideToxicityLevel =
     }
   };
 
+export const pesticideSelect = {
+  id: true,
+  name: true,
+  type: true,
+  toxicityLevel: true,
+  applicationMethod: true,
+  withdrawalPeriod: {
+    include: {
+      unit: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  },
+  recommendedDosage: {
+    include: {
+      unit: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  },
+};
 export const getPesticidesSelect = async (): Promise<PesticideSelect[]> => {
   try {
     return await db.pesticide.findMany({
       select: {
-        id: true,
-        name: true,
-        type: true,
-        toxicityLevel: true,
-        applicationMethod: true,
-        withdrawalPeriod: {
-          include: {
-            unit: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        },
-        recommendedDosage: {
-          include: {
-            unit: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        },
+        ...pesticideSelect,
       },
     });
   } catch (error) {

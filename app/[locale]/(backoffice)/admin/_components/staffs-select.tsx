@@ -111,6 +111,7 @@ interface StaffsSelectMultipleProps {
   className?: string;
   valueKey?: keyof Staff;
   labelKey?: keyof Staff;
+  onSelected?: (values: Staff[]) => void;
 }
 export const StaffsSelectMultiple = ({
   adminOnly,
@@ -125,6 +126,7 @@ export const StaffsSelectMultiple = ({
   labelKey,
   valueKey,
   className,
+  onSelected,
 }: StaffsSelectMultipleProps) => {
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["staffs_select", orgId, adminOnly, farmerOnly],
@@ -146,6 +148,7 @@ export const StaffsSelectMultiple = ({
       return (await res.json()) as Staff[];
     },
   });
+
   const handleChange = (
     newValue: MultiValue<{
       label: string;
@@ -169,7 +172,6 @@ export const StaffsSelectMultiple = ({
   const defaultOptions = options.filter((item) => {
     return defaultValue?.includes(item.value);
   });
-  console.log(defaultOptions, defaultValue);
 
   return (
     <ReactSelect

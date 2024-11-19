@@ -14,6 +14,7 @@ import { ScheduleResponse } from "@/types";
 import { ScheduleEditButton } from "./schedule-edit-button";
 import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/schedule";
+import { DestroyButtonWithConfirmCode } from "@/components/buttons/destroy-button-with-confirm-code";
 interface SchedulesTableActionProps {
   data: ScheduleResponse;
 }
@@ -31,11 +32,12 @@ export const SchedulesTableAction = ({ data }: SchedulesTableActionProps) => {
           <ScheduleEditButton data={data} label={t("edit.label")} />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <DestroyButton
+          <DestroyButtonWithConfirmCode
             destroyFn={destroy}
             id={data.id}
             inltKey="schedules"
             className="w-full"
+            confirmCode="DELETE_SCHEDULE"
           />
         </DropdownMenuItem>
       </DropdownMenuContent>

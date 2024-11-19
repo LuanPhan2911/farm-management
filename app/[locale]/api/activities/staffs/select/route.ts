@@ -1,4 +1,4 @@
-import { getActivityAssignedStaffsSelect } from "@/services/activities";
+import { getActivityAssignedStaffsSelect } from "@/services/activity-assigned";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (req: NextRequest) => {

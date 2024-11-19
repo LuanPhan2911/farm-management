@@ -72,6 +72,7 @@ export const CropCreateButton = () => {
     });
   };
 
+  const endDate = form.watch("endDate");
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -129,6 +130,7 @@ export const CropCreateButton = () => {
                         }}
                         date={{
                           from: field.value,
+                          to: endDate || undefined,
                         }}
                         disabled={isPending}
                         className="lg:w-full"

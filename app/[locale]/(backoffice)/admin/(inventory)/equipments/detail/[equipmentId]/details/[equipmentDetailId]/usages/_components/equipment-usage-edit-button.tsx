@@ -3,7 +3,7 @@ import {
   DynamicDialog,
   DynamicDialogFooter,
 } from "@/components/dialog/dynamic-dialog";
-import { EquipmentUsageSchema } from "@/schemas";
+import { EquipmentUsageSchema, EquipmentUsageUpdateSchema } from "@/schemas";
 import { useDialog } from "@/stores/use-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
@@ -60,7 +60,7 @@ export const EquipmentUsageEditDialog = () => {
 
   const tSchema = useTranslations("equipmentUsages.schema");
   const t = useTranslations("equipmentUsages.form");
-  const formSchema = EquipmentUsageSchema(tSchema);
+  const formSchema = EquipmentUsageUpdateSchema(tSchema);
 
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof formSchema>>({

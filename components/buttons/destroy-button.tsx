@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { Trash } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useRouter } from "@/navigation";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
 
 interface DestroyButtonProps {

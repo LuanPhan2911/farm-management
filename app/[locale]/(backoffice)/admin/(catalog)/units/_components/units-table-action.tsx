@@ -12,6 +12,7 @@ import { UnitTable } from "@/types";
 import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/unit";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { DestroyButtonWithConfirmCode } from "@/components/buttons/destroy-button-with-confirm-code";
 interface UnitsTableActionProps {
   data: UnitTable;
 }
@@ -30,12 +31,13 @@ export const UnitsTableAction = ({ data }: UnitsTableActionProps) => {
           <UnitEditButton data={data} />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <DestroyButton
+          <DestroyButtonWithConfirmCode
             destroyFn={destroy}
             id={data.id}
             inltKey="units"
             className="w-full"
             disabled={!canDelete}
+            confirmCode="DELETE_UNIT"
           />
         </DropdownMenuItem>
       </DropdownMenuContent>

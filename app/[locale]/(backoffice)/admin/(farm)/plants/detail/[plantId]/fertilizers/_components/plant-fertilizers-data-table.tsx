@@ -8,6 +8,10 @@ import { PlantFertilizersTableAction } from "./plant-fertilizers-table-action";
 import { DataTable } from "@/components/datatable";
 import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-with-value";
 import { useDialog } from "@/stores/use-dialog";
+import {
+  FertilizerFrequencyValue,
+  FertilizerTypeValue,
+} from "../../../../../fertilizers/_components/fertilizer-status-value";
 
 interface PlantFertilizersDataTableProps {
   data: PlantFertilizerTable[];
@@ -33,7 +37,31 @@ export const PlantFertilizersDataTable = ({
       cell: ({ row }) => {
         const data = row.original;
 
-        return tSchema(`type.options.${data.fertilizer.type}`);
+        return (
+          <FertilizerTypeValue value={data.fertilizer.type || undefined} />
+        );
+      },
+    },
+    {
+      header: t("table.thead.fertilizer.frequencyOfUse"),
+      cell: ({ row }) => {
+        const data = row.original;
+
+        return (
+          <FertilizerFrequencyValue
+            value={data.fertilizer.frequencyOfUse || undefined}
+          />
+        );
+      },
+    },
+    {
+      header: t("table.thead.fertilizer.nutrientOfNPK"),
+      cell: ({ row }) => {
+        const data = row.original;
+        return (
+          data.fertilizer.nutrientOfNPK ||
+          t("table.trow.fertilizer.nutrientOfNPK")
+        );
       },
     },
     {

@@ -9,6 +9,10 @@ import { DataTable } from "@/components/datatable";
 
 import { FertilizerType, Season } from "@prisma/client";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
+import { SelectItemContent } from "@/components/form/select-item";
+import { UnitWithValue } from "../../../_components/unit-with-value";
+import { PlantSeasonValue } from "./plant-status-value";
+import { FertilizerTypeValue } from "../../fertilizers/_components/fertilizer-status-value";
 
 interface PlantsDataTableProps {
   data: PlantTable[];
@@ -22,37 +26,22 @@ export const PlantsDataTable = ({ data }: PlantsDataTableProps) => {
       header: t("table.thead.imageUrl"),
       cell: ({ row }) => {
         const data = row.original;
-        return <UserAvatar src={data.imageUrl || undefined} />;
-      },
-    },
-    {
-      accessorKey: "name",
-      header: ({ column }) => {
         return (
-          <DataTableColumnHeader
-            column={column}
-            title={t("table.thead.name")}
+          <SelectItemContent
+            imageUrl={data.imageUrl}
+            title={data.name}
+            description={data.category.name}
           />
         );
       },
     },
-    {
-      accessorKey: "category",
-      header: t("table.thead.category"),
-      cell: ({ row }) => {
-        const data = row.original;
-        return data.category.name;
-      },
-    },
+
     {
       accessorKey: "season",
       header: t("table.thead.season"),
       cell: ({ row }) => {
         const data = row.original;
-        if (!data.season) {
-          return t("table.trow.season");
-        }
-        return t(`schema.season.options.${data.season}`);
+        return <PlantSeasonValue value={data.season || undefined} />;
       },
       filterFn: (row, id, value) => {
         return value.includes(row.getValue(id));
@@ -73,15 +62,66 @@ export const PlantsDataTable = ({ data }: PlantsDataTableProps) => {
       },
       cell: ({ row }) => {
         const data = row.original;
-        if (!data.fertilizerType) {
-          return t(`table.trow.fertilizerType`);
-        }
-        return t(`schema.fertilizerType.options.${data.fertilizerType}`);
+        return <FertilizerTypeValue value={data.fertilizerType || undefined} />;
       },
     },
     {
       accessorKey: "growthDuration",
       header: t("table.thead.growthDuration"),
+    },
+    {
+      accessorKey: "idealTemperature",
+      header: () => (
+        <p className="text-right">{t("table.thead.idealTemperature")}</p>
+      ),
+      cell: ({ row }) => {
+        const data = row.original;
+        if (data.idealTemperature?.value) {
+          return (
+            <UnitWithValue
+              value={data.idealTemperature.value}
+              unit={data.idealTemperature.unit?.name}
+            />
+          );
+        }
+        return <p className="text-right">{t("table.trow.idealTemperature")}</p>;
+      },
+    },
+    {
+      accessorKey: "idealHumidity",
+      header: () => (
+        <p className="text-right">{t("table.thead.idealHumidity")}</p>
+      ),
+      cell: ({ row }) => {
+        const data = row.original;
+        if (data.idealHumidity?.value) {
+          return (
+            <UnitWithValue
+              value={data.idealHumidity.value}
+              unit={data.idealHumidity.unit?.name || "%"}
+            />
+          );
+        }
+        return <p className="text-right">{t("table.trow.idealHumidity")}</p>;
+      },
+    },
+    {
+      accessorKey: "waterRequirement",
+      header: () => (
+        <p className="text-right">{t("table.thead.waterRequirement")}</p>
+      ),
+      cell: ({ row }) => {
+        const data = row.original;
+        if (data.waterRequirement?.value) {
+          return (
+            <UnitWithValue
+              value={data.waterRequirement.value}
+              unit={data.waterRequirement.unit?.name}
+            />
+          );
+        }
+        return <p className="text-right">{t("table.trow.waterRequirement")}</p>;
+      },
     },
   ];
   const facetedFilters = [

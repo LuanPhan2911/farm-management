@@ -39,7 +39,10 @@ export const ComboBoxDefault = ({
   onChange,
   defaultValue,
   disabled,
-  appearance,
+  appearance = {
+    button: "lg:w-full h-10",
+    content: "lg:w-[350px]",
+  },
 }: ComboBoxProps) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(defaultValue);
@@ -169,7 +172,6 @@ export const ComboBoxCustom = <T extends Record<string, any>>({
   const handleSelect = (currentValue: string) => {
     setValue(currentValue === value ? undefined : currentValue);
     onChange(currentValue === value ? undefined : currentValue);
-
     setOpen(false);
   };
 

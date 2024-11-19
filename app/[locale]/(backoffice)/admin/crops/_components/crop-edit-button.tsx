@@ -1,6 +1,6 @@
 "use client";
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
-import { CropSchema } from "@/schemas";
+import { CropLearnedLessonsSchema, CropSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CropStatus, UnitType } from "@prisma/client";
 import { useTranslations } from "next-intl";
@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 
 import { CropTable } from "@/types";
 import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
-import { edit } from "@/actions/crop";
+import { edit, editLearnedLessons } from "@/actions/crop";
 import { PlantsSelect } from "@/app/[locale]/(backoffice)/admin/_components/plants-select";
 import { DatePickerWithRange } from "@/components/form/date-picker-with-range";
 import { DateRange } from "react-day-picker";
@@ -28,6 +28,7 @@ import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { SelectOptions } from "@/components/form/select-options";
 import { FieldsSelect } from "../../_components/fields-select";
 import { canUpdateCropStatus } from "@/lib/permission";
+import { Tiptap } from "@/components/tiptap";
 
 interface CropEditFormProps {
   data: CropTable;
@@ -47,6 +48,8 @@ export const CropEditForm = ({ data }: CropEditFormProps) => {
   });
   const { isSuperAdmin } = useCurrentStaffRole();
   const canEdit = isSuperAdmin && canUpdateCropStatus(data.status);
+
+  const endDate = form.watch("endDate");
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
@@ -106,6 +109,7 @@ export const CropEditForm = ({ data }: CropEditFormProps) => {
                     }}
                     date={{
                       from: field.value,
+                      to: endDate || undefined,
                     }}
                     disabled={isPending || !canEdit}
                     className="lg:w-full"
@@ -256,6 +260,72 @@ export const CropEditForm = ({ data }: CropEditFormProps) => {
             )}
           />
         </div>
+
+        <DynamicDialogFooter
+          disabled={isPending || !canEdit}
+          closeButton={false}
+        />
+      </form>
+    </Form>
+  );
+};
+
+interface CropEditLearnedLessonProps {
+  data: CropTable;
+}
+export const CropEditLearnedLesson = ({ data }: CropEditLearnedLessonProps) => {
+  const tSchema = useTranslations("crops.schema");
+
+  const formSchema = CropLearnedLessonsSchema(tSchema);
+
+  const [isPending, startTransition] = useTransition();
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      learnedLessons: data.learnedLessons,
+    },
+  });
+  const { isSuperAdmin } = useCurrentStaffRole();
+  const canEdit = isSuperAdmin && canUpdateCropStatus(data.status);
+
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    startTransition(() => {
+      editLearnedLessons(values, data.id)
+        .then(({ message, ok }) => {
+          if (ok) {
+            toast.success(message);
+          } else {
+            toast.error(message);
+          }
+        })
+        .catch((error: Error) => {
+          toast.error("Internal error");
+        });
+    });
+  };
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="learnedLessons"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{tSchema("learnedLessons.label")}</FormLabel>
+
+              <FormControl>
+                <Tiptap
+                  value={field.value || ""}
+                  onChange={field.onChange}
+                  disabled={isPending || !canEdit}
+                />
+              </FormControl>
+
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <DynamicDialogFooter
           disabled={isPending || !canEdit}

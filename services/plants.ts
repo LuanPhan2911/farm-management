@@ -153,6 +153,11 @@ export const plantSelect = {
   id: true,
   name: true,
   imageUrl: true,
+  category: {
+    select: {
+      name: true,
+    },
+  },
 };
 export const getPlantsSelect = async (): Promise<PlantSelect[]> => {
   try {

@@ -1,7 +1,6 @@
 import { useMedia } from "@/hooks/use-media";
 import { cn } from "@/lib/utils";
 import { Link } from "@/navigation";
-import { useConfirmWhenChangeRoute } from "@/stores/use-confirm-when-change-route";
 import { useDashboardSidebar } from "@/stores/use-dashboard-sidebar";
 import { LucideIcon } from "lucide-react";
 

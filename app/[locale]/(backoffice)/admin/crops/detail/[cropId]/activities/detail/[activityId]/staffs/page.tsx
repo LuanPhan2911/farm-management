@@ -1,13 +1,8 @@
-import {
-  getActivityAssignedStaffs,
-  getOnlyActivityById,
-} from "@/services/activities";
+import { getActivityAssignedStaffs } from "@/services/activity-assigned";
 import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ActivityStaffsCreateButton } from "@/app/[locale]/(backoffice)/admin/activities/detail/[activityId]/staffs/_components/activity-staffs-create-button";
 import { ActivityStaffsTable } from "@/app/[locale]/(backoffice)/admin/activities/detail/[activityId]/staffs/_components/activity-staffs-table";
-import { notFound } from "next/navigation";
-import { canUpdateActivityStatus } from "@/lib/permission";
 import { canUpdateActivity } from "@/lib/role";
 
 export async function generateMetadata() {
@@ -27,9 +22,7 @@ interface ActivityStaffsPageProps {
 const ActivityStaffsPage = async ({ params }: ActivityStaffsPageProps) => {
   const t = await getTranslations("activities.page.detail.staffs");
 
-  const { data, totalCost } = await getActivityAssignedStaffs(
-    params.activityId
-  );
+  const data = await getActivityAssignedStaffs(params.activityId);
   const canEdit = await canUpdateActivity(params.cropId, params.activityId);
   return (
     <Card>
@@ -40,11 +33,7 @@ const ActivityStaffsPage = async ({ params }: ActivityStaffsPageProps) => {
         <div className="flex justify-end">
           <ActivityStaffsCreateButton data={data} disabled={!canEdit} />
         </div>
-        <ActivityStaffsTable
-          data={data}
-          totalCost={totalCost}
-          disabled={!canEdit}
-        />
+        <ActivityStaffsTable data={data} disabled={!canEdit} />
       </CardContent>
     </Card>
   );

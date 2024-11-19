@@ -35,7 +35,7 @@ const CropActivityEquipmentUsagesPage = async ({
   );
   const { query, orderBy } = searchParams;
 
-  const { data, totalCost } = await getEquipmentUsagesByActivity({
+  const data = await getEquipmentUsagesByActivity({
     activityId: params.activityId,
     orderBy,
     query,
@@ -51,11 +51,7 @@ const CropActivityEquipmentUsagesPage = async ({
         <div className="flex justify-end">
           <EquipmentUsageCreateButton disabled={!canEdit} />
         </div>
-        <ActivityEquipmentUsagesTable
-          data={data}
-          totalCost={totalCost}
-          disabled={!canEdit}
-        />
+        <ActivityEquipmentUsagesTable data={data} disabled={!canEdit} />
       </CardContent>
     </Card>
   );

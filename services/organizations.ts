@@ -5,7 +5,7 @@ import { getCurrentStaff } from "./staffs";
 import { getOrganizationMembershipList } from "./users";
 import { Staff, StaffRole } from "@prisma/client";
 import { db } from "@/lib/db";
-import { isSuperAdmin } from "@/lib/permission";
+import { isAdmin, isFarmer, isSuperAdmin } from "@/lib/permission";
 import { deleteMessagesByOrgId } from "./messages";
 import { updateFieldOrgWhenOrgDeleted } from "./fields";
 
@@ -247,4 +247,77 @@ export const getUserInOrganization = async (orgId: string, userId: string) => {
     (item) => item.publicUserData?.userId === userId
   );
   return currentStaffInOrg || null;
+};
+
+export const hasStaffGetDataWithOrgId = async (
+  orgId: string | null,
+  {
+    canAdminGetDataWithNullOrg = true,
+  }: {
+    canAdminGetDataWithNullOrg?: boolean;
+  }
+) => {
+  //only super admin access data without orgId
+  //admin access data with orgId=null and in org
+  //farmer access data with orgId!==null and in org
+  try {
+    const currentStaff = await getCurrentStaff();
+    if (!currentStaff) {
+      return {
+        canAccess: false,
+        currentStaff,
+      };
+    }
+    const role = currentStaff.role;
+    if (orgId === null && isFarmer(currentStaff.role)) {
+      return {
+        canAccess: false,
+        currentStaff,
+      };
+    }
+    if (orgId === null && isAdmin(currentStaff.role)) {
+      if (canAdminGetDataWithNullOrg) {
+        return {
+          canAccess: true,
+          currentStaff,
+        };
+      }
+      return {
+        canAccess: false,
+        currentStaff,
+      };
+    }
+    if (orgId !== null && !isSuperAdmin(currentStaff.role)) {
+      const hasGetField = await getUserInOrganization(
+        orgId,
+        currentStaff.externalId
+      );
+      if (!hasGetField) {
+        return {
+          canAccess: false,
+          currentStaff,
+        };
+      }
+    }
+    return {
+      canAccess: true,
+      currentStaff,
+    };
+  } catch (error) {
+    return {
+      canAccess: false,
+      currentStaff: null,
+    };
+  }
+};
+
+export const getOnlyOrganizations = async () => {
+  try {
+    const { data } = await clerkClient().organizations.getOrganizationList({
+      limit: 100,
+    });
+    return data;
+  } catch (error) {
+    return [];
+  }
 };

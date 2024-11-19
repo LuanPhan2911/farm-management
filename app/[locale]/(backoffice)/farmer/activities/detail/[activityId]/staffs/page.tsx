@@ -1,13 +1,11 @@
-import {
-  getActivityAssignedStaffs,
-  getOnlyActivityById,
-} from "@/services/activities";
+import { getOnlyActivityById } from "@/services/activities";
 import { getTranslations } from "next-intl/server";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ActivityStaffsTable } from "@/app/[locale]/(backoffice)/admin/activities/detail/[activityId]/staffs/_components/activity-staffs-table";
 import { notFound } from "next/navigation";
 import { canUpdateActivity } from "@/lib/role";
+import { getActivityAssignedStaffs } from "@/services/activity-assigned";
 
 export async function generateMetadata() {
   const t = await getTranslations("activities.page.detail.staffs");
@@ -25,9 +23,7 @@ interface ActivityStaffsPageProps {
 const ActivityStaffsPage = async ({ params }: ActivityStaffsPageProps) => {
   const t = await getTranslations("activities.page.detail.staffs");
 
-  const { data, totalCost } = await getActivityAssignedStaffs(
-    params.activityId
-  );
+  const data = await getActivityAssignedStaffs(params.activityId);
   const activity = await getOnlyActivityById(params.activityId);
   if (!activity) {
     notFound();
@@ -40,11 +36,7 @@ const ActivityStaffsPage = async ({ params }: ActivityStaffsPageProps) => {
         <CardTitle>{t("title")}</CardTitle>
       </CardHeader>
       <CardContent>
-        <ActivityStaffsTable
-          data={data}
-          totalCost={totalCost}
-          disabled={!canEdit}
-        />
+        <ActivityStaffsTable data={data} disabled={!canEdit} />
       </CardContent>
     </Card>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { upsertAssigned } from "@/actions/activity";
+import { upsertAssigned } from "@/actions/activity-assigned";
 import { StaffsSelectMultiple } from "@/app/[locale]/(backoffice)/admin/_components/staffs-select";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,18 +11,18 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { ActivityAssignedSchema } from "@/schemas";
-import { ActivityAssignedStaffWithActivitySelect } from "@/types";
+import { StaffWithSalaryAndActivity } from "@/types";
 import { useAuth } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { useEffect, useTransition } from "react";
+import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
 interface ActivityStaffsCreateButtonProps {
-  data: ActivityAssignedStaffWithActivitySelect[];
+  data: StaffWithSalaryAndActivity[];
   disabled?: boolean;
 }
 export const ActivityStaffsCreateButton = ({
@@ -41,18 +41,11 @@ export const ActivityStaffsCreateButton = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      assignedTo: !assignedStaffs.length
-        ? undefined
-        : assignedStaffs.map((item) => item.id),
+      assignedTo: assignedStaffs.map((item) => item.id),
       activityId: params?.activityId,
     },
   });
-  useEffect(() => {
-    form.setValue(
-      "assignedTo",
-      assignedStaffs.map((item) => item.id)
-    );
-  }, [assignedStaffs, form]);
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       upsertAssigned(values)

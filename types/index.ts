@@ -1,3 +1,4 @@
+import { Organization } from "@clerk/nextjs/server";
 import {
   Activity,
   ActivityAssigned,
@@ -61,9 +62,7 @@ export type PaginatedResponse<T> = {
   data: T[];
   totalPage: number;
 };
-export type PaginatedResponseWithTotalCost<T> = PaginatedResponse<T> & {
-  totalCost: number;
-};
+
 export type PaginatedWithCursorResponse<T> = {
   items: T[];
   nextCursor?: string | null | number;
@@ -137,6 +136,7 @@ export type ApplicantTable = {
 };
 export type FieldTable = Field & {
   unit: UnitSelect | null;
+  organization: Organization | null;
 };
 export type FieldSelect = {
   id: string;
@@ -147,6 +147,19 @@ export type FieldSelect = {
   unit: {
     name: string;
   } | null;
+};
+
+export type FieldLocation = {
+  id: string;
+  name: string;
+  location: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  area: number | null;
+  unit: {
+    name: string;
+  } | null;
+  latestCrop: CropSelectWithPlant | null;
 };
 
 export type WeatherTable = Weather & {
@@ -202,22 +215,16 @@ export type PlantSelect = {
   id: string;
   name: string;
   imageUrl: string | null;
+  category: {
+    name: string;
+  };
 };
 export type PlantFertilizerTable = PlantFertilizer & {
-  fertilizer: {
-    name: string;
-    type: FertilizerType;
-    recommendedDosage: FloatUnitTable | null;
-  };
+  fertilizer: FertilizerSelect;
   dosage: FloatUnitTable | null;
 };
 export type PlantPesticideTable = PlantPesticide & {
-  pesticide: {
-    name: string;
-    type: PesticideType;
-    toxicityLevel: ToxicityLevel | null;
-    recommendedDosage: FloatUnitTable | null;
-  };
+  pesticide: PesticideSelect;
   dosage: IntUnitTable | null;
 };
 export type FertilizerTable = Fertilizer & {
@@ -325,6 +332,21 @@ export type MaterialTable = Material & {
     materialUsages: number;
   };
 };
+
+export type MaterialWithCost = Material & {
+  unit: {
+    name: string;
+  };
+  _count: {
+    materialUsages: number;
+  };
+  materialUsages: MaterialUsageWithActivity[];
+  totalQuantityUsed: number;
+  totalCost: number;
+};
+export type MaterialUsageWithActivity = MaterialUsage & {
+  activity: ActivitySelect | null;
+};
 export type MaterialSelect = {
   id: string;
   name: string;
@@ -336,6 +358,15 @@ export type MaterialSelect = {
     name: string;
   };
   basePrice: number | null;
+};
+
+export type MaterialUsedChart = {
+  month: Date;
+  totalCost: number;
+};
+export type MaterialMostUsedChart = {
+  name: string;
+  quantityUsed: number;
 };
 export type MaterialUsageTable = MaterialUsage & {
   material: MaterialSelect;
@@ -351,13 +382,9 @@ export type MaterialUsageTableWithCost = MaterialUsage & {
     name: string;
   };
   activity: ActivitySelect | null;
-  actualCost: number | null;
+  actualCost: number;
 };
 
-export type MaterialUsageTableWithTotalCost = {
-  data: MaterialUsageTableWithCost[];
-  totalCost: number;
-};
 export type MaterialTypeCount = {
   type: MaterialType;
   _count: number;
@@ -390,11 +417,10 @@ export type EquipmentDetailSelect = {
   maxFuelConsumption: number | null;
 };
 
-export type EquipmentDetailSelectWithEquipmentAndUnit =
-  EquipmentDetailSelect & {
-    equipment: EquipmentSelect;
-    unit: UnitSelect | null;
-  };
+export type EquipmentDetailSelectWithUnit = EquipmentDetailSelect & {
+  equipment: EquipmentSelect;
+  unit: UnitSelect | null;
+};
 
 export type EquipmentTypeCount = {
   type: EquipmentType;
@@ -412,39 +438,39 @@ export type EquipmentUsageTableWithCost = EquipmentUsage & {
   equipmentDetail: EquipmentDetailSelect;
   activity: ActivitySelect | null;
   operator: Staff | null;
-  actualCost: number | null;
+  actualCost: number;
+};
+export type EquipmentUsageWithActivity = EquipmentUsage & {
+  activity: ActivitySelect | null;
+};
+export type EquipmentDetailUsageCost = EquipmentDetail & {
+  equipment: EquipmentSelect;
+  equipmentUsages: EquipmentUsageWithActivity[];
+  _count: {
+    equipmentUsages: number;
+  };
+  unit: {
+    name: string;
+  } | null;
+  totalCost: number;
+  totalFuelConsumption: number;
+  totalRentalPrice: number;
 };
 
-export type EquipmentUsageTableWithTotalCost = {
-  data: EquipmentUsageTableWithCost[];
-  totalCost: number;
+export type AssignedStaff = ActivityAssigned & {
+  staff: Staff;
 };
 
-export type ActivityAssignedStaff = ActivityAssigned & {
-  staff: Staff;
-};
-export type ActivityAssignedStaffWithActivitySelect = ActivityAssigned & {
-  activity: ActivitySelect;
-  staff: Staff;
-  actualCost: number | null;
-};
-export type ActivityAssignedStaffWithActivityAndCost = {
-  totalCost: number;
-  data: ActivityAssignedStaffWithActivitySelect[];
-};
 export type ActivityTable = Activity & {
   createdBy: Staff;
   crop: CropSelect;
-  assignedTo: ActivityAssignedStaff[];
+  assignedTo: AssignedStaff[];
 };
 
 export type ActivityWithCost = Activity & {
-  actualCost: number | null;
+  actualCost: number;
 };
-export type ActivityWithTotalCost = {
-  data: ActivityWithCost[];
-  totalCost: number;
-};
+
 export type ActivitySelect = {
   id: string;
   name: string;
@@ -473,6 +499,25 @@ export type ActivityPriorityCount = {
 };
 export const activityUpdateStatus = ["NEW", "PENDING", "IN_PROGRESS"] as const;
 
+export type StaffWithSalary = Staff & {
+  salary: number;
+  hourlyWork: number;
+  _count: {
+    activityAssigned: number;
+  };
+};
+export type StaffWithSalaryAndActivity = ActivityAssigned & {
+  activity: ActivitySelect;
+  actualCost: number;
+  staff: Staff;
+};
+
+export type SalaryChart = {
+  month: Date;
+  totalSalary: number;
+  totalHourlyWork: number;
+};
+
 export type CropTable = Crop & {
   plant: PlantSelect;
   field: FieldSelect;
@@ -496,5 +541,25 @@ export type CropSelectWithField = CropSelect & {
 export type CropWithCount = Crop & {
   _count: {
     activities: number;
+  };
+};
+export type CropSelectWithPlant = CropSelect & {
+  plant: PlantSelect;
+};
+
+export type CropMaterial = {
+  id: string;
+  name: string;
+  imageUrl: string | null;
+  type: MaterialType;
+  typeId: string | null;
+  unit: {
+    name: string;
+  };
+};
+export type CropMaterialUsage = MaterialUsage & {
+  material: CropMaterial;
+  unit: {
+    name: string;
   };
 };

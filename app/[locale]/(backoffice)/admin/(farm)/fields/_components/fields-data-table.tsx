@@ -3,13 +3,15 @@ import { DataTable } from "@/components/datatable";
 import { DataTableColumnHeader } from "@/components/datatable/datatable-column-header";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { FieldTable } from "@/types";
 import { UnitWithValue } from "../../../_components/unit-with-value";
 
 import { SoilType } from "@prisma/client";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
 import { UsageStatusValue } from "@/components/usage-status-value";
+import { SelectItemContent } from "@/components/form/select-item";
+import { FieldSoilTypeValue } from "./field-soil-type-value";
 
 interface FieldsDataTableProps {
   data: FieldTable[];
@@ -18,16 +20,8 @@ interface FieldsDataTableProps {
 export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
   const { push } = useRouterWithRole();
   const t = useTranslations("fields");
-
+  const { dateTime } = useFormatter();
   const columns: ColumnDef<FieldTable>[] = [
-    {
-      accessorKey: "orgId",
-      header: t("table.thead.orgId"),
-      cell: ({ row }) => {
-        const data = row.original;
-        return <UsageStatusValue status={!!data.orgId} />;
-      },
-    },
     {
       accessorKey: "name",
       header: ({ column }) => {
@@ -51,7 +45,6 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
         return data.location;
       },
     },
-
     {
       accessorKey: "soilType",
       header: t("table.thead.soilType"),
@@ -63,10 +56,26 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
         if (!data.soilType) {
           return t("table.trow.soilType");
         }
-        return t(`schema.soilType.options.${data.soilType}`);
+        return <FieldSoilTypeValue value={data.soilType} />;
       },
     },
-
+    {
+      accessorKey: "organization",
+      header: t("table.thead.orgId"),
+      cell: ({ row }) => {
+        const { organization } = row.original;
+        if (!organization) {
+          return <UsageStatusValue status={false} />;
+        }
+        return (
+          <SelectItemContent
+            imageUrl={organization.imageUrl}
+            title={organization.name}
+            description={organization.slug}
+          />
+        );
+      },
+    },
     {
       accessorKey: "area",
       header: () => {
@@ -78,6 +87,16 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
           return <p className="text-right">{t("table.trow.area")}</p>;
         }
         return <UnitWithValue value={data.area} unit={data.unit?.name} />;
+      },
+    },
+
+    {
+      accessorKey: "createdAt",
+      header: t("table.thead.createdAt"),
+
+      cell: ({ row }) => {
+        const data = row.original;
+        return dateTime(data.createdAt, "long");
       },
     },
   ];
