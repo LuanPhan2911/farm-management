@@ -66,10 +66,7 @@ export const SearchLocation = ({
         toast.error(tSchema("errors.nullLatlng"));
         return;
       }
-      goToLocationFn(
-        getLatLng(selectedTown.latitude, selectedTown.longitude),
-        15
-      );
+      goToLocationFn(getLatLng(selectedTown.latitude, selectedTown.longitude));
       return;
     }
 
@@ -87,8 +84,7 @@ export const SearchLocation = ({
         return;
       }
       goToLocationFn(
-        getLatLng(selectedDistrict.latitude, selectedDistrict.longitude),
-        13
+        getLatLng(selectedDistrict.latitude, selectedDistrict.longitude)
       );
       return;
     }

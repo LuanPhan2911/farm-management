@@ -16,6 +16,7 @@ import { MaterialUsageEditDialog } from "@/app/[locale]/(backoffice)/admin/(inve
 import { EquipmentUsageEditDialog } from "@/app/[locale]/(backoffice)/admin/(inventory)/equipments/detail/[equipmentId]/details/[equipmentDetailId]/usages/_components/equipment-usage-edit-button";
 import { StaffEditDialog } from "@/app/[locale]/(backoffice)/admin/(account)/staffs/_components/staff-edit-button";
 import { ActivityStaffEditDialog } from "@/app/[locale]/(backoffice)/admin/activities/detail/[activityId]/staffs/_components/activity-staffs-edit-button";
+import { DynamicDialogOTP } from "../dialog/dynamic-dialog-confirm";
 
 export const DialogProvider = () => {
   return (
@@ -36,6 +37,8 @@ export const DialogProvider = () => {
       <MaterialUsageEditDialog />
       <EquipmentUsageEditDialog />
       <ActivityStaffEditDialog />
+
+      <DynamicDialogOTP />
     </>
   );
 };

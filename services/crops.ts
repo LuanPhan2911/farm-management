@@ -33,6 +33,11 @@ export const createCrop = async (params: CropParams) => {
   return await db.crop.create({
     data: {
       ...params,
+      latestCropFields: {
+        connect: {
+          id: params.fieldId,
+        },
+      },
     },
   });
 };
@@ -326,7 +331,6 @@ export const getCropsSelect = async ({
   orgId,
 }: CropSelectQuery): Promise<CropSelectWithField[]> => {
   try {
-    let fields;
     const currentStaff = await getCurrentStaff();
     if (!currentStaff) {
       throw new Error("Unauthorized");
@@ -334,24 +338,18 @@ export const getCropsSelect = async ({
     if (!orgId && !isSuperAdmin(currentStaff.role)) {
       throw new Error("No field id to get crops");
     }
-    if (!orgId) {
-      fields = await db.field.findMany({
-        select: {
-          id: true,
-        },
-      });
-    }
 
-    if (orgId) {
-      fields = await db.field.findMany({
-        where: {
+    const fields = await db.field.findMany({
+      where: {
+        ...(!isSuperAdmin(currentStaff.role) && {
           orgId,
-        },
-        select: {
-          id: true,
-        },
-      });
-    }
+        }),
+      },
+      select: {
+        id: true,
+      },
+    });
+
     return await db.crop.findMany({
       where: {
         status: {

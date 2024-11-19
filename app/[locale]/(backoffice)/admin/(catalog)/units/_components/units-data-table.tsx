@@ -14,33 +14,33 @@ import { UnitSuperscript } from "../../../_components/unit-with-value";
 import { useDialog } from "@/stores/use-dialog";
 import { UnitTable } from "@/types";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { useDialogConfirmCode } from "@/stores/use-dialog-confirm-code";
 
 interface UnitsTableProps {
   data: UnitTable[];
 }
 export const UnitsTable = ({ data }: UnitsTableProps) => {
   const t = useTranslations("units");
-  const { onOpen, onClose, setPending } = useAlertDialog();
+  const { onOpen, onClose, setPending } = useDialogConfirmCode();
   const { onOpen: onOpenEdit } = useDialog();
 
   const { isSuperAdmin } = useCurrentStaffRole();
-  const handleConfirm = (rows: UnitTable[]) => {
-    setPending(true);
+  const handleConfirm = async (rows: UnitTable[]) => {
     const ids = rows.map((row) => row.id);
-    destroyMany(ids)
-      .then(({ message, ok }) => {
-        if (ok) {
-          toast.success(message);
-        } else {
-          toast.error(message);
-        }
-      })
-      .catch((error: Error) => {
-        toast.error("Internal error");
-      })
-      .finally(() => {
+    setPending(true);
+    try {
+      const { message, ok } = await destroyMany(ids);
+      if (ok) {
         onClose();
-      });
+        toast.success(message);
+      } else {
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error("Internal error");
+    } finally {
+      onClose();
+    }
   };
   const handleEdit = (data: UnitTable) => {
     onOpenEdit("unit.edit", { unit: data });
@@ -64,6 +64,7 @@ export const UnitsTable = ({ data }: UnitsTableProps) => {
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
           aria-label="Select row"
+          onClick={(e) => e.stopPropagation()}
         />
       ),
       enableSorting: false,
@@ -123,6 +124,7 @@ export const UnitsTable = ({ data }: UnitsTableProps) => {
           title: t("form.destroyMany.title"),
           description: t("form.destroyMany.description"),
           onConfirm: () => handleConfirm(rows),
+          confirmCode: "DELETE_UNITS",
         });
       },
       disabled: !isSuperAdmin,

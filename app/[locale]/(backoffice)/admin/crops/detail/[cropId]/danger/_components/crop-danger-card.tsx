@@ -13,6 +13,7 @@ import { destroy } from "@/actions/crop";
 import { useTranslations } from "next-intl";
 import { CropFinishButton } from "../../../../_components/crop-edit-status-button";
 import { CustomAlert } from "@/components/cards/custom-alert";
+import { DestroyButtonWithConfirmCode } from "@/components/buttons/destroy-button-with-confirm-code";
 
 interface CropDangerCardProps {
   id: string;
@@ -61,7 +62,6 @@ export const CropDangerCard = ({
             variant={"destructive"}
             description={tDanger("finish.description.finish")}
           />
-
           <CropFinishButton id={id} disabled={!canEdit} />
         </CardContent>
       </Card>
@@ -72,14 +72,19 @@ export const CropDangerCard = ({
         <CardContent>
           <CustomAlert
             variant={"destructive"}
+            description={tDanger("destroy.description.cropFinish")}
+          />
+          <CustomAlert
+            variant={"destructive"}
             description={tDanger("destroy.description.activityCount")}
           />
-          <DestroyButton
+          <DestroyButtonWithConfirmCode
             destroyFn={destroy}
             id={id}
             inltKey="crops"
             redirectHref={redirectUrl}
             disabled={!canDelete}
+            confirmCode="DELETE_CROP"
           />
         </CardContent>
       </Card>

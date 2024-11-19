@@ -20,6 +20,10 @@ import { SearchBar } from "@/components/search-bar";
 import { useSearchParams } from "next/navigation";
 import { includeString } from "@/lib/utils";
 import { useDialog } from "@/stores/use-dialog";
+import {
+  PesticideToxicLevelValue,
+  PesticideTypeValue,
+} from "./pesticide-status-value";
 
 interface PesticidesTableProps {
   data: PesticideTable[];
@@ -67,14 +71,12 @@ export const PesticidesTable = ({ data, totalPage }: PesticidesTableProps) => {
               >
                 <TableCell>{item.name}</TableCell>
                 <TableCell>
-                  {item.type
-                    ? t(`schema.type.options.${item.type}`)
-                    : t("table.trow.type")}
+                  <PesticideTypeValue value={item.type || undefined} />
                 </TableCell>
                 <TableCell>
-                  {item.toxicityLevel
-                    ? t(`schema.toxicityLevel.options.${item.toxicityLevel}`)
-                    : t("table.trow.toxicityLevel")}
+                  <PesticideToxicLevelValue
+                    value={item.toxicityLevel || undefined}
+                  />
                 </TableCell>
                 <TableCell>
                   {item.applicationMethod

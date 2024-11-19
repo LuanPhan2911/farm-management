@@ -12,14 +12,6 @@ export async function generateMetadata() {
   };
 }
 
-export async function generateStaticParams() {
-  const materials = await getMaterialsSelect();
-  return materials.map((item) => {
-    return {
-      materialId: item.id,
-    };
-  });
-}
 interface MaterialDetailPageProps {
   params: {
     materialId: string;

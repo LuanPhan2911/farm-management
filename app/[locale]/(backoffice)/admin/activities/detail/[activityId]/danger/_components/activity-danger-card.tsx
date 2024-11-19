@@ -6,6 +6,7 @@ import { destroy } from "@/actions/activity";
 import { ActivityCompletedButton } from "@/app/[locale]/(backoffice)/admin/activities/_components/activity-edit-status-button";
 import { CustomAlert } from "@/components/cards/custom-alert";
 import { useTranslations } from "next-intl";
+import { DestroyButtonWithConfirmCode } from "@/components/buttons/destroy-button-with-confirm-code";
 
 interface ActivityDangerCardProps {
   id: string;
@@ -54,15 +55,20 @@ export const ActivityDangerCard = ({
         </CardHeader>
         <CardContent>
           <CustomAlert
+            variant={"info"}
+            description={tDanger("destroy.description.finish")}
+          />
+          <CustomAlert
             variant={"destructive"}
             description={tDanger("destroy.description.usages")}
           />
-          <DestroyButton
+          <DestroyButtonWithConfirmCode
             destroyFn={destroy}
             id={id}
             inltKey="activities"
             redirectHref={redirectUrl}
             disabled={!canDelete}
+            confirmCode="DELETE_ACTIVITY"
           />
         </CardContent>
       </Card>

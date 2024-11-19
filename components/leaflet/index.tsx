@@ -21,13 +21,8 @@ import { SearchLocation } from "./components/search-location";
 import { ZoomInput } from "./components/zoom-input";
 import { MarkerLocation } from "./components/marker-location";
 import { useTranslations } from "next-intl";
+import { FieldLocation } from "@/types";
 
-export type MarkerLocation = {
-  id: string;
-  title: string;
-  description?: string | null;
-  position?: LatLngTuple;
-};
 export interface LeafletMapProps {
   className?: string;
   center?: LatLngTuple;
@@ -36,7 +31,7 @@ export interface LeafletMapProps {
   onChangeCurrentLocationFn?: (value: LatLngTuple) => void;
   onChangeLocationSelectFn?: (value: string) => void;
 
-  markerLocations?: MarkerLocation[];
+  markerLocations?: FieldLocation[];
 }
 const LeafletMap = ({
   className,
@@ -96,17 +91,9 @@ const LeafletMap = ({
         currentPosition={currentPosition}
         message={t("popupCreateLocation")}
       />
-      {markerLocations &&
-        markerLocations.map((item) => {
-          return (
-            <MarkerLocation
-              key={item.id}
-              title={item.title}
-              description={item.description}
-              position={item.position}
-            />
-          );
-        })}
+      {markerLocations?.map((item) => {
+        return <MarkerLocation data={item} key={item.id} />;
+      })}
     </MapContainer>
   );
 };

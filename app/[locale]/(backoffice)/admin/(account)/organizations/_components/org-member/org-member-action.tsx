@@ -12,6 +12,7 @@ import { ActionButton } from "@/components/buttons/action-button";
 import { destroyMember } from "@/actions/organization";
 import { useContext } from "react";
 import { OrgContext } from "../org-tabs";
+import { ActionButtonWithConfirmCode } from "@/components/buttons/action-button-with-confirm-code";
 interface OrgMemberActionProps {
   data: OrganizationMembership;
 }
@@ -32,7 +33,7 @@ export const OrgMemberAction = ({ data }: OrgMemberActionProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
-          <ActionButton
+          <ActionButtonWithConfirmCode
             actionFn={() =>
               destroyMember(data.publicUserData!.userId, data.organization.id)
             }
@@ -43,6 +44,7 @@ export const OrgMemberAction = ({ data }: OrgMemberActionProps) => {
             disabled={disabled}
             icon={Trash}
             variant={"destroy"}
+            confirmCode="REMOVE_MEMBER"
           />
         </DropdownMenuItem>
       </DropdownMenuContent>

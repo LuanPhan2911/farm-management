@@ -1,6 +1,5 @@
 "use client";
 
-import { useAlertDialog } from "@/stores/use-alert-dialog";
 import { ActionResponse } from "@/types";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
@@ -8,24 +7,27 @@ import { Button } from "../ui/button";
 import { Trash } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
+import { useDialogConfirmCode } from "@/stores/use-dialog-confirm-code";
 
-interface DestroyButtonProps {
+interface DestroyButtonWithConfirmCodeProps {
   destroyFn: (id: string) => Promise<ActionResponse>;
   inltKey: string;
   id: string;
   disabled?: boolean;
   className?: string;
   redirectHref?: string;
+  confirmCode: string;
 }
-export const DestroyButton = ({
+export const DestroyButtonWithConfirmCode = ({
   inltKey,
   id,
   disabled,
   destroyFn,
   className,
   redirectHref,
-}: DestroyButtonProps) => {
-  const { onOpen, onClose, setPending } = useAlertDialog();
+  confirmCode,
+}: DestroyButtonWithConfirmCodeProps) => {
+  const { onOpen, onClose, setPending } = useDialogConfirmCode();
   const t = useTranslations(`${inltKey}.form`);
   const router = useRouterWithRole();
   const onConfirm = async () => {
@@ -56,6 +58,7 @@ export const DestroyButton = ({
         onOpen({
           title: t("destroy.title"),
           description: t("destroy.description"),
+          confirmCode,
           onConfirm,
         });
       }}

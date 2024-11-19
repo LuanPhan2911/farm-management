@@ -23,13 +23,7 @@ export async function generateMetadata() {
     title: t("title"),
   };
 }
-export async function generateStaticParams() {
-  const jobs = await getJobsSelect();
 
-  return jobs.map((job) => ({
-    jobId: job.id,
-  }));
-}
 const JobEditPage = async ({ params }: JobEditPageProps) => {
   const data = await getJobById(params!.jobId);
   const t = await getTranslations("jobs.form.edit");

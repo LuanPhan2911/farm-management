@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getMaterialById, getMaterialsSelect } from "@/services/materials";
+import { getMaterialById } from "@/services/materials";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { MaterialEditForm } from "../../../_components/material-edit-button";
@@ -11,14 +11,6 @@ export async function generateMetadata() {
   };
 }
 
-export async function generateStaticParams() {
-  const materials = await getMaterialsSelect();
-  return materials.map((item) => {
-    return {
-      materialId: item.id,
-    };
-  });
-}
 interface MaterialDetailPageProps {
   params: {
     materialId: string;

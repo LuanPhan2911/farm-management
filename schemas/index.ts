@@ -1239,3 +1239,24 @@ export const LocationSelectSchema = (
     town: stringSchema(t, "town", { required: false }).nullish(),
   });
 };
+
+export const OTPCodeSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z
+    .object({
+      code: stringSchema(t, "code", {
+        min: 1,
+      }),
+      confirmCode: z.string({ required_error: "Required confirm code" }),
+    })
+    .refine(
+      ({ code, confirmCode }) => {
+        return code === confirmCode;
+      },
+      {
+        message: t("code.confirm"),
+        path: ["code"],
+      }
+    );
+};

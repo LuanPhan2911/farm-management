@@ -139,12 +139,12 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete category?",
-        "description": "Are you absolutely sure? This action can not be undone! If category in use, you cannot to delete."
+        "description": "If category in use, you cannot to delete."
       },
       "destroyMany": {
         "label": "Delete all",
         "title": "Delete all selected categories?",
-        "description": "Are you absolutely sure? This action can not be undone! If category in use, you cannot to delete."
+        "description": "If category in use, you cannot to delete."
       }
     },
     "schema": {
@@ -230,12 +230,12 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete unit?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "destroyMany": {
         "label": "Delete all",
         "title": "Delete all selected units?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       }
     },
     "schema": {
@@ -330,7 +330,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete applicant?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "createStaff": {
         "label": "Create Staff",
@@ -340,7 +340,7 @@
       "destroyMany": {
         "label": "Delete all selected",
         "title": "Delete all selected applicants?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       }
     },
     "schema": {
@@ -459,12 +459,12 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete job?",
-        "description": "Are you absolutely sure? This action can not be undone! All applicants applied to the job will be deleted."
+        "description": "This action can not be undone! All applicants applied to the job will be deleted."
       },
       "destroyMany": {
         "label": "Delete all selected",
         "title": "Delete all selected jobs?",
-        "description": "Are you absolutely sure? This action can not be undone! If jobs in use, you cannot to delete."
+        "description": "This action can not be undone! If jobs in use, you cannot to delete."
       }
     },
     "schema": {
@@ -641,12 +641,18 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete user?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       }
     },
     "schema": {
       "errors": {
         "parse": "Invalid fields!"
+      },
+      "code": {
+        "placeholder": "Enter \"{value}\" to confirm action",
+        "min": "Min OTP code length is {min} characters",
+        "confirm": "Confirm code mismatch",
+        "required_error": "OTP code is required!"
       },
       "id": {
         "label": "Id"
@@ -751,7 +757,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete staff?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "editRole": {
         "label": "Edit role",
@@ -932,7 +938,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete organization?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "viewProfile": {
         "label": "View profile"
@@ -940,7 +946,7 @@
       "destroyMember": {
         "label": "Remove",
         "title": "Remove member?",
-        "description": "Remove member from organizations. This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "editMemberRole": {
         "label": "Edit role",
@@ -1034,6 +1040,16 @@
     },
     "other": {
       "setActive": "You are not member in this organization so you don't have admin permission in this organization"
+    },
+    "danger": {
+      "destroy": {
+        "title": "Delete Organization?",
+        "description": {
+          "canDelete": "ONLY super admin or created organization staff can DELETE organization",
+          "field": "When organization DELETE, field's organization will be update NULL",
+          "messages": "ALL messages in organization will be DELETED"
+        }
+      }
     }
   },
 
@@ -1117,12 +1133,12 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete field?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "destroyMany": {
         "label": "Delete all selected",
         "title": "Delete all selected fields?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "editLocation": {
         "title": "Update field location",
@@ -1252,7 +1268,21 @@
     },
     "other": {
       "myLocation": "You are hear",
-      "popupCreateLocation": "Create field location here"
+      "popupCreateLocation": "Create field location here",
+      "popupLocation": {
+        "field": "Field: {name}",
+        "crop": "Start: {startDate}, Finish: {endDate}",
+        "area": "Area: {area}"
+      }
+    },
+    "danger": {
+      "destroy": {
+        "title": "Delete field?",
+        "description": {
+          "canDelete": "ONLY super admin or organization admin can DELETE field.",
+          "deleteWhen": "Field CANNOT delete if it use in Crop, Soil, Weather."
+        }
+      }
     }
   },
   "weathers": {
@@ -1327,13 +1357,13 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete weather?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
 
       "editConfirmed": {
         "label": "Edit confirmed",
         "title": "Confirm weather?",
-        "description": "Are you absolutely sure? Just admin have grant to restore"
+        "description": "Just admin have grant to restore"
       },
       "createMany": {
         "label": "Upload",
@@ -1543,13 +1573,13 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete soil?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
 
       "editConfirmed": {
         "label": "Edit confirmed",
         "title": "Confirm soil?",
-        "description": "Are you absolutely sure? Just admin have grant to restore"
+        "description": "Just admin have grant to restore"
       },
       "createMany": {
         "label": "Upload",
@@ -1688,7 +1718,7 @@
         "category": "Category",
         "growthDuration": "Grow duration",
         "fertilizerType": "Fertilizer type",
-        "season": "Season",
+        "season": "Best season growing",
         "idealTemperature": "Ideal temperature",
         "idealHumidity": "Ideal humidity",
         "waterRequirement": "Water requirement"
@@ -1749,7 +1779,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete plant?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "viewDetail": {
         "label": "View detail",
@@ -1876,6 +1906,15 @@
       "title": "Plant not found",
       "description": "Sorry, we couldn’t find the plant you’re looking for.",
       "backLabel": "Go to plants page"
+    },
+    "danger": {
+      "destroy": {
+        "title": "Delete plant?",
+        "description": {
+          "canDelete": "ONLY Super Admin can DELETE plant",
+          "deleteWhen": "Plant can Delete if no usages in other table"
+        }
+      }
     }
   },
   "fertilizers": {
@@ -1884,9 +1923,9 @@
     },
     "table": {
       "thead": {
-        "name": "Name",
-        "type": "Type",
-        "nutrientOfNPK": "Nutrient of NPK",
+        "name": "Fertilizer name",
+        "type": "Fertilizer type",
+        "nutrientOfNPK": "Nutrient of NPK ratio",
         "frequencyOfUse": "Frequency of use",
         "applicationMethod": "Application method",
         "manufacturer": "Manufacturer"
@@ -1926,7 +1965,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete fertilizer?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       }
     },
     "schema": {
@@ -2031,8 +2070,8 @@
     },
     "table": {
       "thead": {
-        "name": "Name",
-        "type": "Type",
+        "name": "Pesticide name",
+        "type": "Pesticide type",
         "toxicityLevel": "Toxicity level",
         "applicationMethod": "Application method",
         "manufacturer": "Manufacturer"
@@ -2071,7 +2110,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete pesticide?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       }
     },
     "schema": {
@@ -2189,6 +2228,9 @@
         "fertilizer": {
           "name": "Fertilizer name",
           "type": "Fertilizer type",
+          "nutrientOfNPK": "Nutrient of NPK ratio",
+          "frequencyOfUse": "Frequency of use",
+          "applicationMethod": "Application method",
           "recommendedDosage": "Recommended  dosage"
         },
         "stage": "Stage",
@@ -2197,7 +2239,10 @@
       "trow": {
         "dosage": "Not filled",
         "fertilizer": {
-          "recommendedDosage": "Not filled"
+          "recommendedDosage": "Not filled",
+          "applicationMethod": "Not filled",
+          "frequencyOfUse": "Not filled",
+          "nutrientOfNPK": "Not filled"
         }
       }
     },
@@ -2216,7 +2261,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete plant fertilizer?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       }
     },
     "schema": {
@@ -2291,6 +2336,7 @@
         "pesticide": {
           "name": "Pesticide name",
           "type": "Pesticide type",
+          "toxicityLevel": "Toxicity level",
           "recommendedDosage": "Recommended  dosage"
         },
         "stage": "Stage",
@@ -2318,7 +2364,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete plant pesticide?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       }
     },
     "schema": {
@@ -2455,7 +2501,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete equipment?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       }
     },
     "schema": {
@@ -2549,6 +2595,15 @@
       "title": "Equipment not found",
       "description": "Sorry, we couldn’t find the equipment you’re looking for.",
       "backLabel": "Go to equipments page"
+    },
+    "danger": {
+      "destroy": {
+        "title": "Delete equipment?",
+        "description": {
+          "canDelete": "ONLY Super Admin can DELETE equipment.",
+          "deleteWhen": "Equipment can DELETE if no equipment detail"
+        }
+      }
     }
   },
   "equipmentDetails": {
@@ -2613,7 +2668,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete equipment detail?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "viewUsage": {
         "label": "View usages"
@@ -2766,7 +2821,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete equipment usage?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "detailActivity": {
         "label": "Detail activity"
@@ -2988,7 +3043,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete material?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       }
     },
     "schema": {
@@ -3077,6 +3132,15 @@
       "title": "Material not found",
       "description": "Sorry, we couldn’t find the material you’re looking for.",
       "backLabel": "Go to materials page"
+    },
+    "danger": {
+      "destroy": {
+        "title": "Delete material?",
+        "description": {
+          "canDelete": "ONLY Super Admin can DELETE material.",
+          "deleteWhen": "Material can DELETE if no material usages"
+        }
+      }
     }
   },
   "materialUsages": {
@@ -3124,7 +3188,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete material usage?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "detailActivity": {
         "label": "Detail activity"
@@ -3337,12 +3401,12 @@
       "destroy": {
         "label": "Delete activity",
         "title": "Delete activity?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "complete": {
         "label": "Finish activity",
         "title": "Finish activity?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       }
     },
     "schema": {
@@ -3464,16 +3528,17 @@
       "complete": {
         "title": "Complete activity",
         "description": {
-          "completed": "After activity status completed, this activity CANNOT ate anymore",
-          "hourlyWage": "CANNOT complete activity when Hourly Wage of assigned staffs are no filled",
-          "actualDuration": "If no Actual Duration of activity , Estimated Duration will be used",
-          "actualWork": "If no Actual Work of assigned staffs, Actual Duration of activity will be used"
+          "actualDuration": "If no fill actual duration of activity , estimated duration will be updated",
+          "actualWork": "If no fill actual work of assigned staffs, actual duration of activity will be updated",
+          "hourlyWage": "If no fill hour wage of assigned staff, activity CANNOT completed",
+          "completed": "If activity status COMPLETED, this activity CANNOT update anymore"
         }
       },
       "destroy": {
         "title": "Delete activity",
         "description": {
-          "usages": "Only delete activity when no equipment usages and material usages"
+          "usages": "ONLY delete activity when no equipment usages and material usages",
+          "finish": "If activity COMPLETED status, activity CANNOT delete"
         }
       }
     }
@@ -3518,7 +3583,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete assigned staff?",
-        "description": "Are you absolutely sure?"
+        "description": ""
       }
     },
     "schema": {
@@ -3768,17 +3833,18 @@
         "title": "Finish crop",
         "description": {
           "note": "Please read all alert messages before finish crop",
-          "learnedLessons": "If no filled learned lessons, please FILL it before finish crop",
-          "activityComplete": "All activity in crop must be COMPLETED status",
+          "learnedLessons": "If no filled learned lessons, please fill it before finish crop",
+          "activityComplete": "ALL activity in crop must be COMPLETED status",
           "endDateValid": "End date crop must be AFTER start date crop",
-          "endDate": "If no end date crop value, Current Date will be updated",
-          "actualYield": "If no actual yield value, Estimated Yield value will be updated",
-          "finish": "After finish crop, this crop CANNOT update anymore!!!"
+          "endDate": "If no end date crop value, current date will be updated",
+          "actualYield": "If no actual yield value, estimated yield value will be updated",
+          "finish": "After FINISH crop, this crop CANNOT update anymore!!!"
         }
       },
       "destroy": {
         "title": "Delete crop",
         "description": {
+          "cropFinish": "Crop CANNOT delete when crop is FINISH status",
           "activityCount": "Crop ONLY can delete when no activities in crop"
         }
       }
@@ -3947,12 +4013,12 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete task?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "destroyMany": {
         "label": "Delete all",
         "title": "Delete all selected tasks?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "destroyUnusedUnit": {
         "label": "Delete unit task",
@@ -4060,7 +4126,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete schedule?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "destroyUnusedUnit": {
         "label": "Delete unit schedule",

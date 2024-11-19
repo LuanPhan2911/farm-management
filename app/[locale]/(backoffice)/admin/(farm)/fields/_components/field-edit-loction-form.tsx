@@ -31,10 +31,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { LeafletMapCaller } from "@/components/leaflet/map-caller";
-import { LatLng } from "leaflet";
 import { getLocationLatLng } from "@/lib/utils";
 import _ from "lodash";
-import { MarkerLocation } from "@/components/leaflet";
 
 interface FieldEditLocationProps {
   data: FieldTable;
@@ -86,17 +84,6 @@ export const FieldEditLocationForm = ({
   const canManageField = hasPermission || isSuperAdmin;
 
   const centerMap = getLocationLatLng(data.latitude, data.longitude);
-
-  const markerLocations: MarkerLocation[] = locations.map((item) => {
-    return {
-      id: item.id,
-      title: `${item.name} (${item.area || "No area"} ${
-        item.unit?.name || "ha"
-      })`,
-      description: item.location || tSchema("location.default"),
-      position: getLocationLatLng(item.latitude, item.longitude),
-    };
-  });
 
   return (
     <div className="grid lg:grid-cols-5 gap-4">
@@ -191,7 +178,7 @@ export const FieldEditLocationForm = ({
             form.setValue("location", value);
           }}
           center={centerMap}
-          markerLocations={markerLocations}
+          markerLocations={locations}
         />
       </div>
     </div>

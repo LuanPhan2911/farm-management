@@ -9,6 +9,9 @@ import {
 } from "./organizations";
 import { unitSelect } from "./units";
 import { truncateByDomain } from "recharts/types/util/ChartUtils";
+import { cropSelect } from "./crops";
+import { plantSelect } from "./plants";
+import { getCurrentStaff } from "./staffs";
 
 type FieldParams = {
   name: string;
@@ -178,12 +181,28 @@ export const fieldSelect = {
     },
   },
 };
-export const getFieldsSelect = async (): Promise<FieldSelect[]> => {
+export const getFieldsSelect = async (
+  orgId: string | null
+): Promise<FieldSelect[]> => {
   try {
+    const currentStaff = await getCurrentStaff();
+    if (!currentStaff) {
+      return [];
+    }
+
+    if (!orgId && !isSuperAdmin(currentStaff.role)) {
+      throw new Error("No field id to get crops");
+    }
+
     const fields = await db.field.findMany({
       where: {
-        orgId: {
-          not: null,
+        ...(!isSuperAdmin(currentStaff.role) && {
+          orgId,
+        }),
+        crops: {
+          every: {
+            status: "FINISH",
+          },
         },
       },
       select: {
@@ -215,6 +234,16 @@ export const getFieldLocations = async (): Promise<FieldLocation[]> => {
         unit: {
           select: {
             name: true,
+          },
+        },
+        latestCrop: {
+          select: {
+            ...cropSelect,
+            plant: {
+              select: {
+                ...plantSelect,
+              },
+            },
           },
         },
       },

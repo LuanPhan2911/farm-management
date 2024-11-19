@@ -1,4 +1,4 @@
-import { getPlantById, getPlantsSelect } from "@/services/plants";
+import { getPlantById } from "@/services/plants";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import {
@@ -20,14 +20,6 @@ export async function generateMetadata() {
   return {
     title: t("title"),
   };
-}
-export async function generateStaticParams() {
-  const plants = await getPlantsSelect();
-  return plants.map((item) => {
-    return {
-      plantId: item.id,
-    };
-  });
 }
 
 const PlantDetailPage = async ({ params }: PlantDetailPageProps) => {

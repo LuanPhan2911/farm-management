@@ -38,4 +38,5 @@ export const config = {
     "/(api|trpc)(.*)",
     "/(vi|en)/:path*",
   ],
+  unstable_allowDynamic: ["*lodash.js"],
 };

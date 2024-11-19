@@ -13,6 +13,7 @@ import { FertilizerEditButton } from "./fertilizer-edit-button";
 import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/fertilizer";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { DestroyButtonWithConfirmCode } from "@/components/buttons/destroy-button-with-confirm-code";
 interface FertilizersTableActionProps {
   data: FertilizerTable;
 }
@@ -32,12 +33,13 @@ export const FertilizersTableAction = ({
           <FertilizerEditButton data={data} />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <DestroyButton
+          <DestroyButtonWithConfirmCode
             destroyFn={destroy}
             id={data.id}
             inltKey="fertilizers"
             disabled={!canDelete}
             className="w-full"
+            confirmCode="DELETE_FERTILIZER"
           />
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { useDialog } from "@/stores/use-dialog";
 import { CategoryTable } from "@/types";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { useDialogConfirmCode } from "@/stores/use-dialog-confirm-code";
 
 interface CategoriesTableProps {
   data: CategoryTable[];
@@ -23,27 +24,25 @@ interface CategoriesTableProps {
 export const CategoriesTable = ({ data }: CategoriesTableProps) => {
   const t = useTranslations("categories");
 
-  const { onOpen, onClose, setPending } = useAlertDialog();
+  const { onOpen, onClose, setPending } = useDialogConfirmCode();
   const { onOpen: onOpenEdit } = useDialog();
   const { isSuperAdmin } = useCurrentStaffRole();
-  const handleConfirm = (rows: CategoryTable[]) => {
+  const handleConfirm = async (rows: CategoryTable[]) => {
     const ids = rows.map((row) => row.id);
     setPending(true);
-    destroyMany(ids)
-      .then(({ message, ok }) => {
-        if (ok) {
-          onClose();
-          toast.success(message);
-        } else {
-          toast.error(message);
-        }
-      })
-      .catch((error) => {
-        toast.error("Internal error");
-      })
-      .finally(() => {
+    try {
+      const { message, ok } = await destroyMany(ids);
+      if (ok) {
         onClose();
-      });
+        toast.success(message);
+      } else {
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error("Internal error");
+    } finally {
+      onClose();
+    }
   };
   const handleEdit = (data: CategoryTable) => {
     onOpenEdit("category.edit", {
@@ -68,6 +67,7 @@ export const CategoriesTable = ({ data }: CategoriesTableProps) => {
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
           aria-label="Select row"
+          onClick={(e) => e.stopPropagation()}
         />
       ),
       enableSorting: false,
@@ -144,6 +144,7 @@ export const CategoriesTable = ({ data }: CategoriesTableProps) => {
           title: t("form.destroyMany.title"),
           description: t("form.destroyMany.description"),
           onConfirm: () => handleConfirm(rows),
+          confirmCode: "DELETE_CATEGORIES",
         });
       },
       disabled: !isSuperAdmin,

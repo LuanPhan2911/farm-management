@@ -159,6 +159,7 @@ export type FieldLocation = {
   unit: {
     name: string;
   } | null;
+  latestCrop: CropSelectWithPlant | null;
 };
 
 export type WeatherTable = Weather & {
@@ -219,20 +220,11 @@ export type PlantSelect = {
   };
 };
 export type PlantFertilizerTable = PlantFertilizer & {
-  fertilizer: {
-    name: string;
-    type: FertilizerType;
-    recommendedDosage: FloatUnitTable | null;
-  };
+  fertilizer: FertilizerSelect;
   dosage: FloatUnitTable | null;
 };
 export type PlantPesticideTable = PlantPesticide & {
-  pesticide: {
-    name: string;
-    type: PesticideType;
-    toxicityLevel: ToxicityLevel | null;
-    recommendedDosage: FloatUnitTable | null;
-  };
+  pesticide: PesticideSelect;
   dosage: IntUnitTable | null;
 };
 export type FertilizerTable = Fertilizer & {
@@ -550,6 +542,9 @@ export type CropWithCount = Crop & {
   _count: {
     activities: number;
   };
+};
+export type CropSelectWithPlant = CropSelect & {
+  plant: PlantSelect;
 };
 
 export type CropMaterial = {

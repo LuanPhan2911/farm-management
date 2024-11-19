@@ -24,12 +24,13 @@ export const DynamicAlertDialog = () => {
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
+
         <AlertDialogFooter>
           <Button variant={"outline"} disabled={isPending} onClick={onClose}>
             Close
           </Button>
           <Button variant={"cyan"} disabled={isPending} onClick={onConfirm}>
-            {isPending ? "Processing..." : "Confirm"}
+            {isPending ? "Processing" : "Confirm"}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

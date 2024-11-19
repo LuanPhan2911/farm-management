@@ -15,6 +15,7 @@ import { LinkButton } from "@/components/buttons/link-button";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { destroy } from "@/actions/equipment-detail";
 import { canUpdateEquipmentDetail } from "@/lib/permission";
+import { DestroyButtonWithConfirmCode } from "@/components/buttons/destroy-button-with-confirm-code";
 interface EquipmentDetailsTableActionProps {
   data: EquipmentDetailTable;
 }
@@ -46,12 +47,13 @@ export const EquipmentDetailsTableAction = ({
           />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <DestroyButton
+          <DestroyButtonWithConfirmCode
             destroyFn={destroy}
             id={data.id}
             inltKey="equipmentDetails"
             className="w-full"
             disabled={!canDelete}
+            confirmCode="DELETE_EQUIPMENT"
           />
         </DropdownMenuItem>
       </DropdownMenuContent>

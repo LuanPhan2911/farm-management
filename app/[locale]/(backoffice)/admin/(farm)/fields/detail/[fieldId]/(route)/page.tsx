@@ -1,4 +1,3 @@
-import { getFieldsSelect } from "@/services/fields";
 import { notFound } from "next/navigation";
 
 import {
