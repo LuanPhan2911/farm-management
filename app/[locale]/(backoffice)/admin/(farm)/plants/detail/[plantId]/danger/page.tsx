@@ -12,6 +12,8 @@ import { getPlantById } from "@/services/plants";
 import { notFound } from "next/navigation";
 import { getCurrentStaff } from "@/services/staffs";
 import { isSuperAdmin } from "@/lib/permission";
+import { CustomAlert } from "@/components/cards/custom-alert";
+import { DestroyButtonWithConfirmCode } from "@/components/buttons/destroy-button-with-confirm-code";
 export async function generateMetadata() {
   const t = await getTranslations("plants.page.detail.danger");
   return {
@@ -27,7 +29,7 @@ interface PlantDetailDangerPageProps {
 const PlantDetailDangerPage = async ({
   params,
 }: PlantDetailDangerPageProps) => {
-  const t = await getTranslations("plants.form");
+  const t = await getTranslations("plants.danger");
   const data = await getPlantById(params.plantId);
   const currentStaff = await getCurrentStaff();
   if (!data || !currentStaff) {
@@ -38,15 +40,23 @@ const PlantDetailDangerPage = async ({
     <Card>
       <CardHeader>
         <CardTitle>{t("destroy.title")}</CardTitle>
-        <CardDescription>{t("destroy.description")}</CardDescription>
       </CardHeader>
       <CardContent>
-        <DestroyButton
+        <CustomAlert
+          variant={"info"}
+          description={t("destroy.description.canDelete")}
+        />
+        <CustomAlert
+          variant={"destructive"}
+          description={t("destroy.description.deleteWhen")}
+        />
+        <DestroyButtonWithConfirmCode
           destroyFn={destroy}
           id={data.id}
           inltKey="plants"
           disabled={!canDelete}
           redirectHref="plants"
+          confirmCode="DELETE_PLANT"
         />
       </CardContent>
     </Card>

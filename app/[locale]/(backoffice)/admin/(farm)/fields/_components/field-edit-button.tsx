@@ -27,6 +27,7 @@ import { SelectOptions } from "@/components/form/select-options";
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 import { useAuth } from "@clerk/nextjs";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { Textarea } from "@/components/ui/textarea";
 
 interface FieldEditFormProps {
   data: FieldTable;
@@ -37,11 +38,7 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
   const [isPending, startTransition] = useTransition();
   const { isSuperAdmin } = useCurrentStaffRole();
   const { has, orgId } = useAuth();
-  //edit field: manage field org || (field.orgId=null && isSuperadmin)
 
-  const hasPermission =
-    has?.({ permission: "org:field:manage" }) && data.orgId === orgId;
-  const canManageField = hasPermission || (!data.orgId && isSuperAdmin);
   const params = useParams<{
     fieldId: string;
   }>();
@@ -68,6 +65,11 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
     });
   };
 
+  //edit field: manage field org || (field.orgId=null && isSuperadmin)
+
+  const hasPermission =
+    has?.({ permission: "org:field:manage" }) && data.orgId === orgId;
+  const canManageField = hasPermission || isSuperAdmin;
   return (
     <Form {...form}>
       <form
@@ -96,28 +98,6 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
           />
           <FormField
             control={form.control}
-            name="location"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("location.label")}</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={tSchema("name.placeholder")}
-                    value={field.value ?? undefined}
-                    onChange={field.onChange}
-                    disabled={isPending || !canManageField}
-                  />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <div className="grid lg:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
             name="orgId"
             render={({ field }) => (
               <FormItem>
@@ -141,6 +121,9 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
               </FormItem>
             )}
           />
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="soilType"
@@ -159,6 +142,25 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
                     })}
                     disabled={isPending || !canManageField}
                     defaultValue={field.value}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="shape"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("shape.label")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={tSchema("shape.placeholder")}
+                    value={field.value ?? undefined}
+                    onChange={field.onChange}
+                    disabled={isPending || !canManageField}
                   />
                 </FormControl>
 
@@ -212,46 +214,26 @@ export const FieldEditForm = ({ data }: FieldEditFormProps) => {
             )}
           />
         </div>
-        <div className="grid lg:grid-cols-2 gap-2">
-          <FormField
-            control={form.control}
-            name="shape"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("shape.label")}</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={tSchema("shape.placeholder")}
-                    value={field.value ?? undefined}
-                    onChange={field.onChange}
-                    disabled={isPending || !canManageField}
-                  />
-                </FormControl>
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="note"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("note.label")}</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={tSchema("note.placeholder")}
-                    value={field.value ?? undefined}
-                    onChange={field.onChange}
-                    disabled={isPending || !canManageField}
-                  />
-                </FormControl>
+        <FormField
+          control={form.control}
+          name="note"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{tSchema("note.label")}</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder={tSchema("note.placeholder")}
+                  value={field.value ?? undefined}
+                  onChange={field.onChange}
+                  disabled={isPending || !canManageField}
+                />
+              </FormControl>
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <DynamicDialogFooter
           disabled={isPending || !canManageField}

@@ -7,10 +7,10 @@ import { DataTableColumnHeader } from "@/components/datatable/datatable-column-h
 import { EquipmentDetailsTableAction } from "./equipment-details-table-action";
 
 import { EquipmentDetailTable } from "@/types";
-import { UserAvatar } from "@/components/user-avatar";
 import { EquipmentDetailStatusValue } from "./equipment-detail-status-value";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
 import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-with-value";
+import { SelectItemContent } from "@/components/form/select-item";
 
 interface EquipmentDetailsTableProps {
   data: EquipmentDetailTable[];
@@ -39,38 +39,22 @@ export const EquipmentDetailsTable = ({ data }: EquipmentDetailsTableProps) => {
       },
       cell: ({ row }) => {
         const data = row.original;
-        return <UserAvatar src={data.equipment.imageUrl || undefined} />;
-      },
-    },
-    {
-      accessorKey: "name",
-      header: ({ column }) => {
         return (
-          <DataTableColumnHeader
-            column={column}
-            title={t("table.thead.name")}
+          <SelectItemContent
+            imageUrl={data.equipment.imageUrl}
+            title={data.name || data.equipment.name}
+            description={data.location || t("table.trow.location")}
           />
         );
       },
     },
+
     {
       accessorKey: "status",
       header: t("table.thead.status"),
       cell: ({ row }) => {
         const data = row.original;
         return <EquipmentDetailStatusValue status={data.status} />;
-      },
-    },
-
-    {
-      accessorKey: "location",
-      header: t("table.thead.location"),
-      cell: ({ row }) => {
-        const data = row.original;
-        if (!data.location) {
-          return t("table.trow.location");
-        }
-        return data.location;
       },
     },
 

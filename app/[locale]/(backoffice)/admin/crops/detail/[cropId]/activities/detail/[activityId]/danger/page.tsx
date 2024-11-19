@@ -1,22 +1,9 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-
 import { getActivityByIdWithCountUsage } from "@/services/activities";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { DestroyButton } from "@/components/buttons/destroy-button";
-import { destroy } from "@/actions/activity";
 import { canUpdateActivityStatus } from "@/lib/permission";
-import {
-  ActivityCancelButton,
-  ActivityCompletedButton,
-} from "@/app/[locale]/(backoffice)/admin/activities/_components/activity-edit-status-button";
 import { canUpdateCrop } from "@/lib/role";
+import { ActivityDangerCard } from "@/app/[locale]/(backoffice)/admin/activities/detail/[activityId]/danger/_components/activity-danger-card";
 
 interface ActivityDangerPageProps {
   params: {
@@ -32,8 +19,6 @@ export async function generateMetadata() {
 }
 
 const ActivityDangerPage = async ({ params }: ActivityDangerPageProps) => {
-  const t = await getTranslations("activities.form");
-
   const data = await getActivityByIdWithCountUsage(params.activityId);
   if (!data) {
     notFound();
@@ -46,42 +31,12 @@ const ActivityDangerPage = async ({ params }: ActivityDangerPageProps) => {
     data._count.materialUseds === 0 &&
     canEdit;
   return (
-    <>
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("complete.title")}</CardTitle>
-          <CardDescription>{t("complete.description")}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ActivityCompletedButton activityId={data.id} disabled={!canEdit} />
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("cancel.title")}</CardTitle>
-          <CardDescription>{t("cancel.description")}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ActivityCancelButton activityId={data.id} disabled={!canEdit} />
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("destroy.title")}</CardTitle>
-          <CardDescription>{t("destroy.description")}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <DestroyButton
-            destroyFn={destroy}
-            id={data.id}
-            inltKey="activities"
-            redirectHref={`crops/detail/${params.cropId}/activities`}
-            disabled={!canDelete}
-          />
-        </CardContent>
-      </Card>
-    </>
+    <ActivityDangerCard
+      id={data.id}
+      canDelete={canDelete}
+      canEdit={canEdit}
+      redirectUrl={`/crops/detail/${params.cropId}/activities`}
+    />
   );
 };
 export default ActivityDangerPage;

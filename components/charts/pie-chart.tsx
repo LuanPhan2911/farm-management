@@ -1,7 +1,6 @@
 "use client";
 
 import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
-import { useContext } from "react";
 import { Pie, PieChart } from "recharts";
 import { ErrorButton } from "../buttons/error-button";
 import { LargeCard } from "../cards/large-card";
@@ -15,7 +14,6 @@ import {
   ChartTooltipContent,
 } from "../ui/chart";
 import { Skeleton } from "../ui/skeleton";
-import { ChartContext } from "./chart-wrapper";
 
 interface PieChartContentProps<T extends unknown> {
   data: T[] | undefined;
@@ -42,16 +40,6 @@ export const PieChartContent = <T extends unknown>({
   dataKey,
   nameKey,
 }: PieChartContentProps<T>) => {
-  const { isShown } = useContext(ChartContext);
-
-  if (!isShown) {
-    return (
-      <LargeCard
-        title={t("hidden.title")}
-        description={t("hidden.description")}
-      />
-    );
-  }
   if (isPending) {
     return <Skeleton className="w-full min-h-[200px]"></Skeleton>;
   }

@@ -23,6 +23,10 @@ import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/organization";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
 import { useCurrentStaff } from "@/hooks/use-current-staff";
+import { isSuperAdmin } from "@/lib/permission";
+import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { CustomAlert } from "@/components/cards/custom-alert";
+import { DestroyButtonWithConfirmCode } from "@/components/buttons/destroy-button-with-confirm-code";
 
 interface OrgTabsProps {
   org: Organization;
@@ -45,12 +49,13 @@ export const OrgContext = createContext<{
 export const OrgTabs = ({ org, orgMember }: OrgTabsProps) => {
   const t = useTranslations("organizations.tabs");
   const { has, userId, orgId } = useAuth();
-
+  const { isSuperAdmin } = useCurrentStaffRole();
   const router = useRouterWithRole();
   const canManageOrg = has?.({ permission: "org:sys_profile:manage" }) || false;
   const canManageMember =
     has?.({ permission: "org:sys_memberships:manage" }) || false;
-  const canDeleteOrg = has?.({ permission: "org:sys_profile:delete" }) || false;
+  const canDeleteOrg =
+    has?.({ permission: "org:sys_profile:delete" }) || isSuperAdmin;
 
   useEffect(() => {
     if (!orgId) {
@@ -153,23 +158,35 @@ interface OrgDangerProps {
   data: Organization;
 }
 export const OrgDanger = ({ data }: OrgDangerProps) => {
-  const t = useTranslations("organizations.tabs");
+  const t = useTranslations("organizations.danger");
   const { canDeleteOrg, isCreated } = useContext(OrgContext);
   const { currentStaff } = useCurrentStaff();
-  const disabled = !isCreated(currentStaff?.externalId) || !canDeleteOrg;
+  const canDelete = canDeleteOrg || isCreated(currentStaff?.externalId);
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("danger.title")}</CardTitle>
-        <CardDescription>{t("danger.description")}</CardDescription>
+        <CardTitle>{t("destroy.title")}</CardTitle>
       </CardHeader>
       <CardContent>
-        <DestroyButton
+        <CustomAlert
+          variant={"info"}
+          description={t("destroy.description.canDelete")}
+        />
+        <CustomAlert
+          variant={"success"}
+          description={t("destroy.description.field")}
+        />
+        <CustomAlert
+          variant={"destructive"}
+          description={t("destroy.description.messages")}
+        />
+        <DestroyButtonWithConfirmCode
           destroyFn={destroy}
           id={data.id}
           inltKey="organizations"
           redirectHref="organizations"
-          disabled={disabled}
+          disabled={!canDelete}
+          confirmCode="DELETE_ORGANIZATION"
         />
       </CardContent>
     </Card>

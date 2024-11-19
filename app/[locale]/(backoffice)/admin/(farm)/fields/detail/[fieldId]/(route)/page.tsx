@@ -1,4 +1,3 @@
-import { getFieldsSelect } from "@/services/fields";
 import { notFound } from "next/navigation";
 
 import {
@@ -23,14 +22,7 @@ export async function generateMetadata() {
     title: t("title"),
   };
 }
-export async function generateStaticParams() {
-  const plants = await getFieldsSelect();
-  return plants.map((item) => {
-    return {
-      fieldId: item.id,
-    };
-  });
-}
+
 const FieldDetailPage = async ({ params }: FieldDetailPageProps) => {
   const data = await canGetField(params!.fieldId);
   const t = await getTranslations("fields.tabs");

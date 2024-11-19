@@ -173,25 +173,28 @@ export const getCountFertilizerFrequencyOfUse =
     }
   };
 
+export const fertilizerSelect = {
+  id: true,
+  name: true,
+  type: true,
+  nutrientOfNPK: true,
+  frequencyOfUse: true,
+  applicationMethod: true,
+  recommendedDosage: {
+    include: {
+      unit: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  },
+};
 export const getFertilizersSelect = async (): Promise<FertilizerSelect[]> => {
   try {
     return await db.fertilizer.findMany({
       select: {
-        id: true,
-        name: true,
-        type: true,
-        nutrientOfNPK: true,
-        frequencyOfUse: true,
-        applicationMethod: true,
-        recommendedDosage: {
-          include: {
-            unit: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        },
+        ...fertilizerSelect,
       },
     });
   } catch (error) {

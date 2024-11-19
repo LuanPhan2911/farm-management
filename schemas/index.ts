@@ -426,10 +426,6 @@ export const FieldSchema = (
       min: 3,
       max: 100,
     }),
-    location: stringSchema(t, "location", {
-      max: 100,
-      required: false,
-    }).nullish(),
     orgId: stringSchema(t, "orgId", {
       required: false,
     }).nullish(),
@@ -739,7 +735,7 @@ export const EquipmentDetailSchema = (
       int: true,
     }),
     location: stringSchema(t, "location", {
-      max: 255,
+      max: 100,
       required: false,
     }).nullish(),
     maxFuelConsumption: numberSchema(t, "maxFuelConsumption", {
@@ -764,6 +760,44 @@ export const EquipmentUsageSchema = (
 ) => {
   return z.object({
     equipmentDetailId: stringSchema(t, "equipmentDetailId", { required: true }),
+    activityId: stringSchema(t, "activityId"),
+    usageStartTime: z.date({
+      invalid_type_error: t("usageStartTime.invalid_type_error"),
+      required_error: t("usageStartTime.required_error"),
+    }),
+    duration: numberSchema(t, "duration", {
+      min: 0,
+      max: 100,
+    }),
+    note: stringSchema(t, "note", {
+      max: 255,
+      required: false,
+    }).nullish(),
+    operatorId: stringSchema(t, "operatorId", {
+      required: false,
+    }).nullish(),
+    fuelConsumption: numberSchema(t, "fuelConsumption", {
+      min: 0,
+      max: 10_000,
+      required: false,
+    }).nullish(),
+    unitId: stringSchema(t, "unitId", { required: false }).nullish(),
+    fuelPrice: numberSchema(t, "fuelPrice", {
+      min: 0,
+      max: 1_000_000,
+      required: false,
+    }).nullish(),
+    rentalPrice: numberSchema(t, "rentalPrice", {
+      min: 0,
+      max: 10_000_000,
+      required: false,
+    }).nullish(),
+  });
+};
+export const EquipmentUsageUpdateSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
     activityId: stringSchema(t, "activityId", { required: false }).nullish(),
     usageStartTime: z.date({
       invalid_type_error: t("usageStartTime.invalid_type_error"),
@@ -823,8 +857,9 @@ export const MaterialSchema = (
     type: z.nativeEnum(MaterialType, {
       message: t("type.enum"),
     }),
+    typeId: z.string().nullish(),
     description: stringSchema(t, "description", {
-      max: 255,
+      max: 100,
       required: false,
     }).nullish(),
     imageUrl: stringSchema(t, "imageUrl", {
@@ -839,6 +874,24 @@ export const MaterialUsageSchema = (
   return z.object({
     unitId: stringSchema(t, "unitId", { required: true }),
     materialId: stringSchema(t, "materialId", { required: true }),
+    activityId: stringSchema(t, "activityId"),
+    quantityUsed: numberSchema(t, "quantityUsed", {
+      min: 1,
+      max: 1_000,
+      required: true,
+      int: true,
+    }),
+    actualPrice: numberSchema(t, "actualPrice", {
+      min: 0,
+      max: 10_000_000,
+      required: false,
+    }).nullish(),
+  });
+};
+export const MaterialUsageUpdateSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
     activityId: stringSchema(t, "activityId", { required: false }).nullish(),
     quantityUsed: numberSchema(t, "quantityUsed", {
       min: 1,
@@ -851,6 +904,7 @@ export const MaterialUsageSchema = (
       max: 10_000_000,
       required: false,
     }).nullish(),
+    unitId: stringSchema(t, "unitId", { required: true }),
   });
 };
 
@@ -890,11 +944,9 @@ export const ActivitySchema = (
       required: false,
     }).nullish(),
 
-    assignedTo: z
-      .array(z.string(), {
-        required_error: t("assignedTo.required_error"),
-      })
-      .min(1, t("assignedTo.min", { min: 1 })),
+    assignedTo: z.array(z.string(), {
+      required_error: t("assignedTo.required_error"),
+    }),
   });
 };
 
@@ -903,11 +955,9 @@ export const ActivityAssignedSchema = (
 ) => {
   return z.object({
     activityId: z.string(),
-    assignedTo: z
-      .array(z.string(), {
-        required_error: t("assignedTo.required_error"),
-      })
-      .min(1, t("assignedTo.min", { min: 1 })),
+    assignedTo: z.array(z.string(), {
+      required_error: t("assignedTo.required_error"),
+    }),
   });
 };
 export const ActivityAssignedUpdateSchema = (
@@ -1147,4 +1197,66 @@ export const CropSchema = (
       message: t("status.enum"),
     }),
   });
+};
+
+export const CropLearnedLessonsSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    learnedLessons: stringSchema(t, "learnedLessons", {
+      max: 5000,
+      required: false,
+    }).nullish(),
+  });
+};
+
+export const FieldLocationSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    latitude: numberSchema(t, "latitude", {
+      min: -90,
+      max: 90,
+      required: false,
+    }).nullish(),
+    longitude: numberSchema(t, "longitude", {
+      min: -180,
+      max: 180,
+      required: false,
+    }).nullish(),
+    location: stringSchema(t, "location", {
+      required: false,
+    }).nullish(),
+  });
+};
+
+export const LocationSelectSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    city: stringSchema(t, "city", { required: false }).nullish(),
+    district: stringSchema(t, "district", { required: false }).nullish(),
+    town: stringSchema(t, "town", { required: false }).nullish(),
+  });
+};
+
+export const OTPCodeSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z
+    .object({
+      code: stringSchema(t, "code", {
+        min: 1,
+      }),
+      confirmCode: z.string({ required_error: "Required confirm code" }),
+    })
+    .refine(
+      ({ code, confirmCode }) => {
+        return code === confirmCode;
+      },
+      {
+        message: t("code.confirm"),
+        path: ["code"],
+      }
+    );
 };

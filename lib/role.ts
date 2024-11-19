@@ -57,7 +57,7 @@ export const canUpdateActivity = async (
 ) => {
   const { orgId, orgRole } = auth();
   const crop = await getCropById(cropId);
-  if (!crop) {
+  if (!crop || !canUpdateCropStatus(crop.status)) {
     return false;
   }
   if (activityId) {
@@ -68,7 +68,6 @@ export const canUpdateActivity = async (
   }
   const isSuperAdmin = checkRole("superadmin");
   return (
-    canUpdateCropStatus(crop.status) &&
-    ((orgId === crop.field.orgId && orgRole === "org:admin") || isSuperAdmin)
+    (orgId === crop.field.orgId && orgRole === "org:admin") || isSuperAdmin
   );
 };

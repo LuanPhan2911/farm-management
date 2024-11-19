@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
-import { UnitValue, upsertFloatUnit } from "./units";
+import { unitInclude, UnitValue, upsertFloatUnit } from "./units";
 import { PlantPesticideTable } from "@/types";
+import { pesticideSelect } from "./pesticides";
 
 type PlantPesticideParam = {
   plantId: string;
@@ -64,27 +65,12 @@ export const getPlantPesticides = async ({
       include: {
         pesticide: {
           select: {
-            name: true,
-            type: true,
-            toxicityLevel: true,
-            recommendedDosage: {
-              include: {
-                unit: {
-                  select: {
-                    name: true,
-                  },
-                },
-              },
-            },
+            ...pesticideSelect,
           },
         },
         dosage: {
           include: {
-            unit: {
-              select: {
-                name: true,
-              },
-            },
+            ...unitInclude,
           },
         },
       },

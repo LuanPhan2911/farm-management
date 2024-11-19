@@ -13,6 +13,7 @@ import { JobTable } from "@/types";
 import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/job";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { DestroyButtonWithConfirmCode } from "@/components/buttons/destroy-button-with-confirm-code";
 interface JobsTableActionProps {
   data: JobTable;
 }
@@ -36,12 +37,13 @@ export const JobsTableAction = ({ data }: JobsTableActionProps) => {
           />
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <DestroyButton
+          <DestroyButtonWithConfirmCode
             destroyFn={destroy}
             id={data.id}
             inltKey="jobs"
             className="w-full"
             disabled={disabled}
+            confirmCode="DELETE_JOB"
           />
         </DropdownMenuItem>
       </DropdownMenuContent>

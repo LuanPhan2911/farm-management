@@ -1,6 +1,7 @@
 "use client";
-import { cancelActivity, completeActivity } from "@/actions/activity";
+import { completeActivity } from "@/actions/activity";
 import { ActionButton } from "@/components/buttons/action-button";
+import { ActionButtonWithConfirmCode } from "@/components/buttons/action-button-with-confirm-code";
 import { useTranslations } from "next-intl";
 
 interface ActivityEditStatusButtonProps {
@@ -13,7 +14,7 @@ export const ActivityCompletedButton = ({
 }: ActivityEditStatusButtonProps) => {
   const t = useTranslations("activities.form");
   return (
-    <ActionButton
+    <ActionButtonWithConfirmCode
       actionFn={() => completeActivity(activityId)}
       label={t("complete.label")}
       title={t("complete.title")}
@@ -21,23 +22,7 @@ export const ActivityCompletedButton = ({
       variant={"success"}
       size={"sm"}
       disabled={disabled}
-    />
-  );
-};
-export const ActivityCancelButton = ({
-  activityId,
-  disabled,
-}: ActivityEditStatusButtonProps) => {
-  const t = useTranslations("activities.form");
-  return (
-    <ActionButton
-      actionFn={() => cancelActivity(activityId)}
-      label={t("cancel.label")}
-      title={t("cancel.title")}
-      description={t("cancel.description")}
-      variant={"destructive"}
-      size={"sm"}
-      disabled={disabled}
+      confirmCode="FINISH_ACTIVITY"
     />
   );
 };

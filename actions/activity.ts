@@ -1,19 +1,13 @@
 "use server";
 
+import { ActivityUpdateStatusCompletedError } from "@/errors";
 import { errorResponse, successResponse } from "@/lib/utils";
-import {
-  ActivityAssignedSchema,
-  ActivityAssignedUpdateSchema,
-  ActivitySchema,
-} from "@/schemas";
+import { ActivitySchema } from "@/schemas";
 import {
   createActivity,
   deleteActivity,
-  deleteActivityAssigned,
   updateActivity,
-  updateActivityAssigned,
-  updateActivityStatus,
-  upsertActivityAssigned,
+  updateActivityStatusComplete,
 } from "@/services/activities";
 import { ActionResponse } from "@/types";
 import { getTranslations } from "next-intl/server";
@@ -76,88 +70,15 @@ export const destroy = async (id: string): Promise<ActionResponse> => {
 
 export const completeActivity = async (id: string): Promise<ActionResponse> => {
   const tStatus = await getTranslations("activities.status");
-
+  const tSchema = await getTranslations("activities.schema");
   try {
-    await updateActivityStatus(id, "COMPLETED");
+    await updateActivityStatusComplete(id, "COMPLETED");
     revalidatePath("/admin/activities");
     return successResponse(tStatus("success.complete"));
   } catch (error) {
+    if (error instanceof ActivityUpdateStatusCompletedError) {
+      return errorResponse(tSchema("errors.updateStatusCompleted"));
+    }
     return errorResponse(tStatus("failure.complete"));
-  }
-};
-export const cancelActivity = async (id: string): Promise<ActionResponse> => {
-  const tStatus = await getTranslations("activities.status");
-  try {
-    await updateActivityStatus(id, "CANCELLED");
-    revalidatePath("/admin/activities");
-    return successResponse(tStatus("success.cancel"));
-  } catch (error) {
-    return errorResponse(tStatus("failure.cancel"));
-  }
-};
-
-export const upsertAssigned = async (
-  values: z.infer<ReturnType<typeof ActivityAssignedSchema>>
-): Promise<ActionResponse> => {
-  const tSchema = await getTranslations("activityAssigned.schema");
-  const tStatus = await getTranslations("activityAssigned.status");
-  const paramsSchema = ActivityAssignedSchema(tSchema);
-  const validatedFields = paramsSchema.safeParse(values);
-
-  if (!validatedFields.success) {
-    return errorResponse(tSchema("errors.parse"));
-  }
-  try {
-    await upsertActivityAssigned({
-      ...validatedFields.data,
-    });
-    revalidatePath(
-      `/admin/activities/detail/${validatedFields.data.activityId}/staffs`
-    );
-    return successResponse(tStatus("success.create"));
-  } catch (error) {
-    return errorResponse(tStatus("failure.create"));
-  }
-};
-export const deleteAssigned = async (
-  activityId: string,
-  staffId: string
-): Promise<ActionResponse> => {
-  const tStatus = await getTranslations("activityAssigned.status");
-
-  try {
-    await deleteActivityAssigned({
-      activityId,
-      staffId,
-    });
-    revalidatePath(`/admin/activities/detail/${activityId}/staffs`);
-    return successResponse(tStatus("success.delete"));
-  } catch (error) {
-    return errorResponse(tStatus("failure.delete"));
-  }
-};
-
-export const editAssigned = async (
-  values: z.infer<ReturnType<typeof ActivityAssignedUpdateSchema>>,
-  id: string
-): Promise<ActionResponse> => {
-  const tSchema = await getTranslations("activityAssigned.schema");
-  const tStatus = await getTranslations("activityAssigned.status");
-  const paramsSchema = ActivityAssignedUpdateSchema(tSchema);
-  const validatedFields = paramsSchema.safeParse(values);
-
-  if (!validatedFields.success) {
-    return errorResponse(tSchema("errors.parse"));
-  }
-  try {
-    const activityAssigned = await updateActivityAssigned(id, {
-      ...validatedFields.data,
-    });
-    revalidatePath(
-      `/admin/activities/detail/${activityAssigned.activityId}/staffs`
-    );
-    return successResponse(tStatus("success.edit"));
-  } catch (error) {
-    return errorResponse(tStatus("failure.edit"));
   }
 };

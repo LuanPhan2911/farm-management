@@ -114,7 +114,7 @@
       },
       "trow": {
         "type": "No select",
-        "description": "No filled"
+        "description": "Not filled"
       }
     },
     "search": {
@@ -139,12 +139,12 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete category?",
-        "description": "Are you absolutely sure? This action can not be undone! If category in use, you cannot to delete."
+        "description": "If category in use, you cannot to delete."
       },
       "destroyMany": {
         "label": "Delete all",
         "title": "Delete all selected categories?",
-        "description": "Are you absolutely sure? This action can not be undone! If category in use, you cannot to delete."
+        "description": "If category in use, you cannot to delete."
       }
     },
     "schema": {
@@ -230,12 +230,12 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete unit?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "destroyMany": {
         "label": "Delete all",
         "title": "Delete all selected units?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       }
     },
     "schema": {
@@ -310,7 +310,7 @@
         "status": "Status"
       },
       "trow": {
-        "note": "No filled"
+        "note": "Not filled"
       }
     },
     "search": {
@@ -330,7 +330,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete applicant?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "createStaff": {
         "label": "Create Staff",
@@ -340,7 +340,7 @@
       "destroyMany": {
         "label": "Delete all selected",
         "title": "Delete all selected applicants?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       }
     },
     "schema": {
@@ -459,12 +459,12 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete job?",
-        "description": "Are you absolutely sure? This action can not be undone! All applicants applied to the job will be deleted."
+        "description": "This action can not be undone! All applicants applied to the job will be deleted."
       },
       "destroyMany": {
         "label": "Delete all selected",
         "title": "Delete all selected jobs?",
-        "description": "Are you absolutely sure? This action can not be undone! If jobs in use, you cannot to delete."
+        "description": "This action can not be undone! If jobs in use, you cannot to delete."
       }
     },
     "schema": {
@@ -609,7 +609,7 @@
         "joinedAt": "Joined at"
       },
       "trow": {
-        "name": "No filled",
+        "name": "Not filled",
         "lastSignedInAt": "Never",
         "lastActiveAt": "Never"
       }
@@ -641,12 +641,18 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete user?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       }
     },
     "schema": {
       "errors": {
         "parse": "Invalid fields!"
+      },
+      "code": {
+        "placeholder": "Enter \"{value}\" to confirm action",
+        "min": "Min OTP code length is {min} characters",
+        "confirm": "Confirm code mismatch",
+        "required_error": "OTP code is required!"
       },
       "id": {
         "label": "Id"
@@ -727,11 +733,11 @@
         "hourlyWage": "Actual hourly wage"
       },
       "trow": {
-        "phone": "No filled",
-        "address": "No filled",
-        "baseHourlyWage": "No filled",
-        "actualWork": "No filled",
-        "hourlyWage": "No filled"
+        "phone": "Not filled",
+        "address": "Not filled",
+        "baseHourlyWage": "Not filled",
+        "actualWork": "Not filled",
+        "hourlyWage": "Not filled"
       }
     },
     "search": {
@@ -751,7 +757,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete staff?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "editRole": {
         "label": "Edit role",
@@ -932,7 +938,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete organization?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "viewProfile": {
         "label": "View profile"
@@ -940,7 +946,7 @@
       "destroyMember": {
         "label": "Remove",
         "title": "Remove member?",
-        "description": "Remove member from organizations. This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "editMemberRole": {
         "label": "Edit role",
@@ -1034,6 +1040,16 @@
     },
     "other": {
       "setActive": "You are not member in this organization so you don't have admin permission in this organization"
+    },
+    "danger": {
+      "destroy": {
+        "title": "Delete Organization?",
+        "description": {
+          "canDelete": "ONLY super admin or created organization staff can DELETE organization",
+          "field": "When organization DELETE, field's organization will be update NULL",
+          "messages": "ALL messages in organization will be DELETED"
+        }
+      }
     }
   },
 
@@ -1041,7 +1057,10 @@
     "page": {
       "title": "Manage fields",
       "detail": {
-        "title": "Field detail"
+        "title": "Field detail",
+        "locations": {
+          "title": "Field location"
+        }
       }
     },
     "table": {
@@ -1050,12 +1069,14 @@
         "location": "Location",
         "orgId": "Organization",
         "soilType": "Soil type",
-        "area": "Field Area"
+        "area": "Field Area",
+        "createdAt": "Created at",
+        "updatedAt": "Latest updated at"
       },
       "trow": {
         "soilType": "No select",
-        "location": "No filled",
-        "area": "No filled"
+        "location": "Not filled location",
+        "area": "Not filled"
       }
     },
     "tabs": {
@@ -1078,6 +1099,11 @@
         "label": "Soils",
         "title": "Soils",
         "description": "Soils of field"
+      },
+      "locations": {
+        "label": "Locations",
+        "title": "Locations",
+        "description": "Field locations"
       },
       "danger": {
         "label": "Danger",
@@ -1107,15 +1133,62 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete field?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "destroyMany": {
         "label": "Delete all selected",
         "title": "Delete all selected fields?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
+      },
+      "editLocation": {
+        "title": "Update field location",
+        "description": "Update location, latitude, longitude which selected in map for current field"
       }
     },
     "schema": {
+      "locations": {
+        "errors": {
+          "parse": "Invalid fields!",
+          "nullLatLng": "Sorry, your location selected is null latitude or null longitude"
+        },
+        "latitude": {
+          "label": "Latitude",
+          "placeholder": "Lat",
+          "invalid_type_error": "Latitude value must be number",
+          "min": "Latitude value must be greater than {min} value",
+          "max": "Latitude value must be less than {max} value"
+        },
+        "longitude": {
+          "label": "Longitude",
+          "placeholder": "Lng",
+          "invalid_type_error": "Longitude value must be number",
+          "min": "Longitude value must be greater than {min} value",
+          "max": "Longitude value must be less than {max} value"
+        },
+        "location": {
+          "label": "Location",
+          "placeholder": "Field location",
+          "min": "Min field location is {min} characters!",
+          "required_error": "Field location is required!",
+          "max": "Field location's length must be less than {max} characters",
+          "default": "Not filled location"
+        },
+        "city": {
+          "notFound": "Province not found",
+          "placeholder": "City",
+          "label": "Select city"
+        },
+        "district": {
+          "notFound": "District not found",
+          "placeholder": "District",
+          "label": "Select district"
+        },
+        "town": {
+          "notFound": "Town not found",
+          "placeholder": "Town",
+          "label": "Select town"
+        }
+      },
       "errors": {
         "parse": "Invalid fields!",
         "existOrg": "OrgId is not exist."
@@ -1127,13 +1200,7 @@
         "min": "Min field name is {min} characters!",
         "max": "Field name's length must be less than {max} characters"
       },
-      "location": {
-        "label": "Location",
-        "placeholder": "Field location",
-        "min": "Min field location is {min} characters!",
-        "required_error": "Field location is required!",
-        "max": "Field location's length must be less than {max} characters"
-      },
+
       "orgId": {
         "label": "Organization",
         "placeholder": "Select organization...",
@@ -1184,11 +1251,13 @@
       "success": {
         "create": "Field created!",
         "edit": "Field edited!",
+        "editLocation": "Edit location",
         "destroy": "Field deleted!"
       },
       "failure": {
         "create": "Something went wrong while creating field!",
         "edit": "Something went wrong while editing field!",
+        "editLocation": "Fail edit location",
         "destroy": "Something went wrong while deleting field!"
       }
     },
@@ -1196,6 +1265,24 @@
       "title": "Field not found",
       "description": "Sorry, we couldn’t find the field you’re looking for.",
       "backLabel": "Go to fields page"
+    },
+    "other": {
+      "myLocation": "You are hear",
+      "popupCreateLocation": "Create field location here",
+      "popupLocation": {
+        "field": "Field: {name}",
+        "crop": "Start: {startDate}, Finish: {endDate}",
+        "area": "Area: {area}"
+      }
+    },
+    "danger": {
+      "destroy": {
+        "title": "Delete field?",
+        "description": {
+          "canDelete": "ONLY super admin or organization admin can DELETE field.",
+          "deleteWhen": "Field CANNOT delete if it use in Crop, Soil, Weather."
+        }
+      }
     }
   },
   "weathers": {
@@ -1215,10 +1302,10 @@
         "confirmedBy": "ConfirmedBy"
       },
       "trow": {
-        "temperature": "No filled",
-        "humidity": "No filled",
-        "atmosphericPressure": "No filled",
-        "rainfall": "No filled",
+        "temperature": "Not filled",
+        "humidity": "Not filled",
+        "atmosphericPressure": "Not filled",
+        "rainfall": "Not filled",
         "confirmedAt": "No confirmed",
         "confirmedBy": "No confirmed"
       }
@@ -1237,10 +1324,6 @@
       "notFound": {
         "title": "No weathers data for generate chart",
         "description": "Only confirmed weathers data was displayed and data is filtered by date range you selected"
-      },
-      "hidden": {
-        "title": "Chart will be hidden",
-        "description": "Click icon eye in the right corner to show chart"
       }
     },
     "search": {
@@ -1274,13 +1357,13 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete weather?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
 
       "editConfirmed": {
         "label": "Edit confirmed",
         "title": "Confirm weather?",
-        "description": "Are you absolutely sure? Just admin have grant to restore"
+        "description": "Just admin have grant to restore"
       },
       "createMany": {
         "label": "Upload",
@@ -1461,10 +1544,6 @@
       "notFound": {
         "title": "No soils data for generate chart",
         "description": "Only confirmed soils data was displayed and data is filtered by date range you selected"
-      },
-      "hidden": {
-        "title": "Chart will be hidden",
-        "description": "Click icon eye in the right corner to show chart"
       }
     },
     "search": {
@@ -1494,13 +1573,13 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete soil?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
 
       "editConfirmed": {
         "label": "Edit confirmed",
         "title": "Confirm soil?",
-        "description": "Are you absolutely sure? Just admin have grant to restore"
+        "description": "Just admin have grant to restore"
       },
       "createMany": {
         "label": "Upload",
@@ -1639,7 +1718,7 @@
         "category": "Category",
         "growthDuration": "Grow duration",
         "fertilizerType": "Fertilizer type",
-        "season": "Season",
+        "season": "Best season growing",
         "idealTemperature": "Ideal temperature",
         "idealHumidity": "Ideal humidity",
         "waterRequirement": "Water requirement"
@@ -1647,10 +1726,10 @@
       "trow": {
         "season": "Any season",
         "fertilizerType": "No select",
-        "idealTemperature": "No filled",
-        "idealHumidity": "No filled",
-        "waterRequirement": "No filled",
-        "growDuration": "No filled"
+        "idealTemperature": "Not filled",
+        "idealHumidity": "Not filled",
+        "waterRequirement": "Not filled",
+        "growDuration": "Not filled"
       }
     },
     "tabs": {
@@ -1700,7 +1779,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete plant?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "viewDetail": {
         "label": "View detail",
@@ -1827,6 +1906,15 @@
       "title": "Plant not found",
       "description": "Sorry, we couldn’t find the plant you’re looking for.",
       "backLabel": "Go to plants page"
+    },
+    "danger": {
+      "destroy": {
+        "title": "Delete plant?",
+        "description": {
+          "canDelete": "ONLY Super Admin can DELETE plant",
+          "deleteWhen": "Plant can Delete if no usages in other table"
+        }
+      }
     }
   },
   "fertilizers": {
@@ -1835,18 +1923,18 @@
     },
     "table": {
       "thead": {
-        "name": "Name",
-        "type": "Type",
-        "nutrientOfNPK": "Nutrient of NPK",
+        "name": "Fertilizer name",
+        "type": "Fertilizer type",
+        "nutrientOfNPK": "Nutrient of NPK ratio",
         "frequencyOfUse": "Frequency of use",
         "applicationMethod": "Application method",
         "manufacturer": "Manufacturer"
       },
       "trow": {
-        "manufacturer": "No filled",
-        "applicationMethod": "No filled",
-        "frequencyOfUse": "No filled",
-        "nutrientOfNPK": "No filled",
+        "manufacturer": "Not filled",
+        "applicationMethod": "Not filled",
+        "frequencyOfUse": "Not filled",
+        "nutrientOfNPK": "Not filled",
         "type": "No select"
       }
     },
@@ -1877,7 +1965,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete fertilizer?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       }
     },
     "schema": {
@@ -1902,7 +1990,7 @@
           "ORGANIC": "Organic",
           "INORGANIC": "Inorganic",
           "BIO": "Bio",
-          "default": "No filled"
+          "default": "Not filled"
         }
       },
       "nutrientOfNPK": {
@@ -1911,13 +1999,13 @@
         "required_error": "NPK ratio is required!",
         "min": "Min NPK ratio length is {min} characters",
         "max": "Max NPK ratio's length is {max} characters",
-        "default": "No filled"
+        "default": "Not filled"
       },
       "composition": {
         "label": "Composition",
         "placeholder": "Other composition is such as Mn, Bo...",
         "max": "Max composition length is {max} characters",
-        "default": "No filled"
+        "default": "Not filled"
       },
       "manufacturer": {
         "label": "Manufacturer",
@@ -1928,7 +2016,7 @@
         "label": "Method",
         "placeholder": "Eg: Root watering, spray on leaves",
         "max": "Max method length is {max} characters",
-        "default": "No filled"
+        "default": "Not filled"
       },
       "frequencyOfUse": {
         "label": "Frequency of use",
@@ -1957,7 +2045,7 @@
           "invalid_type_error": "Dosage value must be number",
           "min": "Min dosage value is {min}",
           "max": "Max dosage value is {max}",
-          "default": "No filled"
+          "default": "Not filled"
         },
         "label": "Recommended dosage",
         "placeholder": "From 0 to 100"
@@ -1982,8 +2070,8 @@
     },
     "table": {
       "thead": {
-        "name": "Name",
-        "type": "Type",
+        "name": "Pesticide name",
+        "type": "Pesticide type",
         "toxicityLevel": "Toxicity level",
         "applicationMethod": "Application method",
         "manufacturer": "Manufacturer"
@@ -1991,8 +2079,8 @@
       "trow": {
         "type": "No select",
         "toxicityLevel": "No select",
-        "manufacturer": "No filled",
-        "applicationMethod": "No filled"
+        "manufacturer": "Not filled",
+        "applicationMethod": "Not filled"
       }
     },
     "search": {
@@ -2022,7 +2110,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete pesticide?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       }
     },
     "schema": {
@@ -2046,7 +2134,7 @@
           "FUNGICIDE": "Fungicide",
           "default": "No selected"
         },
-        "default": "No filled"
+        "default": "Not filled"
       },
       "ingredient": {
         "label": "Ingredient",
@@ -2073,7 +2161,7 @@
           "int": "Withdrawal period value must be integer",
           "min": "Min Withdrawal period value is {min}",
           "max": "Max Withdrawal period value is {max}",
-          "default": "No filled"
+          "default": "Not filled"
         },
         "label": "Withdrawal period",
         "placeholder": "Eg: 3 months"
@@ -2103,7 +2191,7 @@
           "invalid_type_error": "Dosage value must be number",
           "min": "Min dosage value is {min}",
           "max": "Max dosage value is {max}",
-          "default": "No filled"
+          "default": "Not filled"
         },
         "label": "Recommended dosage",
         "placeholder": "From 0 to 100"
@@ -2112,7 +2200,7 @@
         "label": "Method",
         "placeholder": "Eg: Root watering, spray on leaves",
         "max": "Max method length is {max} characters",
-        "default": "No filled"
+        "default": "Not filled"
       },
       "pesticideId": {
         "itemDetail": "Please select item in popover to display pesticide detail"
@@ -2140,15 +2228,21 @@
         "fertilizer": {
           "name": "Fertilizer name",
           "type": "Fertilizer type",
+          "nutrientOfNPK": "Nutrient of NPK ratio",
+          "frequencyOfUse": "Frequency of use",
+          "applicationMethod": "Application method",
           "recommendedDosage": "Recommended  dosage"
         },
         "stage": "Stage",
         "dosage": "Plant dosage"
       },
       "trow": {
-        "dosage": "No filled",
+        "dosage": "Not filled",
         "fertilizer": {
-          "recommendedDosage": "No filled"
+          "recommendedDosage": "Not filled",
+          "applicationMethod": "Not filled",
+          "frequencyOfUse": "Not filled",
+          "nutrientOfNPK": "Not filled"
         }
       }
     },
@@ -2167,7 +2261,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete plant fertilizer?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       }
     },
     "schema": {
@@ -2242,15 +2336,16 @@
         "pesticide": {
           "name": "Pesticide name",
           "type": "Pesticide type",
+          "toxicityLevel": "Toxicity level",
           "recommendedDosage": "Recommended  dosage"
         },
         "stage": "Stage",
         "dosage": "Plant dosage"
       },
       "trow": {
-        "dosage": "No filled",
+        "dosage": "Not filled",
         "pesticide": {
-          "recommendedDosage": "No filled"
+          "recommendedDosage": "Not filled"
         }
       }
     },
@@ -2269,7 +2364,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete plant pesticide?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       }
     },
     "schema": {
@@ -2376,8 +2471,8 @@
         "purchasePrice": "Purchase price"
       },
       "trow": {
-        "purchaseDate": "No filled",
-        "purchasePrice": "No filled"
+        "purchaseDate": "Not filled",
+        "purchasePrice": "Not filled"
       }
     },
     "search": {
@@ -2406,7 +2501,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete equipment?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       }
     },
     "schema": {
@@ -2500,15 +2595,27 @@
       "title": "Equipment not found",
       "description": "Sorry, we couldn’t find the equipment you’re looking for.",
       "backLabel": "Go to equipments page"
+    },
+    "danger": {
+      "destroy": {
+        "title": "Delete equipment?",
+        "description": {
+          "canDelete": "ONLY Super Admin can DELETE equipment.",
+          "deleteWhen": "Equipment can DELETE if no equipment detail"
+        }
+      }
     }
   },
   "equipmentDetails": {
     "page": {
-      "title": "Manage equipment details"
+      "title": "Manage equipment details",
+      "cost": {
+        "title": "Equipment detail usage cost"
+      }
     },
     "table": {
       "thead": {
-        "name": "Name",
+        "name": "Equipment detail",
         "status": "Status",
         "location": "Location",
         "lastMaintenanceDate": "Last maintenance",
@@ -2522,11 +2629,21 @@
         }
       },
       "trow": {
-        "location": "No filled",
+        "location": "Not filled",
         "lastMaintenanceDate": "Never",
-        "maxFuelConsumption": "No filled",
-        "energyType": "No filled",
-        "baseFuelPrice": "No filled"
+        "maxFuelConsumption": "Not filled",
+        "energyType": "Not filled",
+        "baseFuelPrice": "Not filled"
+      },
+      "tfooter": {
+        "total": "Total"
+      },
+      "cost": {
+        "thead": {
+          "totalFuelConsumption": "Total fuel consumption",
+          "totalRentalPrice": "Total rental price",
+          "totalCost": "Total cost"
+        }
       }
     },
     "search": {
@@ -2551,7 +2668,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete equipment detail?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "viewUsage": {
         "label": "View usages"
@@ -2651,17 +2768,15 @@
     "table": {
       "thead": {
         "equipmentDetail": {
-          "name": "Name",
+          "name": "Equipment name",
           "status": "Status",
           "imageUrl": "Image",
           "location": "Location"
         },
         "activity": {
-          "name": "Activity name",
-          "status": "Activity Status",
-          "usage": "Usage"
+          "usage": "Activity"
         },
-        "usageStartTime": "Created date",
+        "usageStartTime": "Usage date",
         "duration": "Duration",
         "operator": "Operator",
         "fuelConsumption": "Fuel consumption",
@@ -2677,13 +2792,13 @@
           "unused": "Unused"
         },
         "equipmentDetail": {
-          "location": "No filled"
+          "location": "Not filled"
         },
         "operator": "No operator",
-        "fuelConsumption": "No filled",
-        "fuelPrice": "No filled",
-        "rentalPrice": "No filled",
-        "actualCost": "No value calculator"
+        "fuelConsumption": "Not filled",
+        "fuelPrice": "Not filled",
+        "rentalPrice": "Not filled",
+        "actualCost": "No value "
       },
       "tfooter": {
         "totalCost": "Total cost of current page"
@@ -2706,7 +2821,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete equipment usage?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "detailActivity": {
         "label": "Detail activity"
@@ -2831,6 +2946,9 @@
         "usages": {
           "title": "Material usages"
         }
+      },
+      "cost": {
+        "title": "Total material cost"
       }
     },
     "tabs": {
@@ -2846,16 +2964,57 @@
     },
     "table": {
       "thead": {
-        "imageUrl": "Image",
-        "name": "Name",
+        "material": "Material",
         "type": "Type",
-        "quantityInStock": "Quantity in stock",
-        "unitId": "Unit",
-        "basePrice": "Base price",
-        "countUsages": "Count usages"
+        "updatedAt": "Latest update",
+        "_count": {
+          "materialUsages": "Activity used"
+        },
+        "quantityInStock": "Quantity remained",
+        "basePrice": "Base price"
       },
       "trow": {
+        "description": "No description",
         "basePrice": "No filled"
+      },
+      "cost": {
+        "thead": {
+          "totalQuantityUsed": "Total quantity used",
+          "totalCost": "Total cost"
+        }
+      },
+      "tfooter": {
+        "total": "Total actual cost"
+      }
+    },
+    "chart": {
+      "materialUsage": {
+        "title": "Total material cost in 3 latest month",
+        "fields": {
+          "totalCost": "Total cost"
+        },
+        "error": {
+          "title": "Refresh",
+          "description": "Something went wrong when load material usage cost"
+        },
+        "notFound": {
+          "title": "No material usage cost data for generate chart",
+          "description": ""
+        }
+      },
+      "materialMostUsage": {
+        "title": "Top materials have the most quantity used",
+        "fields": {
+          "quantityUsed": "Quantity used"
+        },
+        "error": {
+          "title": "Refresh",
+          "description": "Something went wrong when load material"
+        },
+        "notFound": {
+          "title": "No material data for generate chart",
+          "description": ""
+        }
       }
     },
     "search": {
@@ -2865,6 +3024,9 @@
           "placeholder": "Material type",
           "error": "Fail load material count"
         }
+      },
+      "cost": {
+        "placeholder": "Search by material name..."
       }
     },
     "form": {
@@ -2881,7 +3043,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete material?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       }
     },
     "schema": {
@@ -2911,6 +3073,12 @@
           "SEED": "Seed",
           "OTHER": "Other"
         }
+      },
+      "typeId": {
+        "label": "Select material name",
+        "error": "Fail load material name",
+        "notFound": "Material name not found",
+        "placeholder": "Select..."
       },
 
       "unitId": {
@@ -2964,6 +3132,15 @@
       "title": "Material not found",
       "description": "Sorry, we couldn’t find the material you’re looking for.",
       "backLabel": "Go to materials page"
+    },
+    "danger": {
+      "destroy": {
+        "title": "Delete material?",
+        "description": {
+          "canDelete": "ONLY Super Admin can DELETE material.",
+          "deleteWhen": "Material can DELETE if no material usages"
+        }
+      }
     }
   },
   "materialUsages": {
@@ -2973,11 +3150,10 @@
     "table": {
       "thead": {
         "activity": {
-          "usage": "Usage"
+          "usage": "Activity"
         },
         "material": {
-          "imageUrl": "Image",
-          "name": "Name",
+          "name": "Material name",
           "type": "Type",
           "quantityInStock": "Quantity remained"
         },
@@ -2988,8 +3164,8 @@
         "actualCost": "Actual  cost"
       },
       "trow": {
-        "actualPrice": "No filled",
-        "actualCost": "No filled"
+        "actualPrice": "Not filled",
+        "actualCost": "Not filled"
       },
       "tfooter": {
         "totalCost": "Total cost of current page"
@@ -3012,7 +3188,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete material usage?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "detailActivity": {
         "label": "Detail activity"
@@ -3150,10 +3326,6 @@
         "notFound": {
           "title": "No data for generate chart",
           "description": "No activity have in date range "
-        },
-        "hidden": {
-          "title": "Chart will be hidden",
-          "description": "Click icon eye in the right corner to show chart"
         }
       },
       "countPriority": {
@@ -3169,36 +3341,32 @@
         "notFound": {
           "title": "No data for generate chart",
           "description": "No activity have in date range "
-        },
-        "hidden": {
-          "title": "Chart will be hidden",
-          "description": "Click icon eye in the right corner to show chart"
         }
       }
     },
     "table": {
       "thead": {
         "activityDate": "Activity date",
-        "name": "Name",
+        "name": "Activity name",
         "status": "Status",
         "priority": "Priority",
-        "estimatedDuration": "Estimate duration",
+        "estimatedDuration": "Estimated duration",
         "createdBy": "CreatedBy",
         "actualDuration": "Actual duration",
         "crop": "Crop info",
-        "totalStaffCost": "Total staff cost",
-        "totalEquipmentCost": "Total equipment cost",
-        "totalMaterialCost": "Total material cost",
-        "actualCost": "Total actual cost"
+        "totalStaffCost": "Staff cost",
+        "totalEquipmentCost": "Equipment cost",
+        "totalMaterialCost": "Material cost",
+        "actualCost": "Actual cost"
       },
       "trow": {
-        "actualDuration": "No filled",
-        "totalStaffCost": "No value calculator",
-        "totalEquipmentCost": "No value calculator",
-        "totalMaterialCost": "No value calculator",
-        "actualCost": "No value calculator",
+        "actualDuration": "Not filled",
+        "totalStaffCost": "No value",
+        "totalEquipmentCost": "No value",
+        "totalMaterialCost": "No value",
+        "actualCost": "No value",
         "crop": {
-          "endDate": "No filled"
+          "endDate": "Not filled"
         }
       },
       "tfooter": {
@@ -3229,23 +3397,16 @@
         "title": "Edit activity",
         "description": "Update of activity"
       },
-      "viewDetail": {
-        "label": "View detail"
-      },
+
       "destroy": {
         "label": "Delete activity",
         "title": "Delete activity?",
-        "description": "Activity can only delete when no material used and no equipment used. Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "complete": {
         "label": "Finish activity",
         "title": "Finish activity?",
-        "description": "After marking finish this activity. This activity can not be updated! Are you absolutely sure? This action can not be undone!"
-      },
-      "cancel": {
-        "label": "Cancel Activity",
-        "title": "Cancel activity?",
-        "description": "After cancel, material usage will not restore, equipment used will be available. Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       }
     },
     "schema": {
@@ -3256,7 +3417,8 @@
         "existStaff": "Staff is not existed",
         "existActivity": "Activity is not exist",
         "invalidActivityStatus": "Activity status is in list:[new, in progress, pending] is possible update",
-        "updatePermission": "No permission update"
+        "updatePermission": "No permission update",
+        "updateStatusCompleted": "Activity have already completed or some assigned staffs's hourly wage is no filled "
       },
       "name": {
         "label": "Activity name",
@@ -3295,8 +3457,7 @@
           "NEW": "New",
           "PENDING": "Pending",
           "IN_PROGRESS": "In progress",
-          "COMPLETED": "Completed",
-          "CANCELLED": "Cancelled"
+          "COMPLETED": "Completed"
         },
         "label": "Status",
         "placeholder": "Select status...",
@@ -3362,6 +3523,24 @@
       "title": "Activity not found",
       "description": "Sorry, we couldn’t find the activity you’re looking for.",
       "backLabel": "Go to activities page"
+    },
+    "danger": {
+      "complete": {
+        "title": "Complete activity",
+        "description": {
+          "actualDuration": "If no fill actual duration of activity , estimated duration will be updated",
+          "actualWork": "If no fill actual work of assigned staffs, actual duration of activity will be updated",
+          "hourlyWage": "If no fill hour wage of assigned staff, activity CANNOT completed",
+          "completed": "If activity status COMPLETED, this activity CANNOT update anymore"
+        }
+      },
+      "destroy": {
+        "title": "Delete activity",
+        "description": {
+          "usages": "ONLY delete activity when no equipment usages and material usages",
+          "finish": "If activity COMPLETED status, activity CANNOT delete"
+        }
+      }
     }
   },
   "activityAssigned": {
@@ -3378,10 +3557,10 @@
         "actualCost": "Actual Cost"
       },
       "trow": {
-        "baseHourlyWage": "No filled",
-        "actualWork": "No filled",
-        "hourlyWage": "No filled",
-        "actualCost": "No value calculator"
+        "baseHourlyWage": "Not filled",
+        "actualWork": "Not filled",
+        "hourlyWage": "Not filled",
+        "actualCost": "No value "
       },
       "tfooter": {
         "total": "Total actual cost"
@@ -3404,7 +3583,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete assigned staff?",
-        "description": "Are you absolutely sure?"
+        "description": ""
       }
     },
     "schema": {
@@ -3497,32 +3676,28 @@
           "label": "Activity danger"
         }
       },
+      "learnedLessons": {
+        "label": "Learned lessons"
+      },
       "danger": {
         "label": "Crop danger"
       }
     },
     "table": {
       "thead": {
+        "name": "Crop name",
         "startDate": "Start date",
-        "endDate": "End date",
-        "name": "Name",
+        "endDate": "Finish date",
         "plant": "Plant",
-        "estimatedYield": "Estimated Yield",
-        "actualYield": "Actual Yield",
-        "status": "Status",
+        "status": "Crop status",
         "field": {
-          "name": "Field name",
-          "area": "Field area"
+          "name": "Field"
         }
       },
       "trow": {
-        "endDate": "No filled",
-        "estimatedYield": "No filled",
-        "actualYield": "No filled",
-        "status": "No filled",
-        "field": {
-          "area": "No filled"
-        }
+        "endDate": "Not finished",
+        "estimatedYield": "Not filled",
+        "actualYield": "Not filled"
       }
     },
     "search": {
@@ -3539,20 +3714,27 @@
         "title": "Edit crop",
         "description": "Update information of crop"
       },
+      "editLearnedLessons": {
+        "label": "Edit learned lessons",
+        "title": "Edit crop learned lessons",
+        "description": "Update learned lessons of crop"
+      },
       "destroy": {
         "label": "Delete crop",
         "title": "Delete crop?",
-        "description": "Crop can only delete when no activities. This action cannot be undone!"
+        "description": "This action cannot be undone!"
       },
       "finish": {
         "label": "Finish crop",
         "title": "Finish crop?",
-        "description": "After finish crop, this crop cannot update anymore. This action cannot be undone!"
+        "description": "This action cannot be undone!"
       }
     },
     "schema": {
       "errors": {
-        "parse": "Invalid crops!"
+        "parse": "Invalid crops!",
+        "cropUpdateStatusFinish": "Crop has already finish or some activities in crop are not completed",
+        "endDateInValid": "End date is invalid, start date crop value after current date"
       },
       "name": {
         "label": "Crop name",
@@ -3618,6 +3800,11 @@
           "FINISH": "Finish",
           "default": "No selected"
         }
+      },
+      "learnedLessons": {
+        "label": "Crop learned lessons",
+        "placeholder": "Learned lessons",
+        "max": "Name's length must be less than {max} characters"
       }
     },
     "status": {
@@ -3625,19 +3812,154 @@
         "create": "Crop created!",
         "edit": "Crop edited!",
         "destroy": "Crop deleted!",
-        "finish": "Crop finished!"
+        "finish": "Crop finished!",
+        "editLearnedLessons": "Learned lessons edited!"
       },
       "failure": {
         "create": "Something went wrong while creating crop!",
         "edit": "Something went wrong while editing crop!",
         "destroy": "Something went wrong while deleting crop!",
-        "finish": "Crop finish fail!"
+        "finish": "Crop finish fail!",
+        "editLearnedLessons": "Crop learned lessons update fail!"
       }
     },
     "notFound": {
       "title": "Crop not found",
       "description": "Sorry, we couldn’t find the crop you’re looking for.",
       "backLabel": "Go to crops page"
+    },
+    "danger": {
+      "finish": {
+        "title": "Finish crop",
+        "description": {
+          "note": "Please read all alert messages before finish crop",
+          "learnedLessons": "If no filled learned lessons, please fill it before finish crop",
+          "activityComplete": "ALL activity in crop must be COMPLETED status",
+          "endDateValid": "End date crop must be AFTER start date crop",
+          "endDate": "If no end date crop value, current date will be updated",
+          "actualYield": "If no actual yield value, estimated yield value will be updated",
+          "finish": "After FINISH crop, this crop CANNOT update anymore!!!"
+        }
+      },
+      "destroy": {
+        "title": "Delete crop",
+        "description": {
+          "cropFinish": "Crop CANNOT delete when crop is FINISH status",
+          "activityCount": "Crop ONLY can delete when no activities in crop"
+        }
+      }
+    }
+  },
+  "salaries": {
+    "page": {
+      "title": "Staff salaries",
+      "detail": {
+        "title": "Staff salary detail"
+      }
+    },
+    "search": {
+      "placeholder": "Search by staff name...",
+      "detail": {
+        "placeholder": "Search by activity name..."
+      }
+    },
+    "table": {
+      "title": "All staff salaries",
+      "thead": {
+        "staff": "Staff",
+        "address": "Address",
+        "phone": "Phone number",
+        "baseHourlyWage": "Base hourly wage",
+        "_count": {
+          "activityAssigned": "Activity participant"
+        },
+        "totalHourlyWork": "Total hourly work",
+        "salary": "Salary"
+      },
+      "trow": {
+        "baseHourlyWage": "Not filled",
+        "address": "Not filled",
+        "phone": "Not filled"
+      },
+      "tfooter": {
+        "total": "Total staff salary"
+      },
+      "detail": {
+        "title": "Staff salary detail",
+        "thead": {
+          "staff": "Staff",
+          "name": "Activity name",
+          "status": "Status",
+          "priority": "Priority",
+          "activityDate": "Activity date",
+          "assignedAt": "Assigned date",
+          "hourlyWage": "Hourly wage",
+          "actualWork": "Hourly work",
+          "actualCost": "Salary"
+        },
+        "trow": {
+          "actualWork": "Not filled",
+          "hourlyWage": "Not filled"
+        }
+      }
+    },
+    "chart": {
+      "totalSalary": {
+        "title": "Total staff salaries in 3 latest month",
+        "fields": {
+          "totalSalary": "Salary"
+        },
+        "error": {
+          "title": "Refresh",
+          "description": "Something went wrong when load salaries"
+        },
+        "notFound": {
+          "title": "No salaries data for generate chart",
+          "description": ""
+        }
+      },
+      "totalHourlyWork": {
+        "title": "Total staff hourly work in 3 latest month",
+        "fields": {
+          "totalHourlyWork": "Hourly work"
+        },
+        "error": {
+          "title": "Refresh",
+          "description": "Something went wrong when load hourly work"
+        },
+        "notFound": {
+          "title": "No hourly work data for generate chart",
+          "description": ""
+        }
+      },
+      "salaryDetail": {
+        "title": "Staff salary in 3 latest month",
+        "fields": {
+          "totalSalary": "Salary"
+        },
+        "error": {
+          "title": "Refresh",
+          "description": "  Something went wrong when load salaries"
+        },
+        "notFound": {
+          "title": "No salaries data for generate chart",
+          "description": ""
+        }
+      },
+      "hourlyWorkDetail": {
+        "title": "Staff hourly work in 3 latest month",
+        "fields": {
+          "totalHourlyWork": "Hourly work"
+        },
+        "error": {
+          "title": "Refresh",
+          "description": "Something went wrong when load hourly work"
+        },
+        "notFound": {
+          "title": "No hourly work data for generate chart",
+          "description": ""
+        }
+      }
     }
   },
   "tasks": {
@@ -3691,12 +4013,12 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete task?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "destroyMany": {
         "label": "Delete all",
         "title": "Delete all selected tasks?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "destroyUnusedUnit": {
         "label": "Delete unit task",
@@ -3804,7 +4126,7 @@
       "destroy": {
         "label": "Delete",
         "title": "Delete schedule?",
-        "description": "Are you absolutely sure? This action can not be undone!"
+        "description": "This action can not be undone!"
       },
       "destroyUnusedUnit": {
         "label": "Delete unit schedule",
@@ -4048,6 +4370,7 @@
     "/admin/organizations/detail/files": "Uploaded files",
     "/admin/fields": "Field",
     "/admin/fields/detail": "Detail",
+    "/admin/fields/detail/locations": "Locations",
     "/admin/fields/detail/danger": "Danger",
     "/admin/fields/detail/weathers": "Weathers",
     "/admin/fields/detail/soils": "Soils",
@@ -4079,6 +4402,7 @@
     "/admin/crops/detail/activities/detail/material-usages": "Material usages",
     "/admin/crops/detail/activities/detail/equipment-usages": "Equipment usages",
     "/admin/crops/detail/activities/detail/danger": "Activity Danger",
+    "/admin/crops/detail/learned-lessons": "Learned lessons",
     "/admin/crops/detail/danger": "Crop danger",
     "/admin/activities": "Activities",
     "/admin/activities/create": "Create",
@@ -4087,6 +4411,11 @@
     "/admin/activities/detail/equipment-usages": "Equipment Usages",
     "/admin/activities/detail/material-usages": "Material Usages",
     "/admin/activities/detail/danger": "Danger",
+
+    "/admin/salaries": "Salaries",
+    "/admin/salaries/detail": "Staff salaries detail",
+    "/admin/material-cost": "Total material cost",
+    "/admin/equipment-cost": "Total equipment cost",
 
     "/admin/tasks": "Tasks",
     "/admin/schedules": "Schedules",
@@ -4098,6 +4427,7 @@
 
     "/farmer": "Farmer",
     "/farmer/staffs": "Staffs",
+    "/farmer/salaries": "Salaries",
 
     "/farmer/organizations": "Organization",
     "/farmer/organizations/detail": "Detail",
@@ -4141,6 +4471,11 @@
     "dashboard": "Dashboard",
     "activities": "Activities",
     "crops": "Crops",
+    "cost": "Cost",
+    "salaries": "Salaries",
+    "material-cost": "Material cost",
+    "equipment-cost": "Equipment cost",
+
     "users": "Users",
     "staffs": "Staffs",
     "organizations": "Organizations",
@@ -4160,5 +4495,12 @@
     "my-files": "My Files",
     "public-files": "Public Files",
     "my-trash": "My trash"
+  },
+  "command-menu": {
+    "title": "Search features...",
+    "label": "Search...",
+    "notFound": "No results found.",
+    "placeholder": "Type a command or search...",
+    "suggestionsGroup": "Suggestions"
   }
 }

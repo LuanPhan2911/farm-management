@@ -32,7 +32,7 @@ const ActivityEquipmentUsagesPage = async ({
   const t = await getTranslations("activities.page.detail.equipment-usages");
   const { query, orderBy } = searchParams;
 
-  const { data, totalCost } = await getEquipmentUsagesByActivity({
+  const data = await getEquipmentUsagesByActivity({
     activityId: params.activityId,
     orderBy,
     query,
@@ -52,11 +52,7 @@ const ActivityEquipmentUsagesPage = async ({
         <div className="flex justify-end">
           <EquipmentUsageCreateButton disabled={!canEdit} />
         </div>
-        <ActivityEquipmentUsagesTable
-          data={data}
-          totalCost={totalCost}
-          disabled={!canEdit}
-        />
+        <ActivityEquipmentUsagesTable data={data} disabled={!canEdit} />
       </CardContent>
     </Card>
   );

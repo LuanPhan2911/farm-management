@@ -1,7 +1,7 @@
 "use client";
 
 import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
-import { ReactNode, useContext } from "react";
+import { ReactNode } from "react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
   NameType,
@@ -19,7 +19,13 @@ import {
   ChartTooltipContent,
 } from "../ui/chart";
 import { Skeleton } from "../ui/skeleton";
-import { ChartContext } from "./chart-wrapper";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
 
 interface BarChartContentProps<T extends Record<string, any>> {
   data: T[] | undefined;
@@ -30,35 +36,29 @@ interface BarChartContentProps<T extends Record<string, any>> {
   ) => Promise<QueryObserverResult<T[], Error>>;
 
   chartConfig: ChartConfig;
+  xAxisKey: keyof T;
   chartData: (data: T[]) => any[] | undefined;
-  XAxisKey: keyof T;
   t: (key: string, object?: Record<string, any>) => string;
   tickFormatter?: ((value: any, index: number) => string) | undefined;
   labelFormatter?:
     | ((label: any, payload: Payload<ValueType, NameType>[]) => ReactNode)
     | undefined;
+  description?: string | null;
+  layout?: "horizontal" | "vertical";
 }
 export const BarChartContent = <T extends Record<string, any>>({
   data,
   isError,
   isPending,
-  t,
   chartConfig,
-  refetch,
-  XAxisKey,
+  xAxisKey,
   tickFormatter,
   labelFormatter,
   chartData,
+  refetch,
+  t,
+  description,
 }: BarChartContentProps<T>) => {
-  const { isShown } = useContext(ChartContext);
-  if (!isShown) {
-    return (
-      <LargeCard
-        title={t("hidden.title")}
-        description={t("hidden.description")}
-      />
-    );
-  }
   if (isPending) {
     return <Skeleton className="w-full min-h-[200px]"></Skeleton>;
   }
@@ -80,11 +80,46 @@ export const BarChartContent = <T extends Record<string, any>>({
   }
 
   return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-md font-semibold">{t("title")}</CardTitle>
+        <CardDescription>{description}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <HorizonBarChart
+          axisKey={xAxisKey as string}
+          chartConfig={chartConfig}
+          data={chartData(data)}
+          labelFormatter={labelFormatter}
+          tickFormatter={tickFormatter}
+        />
+      </CardContent>
+    </Card>
+  );
+};
+
+interface BarChartProps {
+  chartConfig: ChartConfig;
+  data: any[] | undefined;
+  tickFormatter?: ((value: any, index: number) => string) | undefined;
+  labelFormatter?:
+    | ((label: any, payload: Payload<ValueType, NameType>[]) => ReactNode)
+    | undefined;
+  axisKey: string;
+}
+const HorizonBarChart = ({
+  chartConfig,
+  axisKey,
+  data,
+  labelFormatter,
+  tickFormatter,
+}: BarChartProps) => {
+  return (
     <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-      <BarChart accessibilityLayer data={chartData(data)}>
+      <BarChart accessibilityLayer data={data} layout="horizontal">
         <CartesianGrid vertical={false} />
         <XAxis
-          dataKey={XAxisKey as string}
+          dataKey={axisKey}
           tickLine={false}
           tickMargin={10}
           axisLine={false}
@@ -92,8 +127,9 @@ export const BarChartContent = <T extends Record<string, any>>({
         />
         <YAxis />
         <ChartTooltip
-          content={<ChartTooltipContent />}
+          content={<ChartTooltipContent indicator="line" />}
           labelFormatter={labelFormatter}
+          cursor={false}
         />
         <ChartLegend content={<ChartLegendContent />} />
         {Object.keys(chartConfig).map((key) => {

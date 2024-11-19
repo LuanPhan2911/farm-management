@@ -20,6 +20,10 @@ import { SearchBar } from "@/components/search-bar";
 import { useSearchParams } from "next/navigation";
 import { includeString } from "@/lib/utils";
 import { useDialog } from "@/stores/use-dialog";
+import {
+  PesticideToxicLevelValue,
+  PesticideTypeValue,
+} from "./pesticide-status-value";
 
 interface PesticidesTableProps {
   data: PesticideTable[];
@@ -47,12 +51,10 @@ export const PesticidesTable = ({ data, totalPage }: PesticidesTableProps) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>
+            <TableHead className="min-w-[200px]">
               <OrderByButton column="name" label={t("table.thead.name")} />
             </TableHead>
-            <TableHead>
-              <OrderByButton column="type" label={t("table.thead.type")} />
-            </TableHead>
+            <TableHead>{t("table.thead.type")}</TableHead>
             <TableHead>{t("table.thead.toxicityLevel")}</TableHead>
             <TableHead>{t("table.thead.applicationMethod")}</TableHead>
             <TableHead>{t("table.thead.manufacturer")}</TableHead>
@@ -69,14 +71,12 @@ export const PesticidesTable = ({ data, totalPage }: PesticidesTableProps) => {
               >
                 <TableCell>{item.name}</TableCell>
                 <TableCell>
-                  {item.type
-                    ? t(`schema.type.options.${item.type}`)
-                    : t("table.trow.type")}
+                  <PesticideTypeValue value={item.type || undefined} />
                 </TableCell>
                 <TableCell>
-                  {item.toxicityLevel
-                    ? t(`schema.toxicityLevel.options.${item.toxicityLevel}`)
-                    : t("table.trow.toxicityLevel")}
+                  <PesticideToxicLevelValue
+                    value={item.toxicityLevel || undefined}
+                  />
                 </TableCell>
                 <TableCell>
                   {item.applicationMethod

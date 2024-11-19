@@ -64,6 +64,7 @@ export const ActivityCreateButton = ({
       activityDate: new Date(),
       estimatedDuration: 1,
       cropId: params.cropId,
+      assignedTo: [],
     },
   });
   const onSubmit = (values: z.infer<typeof formSchema>) => {
@@ -174,6 +175,7 @@ export const ActivityCreateButton = ({
                     <FormLabel>{tSchema("cropId.label")}</FormLabel>
                     <FormControl>
                       <CropsSelect
+                        orgId={orgId || undefined}
                         defaultValue={field.value}
                         onChange={field.onChange}
                         error={tSchema("cropId.error")}
@@ -197,7 +199,7 @@ export const ActivityCreateButton = ({
                       <StaffsSelectMultiple
                         orgId={orgId}
                         onChange={field.onChange}
-                        defaultValue={field.value}
+                        defaultValue={field.value || undefined}
                         error={tSchema("assignedTo.error")}
                         placeholder={tSchema("assignedTo.placeholder")}
                         notFound={tSchema("assignedTo.notFound")}
@@ -229,10 +231,7 @@ export const ActivityCreateButton = ({
                         })}
                         defaultValue={field.value}
                         disabled={isPending || !canCreate}
-                        disabledValues={[
-                          ActivityStatus.CANCELLED,
-                          ActivityStatus.COMPLETED,
-                        ]}
+                        disabledValues={[ActivityStatus.COMPLETED]}
                       />
                     </FormControl>
 

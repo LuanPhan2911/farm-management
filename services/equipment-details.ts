@@ -1,11 +1,14 @@
 import { db } from "@/lib/db";
 import {
-  EquipmentDetailSelectWithEquipmentAndUnit,
+  EquipmentDetailSelectWithUnit,
   EquipmentDetailTable,
+  EquipmentDetailUsageCost,
 } from "@/types";
 import { EquipmentStatus } from "@prisma/client";
 import { equipmentSelect } from "./equipments";
 import { unitSelect } from "./units";
+import { activitySelect } from "./activities";
+import _ from "lodash";
 
 type EquipmentDetailParams = {
   equipmentId: string;
@@ -127,7 +130,7 @@ export const getEquipmentDetailById = async (
 
 export const getEquipmentDetailsSelect = async (
   defaultId?: string
-): Promise<EquipmentDetailSelectWithEquipmentAndUnit[]> => {
+): Promise<EquipmentDetailSelectWithUnit[]> => {
   try {
     return await db.equipmentDetail.findMany({
       where: {
@@ -190,4 +193,107 @@ export const maintainEquipmentDetail = async () => {
 
   // Await all updates
   return await Promise.all(updatePromises);
+};
+
+type EquipmentDetailUsageCostQuery = {
+  begin?: Date;
+  end?: Date;
+};
+export const getEquipmentDetailUsageCost = async ({
+  begin,
+  end,
+}: EquipmentDetailUsageCostQuery): Promise<EquipmentDetailUsageCost[]> => {
+  try {
+    if (!begin || !end) {
+      throw new Error("Missing begin and end date");
+    }
+    const equipmentDetails = await db.equipmentDetail.findMany({
+      where: {
+        equipmentUsages: {
+          some: {
+            activity: {
+              status: "COMPLETED",
+              activityDate: {
+                gte: begin,
+                lte: end,
+              },
+            },
+          },
+        },
+      },
+      include: {
+        _count: {
+          select: {
+            equipmentUsages: true,
+          },
+        },
+        equipment: {
+          select: {
+            ...equipmentSelect,
+          },
+        },
+        equipmentUsages: {
+          include: {
+            activity: {
+              select: {
+                ...activitySelect,
+              },
+            },
+          },
+        },
+        unit: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    const equipmentDetailWithCost = equipmentDetails.map((equipment) => {
+      const { equipmentUsages } = equipment;
+      return {
+        ...equipment,
+        totalCost: _.sumBy(
+          equipmentUsages,
+          ({ activity, fuelPrice, fuelConsumption, rentalPrice }) => {
+            if (
+              !activity ||
+              activity.status !== "COMPLETED" ||
+              fuelConsumption === null ||
+              fuelPrice === null
+            ) {
+              return 0;
+            }
+            if (rentalPrice === null) {
+              return fuelConsumption * fuelPrice;
+            }
+            return rentalPrice + fuelConsumption * fuelPrice;
+          }
+        ),
+        totalFuelConsumption: _.sumBy(equipmentUsages, (item) => {
+          if (
+            !item.activity ||
+            item.activity.status !== "COMPLETED" ||
+            item.fuelConsumption === null
+          ) {
+            return 0;
+          }
+          return item.fuelConsumption;
+        }),
+        totalRentalPrice: _.sumBy(equipmentUsages, (item) => {
+          if (
+            !item.activity ||
+            item.activity.status !== "COMPLETED" ||
+            item.rentalPrice === null
+          ) {
+            return 0;
+          }
+          return item.rentalPrice;
+        }),
+      };
+    });
+    return equipmentDetailWithCost;
+  } catch (error) {
+    return [];
+  }
 };

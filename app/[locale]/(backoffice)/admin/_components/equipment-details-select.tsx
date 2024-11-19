@@ -3,7 +3,7 @@ import {
   ComboBoxCustomAppearance,
 } from "@/components/form/combo-box";
 import { SelectItemContent } from "@/components/form/select-item";
-import { EquipmentDetailSelectWithEquipmentAndUnit } from "@/types";
+import { EquipmentDetailSelectWithUnit } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { EquipmentDetailStatusValue } from "../(inventory)/equipments/detail/[equipmentId]/_components/equipment-detail-status-value";
@@ -17,7 +17,7 @@ interface EquipmentDetailsSelectProps {
   notFound: string;
   error: string;
   appearance?: ComboBoxCustomAppearance;
-  onSelected?: (value: EquipmentDetailSelectWithEquipmentAndUnit) => void;
+  onSelected?: (value: EquipmentDetailSelectWithUnit) => void;
 }
 export const EquipmentDetailsSelect = (props: EquipmentDetailsSelectProps) => {
   const { onSelected, defaultValue } = props;
@@ -37,7 +37,7 @@ export const EquipmentDetailsSelect = (props: EquipmentDetailsSelectProps) => {
         }
       );
       const res = await fetch(url);
-      return (await res.json()) as EquipmentDetailSelectWithEquipmentAndUnit[];
+      return (await res.json()) as EquipmentDetailSelectWithUnit[];
     },
   });
 

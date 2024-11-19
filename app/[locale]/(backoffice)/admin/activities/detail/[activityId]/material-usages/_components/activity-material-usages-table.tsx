@@ -13,7 +13,6 @@ import { useFormatter, useTranslations } from "next-intl";
 import { MaterialUsageTable, MaterialUsageTableWithCost } from "@/types";
 import { OrderByButton } from "@/components/buttons/order-by-button";
 import { SearchBar } from "@/components/search-bar";
-import { useDialog } from "@/stores/use-dialog";
 
 import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-with-value";
 import { UsageStatusValue } from "@/components/usage-status-value";
@@ -22,32 +21,29 @@ import { MaterialTypeValue } from "@/app/[locale]/(backoffice)/admin/(inventory)
 import { MaterialUsagesTableAction } from "@/app/[locale]/(backoffice)/admin/(inventory)/materials/detail/[materialId]/usages/_components/material-usages-table-action";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
+import { SelectItemContent } from "@/components/form/select-item";
+import _ from "lodash";
 
 interface ActivityMaterialUsagesTableProps {
   data: MaterialUsageTableWithCost[];
-  totalCost: number;
+
   disabled?: boolean;
 }
 export const ActivityMaterialUsagesTable = ({
   data,
-  totalCost,
   disabled,
 }: ActivityMaterialUsagesTableProps) => {
-  const { onOpen } = useDialog();
   const t = useTranslations("materialUsages");
   const { dateTime } = useFormatter();
   const { number } = useFormatter();
-  const { isFarmer } = useCurrentStaffRole();
+  const { isFarmer: isHidden } = useCurrentStaffRole();
   const { push } = useRouterWithRole();
+
+  const totalCost = _.sumBy(data, (item) => item.actualCost);
   const handleEdit = (row: MaterialUsageTable) => {
-    if (isFarmer) {
-      push(`materials/detail/${row.materialId}`);
-    }
-    if (!disabled) {
-      onOpen("materialUsage.edit", { materialUsage: row });
-    }
+    push(`materials/detail/${row.materialId}`);
   };
-  const isHidden = isFarmer;
+
   return (
     <>
       <div className="flex flex-col lg:flex-row gap-2 my-2 lg:items-center">
@@ -57,16 +53,15 @@ export const ActivityMaterialUsagesTable = ({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{t("table.thead.activity.usage")}</TableHead>
-            <TableHead>{t("table.thead.createdAt")}</TableHead>
-            <TableHead>{t("table.thead.material.imageUrl")}</TableHead>
-            <TableHead className="w-[200px]">
+            <TableHead>
               <OrderByButton
                 column="material.name"
                 label={t("table.thead.material.name")}
               />
             </TableHead>
+            <TableHead>{t("table.thead.activity.usage")}</TableHead>
             <TableHead>{t("table.thead.material.type")}</TableHead>
+            <TableHead>{t("table.thead.createdAt")}</TableHead>
 
             <TableHead className="text-right">
               {t("table.thead.quantityUsed")}
@@ -94,16 +89,18 @@ export const ActivityMaterialUsagesTable = ({
                 onClick={() => handleEdit(item)}
               >
                 <TableCell>
+                  <SelectItemContent
+                    imageUrl={item.material.imageUrl}
+                    title={item.material.name}
+                  />
+                </TableCell>
+                <TableCell>
                   <UsageStatusValue status={!!item.activityId} />
                 </TableCell>
-                <TableCell>{dateTime(item.createdAt, "long")}</TableCell>
-                <TableCell>
-                  <UserAvatar src={item.material.imageUrl || undefined} />
-                </TableCell>
-                <TableCell>{item.material.name}</TableCell>
                 <TableCell>
                   <MaterialTypeValue value={item.material.type} />
                 </TableCell>
+                <TableCell>{dateTime(item.createdAt, "long")}</TableCell>
 
                 <TableCell className="text-right">
                   <UnitWithValue
@@ -136,7 +133,7 @@ export const ActivityMaterialUsagesTable = ({
         {!isHidden && (
           <TableFooter>
             <TableRow>
-              <TableCell colSpan={7}>{t("table.tfooter.totalCost")}</TableCell>
+              <TableCell colSpan={6}>{t("table.tfooter.totalCost")}</TableCell>
               <TableCell className="text-right">
                 {number(totalCost, "currency")}
               </TableCell>

@@ -6,6 +6,8 @@ import { format, getHours, getMinutes } from "date-fns";
 import slugify from "slugify";
 import { twMerge } from "tailwind-merge";
 import * as cronParser from "cron-parser";
+import _ from "lodash";
+import { LatLngTuple } from "leaflet";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -396,4 +398,35 @@ export function getSlug(value: string | null | undefined) {
     lower: true,
     replacement: "-",
   });
+}
+
+export function dataToChartConfig<T extends Record<string, any>>(
+  data: T[] | undefined,
+  key: keyof T
+) {
+  if (!data) {
+    return {};
+  }
+  return data.reduce((a, b) => {
+    return {
+      ...a,
+      [b[key]]: {
+        color: `hsl(var(--chart-${_.random(1, 5)}))`,
+      },
+    };
+  }, {} as Record<string, any>);
+}
+
+export function getLocationLatLng(
+  latitude: number | null,
+  longitude: number | null
+): LatLngTuple | undefined {
+  if (latitude === null || longitude === null) {
+    return undefined;
+  }
+  return [latitude, longitude];
+}
+
+export function getLatLng(latitude: number, longitude: number): LatLngTuple {
+  return [latitude, longitude];
 }

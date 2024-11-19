@@ -90,3 +90,26 @@ export class ActivityUpdatePermissionError extends Error {
     this.data = data;
   }
 }
+
+export class ActivityUpdateStatusCompletedError extends Error {
+  data?: any;
+  constructor(data?: any, message = "") {
+    super(message);
+    this.data = data;
+  }
+}
+export class CropUpdateStatusFinishError extends Error {
+  data?: any;
+  constructor(data?: any, message = "") {
+    super(message);
+    this.data = data;
+  }
+}
+
+export class CropEndDateInvalidError extends Error {
+  data?: any;
+  constructor(data?: any, message = "") {
+    super(message);
+    this.data = data;
+  }
+}

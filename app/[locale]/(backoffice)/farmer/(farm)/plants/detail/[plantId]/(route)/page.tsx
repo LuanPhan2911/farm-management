@@ -21,14 +21,6 @@ export async function generateMetadata() {
     title: t("title"),
   };
 }
-export async function generateStaticParams() {
-  const plants = await getPlantsSelect();
-  return plants.map((item) => {
-    return {
-      plantId: item.id,
-    };
-  });
-}
 
 const PlantDetailPage = async ({ params }: PlantDetailPageProps) => {
   const data = await getPlantById(params!.plantId);

@@ -9,6 +9,10 @@ import { FertilizersSelect } from "./fertilizers-select";
 import { PesticidesSelect } from "./pesticides-select";
 import { CategoriesSelect } from "./categories-select";
 
+type MaterialSelected = {
+  label: string;
+  value: string;
+};
 interface MaterialNameSelectProps {
   type: MaterialType;
   onChange: (value: string | undefined) => void;
@@ -18,16 +22,44 @@ interface MaterialNameSelectProps {
   notFound: string;
   error: string;
   appearance?: ComboBoxCustomAppearance;
+  onSelected?: (value: MaterialSelected) => void;
 }
 export const MaterialNameSelect = (props: MaterialNameSelectProps) => {
   if (props.type === "FERTILIZER") {
-    return <FertilizersSelect {...props} valueKey="name" />;
+    return (
+      <FertilizersSelect
+        {...props}
+        onSelected={(selected) => {
+          props.onSelected?.({
+            label: selected.name,
+            value: selected.id,
+          });
+        }}
+      />
+    );
   }
   if (props.type === "PESTICIDE") {
-    return <PesticidesSelect {...props} valueKey="name" />;
+    return (
+      <PesticidesSelect
+        {...props}
+        onSelected={(selected) => {
+          props.onSelected?.({
+            label: selected.name,
+            value: selected.id,
+          });
+        }}
+      />
+    );
   }
   if (props.type === "SEED") {
-    return <CategoriesSelect {...props} type="SEED" valueKey="name" />;
+    return (
+      <CategoriesSelect
+        {...props}
+        type="SEED"
+        valueKey="name"
+        defaultValue={undefined}
+      />
+    );
   }
   return (
     <ComboBoxDefault

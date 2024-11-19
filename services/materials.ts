@@ -6,13 +6,24 @@ import {
   getObjectSortOrder,
 } from "@/lib/utils";
 import {
+  MaterialMostUsedChart,
   MaterialSelect,
   MaterialTable,
   MaterialTypeCount,
+  MaterialUsedChart,
+  MaterialWithCost,
   PaginatedResponse,
 } from "@/types";
 import { MaterialType } from "@prisma/client";
 import { materialSelect } from "./material-usages";
+import { activitySelect } from "./activities";
+import _ from "lodash";
+import {
+  addMonths,
+  eachMonthOfInterval,
+  endOfMonth,
+  startOfMonth,
+} from "date-fns";
 
 type MaterialParam = {
   name: string;
@@ -22,6 +33,7 @@ type MaterialParam = {
   description?: string | null;
   imageUrl?: string | null;
   basePrice?: number | null;
+  typeId?: string | null;
 };
 export const createMaterial = async (params: MaterialParam) => {
   return await db.material.create({
@@ -159,6 +171,155 @@ export const getCountMaterialType = async (): Promise<MaterialTypeCount[]> => {
         _count: item._count._all,
       };
     });
+  } catch (error) {
+    return [];
+  }
+};
+
+type MaterialUsageCostQuery = {
+  begin?: Date;
+  end?: Date;
+  query?: string;
+};
+export const getMaterialUsageCost = async ({
+  begin,
+  end,
+  query,
+}: MaterialUsageCostQuery): Promise<MaterialWithCost[]> => {
+  try {
+    if (!begin || !end) {
+      throw new Error("Missing begin and end date");
+    }
+    const materials = await db.material.findMany({
+      where: {
+        name: {
+          contains: query,
+          mode: "insensitive",
+        },
+        materialUsages: {
+          some: {
+            activity: {
+              status: "COMPLETED",
+              activityDate: {
+                gte: begin,
+                lte: end,
+              },
+            },
+          },
+        },
+      },
+      include: {
+        _count: {
+          select: {
+            materialUsages: true,
+          },
+        },
+        materialUsages: {
+          include: {
+            activity: {
+              select: {
+                ...activitySelect,
+              },
+            },
+          },
+        },
+        unit: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    const materialWithCosts: MaterialWithCost[] = materials.map((material) => {
+      const { materialUsages } = material;
+      return {
+        ...material,
+        totalQuantityUsed: _.sumBy(
+          materialUsages,
+          ({ activity, quantityUsed }) => {
+            if (!activity || activity.status !== "COMPLETED") {
+              return 0;
+            }
+            return quantityUsed;
+          }
+        ),
+        totalCost: _.sumBy(
+          materialUsages,
+          ({ activity, actualPrice, quantityUsed }) => {
+            if (
+              !activity ||
+              activity.status !== "COMPLETED" ||
+              actualPrice === null
+            ) {
+              return 0;
+            }
+
+            return quantityUsed * actualPrice;
+          }
+        ),
+      };
+    });
+
+    return materialWithCosts;
+  } catch (error) {
+    return [];
+  }
+};
+
+export const getMaterialUsageCostChart = async (): Promise<
+  MaterialUsedChart[]
+> => {
+  try {
+    const months = eachMonthOfInterval({
+      start: addMonths(new Date(), -2),
+      end: new Date(),
+    });
+    const materialCostEachMonth = await Promise.all(
+      months.map((month) => {
+        return getMaterialUsageCost({
+          begin: startOfMonth(month),
+          end: endOfMonth(month),
+        });
+      })
+    );
+    const materialChart: MaterialUsedChart[] = materialCostEachMonth.map(
+      (materials, index) => {
+        return {
+          month: months[index],
+          totalCost: _.sumBy(materials, (item) => item.totalCost),
+        };
+      }
+    );
+    return materialChart;
+  } catch (error) {
+    return [];
+  }
+};
+
+export const getMaterialMostUsages = async (
+  limit: number = 10
+): Promise<MaterialMostUsedChart[]> => {
+  try {
+    const begin = startOfMonth(new Date());
+    const end = endOfMonth(new Date());
+
+    const materials = await getMaterialUsageCost({
+      begin,
+      end,
+    });
+    const materialCharts: MaterialMostUsedChart[] = materials.map((item) => {
+      return {
+        name: item.name,
+        quantityUsed: item.totalQuantityUsed,
+      };
+    });
+    const sortedMaterialCharts = _.orderBy(
+      materialCharts,
+      (item) => item.quantityUsed,
+      "desc"
+    );
+    return _.take(sortedMaterialCharts, limit);
   } catch (error) {
     return [];
   }

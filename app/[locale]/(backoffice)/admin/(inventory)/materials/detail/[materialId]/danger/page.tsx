@@ -1,18 +1,13 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import { getMaterialById, getMaterialsSelect } from "@/services/materials";
+import { getMaterialById } from "@/services/materials";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/material";
 import { getCurrentStaff } from "@/services/staffs";
 import { isSuperAdmin } from "@/lib/permission";
+import { CustomAlert } from "@/components/cards/custom-alert";
+import { DestroyButtonWithConfirmCode } from "@/components/buttons/destroy-button-with-confirm-code";
 
 interface MaterialDangerPageProps {
   params: {
@@ -26,19 +21,11 @@ export async function generateMetadata() {
   };
 }
 
-export async function generateStaticParams() {
-  const materials = await getMaterialsSelect();
-  return materials.map((item) => {
-    return {
-      materialId: item.id,
-    };
-  });
-}
 const MaterialDangerPage = async ({ params }: MaterialDangerPageProps) => {
   const data = await getMaterialById(params!.materialId);
   const currentStaff = await getCurrentStaff();
 
-  const t = await getTranslations("materials.form");
+  const t = await getTranslations("materials.danger");
   if (!data || !currentStaff) {
     notFound();
   }
@@ -48,15 +35,23 @@ const MaterialDangerPage = async ({ params }: MaterialDangerPageProps) => {
     <Card>
       <CardHeader>
         <CardTitle>{t("destroy.title")}</CardTitle>
-        <CardDescription>{t("destroy.description")}</CardDescription>
       </CardHeader>
       <CardContent>
-        <DestroyButton
+        <CustomAlert
+          variant={"info"}
+          description={t("destroy.description.canDelete")}
+        />
+        <CustomAlert
+          variant={"destructive"}
+          description={t("destroy.description.deleteWhen")}
+        />
+        <DestroyButtonWithConfirmCode
           destroyFn={destroy}
           id={data.id}
           inltKey="materials"
           redirectHref="materials"
           disabled={!canDelete}
+          confirmCode="DELETE_MATERIAL"
         />
       </CardContent>
     </Card>
