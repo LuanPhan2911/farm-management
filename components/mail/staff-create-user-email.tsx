@@ -11,23 +11,26 @@ import {
 } from "@react-email/components";
 
 import { siteConfig } from "@/configs/siteConfig";
+import { dateToString } from "@/lib/utils";
+import { format } from "date-fns";
 
 interface StaffCreateUserEmailProps {
   senderName: string;
   receiveName: string;
-  title: string;
+
   email: string;
   password: string;
+  startToWorkDate: Date;
 }
 
 const baseUrl = process.env.APP_BASE_URL ? `${process.env.APP_BASE_URL}` : "";
 
 export const StaffCreateUserEmail = ({
-  title,
   receiveName,
   senderName,
   email,
   password,
+  startToWorkDate,
 }: StaffCreateUserEmailProps) => {
   return (
     <Html>
@@ -49,21 +52,20 @@ export const StaffCreateUserEmail = ({
             <Text className="text-md m-1">
               Bạn có thể đăng nhập vào website của chúng tôi bằng địa chỉ email:
               <span className="font-semibold">{email}</span>. Mật khẩu đăng nhập
-              là:
-              <span className="font-semibold">{password}</span>
+              là: <span className="font-semibold"> {password}</span>
             </Text>
             <Text className="text-md m-1">
               Sau khi đăng nhập thành công, vui lòng đổi mật khẩu để đảm bảo an
               toàn bảo mật.
             </Text>
-            <Container className="flex justify-center items-center">
-              <Button
-                className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700"
-                href={baseUrl}
-              >
-                Get started
-              </Button>
-            </Container>
+            <Text className="text-md m-1">
+              Bạn sẽ bắt đầu làm việc vào ngày:
+              <span className="font-semibold">
+                {" "}
+                {format(startToWorkDate, "dd/MM/yyyy")}
+              </span>
+            </Text>
+
             <Text className="text-md m-1">
               Trân trọng,
               <br />

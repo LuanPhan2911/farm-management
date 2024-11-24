@@ -346,6 +346,11 @@ export const StaffSchema = (
       required: false,
     }).nullish(),
 
+    startToWorkDate: z.date({
+      invalid_type_error: t("startToWorkDate.invalid_type_error"),
+      required_error: t("startToWorkDate.required_error"),
+    }),
+
     receiverEmail: stringSchema(t, "receiverEmail", {
       max: 255,
       required: false,

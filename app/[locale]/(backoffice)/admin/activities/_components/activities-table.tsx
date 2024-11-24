@@ -19,10 +19,7 @@ import { SearchBar } from "@/components/search-bar";
 import { ActivityStatusValue } from "./activity-status-value";
 import { ActivityPriorityValue } from "./activity-priority-value";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
-import {
-  SelectItemContent,
-  SelectItemContentWithoutImage,
-} from "@/components/form/select-item";
+import { SelectItemContent } from "@/components/form/select-item";
 import {
   ActivitiesSelectCreatedBy,
   ActivitiesTableFaceted,
@@ -54,13 +51,7 @@ export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
             <TableHead>
               <OrderByButton column="name" label={t("table.thead.name")} />
             </TableHead>
-            <TableHead>
-              <OrderByButton
-                column="activityDate"
-                label={t("table.thead.activityDate")}
-                defaultValue="desc"
-              />
-            </TableHead>
+            <TableHead>{t("table.thead.activityDate")}</TableHead>
 
             <TableHead>{t("table.thead.status")}</TableHead>
             <TableHead>{t("table.thead.priority")}</TableHead>

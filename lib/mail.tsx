@@ -4,7 +4,6 @@ import { render } from "@react-email/components";
 
 import { JobApplyEmail } from "@/components/mail/job-apply-email";
 import nodemailer from "nodemailer";
-import { currentUser } from "@clerk/nextjs/server";
 import { ApplicantCreateUserEmail } from "@/components/mail/applicant-create-user-email";
 import { StaffCreateUserEmail } from "@/components/mail/staff-create-user-email";
 import { EmailTemplate } from "@/components/mail/email-template";
@@ -19,77 +18,77 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+type ApplicantApply = {
+  jobName: string;
+  name: string;
+};
 export const sendApplicantApply = async (
-  applicant: Applicant & {
-    job: {
-      name: string;
-    };
-  }
+  receiverEmail: string,
+  { jobName, name }: ApplicantApply
 ) => {
-  const user = await currentUser();
   await transporter.sendMail({
     from: `${siteConfig.name} <${process.env.GOOGLE_APP_ACCOUNT}>`,
-    to: [applicant.email],
+    to: [receiverEmail],
     subject: "Thông báo nhận được đơn xin việc của bạn",
     html: render(
       <JobApplyEmail
-        jobTitle={applicant.job.name}
-        receiveName={applicant.name}
-        senderName={user?.fullName || "Quản lý nhân sự"}
+        jobTitle={jobName}
+        receiveName={name}
+        senderName={"Quản lý nhân sự"}
       />
     ),
   });
 };
 
+type ApplicantCreateUser = {
+  jobName: string;
+  name: string;
+  email: string;
+  password: string;
+  startToWorkDate: Date;
+};
 export const sendApplicantCreateUser = async (
-  applicant: Applicant & {
-    job: {
-      name: string;
-    };
-  },
-  email: string,
-  password: string
+  receiverEmail: string,
+  { email, jobName, password, name, startToWorkDate }: ApplicantCreateUser
 ) => {
-  const user = await currentUser();
   await transporter.sendMail({
     from: `${siteConfig.name} <${process.env.GOOGLE_APP_ACCOUNT}>`,
-    to: [applicant.email],
+    to: [receiverEmail],
     subject: "Xin chúc mừng bạn đã trúng tuyển!",
     html: render(
       <ApplicantCreateUserEmail
-        jobTitle={applicant.job.name}
+        jobTitle={jobName}
         email={email}
         password={password}
-        receiveName={applicant.name}
-        senderName={user?.fullName || "Quản lý nhân sự"}
+        receiveName={name}
+        startToWorkDate={startToWorkDate}
+        senderName={"Quản lý nhân sự"}
       />
     ),
   });
 };
+
+type StaffCreateUserEmail = {
+  name: string;
+  email: string;
+  password: string;
+  startToWorkDate: Date;
+};
 export const sendStaffCreateUser = async (
   receiverEmail: string,
-  {
-    email,
-    password,
-    name,
-  }: {
-    name: string;
-    email: string;
-    password: string;
-  }
+  { email, password, name, startToWorkDate }: StaffCreateUserEmail
 ) => {
-  const user = await currentUser();
   await transporter.sendMail({
     from: `${siteConfig.name} <${process.env.GOOGLE_APP_ACCOUNT}>`,
     to: [receiverEmail],
     subject: "Xin chúc mừng bạn đã trúng tuyển!",
     html: render(
       <StaffCreateUserEmail
-        title="Email"
+        receiveName={name}
+        senderName={"Quản lý nhân sự"}
         email={email}
         password={password}
-        receiveName={name}
-        senderName={user?.fullName || "Quản lý nhân sự"}
+        startToWorkDate={startToWorkDate}
       />
     ),
   });

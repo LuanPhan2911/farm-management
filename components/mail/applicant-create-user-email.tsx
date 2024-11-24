@@ -11,6 +11,7 @@ import {
 } from "@react-email/components";
 
 import { siteConfig } from "@/configs/siteConfig";
+import { format } from "date-fns";
 
 interface ApplicantCreateUserEmailProps {
   senderName: string;
@@ -18,6 +19,7 @@ interface ApplicantCreateUserEmailProps {
   jobTitle: string;
   email: string;
   password: string;
+  startToWorkDate: Date;
 }
 
 const baseUrl = process.env.APP_BASE_URL ? `${process.env.APP_BASE_URL}` : "";
@@ -28,6 +30,7 @@ export const ApplicantCreateUserEmail = ({
   senderName,
   email,
   password,
+  startToWorkDate,
 }: ApplicantCreateUserEmailProps) => {
   return (
     <Html>
@@ -64,14 +67,14 @@ export const ApplicantCreateUserEmail = ({
               Sau khi đăng nhập thành công, vui lòng đổi mật khẩu để đảm bảo an
               toàn bảo mật.
             </Text>
-            <Container className="flex justify-center items-center">
-              <Button
-                className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700"
-                href={baseUrl}
-              >
-                Get started
-              </Button>
-            </Container>
+            <Text className="text-md m-1">
+              Bạn sẽ bắt đầu làm việc vào ngày:
+              <span className="font-semibold">
+                {" "}
+                {format(startToWorkDate, "dd/MM/yyyy")}
+              </span>
+            </Text>
+
             <Text className="text-md m-1">
               Trân trọng,
               <br />

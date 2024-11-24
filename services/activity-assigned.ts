@@ -297,6 +297,7 @@ export const getStaffSalaryByStaffId = async ({
             gte: begin,
             lte: end,
           },
+          status: "COMPLETED",
           name: {
             contains: query,
             mode: "insensitive",
@@ -309,6 +310,7 @@ export const getStaffSalaryByStaffId = async ({
             ...activitySelect,
           },
         },
+
         staff: true,
       },
       orderBy: [
@@ -321,11 +323,7 @@ export const getStaffSalaryByStaffId = async ({
     });
     const activityAssignedWithCost: StaffWithSalaryAndActivity[] =
       activityAssigned.map((item) => {
-        if (
-          item.actualWork === null ||
-          item.hourlyWage === null ||
-          item.activity.status !== "COMPLETED"
-        ) {
+        if (item.actualWork === null || item.hourlyWage === null) {
           return {
             ...item,
             actualCost: 0,

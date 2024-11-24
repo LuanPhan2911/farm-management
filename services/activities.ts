@@ -350,7 +350,12 @@ export const getActivities = async ({
           ...(filterString && getObjectFilterString(filterString)),
           ...(filterNumber && getObjectFilterNumber(filterNumber)),
         },
-        orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
+        orderBy: [
+          {
+            activityDate: "desc",
+          },
+          ...(orderBy ? getObjectSortOrder(orderBy) : []),
+        ],
         include: {
           createdBy: true,
           crop: {

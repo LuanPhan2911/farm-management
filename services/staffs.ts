@@ -16,6 +16,7 @@ type StaffParams = {
   baseHourlyWage?: number | null;
   address?: string | null;
   phone?: string | null;
+  startToWorkDate?: Date;
 };
 export const createStaff = async (externalId: string, params: StaffParams) => {
   const staff = await db.staff.create({
@@ -26,8 +27,19 @@ export const createStaff = async (externalId: string, params: StaffParams) => {
   });
   return staff;
 };
-
-export const upsertStaff = async (externalId: string, params: StaffParams) => {
+type StaffUpdateParams = {
+  email: string;
+  name: string;
+  role: StaffRole;
+  imageUrl?: string | null;
+  baseHourlyWage?: number | null;
+  address?: string | null;
+  phone?: string | null;
+};
+export const upsertStaff = async (
+  externalId: string,
+  params: StaffUpdateParams
+) => {
   return await db.staff.upsert({
     where: { externalId },
     update: {
@@ -39,17 +51,18 @@ export const upsertStaff = async (externalId: string, params: StaffParams) => {
     },
   });
 };
-export const updateStaff = async (id: string, params: StaffParams) => {
-  const { email, ...other } = params;
+
+export const updateStaff = async (id: string, params: StaffUpdateParams) => {
   return await db.staff.update({
     where: {
       id,
     },
     data: {
-      ...other,
+      ...params,
     },
   });
 };
+
 export const deleteStaff = async (externalId: string) => {
   const staff = await db.staff.delete({
     where: {

@@ -728,6 +728,7 @@
         "address": "Address",
         "baseHourlyWage": "Hourly wage",
         "createdAt": "CreateAt",
+        "startToWorkDate": "Start to work",
         "assignedAt": "AssignedAt",
         "actualWork": "Actual work",
         "hourlyWage": "Actual hourly wage"
@@ -827,10 +828,16 @@
         "min": "Address is required!",
         "max": "Address's length must be less than {max} characters"
       },
+      "startToWorkDate": {
+        "label": "Start to work",
+        "placeholder": "Select date...",
+        "invalid_type_error": "Value select must be date",
+        "required_error": "Start to work date is required"
+      },
       "receiverEmail": {
-        "label": "Applicant email",
-        "placeholder": "Applicant email",
-        "max": "Applicant email's length must be less than {max} characters"
+        "label": "Send notify to email",
+        "placeholder": "Notified email",
+        "max": "Notified email's length must be less than {max} characters"
       }
     },
     "status": {
@@ -1065,7 +1072,7 @@
     },
     "table": {
       "thead": {
-        "name": "Name",
+        "name": "Field",
         "location": "Location",
         "orgId": "Organization",
         "soilType": "Soil type",
@@ -1526,7 +1533,12 @@
       },
       "trow": {
         "confirmedAt": "No confirmed",
-        "confirmedBy": "No confirmed"
+        "confirmedBy": "No confirmed",
+        "ph": "No filled",
+        "moisture": "No filled",
+        "nutrientNitrogen": "No filled",
+        "nutrientPhosphorus": "No filled",
+        "nutrientPotassium": "No filed"
       }
     },
     "chart": {
@@ -1928,14 +1940,16 @@
         "nutrientOfNPK": "Nutrient of NPK ratio",
         "frequencyOfUse": "Frequency of use",
         "applicationMethod": "Application method",
-        "manufacturer": "Manufacturer"
+        "manufacturer": "Manufacturer",
+        "recommendedDosage": "Should used dosage"
       },
       "trow": {
         "manufacturer": "Not filled",
         "applicationMethod": "Not filled",
         "frequencyOfUse": "Not filled",
         "nutrientOfNPK": "Not filled",
-        "type": "No select"
+        "type": "No select",
+        "recommendedDosage": "Not filled"
       }
     },
     "search": {
@@ -2074,13 +2088,15 @@
         "type": "Pesticide type",
         "toxicityLevel": "Toxicity level",
         "applicationMethod": "Application method",
-        "manufacturer": "Manufacturer"
+        "manufacturer": "Manufacturer",
+        "recommendedDosage": "Should used dosage"
       },
       "trow": {
         "type": "No select",
         "toxicityLevel": "No select",
         "manufacturer": "Not filled",
-        "applicationMethod": "Not filled"
+        "applicationMethod": "Not filled",
+        "recommendedDosage": "Not filled"
       }
     },
     "search": {

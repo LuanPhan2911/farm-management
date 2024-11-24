@@ -32,6 +32,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { DatePicker } from "@/components/form/date-picker";
 
 export const StaffCreateButton = () => {
   const [isPending, startTransition] = useTransition();
@@ -43,6 +44,7 @@ export const StaffCreateButton = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       role: "farmer",
+      startToWorkDate: new Date(),
     },
   });
 
@@ -92,7 +94,7 @@ export const StaffCreateButton = () => {
           <DialogDescription>{t("create.description")}</DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
             <div className="grid lg:grid-cols-2 gap-2">
               <FormField
                 control={form.control}
@@ -115,16 +117,16 @@ export const StaffCreateButton = () => {
               />
               <FormField
                 control={form.control}
-                name="email"
+                name="role"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{tSchema("email.label")}</FormLabel>
+                    <FormLabel>{tSchema("role.label")}</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder={tSchema("email.placeholder")}
-                        value={field.value ?? undefined}
+                      <StaffSelectRole
+                        defaultValue={field.value ?? undefined}
                         onChange={field.onChange}
-                        disabled={isPending}
+                        placeholder={tSchema("role.placeholder")}
+                        disabled={!isSuperAdmin}
                       />
                     </FormControl>
 
@@ -136,16 +138,16 @@ export const StaffCreateButton = () => {
             <div className="grid grid-cols-2 gap-2">
               <FormField
                 control={form.control}
-                name="role"
+                name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{tSchema("role.label")}</FormLabel>
+                    <FormLabel>{tSchema("email.label")}</FormLabel>
                     <FormControl>
-                      <StaffSelectRole
-                        defaultValue={field.value ?? undefined}
+                      <Input
+                        placeholder={tSchema("email.placeholder")}
+                        value={field.value ?? undefined}
                         onChange={field.onChange}
-                        placeholder={tSchema("role.placeholder")}
-                        disabled={!isSuperAdmin}
+                        disabled={isPending}
                       />
                     </FormControl>
 
@@ -186,26 +188,6 @@ export const StaffCreateButton = () => {
             <div className="grid grid-cols-2 gap-2">
               <FormField
                 control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{tSchema("phone.label")}</FormLabel>
-
-                    <FormControl>
-                      <Input
-                        placeholder={tSchema("phone.placeholder")}
-                        value={field.value ?? undefined}
-                        onChange={field.onChange}
-                        disabled={isPending}
-                      />
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
                 name="address"
                 render={({ field }) => (
                   <FormItem>
@@ -224,25 +206,19 @@ export const StaffCreateButton = () => {
                   </FormItem>
                 )}
               />
-            </div>
-
-            <div className="grid lg:grid-cols-2 gap-2">
               <FormField
                 control={form.control}
-                name="baseHourlyWage"
+                name="phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{tSchema("baseHourlyWage.label")}</FormLabel>
+                    <FormLabel>{tSchema("phone.label")}</FormLabel>
 
                     <FormControl>
                       <Input
-                        placeholder={tSchema("baseHourlyWage.placeholder")}
+                        placeholder={tSchema("phone.placeholder")}
                         value={field.value ?? undefined}
                         onChange={field.onChange}
                         disabled={isPending}
-                        type="number"
-                        min={0}
-                        max={500_000}
                       />
                     </FormControl>
 
@@ -250,7 +226,31 @@ export const StaffCreateButton = () => {
                   </FormItem>
                 )}
               />
+            </div>
 
+            <div className="grid lg:grid-cols-2 gap-2">
+              <FormField
+                control={form.control}
+                name="startToWorkDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tSchema("startToWorkDate.label")}</FormLabel>
+                    <FormControl>
+                      <DatePicker
+                        placeholder={tSchema("startToWorkDate.placeholder")}
+                        onChange={field.onChange}
+                        value={field.value}
+                        disabledDateRange={{
+                          before: new Date(),
+                        }}
+                        disabled={isPending}
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="receiverEmail"
