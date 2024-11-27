@@ -12,10 +12,15 @@ import {
   addMonths,
   eachMonthOfInterval,
   endOfMonth,
+  format,
   startOfMonth,
 } from "date-fns";
 import { checkRole } from "@/lib/role";
 import { getOrganizationMembership } from "./organizations";
+import { sendActivityAssignEmail, sendSalaryMail } from "@/lib/mail";
+import { cropSelect } from "./crops";
+import { fieldSelect } from "./fields";
+import { getTranslations } from "next-intl/server";
 
 type ActivityAssignedParams = {
   activityId: string;
@@ -41,6 +46,28 @@ export const upsertActivityAssigned = async (
         not: "COMPLETED",
       },
     },
+    select: {
+      name: true,
+      activityDate: true,
+      estimatedDuration: true,
+      actualDuration: true,
+      priority: true,
+      crop: {
+        select: {
+          ...cropSelect,
+          field: {
+            select: {
+              ...fieldSelect,
+            },
+          },
+        },
+      },
+      assignedTo: {
+        include: {
+          staff: true,
+        },
+      },
+    },
   });
   if (!activity) {
     throw new ActivityExistError();
@@ -50,7 +77,8 @@ export const upsertActivityAssigned = async (
       id: { in: assignedTo },
     },
   });
-  return await db.$transaction([
+
+  await db.$transaction([
     db.activityAssigned.createMany({
       data: assignedStaffs.map((staff) => {
         return {
@@ -79,6 +107,29 @@ export const upsertActivityAssigned = async (
       },
     }),
   ]);
+
+  const newAssignedStaffs = _.differenceBy(
+    assignedStaffs,
+    activity.assignedTo.map((item) => item.staff),
+    (staff) => {
+      return staff.id;
+    }
+  );
+
+  sendActivityAssignEmail({
+    staff: newAssignedStaffs.map((item) => {
+      return {
+        activityDate: activity.activityDate,
+        activityDuration: activity.estimatedDuration,
+        activityName: activity.name,
+        email: item.email,
+        receiverName: item.name,
+        fieldLocation: activity.crop.field.location || "NULL",
+        fieldName: activity.crop.field.name,
+      };
+    }),
+    subject: "Thông báo hoạt động được phân công",
+  });
 };
 
 export const deleteActivityAssigned = async ({
@@ -174,6 +225,7 @@ type StaffSalaryQuery = {
   query?: string;
   orgId?: string | null;
 };
+
 export const getStaffSalaries = async ({
   begin,
   end,
@@ -406,4 +458,82 @@ export const getStaffSalaryChartByStaffId = async (staffId: string) => {
   } catch (error) {
     return [];
   }
+};
+
+export const sendNotificationSalaryForStaff = async () => {
+  const begin = startOfMonth(new Date());
+  const end = endOfMonth(new Date());
+
+  const staffs = await db.staff.findMany({
+    where: {
+      activityAssigned: {
+        some: {
+          activity: {
+            status: "COMPLETED",
+            activityDate: {
+              gte: begin,
+              lte: end,
+            },
+          },
+        },
+      },
+      role: {
+        in: ["admin", "farmer"],
+      },
+    },
+    include: {
+      activityAssigned: {
+        include: {
+          activity: {
+            select: {
+              ...activitySelect,
+            },
+          },
+        },
+      },
+      _count: {
+        select: {
+          activityAssigned: true,
+        },
+      },
+    },
+  });
+  const staffsWithSalaries = staffs.map((item) => {
+    return {
+      ...item,
+      salary: _.sumBy(item.activityAssigned, (assignedStaff) => {
+        const { actualWork, hourlyWage, activity } = assignedStaff;
+        if (
+          actualWork === null ||
+          hourlyWage === null ||
+          activity.status !== "COMPLETED"
+        ) {
+          return 0;
+        }
+        return actualWork * hourlyWage;
+      }),
+      hourlyWork: _.sumBy(item.activityAssigned, (assignedStaff) => {
+        if (
+          assignedStaff.actualWork === null ||
+          assignedStaff.activity.status !== "COMPLETED"
+        ) {
+          return 0;
+        }
+        return assignedStaff.actualWork;
+      }),
+    };
+  });
+
+  await sendSalaryMail({
+    begin,
+    end,
+    subject: `Thông báo lương tháng ${format(new Date(), "MM/yyyy")}`,
+    staff: staffsWithSalaries.map((item) => {
+      return {
+        email: item.email,
+        receiverName: item.name,
+        salary: item.salary,
+      };
+    }),
+  });
 };

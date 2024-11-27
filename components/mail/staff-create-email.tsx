@@ -1,6 +1,5 @@
 import {
   Body,
-  Button,
   Container,
   Head,
   Hr,
@@ -13,10 +12,10 @@ import {
 import { siteConfig } from "@/configs/siteConfig";
 import { format } from "date-fns";
 
-interface ApplicantCreateUserEmailProps {
+interface StaffCreateUserEmailProps {
   senderName: string;
   receiveName: string;
-  jobTitle: string;
+
   email: string;
   password: string;
   startToWorkDate: Date;
@@ -24,14 +23,13 @@ interface ApplicantCreateUserEmailProps {
 
 const baseUrl = process.env.APP_BASE_URL ? `${process.env.APP_BASE_URL}` : "";
 
-export const ApplicantCreateUserEmail = ({
-  jobTitle,
+export const StaffCreateEmail = ({
   receiveName,
   senderName,
   email,
   password,
   startToWorkDate,
-}: ApplicantCreateUserEmailProps) => {
+}: StaffCreateUserEmailProps) => {
   return (
     <Html>
       <Head />
@@ -42,32 +40,23 @@ export const ApplicantCreateUserEmail = ({
               href={baseUrl}
               className="text-2xl block text-center font-bold my-4 text-blue-600"
             >
-              {siteConfig.name}
+              <span>{siteConfig.name}</span>
             </Link>
-            <Text className="text-md m-1">Kính gửi {receiveName},</Text>
-            <Text className="text-md m-1">
-              Chúng tôi rất vui mừng thông báo rằng bạn đã được chọn cho vị trí{" "}
-              <span className="font-semibold">{jobTitle}</span> tại{" "}
-              {siteConfig.name}
+            <Text className="text-sm m-1">Kính gửi {receiveName},</Text>
+            <Text className="text-sm m-1">
+              Tài khoản trên {siteConfig.name} đã được tạo.
             </Text>
-            <Text className="text-sm my-0">
-              Chúng tôi đánh giá cao kinh nghiệm và kỹ năng của bạn. Chúng tôi
-              tin rằng bạn sẽ là một thành viên giá trị của đội ngũ chúng tôi.
-            </Text>
-            <Text className="text-sm my-0">
-              Chúng tôi sẽ sớm liên hệ với bạn để sắp xếp các thủ tục nhập việc.
-            </Text>
-            <Text className="text-sm my-0">
+
+            <Text className="text-sm m-1">
               Bạn có thể đăng nhập vào website của chúng tôi bằng địa chỉ email:
               <span className="font-semibold">{email}</span>. Mật khẩu đăng nhập
-              là:
-              <span className="font-semibold">{password}</span>
+              là: <span className="font-semibold"> {password}</span>
             </Text>
-            <Text className="text-sm my-0">
+            <Text className="text-sm m-1">
               Sau khi đăng nhập thành công, vui lòng đổi mật khẩu để đảm bảo an
               toàn bảo mật.
             </Text>
-            <Text className="text-md m-1">
+            <Text className="text-sm m-1">
               Bạn sẽ bắt đầu làm việc vào ngày:
               <span className="font-semibold">
                 {" "}
@@ -75,7 +64,7 @@ export const ApplicantCreateUserEmail = ({
               </span>
             </Text>
 
-            <Text className="text-md m-1">
+            <Text className="text-sm m-1">
               Trân trọng,
               <br />
               {senderName}

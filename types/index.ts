@@ -463,7 +463,9 @@ export type AssignedStaff = ActivityAssigned & {
 
 export type ActivityTable = Activity & {
   createdBy: Staff;
-  crop: CropSelect;
+  crop: CropSelect & {
+    field: FieldSelect;
+  };
   assignedTo: AssignedStaff[];
 };
 

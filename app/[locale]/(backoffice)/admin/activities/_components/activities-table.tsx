@@ -19,7 +19,10 @@ import { SearchBar } from "@/components/search-bar";
 import { ActivityStatusValue } from "./activity-status-value";
 import { ActivityPriorityValue } from "./activity-priority-value";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
-import { SelectItemContent } from "@/components/form/select-item";
+import {
+  SelectItemContent,
+  SelectItemContentWithoutImage,
+} from "@/components/form/select-item";
 import {
   ActivitiesSelectCreatedBy,
   ActivitiesTableFaceted,
@@ -55,13 +58,11 @@ export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
 
             <TableHead>{t("table.thead.status")}</TableHead>
             <TableHead>{t("table.thead.priority")}</TableHead>
-            <TableHead>{t("table.thead.createdBy")}</TableHead>
             <TableHead className="text-right">
               {t("table.thead.estimatedDuration")}
             </TableHead>
-            <TableHead className="text-right">
-              {t("table.thead.actualDuration")}
-            </TableHead>
+            <TableHead>{t("table.thead.createdBy")}</TableHead>
+            <TableHead>{t("table.thead.crop.field")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -81,7 +82,9 @@ export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
                 <TableCell>
                   <ActivityPriorityValue value={item.priority} />
                 </TableCell>
-
+                <TableCell className="text-right">
+                  {number(item.estimatedDuration, "hour")}
+                </TableCell>
                 <TableCell>
                   <SelectItemContent
                     imageUrl={item.createdBy.imageUrl}
@@ -89,13 +92,11 @@ export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
                     description={item.createdBy.email}
                   />
                 </TableCell>
-                <TableCell className="text-right">
-                  {number(item.estimatedDuration, "hour")}
-                </TableCell>
-                <TableCell className="text-right">
-                  {item.actualDuration
-                    ? number(item.actualDuration, "hour")
-                    : t("table.trow.actualDuration")}
+                <TableCell>
+                  <SelectItemContentWithoutImage
+                    title={item.crop.field.name}
+                    description={item.crop.field.location}
+                  />
                 </TableCell>
               </TableRow>
             );

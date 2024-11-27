@@ -3366,10 +3366,12 @@
         "name": "Activity name",
         "status": "Status",
         "priority": "Priority",
-        "estimatedDuration": "Estimated duration",
+        "estimatedDuration": "Duration",
         "createdBy": "CreatedBy",
         "actualDuration": "Actual duration",
-        "crop": "Crop info",
+        "crop": {
+          "field": "Field"
+        },
         "totalStaffCost": "Staff cost",
         "totalEquipmentCost": "Equipment cost",
         "totalMaterialCost": "Material cost",

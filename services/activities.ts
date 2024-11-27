@@ -20,6 +20,8 @@ import { cropSelect } from "./crops";
 import { isSuperAdmin } from "@/lib/permission";
 import { ActivityUpdateStatusCompletedError } from "@/errors";
 import _ from "lodash";
+import { sendActivityAssignEmail } from "@/lib/mail";
+import { fieldSelect } from "./fields";
 
 type ActivityParams = {
   name: string;
@@ -69,6 +71,33 @@ export const createActivity = async (params: ActivityParams) => {
         },
       },
     },
+    include: {
+      crop: {
+        select: {
+          ...cropSelect,
+          field: {
+            select: {
+              ...fieldSelect,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  sendActivityAssignEmail({
+    staff: assignedStaffs.map((item) => {
+      return {
+        activityDate: activity.activityDate,
+        activityDuration: activity.estimatedDuration,
+        activityName: activity.name,
+        email: item.email,
+        receiverName: item.name,
+        fieldLocation: activity.crop.field.location || "NULL",
+        fieldName: activity.crop.field.name,
+      };
+    }),
+    subject: "Thông báo hoạt động được phân công",
   });
   return activity;
 };
@@ -137,6 +166,7 @@ export const updateActivity = async (
       },
     },
   });
+
   return updatedActivity;
 };
 /**
@@ -361,6 +391,11 @@ export const getActivities = async ({
           crop: {
             select: {
               ...cropSelect,
+              field: {
+                select: {
+                  ...fieldSelect,
+                },
+              },
             },
           },
           assignedTo: {
@@ -454,6 +489,11 @@ export const getActivityById = async (
         crop: {
           select: {
             ...cropSelect,
+            field: {
+              select: {
+                ...fieldSelect,
+              },
+            },
           },
         },
         assignedTo: {

@@ -1,13 +1,14 @@
 import { siteConfig } from "@/configs/siteConfig";
-import { Applicant } from "@prisma/client";
 import { render } from "@react-email/components";
 
 import { JobApplyEmail } from "@/components/mail/job-apply-email";
 import nodemailer from "nodemailer";
-import { ApplicantCreateUserEmail } from "@/components/mail/applicant-create-user-email";
-import { StaffCreateUserEmail } from "@/components/mail/staff-create-user-email";
+import { StaffCreateFromApplicantEmail } from "@/components/mail/staff-create-from-applicant-email";
+import { StaffCreateEmail } from "@/components/mail/staff-create-email";
 import { EmailTemplate } from "@/components/mail/email-template";
 import { EmailBody } from "@/types";
+import { StaffSalaryEmail } from "@/components/mail/staff-salary-email";
+import { ActivityAssignEmail } from "@/components/mail/activity-assign-email";
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -56,7 +57,7 @@ export const sendApplicantCreateUser = async (
     to: [receiverEmail],
     subject: "Xin chúc mừng bạn đã trúng tuyển!",
     html: render(
-      <ApplicantCreateUserEmail
+      <StaffCreateFromApplicantEmail
         jobTitle={jobName}
         email={email}
         password={password}
@@ -83,7 +84,7 @@ export const sendStaffCreateUser = async (
     to: [receiverEmail],
     subject: "Xin chúc mừng bạn đã trúng tuyển!",
     html: render(
-      <StaffCreateUserEmail
+      <StaffCreateEmail
         receiveName={name}
         senderName={"Quản lý nhân sự"}
         email={email}
@@ -101,4 +102,77 @@ export const sendEmail = async (emailBody: EmailBody) => {
     subject: emailBody.subject,
     html: render(<EmailTemplate {...emailBody} />),
   });
+};
+
+type SalaryMail = {
+  email: string;
+  salary: number;
+  receiverName: string;
+};
+export const sendSalaryMail = async ({
+  staff,
+  begin,
+  end,
+  subject,
+}: {
+  staff: SalaryMail[];
+  subject: string;
+  begin: Date;
+  end: Date;
+}) => {
+  await Promise.all(
+    staff.map((item) => {
+      return transporter.sendMail({
+        from: `${siteConfig.name} <${process.env.GOOGLE_APP_ACCOUNT}>`,
+        to: item.email,
+        subject,
+        html: render(
+          <StaffSalaryEmail
+            begin={begin}
+            end={end}
+            receiveName={item.receiverName}
+            salary={item.salary}
+            senderName={"Quản lý nhân sự"}
+          />
+        ),
+      });
+    })
+  );
+};
+type ActivityAssignEmail = {
+  email: string;
+  receiverName: string;
+  activityName: string;
+  activityDate: Date;
+  activityDuration: number;
+  fieldName: string;
+  fieldLocation: string;
+};
+export const sendActivityAssignEmail = async ({
+  staff,
+  subject,
+}: {
+  staff: ActivityAssignEmail[];
+  subject: string;
+}) => {
+  await Promise.all(
+    staff.map((item) => {
+      return transporter.sendMail({
+        from: `${siteConfig.name} <${process.env.GOOGLE_APP_ACCOUNT}>`,
+        to: item.email,
+        subject,
+        html: render(
+          <ActivityAssignEmail
+            receiveName={item.receiverName}
+            activityDate={item.activityDate}
+            activityDuration={item.activityDuration}
+            activityName={item.activityName}
+            senderName={"Thông báo hoạt động"}
+            fieldLocation={item.fieldLocation}
+            fieldName={item.fieldName}
+          />
+        ),
+      });
+    })
+  );
 };
