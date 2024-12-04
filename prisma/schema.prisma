@@ -28,6 +28,9 @@ model Unit {
   equipmentDetails EquipmentDetail[]
   equipmentUsages  EquipmentUsage[]
   crops            Crop[]
+  stores           Store[]
+  harvest          Harvest[]
+  sales            Sale[]
 }
 
 enum UnitType {
@@ -193,6 +196,8 @@ model Staff {
   activityCreatedBy    Activity[]         @relation(name: "createdBy")
   activityAssigned     ActivityAssigned[]
   equipmentUsages      EquipmentUsage[]
+  harvests             Harvest[]
+  sales                Sale[]
 }
 
 enum WeatherStatus {
@@ -589,14 +594,6 @@ model MaterialUsage {
   unit     Unit      @relation(fields: [unitId], references: [id])
 }
 
-enum ActivityType {
-  FERTILIZER
-  PESTICIDE
-  EQUIPMENT
-  WATERING
-  OTHER
-}
-
 enum ActivityPriority {
   LOW
   MEDIUM
@@ -646,6 +643,21 @@ enum CropStatus {
   FINISH
 }
 
+model ActivityAssigned {
+  id         String   @id @default(uuid())
+  activityId String
+  staffId    String
+  assignedAt DateTime @default(now())
+
+  actualWork Float? // actual hour working
+  hourlyWage Float? // hour wage
+
+  activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  staff    Staff    @relation(fields: [staffId], references: [id], onDelete: Cascade)
+
+  @@unique([activityId, staffId])
+}
+
 model Crop {
   id   String @id @default(uuid())
   name String
@@ -660,11 +672,11 @@ model Crop {
   plant   Plant  @relation(fields: [plantId], references: [id])
 
   unitId         String
-  unit           Unit   @relation(fields: [unitId], references: [id])
+  unit           Unit       @relation(fields: [unitId], references: [id])
   estimatedYield Float
   actualYield    Float?
-
-  status CropStatus @default(NEW) // Tình trạng mùa vụ
+  remainYield    Float      @default(0)
+  status         CropStatus @default(NEW) // Tình trạng mùa vụ
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -673,19 +685,69 @@ model Crop {
 
   activities       Activity[]
   latestCropFields Field[]    @relation(name: "latestCrop")
+
+  store Store?
+
+  harvests Harvest[]
+  sales    Sale[]
 }
 
-model ActivityAssigned {
-  id         String   @id @default(uuid())
-  activityId String
-  staffId    String
-  assignedAt DateTime @default(now())
+model Store {
+  id          String  @id @default(uuid())
+  cropId      String  @unique
+  crop        Crop    @relation(fields: [cropId], references: [id])
+  imageUrl    String
+  name        String
+  description String
+  price       Float
+  unitId      String
+  unit        Unit    @relation(fields: [unitId], references: [id])
+  isFeature   Boolean @default(false)
+  isPublic    Boolean @default(false)
 
-  actualWork Float? // actual hour working
-  hourlyWage Float? // hour wage
+  phoneNumber String
+  address     String
 
-  activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
-  staff    Staff    @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
-  @@unique([activityId, staffId])
+model Harvest {
+  id String @id @default(uuid())
+
+  harvestDate DateTime
+  value       Float
+  unitId      String
+  unit        Unit     @relation(fields: [unitId], references: [id])
+
+  cropId      String
+  crop        Crop   @relation(fields: [cropId], references: [id])
+  createdById String
+  createdBy   Staff  @relation(fields: [createdById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Sale {
+  id String @id @default(uuid())
+
+  saleDate DateTime
+
+  customerName    String
+  customerAddress String
+  customerPhone   String
+  customerEmail   String?
+
+  value       Float
+  price       Float
+  unitId      String
+  unit        Unit   @relation(fields: [unitId], references: [id])
+  cropId      String
+  crop        Crop   @relation(fields: [cropId], references: [id])
+  createdById String
+  createdBy   Staff  @relation(fields: [createdById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

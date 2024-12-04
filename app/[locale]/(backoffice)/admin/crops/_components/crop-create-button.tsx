@@ -209,6 +209,7 @@ export const CropCreateButton = () => {
                         notFound={tSchema("fieldId.notFound")}
                         onChange={field.onChange}
                         disabled={isPending}
+                        isCreateCrop
                       />
                     </FormControl>
 

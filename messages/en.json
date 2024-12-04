@@ -1542,7 +1542,7 @@
       }
     },
     "chart": {
-      "title": "PH, Nutrient NPK chart",
+      "title": "Nutrient NPK chart",
       "fields": {
         "ph": "ph",
         "nutrientNitrogen": "Nitrogen({unit})",
@@ -3669,6 +3669,9 @@
         },
         "danger": {
           "title": "Crop danger"
+        },
+        "store": {
+          "title": "Manage store"
         }
       }
     },
@@ -3694,8 +3697,8 @@
           "label": "Activity danger"
         }
       },
-      "learnedLessons": {
-        "label": "Learned lessons"
+      "store": {
+        "label": "Store"
       },
       "danger": {
         "label": "Crop danger"
@@ -3865,6 +3868,96 @@
           "cropFinish": "Crop CANNOT delete when crop is FINISH status",
           "activityCount": "Crop ONLY can delete when no activities in crop"
         }
+      }
+    }
+  },
+  "stores": {
+    "page": {
+      "title": "Manage store"
+    },
+    "search": {
+      "placeholder": "Search by product name"
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add new store",
+        "description": "Each crop have only one store"
+      },
+      "edit": {
+        "label": "Edit",
+        "title": "Edit store",
+        "description": "Update information of store"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid stores!"
+      },
+      "name": {
+        "label": "Product name",
+        "placeholder": "Plant planted in field",
+        "required_error": "Product name is required",
+        "min": "Min name length is {min} characters",
+        "max": "Name's length must be less than {max} characters"
+      },
+      "imageUrl": {
+        "label": "Image",
+        "placeholder": "Image of plant",
+        "required_error": "Image is required"
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Description product",
+        "required_error": "Description is required",
+        "min": "Min name length is {min} characters",
+        "max": "Name's length must be less than {max} characters"
+      },
+      "price": {
+        "label": "Product price",
+        "placeholder": "Product price",
+        "required_error": "Product price value is required",
+        "invalid_type_error": "Product price value must be number",
+        "min": "Min Product price value is {min} VND",
+        "max": "Max Product price value is {max} VND"
+      },
+      "unitId": {
+        "required_error": "Required unit",
+        "placeholder": "Unit",
+        "error": "Fail load units",
+        "notFound": "Units not found",
+        "label": "Unit"
+      },
+      "phoneNumber": {
+        "label": "Phone number",
+        "placeholder": "Contact number",
+        "required_error": "Phone number is required!",
+        "min": "Min phone length is {min} characters",
+        "max": "Phone's length must be less than {max} characters",
+        "isPhone": "Phone number is invalid"
+      },
+      "address": {
+        "label": "Address",
+        "placeholder": "Address of field",
+        "required_error": "Address is required!",
+        "min": "Min address length is {min} characters",
+        "max": "Address's length must be less than {max} characters"
+      },
+      "isPublic": {
+        "label": "Public",
+        "description": "User can see this product"
+      },
+      "isFeature": {
+        "label": "Feature",
+        "description": "This product will show in home page"
+      }
+    },
+    "status": {
+      "success": {
+        "upsert": "Store upsert!"
+      },
+      "failure": {
+        "upsert": "Something went wrong while upsert store!"
       }
     }
   },
@@ -4420,7 +4513,7 @@
     "/admin/crops/detail/activities/detail/material-usages": "Material usages",
     "/admin/crops/detail/activities/detail/equipment-usages": "Equipment usages",
     "/admin/crops/detail/activities/detail/danger": "Activity Danger",
-    "/admin/crops/detail/learned-lessons": "Learned lessons",
+    "/admin/crops/detail/store": "Store",
     "/admin/crops/detail/danger": "Crop danger",
     "/admin/activities": "Activities",
     "/admin/activities/create": "Create",

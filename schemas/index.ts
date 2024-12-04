@@ -1265,3 +1265,35 @@ export const OTPCodeSchema = (
       }
     );
 };
+
+export const StoreSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    cropId: z.string(),
+    imageUrl: stringSchema(t, "imageUrl"),
+    name: stringSchema(t, "name", {
+      min: 3,
+      max: 100,
+    }),
+    description: stringSchema(t, "description", {
+      min: 1,
+      max: 1000,
+    }),
+    address: stringSchema(t, "address", {
+      min: 3,
+      max: 255,
+    }),
+    phoneNumber: stringSchema(t, "phoneNumber", {
+      min: 1,
+      max: 15,
+    }).refine(validator.isMobilePhone, "phoneNumber.isPhone"),
+    price: numberSchema(t, "price", {
+      min: 500,
+      max: 10_000_000,
+    }),
+    unitId: stringSchema(t, "unitId"),
+    isFeature: z.boolean().default(false),
+    isPublic: z.boolean().default(false),
+  });
+};

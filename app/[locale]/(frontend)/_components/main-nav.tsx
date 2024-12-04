@@ -3,14 +3,13 @@
 import { Icons } from "@/components/icons";
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { siteConfig } from "@/configs/siteConfig";
+import { cn } from "@/lib/utils";
 
 import Link from "next/link";
 
@@ -26,24 +25,26 @@ export const MainNav = () => {
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
-            <NavigationMenuTrigger>Home</NavigationMenuTrigger>
-            <NavigationMenuContent></NavigationMenuContent>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuTrigger>Products</NavigationMenuTrigger>
-            <NavigationMenuContent></NavigationMenuContent>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <Link href="/jobs" legacyBehavior passHref>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Jobs
+            <Link href="/products" legacyBehavior passHref>
+              <NavigationMenuLink
+                className={cn(
+                  navigationMenuTriggerStyle(),
+                  "bg-inherit hover:bg-inherit hover:text-green-500"
+                )}
+              >
+                Nông sản
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <Link href="/news" legacyBehavior passHref>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                News
+            <Link href="/jobs" legacyBehavior passHref>
+              <NavigationMenuLink
+                className={cn(
+                  navigationMenuTriggerStyle(),
+                  "bg-inherit hover:bg-inherit hover:text-green-500"
+                )}
+              >
+                Tuyển dụng
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>

@@ -18,7 +18,7 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { editLocation } from "@/actions/field";
 import { useParams } from "next/navigation";
-import { FieldLocation, FieldTable } from "@/types";
+import { FieldLocationWithLatestCrop, FieldTable } from "@/types";
 
 import { DynamicDialogFooter } from "@/components/dialog/dynamic-dialog";
 import { useAuth } from "@clerk/nextjs";
@@ -36,7 +36,7 @@ import _ from "lodash";
 
 interface FieldEditLocationProps {
   data: FieldTable;
-  locations: FieldLocation[];
+  locations: FieldLocationWithLatestCrop[];
 }
 export const FieldEditLocationForm = ({
   data,

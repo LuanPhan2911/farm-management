@@ -278,6 +278,7 @@ export const getCropById = async (id: string): Promise<CropTable | null> => {
             ...fieldSelect,
           },
         },
+
         _count: {
           select: {
             activities: true,
@@ -323,6 +324,7 @@ export const cropSelect = {
   name: true,
   startDate: true,
   endDate: true,
+  status: true,
 };
 type CropSelectQuery = {
   orgId?: string;

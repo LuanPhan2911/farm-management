@@ -21,24 +21,25 @@ import { SearchLocation } from "./components/search-location";
 import { ZoomInput } from "./components/zoom-input";
 import { MarkerLocation } from "./components/marker-location";
 import { useTranslations } from "next-intl";
-import { FieldLocation } from "@/types";
+import { FieldLocationWithLatestCrop } from "@/types";
 
 export interface LeafletMapProps {
   className?: string;
   center?: LatLngTuple;
   zoom?: number;
+  hiddenSearchLocation?: boolean;
 
   onChangeCurrentLocationFn?: (value: LatLngTuple) => void;
   onChangeLocationSelectFn?: (value: string) => void;
 
-  markerLocations?: FieldLocation[];
+  markerLocations?: FieldLocationWithLatestCrop[];
 }
 const LeafletMap = ({
   className,
   zoom = 11,
   center = [10.38, 105.43],
   markerLocations,
-
+  hiddenSearchLocation,
   onChangeCurrentLocationFn,
   onChangeLocationSelectFn,
 }: LeafletMapProps) => {
@@ -79,12 +80,14 @@ const LeafletMap = ({
           goToPositionFn={goToPosition}
         />
       </div>
-      <div className="absolute top-1 left-16 z-[1000]">
-        <SearchLocation
-          goToLocationFn={goToPosition}
-          onChangeLocationSelectFn={onChangeLocationSelectFn}
-        />
-      </div>
+      {!hiddenSearchLocation && (
+        <div className="absolute top-1 left-16 z-[1000]">
+          <SearchLocation
+            goToLocationFn={goToPosition}
+            onChangeLocationSelectFn={onChangeLocationSelectFn}
+          />
+        </div>
+      )}
 
       <MyLocationMarker position={myPosition} message={t("myLocation")} />
       <CurrentLocationMarker

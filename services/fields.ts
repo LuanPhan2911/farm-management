@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { FieldLocation, FieldSelect, FieldTable } from "@/types";
+import { FieldLocationWithLatestCrop, FieldSelect, FieldTable } from "@/types";
 import { SoilType } from "@prisma/client";
 import { isSuperAdmin } from "@/lib/permission";
 import {
@@ -8,7 +8,6 @@ import {
   hasStaffGetDataWithOrgId,
 } from "./organizations";
 import { unitSelect } from "./units";
-import { truncateByDomain } from "recharts/types/util/ChartUtils";
 import { cropSelect } from "./crops";
 import { plantSelect } from "./plants";
 import { getCurrentStaff } from "./staffs";
@@ -182,7 +181,8 @@ export const fieldSelect = {
   },
 };
 export const getFieldsSelect = async (
-  orgId: string | null
+  orgId: string | null,
+  isCreateCrop?: boolean
 ): Promise<FieldSelect[]> => {
   try {
     const currentStaff = await getCurrentStaff();
@@ -199,11 +199,13 @@ export const getFieldsSelect = async (
         ...(!isSuperAdmin(currentStaff.role) && {
           orgId,
         }),
-        crops: {
-          every: {
-            status: "FINISH",
+        ...(isCreateCrop && {
+          crops: {
+            every: {
+              status: "FINISH",
+            },
           },
-        },
+        }),
       },
       select: {
         ...fieldSelect,
@@ -215,7 +217,22 @@ export const getFieldsSelect = async (
   }
 };
 
-export const getFieldLocations = async (): Promise<FieldLocation[]> => {
+export const fieldLocation = {
+  id: true,
+  name: true,
+  location: true,
+  latitude: true,
+  longitude: true,
+  area: true,
+  unit: {
+    select: {
+      name: true,
+    },
+  },
+};
+export const getFieldLocations = async (): Promise<
+  FieldLocationWithLatestCrop[]
+> => {
   try {
     return await db.field.findMany({
       where: {
@@ -225,17 +242,7 @@ export const getFieldLocations = async (): Promise<FieldLocation[]> => {
         },
       },
       select: {
-        id: true,
-        name: true,
-        location: true,
-        latitude: true,
-        longitude: true,
-        area: true,
-        unit: {
-          select: {
-            name: true,
-          },
-        },
+        ...fieldLocation,
         latestCrop: {
           select: {
             ...cropSelect,

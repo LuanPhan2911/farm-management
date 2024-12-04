@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 export const GET = async (req: NextRequest) => {
   try {
     const currentStaff = await getCurrentStaff();
+
     if (!currentStaff) {
       return new NextResponse("Unauthenticated", { status: 400 });
     }

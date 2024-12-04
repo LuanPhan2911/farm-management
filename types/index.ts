@@ -7,6 +7,7 @@ import {
   ApplicantStatus,
   Category,
   Crop,
+  CropStatus,
   Equipment,
   EquipmentDetail,
   EquipmentStatus,
@@ -34,6 +35,7 @@ import {
   Soil,
   SoilType,
   Staff,
+  Store,
   ToxicityLevel,
   Unit,
   Weather,
@@ -159,6 +161,8 @@ export type FieldLocation = {
   unit: {
     name: string;
   } | null;
+};
+export type FieldLocationWithLatestCrop = FieldLocation & {
   latestCrop: CropSelectWithPlant | null;
 };
 
@@ -535,6 +539,7 @@ export type CropSelect = {
   name: string;
   startDate: Date;
   endDate: Date | null;
+  status: CropStatus;
 };
 export type CropSelectWithField = CropSelect & {
   field: FieldSelect;
@@ -564,4 +569,31 @@ export type CropMaterialUsage = MaterialUsage & {
   unit: {
     name: string;
   };
+};
+
+export type StoreWithCrop = Store & {
+  crop: CropSelect;
+  unit: {
+    name: string;
+  };
+};
+
+export type Product = Store & {
+  crop: {
+    id: string;
+    name: string;
+    startDate: Date;
+    endDate: Date | null;
+    status: CropStatus;
+    plant: PlantSelect;
+    field: FieldLocation;
+  };
+  unit: {
+    name: string;
+  };
+};
+
+export type MaterialUsedInCrop = {
+  fertilizers: FertilizerTable[];
+  pesticides: PesticideTable[];
 };

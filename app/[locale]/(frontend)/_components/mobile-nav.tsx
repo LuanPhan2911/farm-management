@@ -26,7 +26,7 @@ export const MobileNav = () => {
     <div className="flex items-center gap-x-3 px-0 md:hidden">
       <Button
         size={"icon"}
-        variant={"purple"}
+        variant={"outline"}
         onClick={() => {
           router.back();
         }}
@@ -36,7 +36,7 @@ export const MobileNav = () => {
       </Button>
       <Sheet open={isOpen} onOpenChange={setOpen}>
         <SheetTrigger asChild>
-          <Button variant="success" size={"icon"} className="relative">
+          <Button variant="outline-green" size={"icon"} className="relative">
             <Menu className="h-4 w-4" />
           </Button>
         </SheetTrigger>
@@ -56,17 +56,11 @@ export const MobileNav = () => {
 
           <ScrollArea className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
             <div className="flex flex-col space-y-3">
-              <MobileLink href={"/"} onOpenChange={setOpen}>
-                Home
-              </MobileLink>
-              <MobileLink href={"/"} onOpenChange={setOpen}>
-                Products
+              <MobileLink href={"/products"} onOpenChange={setOpen}>
+                Nông sản
               </MobileLink>
               <MobileLink href={"/jobs"} onOpenChange={setOpen}>
-                Jobs
-              </MobileLink>
-              <MobileLink href={"/"} onOpenChange={setOpen}>
-                New
+                Tuyển dụng
               </MobileLink>
             </div>
           </ScrollArea>

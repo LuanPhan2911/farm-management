@@ -20,7 +20,7 @@ export const Navbar = () => {
     <div
       className={cn(
         "flex items-center gap-x-2 lg:justify-between py-4 px-6 h-16 shadow-md backdrop-blur-sm",
-        "fixed top-0 z-50 transition-all w-full right-0 border-r border-t border-b rounded-sm",
+        "fixed top-0 z-[2000] transition-all w-full right-0 border-r border-t border-b rounded-sm",
 
         isOpen && "sm:left-60 left-0 w-auto"
       )}
