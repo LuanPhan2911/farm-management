@@ -26,7 +26,7 @@ export const EquipmentDetailUsageCostTable = ({
   data,
 }: EquipmentDetailUsageCostTableProps) => {
   const t = useTranslations("equipmentDetails");
-  const { number, dateTime } = useFormatter();
+  const { number } = useFormatter();
   const router = useRouterWithRole();
   const totalCost = _.sumBy(data, (item) => item.totalCost);
   const totalRentalPrice = _.sumBy(data, (item) => item.totalRentalPrice);

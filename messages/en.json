@@ -575,22 +575,6 @@
       "title": "Job not found",
       "description": "Sorry, we couldn’t find the job you’re looking for.",
       "backLabel": "Go to jobs page"
-    },
-    "card": {
-      "info": "Information about job",
-      "description": "Description",
-      "requirement": "Requirement",
-      "rights": "Rights",
-      "title": "Jobs",
-      "search": {
-        "placeholder": "Search by name...",
-        "notFound": "Not find the job with name is",
-        "typeOther": "Please type other name!"
-      },
-      "noJob": {
-        "label": "Current no job for you",
-        "backLabel": "Go to homepage"
-      }
     }
   },
   "users": {
@@ -3297,14 +3281,18 @@
       },
       "detail": {
         "title": "Activity info",
+        "description": "Edit activity information",
         "staffs": {
-          "title": "Staffs"
+          "title": "Staffs",
+          "description": "Manage staff participant in activity"
         },
         "equipment-usages": {
-          "title": "Equipment usages"
+          "title": "Equipment usages",
+          "description": "Manage equipment used in activity"
         },
         "material-usages": {
-          "title": "Material usages"
+          "title": "Material usages",
+          "description": "Manage material used in activity"
         },
         "danger": {
           "title": "Danger"
@@ -3375,7 +3363,7 @@
         "totalStaffCost": "Staff cost",
         "totalEquipmentCost": "Equipment cost",
         "totalMaterialCost": "Material cost",
-        "actualCost": "Actual cost"
+        "actualCost": "Total cost"
       },
       "trow": {
         "actualDuration": "Not filled",
@@ -3388,7 +3376,7 @@
         }
       },
       "tfooter": {
-        "totalCost": "Total cost"
+        "totalCost": "Total"
       }
     },
     "search": {
@@ -3546,6 +3534,7 @@
       "complete": {
         "title": "Complete activity",
         "description": {
+          "note": "This action cannot be undone",
           "actualDuration": "If no fill actual duration of activity , estimated duration will be updated",
           "actualWork": "If no fill actual work of assigned staffs, actual duration of activity will be updated",
           "hourlyWage": "If no fill hour wage of assigned staff, activity CANNOT completed",
@@ -3555,6 +3544,7 @@
       "destroy": {
         "title": "Delete activity",
         "description": {
+          "note": "This action cannot be undone",
           "usages": "ONLY delete activity when no equipment usages and material usages",
           "finish": "If activity COMPLETED status, activity CANNOT delete"
         }
@@ -3647,20 +3637,26 @@
   "crops": {
     "page": {
       "title": "Manage crops",
+      "description": "Manage crops in organizations",
       "detail": {
         "title": "Crop detail",
         "activities": {
           "title": "Crop activities",
+          "description": "Manage activities in crop",
           "detail": {
             "title": "Activity info",
+            "description": "Edit activity information",
             "staffs": {
-              "title": "Staffs"
+              "title": "Staffs",
+              "description": "Manage staff participant in activity"
             },
             "equipment-usages": {
-              "title": "Equipment usages"
+              "title": "Equipment usages",
+              "description": "Manage equipment used in activity"
             },
             "material-usages": {
-              "title": "Material usages"
+              "title": "Material usages",
+              "description": "Manage material used in activity"
             },
             "danger": {
               "title": "Activity Danger"
@@ -3671,16 +3667,17 @@
           "title": "Crop danger"
         },
         "store": {
-          "title": "Manage store"
+          "title": "Manage store",
+          "description": "Each store is product in homepage"
         }
       }
     },
     "tabs": {
       "info": {
-        "label": "Crop info"
+        "label": "Info"
       },
       "activities": {
-        "label": "Activities",
+        "label": "Activity",
         "info": {
           "label": "Activity Info"
         },
@@ -3700,8 +3697,14 @@
       "store": {
         "label": "Store"
       },
+      "harvests": {
+        "label": "Harvest"
+      },
+      "sales": {
+        "label": "Sale"
+      },
       "danger": {
-        "label": "Crop danger"
+        "label": "Danger"
       }
     },
     "table": {
@@ -3713,12 +3716,19 @@
         "status": "Crop status",
         "field": {
           "name": "Field"
-        }
+        },
+        "estimatedYield": "Estimated yield",
+        "actualYield": "Actual yield",
+        "remainYield": "Remain yield",
+        "totalRevenue": "Total revenue"
       },
       "trow": {
         "endDate": "Not finished",
         "estimatedYield": "Not filled",
         "actualYield": "Not filled"
+      },
+      "tfooter": {
+        "total": "Total"
       }
     },
     "search": {
@@ -3805,9 +3815,12 @@
         "invalid_type_error": "Actual yield value must be number",
         "min": "Min Actual yield value is {min}",
         "max": "Max Actual yield value is {max}",
-
         "label": "Actual yield",
-        "placeholder": "From 0 to 1 000 000 000"
+        "placeholder": "Actual yield when crop finish"
+      },
+      "remainYield": {
+        "label": "Remain yield",
+        "placeholder": "Remain yield in stock"
       },
       "status": {
         "label": "Status",
@@ -3865,6 +3878,7 @@
       "destroy": {
         "title": "Delete crop",
         "description": {
+          "note": "This action cannot be undone",
           "cropFinish": "Crop CANNOT delete when crop is FINISH status",
           "activityCount": "Crop ONLY can delete when no activities in crop"
         }
@@ -3873,7 +3887,8 @@
   },
   "stores": {
     "page": {
-      "title": "Manage store"
+      "title": "Manage store",
+      "description": "Each store is product in homepage"
     },
     "search": {
       "placeholder": "Search by product name"
@@ -3958,6 +3973,182 @@
       },
       "failure": {
         "upsert": "Something went wrong while upsert store!"
+      }
+    }
+  },
+  "harvests": {
+    "page": {
+      "title": "Manage harvest",
+      "description": "Manage harvest in crop when crop status is harvest"
+    },
+    "table": {
+      "thead": {
+        "harvestDate": "Harvest date",
+        "value": "Harvest value",
+        "unitId": "Unit",
+        "createdById": "Created by"
+      },
+      "trow": {}
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add harvest",
+        "description": "Add new harvest of crop"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete harvest",
+        "description": "Delete harvest of crop"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid harvest!"
+      },
+      "harvestDate": {
+        "label": "Harvest date",
+        "placeholder": "Select harvest date",
+        "invalid_type_error": "Invalid date type",
+        "required_error": "Harvest date time is required!"
+      },
+      "value": {
+        "label": "Harvest value",
+        "placeholder": "Harvest value",
+        "required_error": "Harvest value is required",
+        "invalid_type_error": "Harvest value must be number",
+        "min": "Min harvest value is {min}",
+        "max": "Max harvest rice value is {max}"
+      },
+      "unitId": {
+        "required_error": "Required unit",
+        "placeholder": "Unit",
+        "error": "Fail load units",
+        "notFound": "Units not found",
+        "label": "Unit"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Harvest created!",
+        "destroy": "Harvest deleted"
+      },
+      "failure": {
+        "create": "Something went wrong while creating harvest!",
+        "destroy": "Something went wrong while deleting harvest!"
+      }
+    }
+  },
+  "sales": {
+    "page": {
+      "title": "Manage sales",
+      "description": "Manage sales in crop",
+      "cost": {
+        "title": "Sale revenue"
+      }
+    },
+    "search": {
+      "placeholder": "Search by customer name..."
+    },
+    "table": {
+      "thead": {
+        "saleDate": "Sale date",
+        "customerName": "Customer",
+        "customerAddress": "Address",
+        "customerPhone": "Phone",
+        "value": "Sale value",
+        "price": "Price per unit",
+        "createdById": "Sale by",
+        "actualCost": "Total"
+      },
+      "trow": {},
+      "tfooter": {
+        "total": "Total"
+      }
+    },
+    "form": {
+      "create": {
+        "label": "Add",
+        "title": "Add sale",
+        "description": "Add new sale of crop"
+      },
+      "destroy": {
+        "label": "Delete",
+        "title": "Delete sale",
+        "description": "Delete sale of crop"
+      }
+    },
+    "schema": {
+      "errors": {
+        "parse": "Invalid sale!"
+      },
+      "saleDate": {
+        "label": "Sale date",
+        "placeholder": "Select sale date",
+        "invalid_type_error": "Invalid date type",
+        "required_error": "Sale date time is required!"
+      },
+      "customerName": {
+        "label": "Customer name",
+        "placeholder": "Customer name",
+        "required_error": "Customer name is required",
+        "min": "Min name length is {min} characters",
+        "max": "Name's length must be less than {max} characters"
+      },
+      "customerPhone": {
+        "label": "Customer phone",
+        "placeholder": "Customer phone number",
+        "required_error": "Phone number is required!",
+        "min": "Min phone length is {min} characters",
+        "max": "Phone's length must be less than {max} characters",
+        "isPhone": "Phone number is invalid"
+      },
+      "customerAddress": {
+        "label": "Customer address",
+        "placeholder": "Customer address",
+        "required_error": "Address is required!",
+        "min": "Min address length is {min} characters",
+        "max": "Address's length must be less than {max} characters"
+      },
+      "customerEmail": {
+        "label": "Customer email",
+        "placeholder": "Customer email",
+        "required_error": "Customer email is required!",
+        "min": "Min email length is {min} characters",
+        "max": "Email's length must be less than {max} characters"
+      },
+      "value": {
+        "label": "Harvest value",
+        "placeholder": "Harvest value",
+        "required_error": "Harvest value is required",
+        "invalid_type_error": "Harvest value must be number",
+        "min": "Min harvest value is {min}",
+        "max": "Max harvest rice value is {max}"
+      },
+      "price": {
+        "label": "Product price",
+        "placeholder": "Product price per unit",
+        "required_error": "Product price value is required",
+        "invalid_type_error": "Product price value must be number",
+        "min": "Min Product price value is {min} VND",
+        "max": "Max Product price value is {max} VND"
+      },
+      "unitId": {
+        "required_error": "Required unit",
+        "placeholder": "Unit",
+        "error": "Fail load units",
+        "notFound": "Units not found",
+        "label": "Unit"
+      }
+    },
+    "status": {
+      "success": {
+        "create": "Sale created!",
+        "destroy": "Sale deleted"
+      },
+      "failure": {
+        "create": "Something went wrong while creating sale!",
+        "destroy": "Something went wrong while deleting sale!"
       }
     }
   },
@@ -4466,7 +4657,6 @@
   },
   "route": {
     "/admin": "Admin",
-    "/admin/dashboard": "Dashboard",
     "/admin/categories": "Categories",
     "/admin/units": "Units",
     "/admin/jobs": "Jobs",
@@ -4514,6 +4704,8 @@
     "/admin/crops/detail/activities/detail/equipment-usages": "Equipment usages",
     "/admin/crops/detail/activities/detail/danger": "Activity Danger",
     "/admin/crops/detail/store": "Store",
+    "/admin/crops/detail/harvests": "Harvests",
+    "/admin/crops/detail/sales": "Sales",
     "/admin/crops/detail/danger": "Crop danger",
     "/admin/activities": "Activities",
     "/admin/activities/create": "Create",
@@ -4527,6 +4719,7 @@
     "/admin/salaries/detail": "Staff salaries detail",
     "/admin/material-cost": "Total material cost",
     "/admin/equipment-cost": "Total equipment cost",
+    "/admin/sales": "Sales",
 
     "/admin/tasks": "Tasks",
     "/admin/schedules": "Schedules",
@@ -4579,10 +4772,10 @@
     "recruit": "Recruit",
     "cron-job": "Cron job",
     "storage": "Storage",
-    "dashboard": "Dashboard",
     "activities": "Activities",
     "crops": "Crops",
     "cost": "Cost",
+    "sales": "Sale revenues",
     "salaries": "Salaries",
     "material-cost": "Material cost",
     "equipment-cost": "Equipment cost",

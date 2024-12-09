@@ -1,11 +1,17 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { getActivityById } from "@/services/activities";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { ActivityEditForm } from "@/app/[locale]/(backoffice)/admin/activities/_components/activity-edit-button";
-import { canUpdateActivity } from "@/lib/role";
-import { canUpdateActivityStatus } from "@/lib/permission";
+import { canUpdateActivityStatus, canUpdateCropStatus } from "@/lib/permission";
+import { getCurrentStaffRole } from "@/services/staffs";
 
 export async function generateMetadata() {
   const t = await getTranslations("crops.page.detail.activities.detail");
@@ -23,15 +29,17 @@ interface CropActivityDetailPageProps {
 const CropActivityDetailPage = async ({
   params,
 }: CropActivityDetailPageProps) => {
-  const data = await getActivityById(params.activityId);
   const t = await getTranslations("crops.page.detail.activities.detail");
 
+  const data = await getActivityById(params.activityId);
   if (!data) {
     notFound();
   }
+  const { isOnlyAdmin } = await getCurrentStaffRole();
 
   const canEdit =
-    (await canUpdateActivity(params.cropId)) &&
+    isOnlyAdmin &&
+    canUpdateCropStatus(data.crop.status) &&
     canUpdateActivityStatus(data.status);
 
   return (
@@ -39,9 +47,10 @@ const CropActivityDetailPage = async ({
       <Card>
         <CardHeader>
           <CardTitle>{t("title")}</CardTitle>
+          <CardDescription>{t("description")}</CardDescription>
         </CardHeader>
         <CardContent>
-          <ActivityEditForm data={data} disabled={!canEdit} />
+          <ActivityEditForm data={data} canEdit={canEdit} />
         </CardContent>
       </Card>
     </div>

@@ -34,16 +34,16 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { FieldsSelect } from "../../_components/fields-select";
-import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { SelectOptions } from "@/components/form/select-options";
+import { ManagePermission } from "@/types";
 
-export const CropCreateButton = () => {
+interface CropCreateButtonProps extends ManagePermission {}
+export const CropCreateButton = ({ canCreate }: CropCreateButtonProps) => {
   const tSchema = useTranslations("crops.schema");
   const t = useTranslations("crops");
   const formSchema = CropSchema(tSchema);
   const [isPending, startTransition] = useTransition();
 
-  const { isSuperAdmin: canCreate } = useCurrentStaffRole();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -71,8 +71,9 @@ export const CropCreateButton = () => {
         });
     });
   };
-
   const endDate = form.watch("endDate");
+
+  const disabled = isPending || !canCreate;
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -103,7 +104,7 @@ export const CropCreateButton = () => {
                       value={field.value ?? undefined}
                       onChange={field.onChange}
                       placeholder={tSchema("name.placeholder")}
-                      disabled={isPending}
+                      disabled={disabled}
                     />
                   </FormControl>
 
@@ -132,7 +133,7 @@ export const CropCreateButton = () => {
                           from: field.value,
                           to: endDate || undefined,
                         }}
-                        disabled={isPending}
+                        disabled={disabled}
                         className="lg:w-full"
                       />
                     </FormControl>
@@ -158,7 +159,7 @@ export const CropCreateButton = () => {
                         placeholder={tSchema("status.placeholder")}
                         defaultValue={field.value}
                         onChange={field.onChange}
-                        disabled={isPending}
+                        disabled={disabled}
                         disabledValues={[
                           CropStatus.FINISH,
                           CropStatus.HARVEST,
@@ -187,7 +188,7 @@ export const CropCreateButton = () => {
                         placeholder={tSchema("plantId.placeholder")}
                         notFound={tSchema("plantId.notFound")}
                         onChange={field.onChange}
-                        disabled={isPending}
+                        disabled={disabled}
                       />
                     </FormControl>
 
@@ -208,7 +209,7 @@ export const CropCreateButton = () => {
                         placeholder={tSchema("fieldId.placeholder")}
                         notFound={tSchema("fieldId.notFound")}
                         onChange={field.onChange}
-                        disabled={isPending}
+                        disabled={disabled}
                         isCreateCrop
                       />
                     </FormControl>
@@ -230,7 +231,7 @@ export const CropCreateButton = () => {
                         onChange={field.onChange}
                         placeholder={tSchema("unitId.placeholder")}
                         unitType={UnitType.WEIGHT}
-                        disabled={isPending}
+                        disabled={disabled}
                         error={tSchema("unitId.error")}
                         notFound={tSchema("unitId.notFound")}
                         defaultValue={field.value}
@@ -252,7 +253,7 @@ export const CropCreateButton = () => {
                         placeholder={tSchema("estimatedYield.placeholder")}
                         value={field.value ?? undefined}
                         onChange={field.onChange}
-                        disabled={isPending}
+                        disabled={disabled}
                         type="number"
                         min={0}
                         max={1_000_000_000}
@@ -273,7 +274,7 @@ export const CropCreateButton = () => {
                         placeholder={tSchema("actualYield.placeholder")}
                         value={field.value ?? undefined}
                         onChange={field.onChange}
-                        disabled={isPending}
+                        disabled={disabled}
                         type="number"
                         min={0}
                         max={1_000_000_000}
@@ -285,7 +286,7 @@ export const CropCreateButton = () => {
               />
             </div>
 
-            <DynamicDialogFooter disabled={isPending} />
+            <DynamicDialogFooter disabled={disabled} />
           </form>
         </Form>
       </DialogContent>

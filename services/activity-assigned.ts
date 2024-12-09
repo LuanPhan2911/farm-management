@@ -292,6 +292,10 @@ export const getStaffSalaries = async ({
           },
         },
       },
+      cacheStrategy: {
+        swr: 60,
+        ttl: 60,
+      },
     });
     const staffsWithSalaries = staffs.map((item) => {
       return {

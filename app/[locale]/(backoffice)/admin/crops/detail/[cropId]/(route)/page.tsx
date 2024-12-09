@@ -12,6 +12,8 @@ import {
   CropEditForm,
   CropEditLearnedLesson,
 } from "../../../_components/crop-edit-button";
+import { getCurrentStaffRole } from "@/services/staffs";
+import { canUpdateCropStatus } from "@/lib/permission";
 
 export async function generateMetadata() {
   const t = await getTranslations("crops.page.detail");
@@ -32,6 +34,12 @@ const CropDetailPage = async ({ params }: CropDetailPageProps) => {
   if (!data) {
     notFound();
   }
+
+  const { isSuperAdmin } = await getCurrentStaffRole();
+
+  const canEditCrop = isSuperAdmin && canUpdateCropStatus(data.status);
+
+  const canEditCropLearnedLessons = canUpdateCropStatus(data.status);
   return (
     <div className="flex flex-col gap-y-4 py-4 h-full">
       <Card>
@@ -40,7 +48,7 @@ const CropDetailPage = async ({ params }: CropDetailPageProps) => {
           <CardDescription>{t("edit.description")}</CardDescription>
         </CardHeader>
         <CardContent>
-          <CropEditForm data={data} />
+          <CropEditForm data={data} canEdit={canEditCrop} />
         </CardContent>
       </Card>
       <Card>
@@ -51,7 +59,10 @@ const CropDetailPage = async ({ params }: CropDetailPageProps) => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <CropEditLearnedLesson data={data} />
+          <CropEditLearnedLesson
+            data={data}
+            canEdit={canEditCropLearnedLessons}
+          />
         </CardContent>
       </Card>
     </div>

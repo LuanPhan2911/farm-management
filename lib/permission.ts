@@ -1,9 +1,7 @@
-import { User } from "@clerk/nextjs/server";
 import {
   ActivityStatus,
   CropStatus,
   EquipmentStatus,
-  Staff,
   StaffRole,
 } from "@prisma/client";
 export const isSuperAdmin = (role: StaffRole) => {
@@ -28,4 +26,8 @@ export const canUpdateEquipmentDetail = (status: EquipmentStatus) => {
 };
 export const canUpdateCropStatus = (status: CropStatus) => {
   return status !== "FINISH";
+};
+
+export const canCreateHarvestAndSaleCropStatus = (status: CropStatus) => {
+  return status === "HARVEST";
 };

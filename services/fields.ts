@@ -210,6 +210,10 @@ export const getFieldsSelect = async (
       select: {
         ...fieldSelect,
       },
+      cacheStrategy: {
+        swr: 60,
+        ttl: 60,
+      },
     });
     return fields;
   } catch (error) {
@@ -253,6 +257,18 @@ export const getFieldLocations = async (): Promise<
             },
           },
         },
+      },
+    });
+  } catch (error) {
+    return [];
+  }
+};
+
+export const getFieldsByOrgId = async (orgId: string) => {
+  try {
+    return await db.field.findMany({
+      where: {
+        orgId,
       },
     });
   } catch (error) {

@@ -11,25 +11,25 @@ import {
 } from "@/components/ui/table";
 import { useFormatter, useTranslations } from "next-intl";
 import { ActivityStaffsTableAction } from "./activity-staffs-table-action";
-import { StaffWithSalaryAndActivity } from "@/types";
+import { ManagePermission, StaffWithSalaryAndActivity } from "@/types";
 import { useDialog } from "@/stores/use-dialog";
 import { StaffSelectItem } from "@/app/[locale]/(backoffice)/admin/_components/staffs-select";
 import _ from "lodash";
 
-interface ActivityStaffsTableProps {
+interface ActivityStaffsTableProps extends ManagePermission {
   data: StaffWithSalaryAndActivity[];
-  disabled?: boolean;
 }
 export const ActivityStaffsTable = ({
   data,
-  disabled,
+  canEdit,
+  canDelete,
 }: ActivityStaffsTableProps) => {
   const t = useTranslations("activityAssigned");
   const { relativeTime, number } = useFormatter();
   const { onOpen } = useDialog();
   const totalCost = _.sumBy(data, (item) => item.actualCost);
   const handleEdit = (row: StaffWithSalaryAndActivity) => {
-    if (disabled) {
+    if (!canEdit) {
       return;
     }
     onOpen("activityAssigned.edit", {
@@ -103,7 +103,12 @@ export const ActivityStaffsTable = ({
                 </TableCell>
 
                 <TableCell>
-                  <ActivityStaffsTableAction data={item} disabled={disabled} />
+                  <ActivityStaffsTableAction
+                    data={item}
+                    canEdit={canEdit}
+                    canDelete={canDelete}
+                    disabled={!canEdit && !canDelete}
+                  />
                 </TableCell>
               </TableRow>
             );

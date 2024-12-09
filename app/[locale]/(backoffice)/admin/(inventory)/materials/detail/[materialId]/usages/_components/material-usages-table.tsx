@@ -18,7 +18,6 @@ import { OrderByButton } from "@/components/buttons/order-by-button";
 import { SearchBar } from "@/components/search-bar";
 import { MaterialUsagesTableAction } from "./material-usages-table-action";
 import { useDialog } from "@/stores/use-dialog";
-import { UserAvatar } from "@/components/user-avatar";
 import { MaterialTypeValue } from "../../../../_components/material-type-value";
 import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-with-value";
 import { UsageStatusValue } from "@/components/usage-status-value";

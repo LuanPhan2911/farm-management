@@ -11,7 +11,7 @@ import { useParams } from "next/navigation";
 
 export const CropNavigationMenu = () => {
   const prefix = usePrefix();
-  const { isAdmin, isFarmer } = useCurrentStaffRole();
+  const { isAdmin } = useCurrentStaffRole();
   const t = useTranslations("crops.tabs");
   const params = useParams<{
     cropId: string;
@@ -55,14 +55,21 @@ export const CropNavigationMenu = () => {
       }),
     },
     {
+      href: `${getHref}/harvests`,
+      label: t("harvests.label"),
+    },
+    {
+      href: `${getHref}/sales`,
+      label: t("sales.label"),
+    },
+    {
       href: `${getHref}/store`,
       label: t("store.label"),
-      disabled: isFarmer,
     },
     {
       href: `${getHref}/danger`,
       label: t("danger.label"),
-      disabled: isAdmin || isFarmer,
+      disabled: isAdmin,
     },
   ];
   return <CustomNavigationMenu data={menu} />;

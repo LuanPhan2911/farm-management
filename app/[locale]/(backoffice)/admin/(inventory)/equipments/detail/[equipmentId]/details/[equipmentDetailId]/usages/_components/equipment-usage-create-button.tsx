@@ -40,12 +40,11 @@ import { EquipmentDetailsSelect } from "@/app/[locale]/(backoffice)/admin/_compo
 import { useCurrentStaff } from "@/hooks/use-current-staff";
 import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { UnitType } from "@prisma/client";
+import { ManagePermission } from "@/types";
 
-interface EquipmentUsageCreateButtonProps {
-  disabled?: boolean;
-}
+interface EquipmentUsageCreateButtonProps extends ManagePermission {}
 export const EquipmentUsageCreateButton = ({
-  disabled,
+  canCreate,
 }: EquipmentUsageCreateButtonProps) => {
   const tSchema = useTranslations("equipmentUsages.schema");
   const t = useTranslations("equipmentUsages.form");
@@ -102,15 +101,11 @@ export const EquipmentUsageCreateButton = ({
     });
   };
 
-  const canCreate = !disabled;
+  const disabled = isPending || !canCreate;
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          size={"sm"}
-          variant={"success"}
-          disabled={isPending || !canCreate}
-        >
+        <Button size={"sm"} variant={"success"} disabled={disabled}>
           <Plus className="h-4 w-4 mr-2" />{" "}
           <span className="text-sm font-semibold">{t("create.label")}</span>
         </Button>
@@ -134,9 +129,7 @@ export const EquipmentUsageCreateButton = ({
                       <EquipmentDetailsSelect
                         onChange={field.onChange}
                         placeholder={tSchema("equipmentDetailId.placeholder")}
-                        disabled={
-                          isPending || !canCreate || !!params?.equipmentDetailId
-                        }
+                        disabled={disabled || !!params?.equipmentDetailId}
                         error={tSchema("equipmentDetailId.error")}
                         notFound={tSchema("equipmentDetailId.notFound")}
                         defaultValue={field.value}
@@ -176,7 +169,7 @@ export const EquipmentUsageCreateButton = ({
                         onChange={field.onChange}
                         defaultValue={field.value ?? undefined}
                         placeholder={tSchema("operatorId.placeholder")}
-                        disabled={isPending || !canCreate}
+                        disabled={disabled}
                         error={tSchema("operatorId.error")}
                         notFound={tSchema("operatorId.notFound")}
                       />
@@ -198,9 +191,7 @@ export const EquipmentUsageCreateButton = ({
                       <ActivitiesSelect
                         onChange={field.onChange}
                         placeholder={tSchema("activityId.placeholder")}
-                        disabled={
-                          isPending || !canCreate || !!params?.activityId
-                        }
+                        disabled={disabled || !!params?.activityId}
                         error={tSchema("activityId.error")}
                         notFound={tSchema("activityId.notFound")}
                         defaultValue={field.value ?? undefined}
@@ -231,7 +222,7 @@ export const EquipmentUsageCreateButton = ({
                       <DatePickerWithTime
                         onChange={field.onChange}
                         placeholder={tSchema("usageStartTime.placeholder")}
-                        disabled={isPending || !canCreate}
+                        disabled={disabled}
                         value={field.value}
                         disabledDateRange={{
                           before: new Date(),
@@ -256,9 +247,8 @@ export const EquipmentUsageCreateButton = ({
                         placeholder={tSchema("duration.placeholder")}
                         value={field.value ?? undefined}
                         onChange={field.onChange}
-                        disabled={isPending || !canCreate}
+                        disabled={disabled}
                         type="number"
-                        min={1}
                         max={100}
                       />
                     </FormControl>
@@ -281,7 +271,7 @@ export const EquipmentUsageCreateButton = ({
                             placeholder={tSchema("fuelConsumption.placeholder")}
                             value={field.value ?? undefined}
                             onChange={field.onChange}
-                            disabled={isPending || !canCreate}
+                            disabled={disabled}
                             type="number"
                             min={0}
                             max={maxFuelConsumption}
@@ -303,7 +293,7 @@ export const EquipmentUsageCreateButton = ({
                           onChange={field.onChange}
                           placeholder={tSchema("unitId.placeholder")}
                           unitType={UnitType.VOLUME}
-                          disabled={isPending || !canCreate}
+                          disabled={disabled}
                           className="w-full"
                           error={tSchema("unitId.error")}
                           notFound={tSchema("unitId.notFound")}
@@ -329,7 +319,7 @@ export const EquipmentUsageCreateButton = ({
                         placeholder={tSchema("fuelPrice.placeholder")}
                         value={field.value ?? undefined}
                         onChange={field.onChange}
-                        disabled={isPending || !canCreate}
+                        disabled={disabled}
                         type="number"
                         min={0}
                         max={1_000_000}
@@ -350,7 +340,7 @@ export const EquipmentUsageCreateButton = ({
                         placeholder={tSchema("rentalPrice.placeholder")}
                         value={field.value ?? undefined}
                         onChange={field.onChange}
-                        disabled={isPending || !canCreate}
+                        disabled={disabled}
                         type="number"
                         min={0}
                         max={10_000_000}
@@ -373,7 +363,7 @@ export const EquipmentUsageCreateButton = ({
                       placeholder={tSchema("note.placeholder")}
                       value={field.value ?? undefined}
                       onChange={field.onChange}
-                      disabled={isPending || !canCreate}
+                      disabled={disabled}
                     />
                   </FormControl>
                   <FormMessage />
@@ -381,7 +371,7 @@ export const EquipmentUsageCreateButton = ({
               )}
             />
 
-            <DynamicDialogFooter disabled={isPending || !canCreate} />
+            <DynamicDialogFooter disabled={disabled} />
           </form>
         </Form>
       </DialogContent>

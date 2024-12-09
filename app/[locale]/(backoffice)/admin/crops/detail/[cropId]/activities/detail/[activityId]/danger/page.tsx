@@ -1,9 +1,9 @@
 import { getActivityByIdWithCountUsage } from "@/services/activities";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { canUpdateActivityStatus } from "@/lib/permission";
-import { canUpdateCrop } from "@/lib/role";
+import { canUpdateActivityStatus, canUpdateCropStatus } from "@/lib/permission";
 import { ActivityDangerCard } from "@/app/[locale]/(backoffice)/admin/activities/detail/[activityId]/danger/_components/activity-danger-card";
+import { getCurrentStaffRole } from "@/services/staffs";
 
 interface ActivityDangerPageProps {
   params: {
@@ -23,9 +23,14 @@ const ActivityDangerPage = async ({ params }: ActivityDangerPageProps) => {
   if (!data) {
     notFound();
   }
+
+  const { isOnlyAdmin } = await getCurrentStaffRole();
+
   const canEdit =
-    (await canUpdateCrop(params.cropId)) &&
+    isOnlyAdmin &&
+    canUpdateCropStatus(data.crop.status) &&
     canUpdateActivityStatus(data.status);
+
   const canDelete =
     data._count.equipmentUseds === 0 &&
     data._count.materialUseds === 0 &&

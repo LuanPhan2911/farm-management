@@ -231,6 +231,10 @@ export const getMaterialUsageCost = async ({
           },
         },
       },
+      cacheStrategy: {
+        swr: 60,
+        ttl: 60,
+      },
     });
 
     const materialWithCosts: MaterialWithCost[] = materials.map((material) => {

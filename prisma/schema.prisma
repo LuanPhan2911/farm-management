@@ -690,6 +690,8 @@ model Crop {
 
   harvests Harvest[]
   sales    Sale[]
+
+  totalRevenue Float @default(0)
 }
 
 model Store {

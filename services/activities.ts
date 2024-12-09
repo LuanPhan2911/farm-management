@@ -17,7 +17,7 @@ import {
 } from "@/lib/utils";
 import { getCurrentStaff } from "./staffs";
 import { cropSelect } from "./crops";
-import { isSuperAdmin } from "@/lib/permission";
+import { isOnlyAdmin, isSuperAdmin } from "@/lib/permission";
 import { ActivityUpdateStatusCompletedError } from "@/errors";
 import _ from "lodash";
 import { sendActivityAssignEmail } from "@/lib/mail";
@@ -469,7 +469,7 @@ export const getActivityById = async (
     return await db.activity.findUnique({
       where: {
         id: activityId,
-        ...(!isSuperAdmin(currentStaff.role) && {
+        ...(!isOnlyAdmin(currentStaff.role) && {
           OR: [
             {
               createdById: currentStaff.id,
@@ -528,6 +528,11 @@ export const getActivityByIdWithCountUsage = async (
             assignedTo: true,
             equipmentUseds: true,
             materialUseds: true,
+          },
+        },
+        crop: {
+          select: {
+            ...cropSelect,
           },
         },
       },
@@ -682,26 +687,18 @@ export const getCountActivityPriority = async ({
 type ActivityCropQuery = {
   cropId: string;
   query?: string;
-  orderBy?: string;
   filterString?: string;
-  filterNumber?: string;
   begin?: Date;
   end?: Date;
 };
 export const getActivitiesByCrop = async ({
-  filterNumber,
   filterString,
-  orderBy,
   query,
   cropId,
   begin,
   end,
 }: ActivityCropQuery): Promise<ActivityWithCost[]> => {
   try {
-    const currentStaff = await getCurrentStaff();
-    if (!currentStaff) {
-      throw new Error("Unauthorized");
-    }
     const data = await db.activity.findMany({
       where: {
         cropId,
@@ -713,12 +710,13 @@ export const getActivitiesByCrop = async ({
           contains: query,
           mode: "insensitive",
         },
-
         ...(filterString && getObjectFilterString(filterString)),
-        ...(filterNumber && getObjectFilterNumber(filterNumber)),
       },
-
-      orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
+      orderBy: [
+        {
+          activityDate: "desc",
+        },
+      ],
     });
 
     const dataWithCost: ActivityWithCost[] = data.map((item) => {

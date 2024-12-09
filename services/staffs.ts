@@ -242,6 +242,33 @@ export const getCurrentStaff = async () => {
 
   return staff;
 };
+
+export const getCurrentStaffRole = async () => {
+  const user = await currentUser();
+
+  if (!user) {
+    return {
+      isAdmin: false,
+      isSuperAdmin: false,
+      isFarmer: false,
+      isOnlyAdmin: false,
+      user: null,
+    };
+  }
+  const isSuperAdmin = user.publicMetadata?.role === StaffRole.superadmin;
+  const isAdmin = user.publicMetadata?.role === StaffRole.admin;
+  const isFarmer = user.publicMetadata?.role === StaffRole.farmer;
+  const isOnlyAdmin =
+    isSuperAdmin || user.publicMetadata?.role === StaffRole.admin;
+  return {
+    isAdmin,
+    isSuperAdmin,
+    isFarmer,
+    isOnlyAdmin,
+    user,
+  };
+};
+
 export const getCurrentStaffPages = async (req: NextApiRequest) => {
   const { userId } = getAuth(req);
   if (!userId) {

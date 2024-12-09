@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
-import { getCurrentStaff } from "@/services/staffs";
+import { getCurrentStaffRole } from "@/services/staffs";
 
-import { canUpdateCropStatus, isSuperAdmin } from "@/lib/permission";
+import { canUpdateCropStatus } from "@/lib/permission";
 import { getCropByIdWithCount } from "@/services/crops";
 import { CropDangerCard } from "./_components/crop-danger-card";
 
@@ -20,17 +20,13 @@ export async function generateMetadata() {
 }
 
 const ActivityDangerPage = async ({ params }: ActivityDangerPageProps) => {
-  const currentStaff = await getCurrentStaff();
-  if (!currentStaff) {
-    notFound();
-  }
   const data = await getCropByIdWithCount(params.cropId);
   if (!data) {
     notFound();
   }
+  const { isSuperAdmin } = await getCurrentStaffRole();
 
-  const canEdit =
-    canUpdateCropStatus(data.status) && isSuperAdmin(currentStaff.role);
+  const canEdit = canUpdateCropStatus(data.status) && isSuperAdmin;
   const canDelete = canEdit && data._count.activities === 0;
   return (
     <CropDangerCard

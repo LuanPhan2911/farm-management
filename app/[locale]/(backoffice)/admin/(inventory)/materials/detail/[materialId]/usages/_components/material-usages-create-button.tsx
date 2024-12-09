@@ -35,12 +35,11 @@ import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units
 import { UnitType } from "@prisma/client";
 import { ActivitiesSelect } from "@/app/[locale]/(backoffice)/admin/_components/activities-select";
 import { MaterialsSelect } from "@/app/[locale]/(backoffice)/admin/_components/materials-select";
+import { ManagePermission } from "@/types";
 
-interface MaterialUsageCreateButtonProps {
-  disabled?: boolean;
-}
+interface MaterialUsageCreateButtonProps extends ManagePermission {}
 export const MaterialUsageCreateButton = ({
-  disabled,
+  canCreate,
 }: MaterialUsageCreateButtonProps) => {
   const tSchema = useTranslations("materialUsages.schema");
   const t = useTranslations("materialUsages.form");
@@ -78,12 +77,12 @@ export const MaterialUsageCreateButton = ({
     });
   };
 
-  const canCreate = !disabled;
+  const disabled = isPending || !canCreate;
 
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size={"sm"} variant={"success"} disabled={!canCreate}>
+        <Button size={"sm"} variant={"success"} disabled={disabled}>
           <Plus className="h-4 w-4 mr-2" />{" "}
           <span className="text-sm font-semibold">{t("create.label")}</span>
         </Button>
@@ -108,9 +107,7 @@ export const MaterialUsageCreateButton = ({
                         defaultValue={field.value}
                         onChange={field.onChange}
                         placeholder={tSchema("materialId.placeholder")}
-                        disabled={
-                          isPending || !canCreate || !!params.materialId
-                        }
+                        disabled={disabled || !!params.materialId}
                         error={tSchema("materialId.error")}
                         notFound={tSchema("materialId.notFound")}
                         onSelected={(selectedMaterial) => {
@@ -138,9 +135,7 @@ export const MaterialUsageCreateButton = ({
                       <ActivitiesSelect
                         onChange={field.onChange}
                         placeholder={tSchema("activityId.placeholder")}
-                        disabled={
-                          isPending || !canCreate || !!params.activityId
-                        }
+                        disabled={disabled || !!params.activityId}
                         error={tSchema("activityId.error")}
                         notFound={tSchema("activityId.notFound")}
                         defaultValue={field.value ?? undefined}
@@ -167,7 +162,7 @@ export const MaterialUsageCreateButton = ({
                             placeholder={tSchema("quantityUsed.placeholder")}
                             value={field.value ?? undefined}
                             onChange={field.onChange}
-                            disabled={isPending || !canCreate}
+                            disabled={disabled}
                             type="number"
                             min={1}
                             max={maxQuantityUsed}
@@ -189,7 +184,7 @@ export const MaterialUsageCreateButton = ({
                           onChange={field.onChange}
                           placeholder={tSchema("unitId.placeholder")}
                           unitType={UnitType.QUANTITY}
-                          disabled={isPending || !canCreate}
+                          disabled={disabled}
                           className="w-full"
                           error={tSchema("unitId.error")}
                           notFound={tSchema("unitId.notFound")}
@@ -213,7 +208,7 @@ export const MaterialUsageCreateButton = ({
                         placeholder={tSchema("actualPrice.placeholder")}
                         value={field.value ?? undefined}
                         onChange={field.onChange}
-                        disabled={isPending || !canCreate}
+                        disabled={disabled}
                         type="number"
                         min={1}
                         max={10_000_000}
@@ -225,7 +220,7 @@ export const MaterialUsageCreateButton = ({
               />
             </div>
 
-            <DynamicDialogFooter disabled={isPending || !canCreate} />
+            <DynamicDialogFooter disabled={disabled} />
           </form>
         </Form>
       </DialogContent>

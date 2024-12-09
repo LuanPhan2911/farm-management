@@ -11,7 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { ActivityAssignedSchema } from "@/schemas";
-import { StaffWithSalaryAndActivity } from "@/types";
+import { ManagePermission, StaffWithSalaryAndActivity } from "@/types";
 import { useAuth } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
@@ -21,13 +21,12 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-interface ActivityStaffsCreateButtonProps {
+interface ActivityStaffsCreateButtonProps extends ManagePermission {
   data: StaffWithSalaryAndActivity[];
-  disabled?: boolean;
 }
 export const ActivityStaffsCreateButton = ({
   data,
-  disabled,
+  canCreate,
 }: ActivityStaffsCreateButtonProps) => {
   const { orgId } = useAuth();
   const params = useParams<{
@@ -62,6 +61,8 @@ export const ActivityStaffsCreateButton = ({
     });
   };
 
+  const disabled = isPending || !canCreate;
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -79,7 +80,7 @@ export const ActivityStaffsCreateButton = ({
                     error={tSchema("assignedTo.error")}
                     placeholder={tSchema("assignedTo.placeholder")}
                     notFound={tSchema("assignedTo.notFound")}
-                    disabled={isPending || disabled}
+                    disabled={disabled}
                     className="lg:w-[1024px] w-full"
                   />
                 </FormControl>
@@ -88,11 +89,7 @@ export const ActivityStaffsCreateButton = ({
               </FormItem>
             )}
           />
-          <Button
-            type="submit"
-            disabled={isPending || disabled}
-            variant={"blue"}
-          >
+          <Button type="submit" disabled={disabled} variant={"blue"}>
             Submit
           </Button>
         </div>

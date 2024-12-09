@@ -1,14 +1,20 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 import { getTranslations } from "next-intl/server";
 
 import { getMaterialUsagesByActivity } from "@/services/material-usages";
 import { MaterialUsageCreateButton } from "../../../../(inventory)/materials/detail/[materialId]/usages/_components/material-usages-create-button";
-import { getOnlyActivityById } from "@/services/activities";
+import { getActivityById } from "@/services/activities";
 import { notFound } from "next/navigation";
-import { canUpdateActivityStatus } from "@/lib/permission";
+import { canUpdateActivityStatus, canUpdateCropStatus } from "@/lib/permission";
 import { ActivityMaterialUsagesTable } from "./_components/activity-material-usages-table";
-import { canUpdateActivity } from "@/lib/role";
+import { getCurrentStaffRole } from "@/services/staffs";
 export async function generateMetadata() {
   const t = await getTranslations("activities.page.detail.material-usages");
   return {
@@ -37,22 +43,28 @@ const ActivityMaterialUsagesPage = async ({
     orderBy,
     query,
   });
-  const activity = await getOnlyActivityById(params.activityId);
+  const activity = await getActivityById(params.activityId);
   if (!activity) {
     notFound();
   }
-  const canEdit = await canUpdateActivity(activity.cropId, params.activityId);
+  const { isOnlyAdmin } = await getCurrentStaffRole();
+
+  const canManage =
+    isOnlyAdmin &&
+    canUpdateCropStatus(activity.crop.status) &&
+    canUpdateActivityStatus(activity.status);
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex justify-end">
-          <MaterialUsageCreateButton disabled={!canEdit} />
+          <MaterialUsageCreateButton canCreate={canManage} />
         </div>
-        <ActivityMaterialUsagesTable data={data} disabled={!canEdit} />
+        <ActivityMaterialUsagesTable data={data} canEdit={canManage} />
       </CardContent>
     </Card>
   );

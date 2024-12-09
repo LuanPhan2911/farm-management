@@ -1,5 +1,11 @@
 "use client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/activity";
@@ -7,11 +13,10 @@ import { ActivityCompletedButton } from "@/app/[locale]/(backoffice)/admin/activ
 import { CustomAlert } from "@/components/cards/custom-alert";
 import { useTranslations } from "next-intl";
 import { DestroyButtonWithConfirmCode } from "@/components/buttons/destroy-button-with-confirm-code";
+import { ManagePermission } from "@/types";
 
-interface ActivityDangerCardProps {
+interface ActivityDangerCardProps extends ManagePermission {
   id: string;
-  canEdit?: boolean;
-  canDelete?: boolean;
   redirectUrl?: string;
 }
 export const ActivityDangerCard = ({
@@ -26,6 +31,9 @@ export const ActivityDangerCard = ({
       <Card>
         <CardHeader>
           <CardTitle>{tDanger("complete.title")}</CardTitle>
+          <CardDescription>
+            {tDanger("complete.description.note")}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <CustomAlert
@@ -52,6 +60,9 @@ export const ActivityDangerCard = ({
       <Card>
         <CardHeader>
           <CardTitle>{tDanger("destroy.title")}</CardTitle>
+          <CardDescription>
+            {tDanger("destroy.description.note")}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <CustomAlert

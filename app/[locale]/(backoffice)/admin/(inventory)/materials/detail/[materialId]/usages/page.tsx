@@ -2,7 +2,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { parseToNumber } from "@/lib/utils";
 import { getMaterialUsages } from "@/services/material-usages";
-import { getMaterialsSelect } from "@/services/materials";
 import { getTranslations } from "next-intl/server";
 import { MaterialUsageCreateButton } from "./_components/material-usages-create-button";
 import { MaterialUsagesTable } from "./_components/material-usages-table";
@@ -45,7 +44,7 @@ const MaterialUsagesPage = async ({
       </CardHeader>
       <CardContent>
         <div className="flex justify-end">
-          <MaterialUsageCreateButton />
+          <MaterialUsageCreateButton canCreate />
         </div>
         <MaterialUsagesTable data={data} totalPage={totalPage} />
       </CardContent>

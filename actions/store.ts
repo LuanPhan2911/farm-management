@@ -26,8 +26,6 @@ export const upsert = async (
     revalidatePath(`/admin/crops/detail/${store.cropId}/store`);
     return successResponse(tStatus("success.upsert"));
   } catch (error) {
-    console.log(error);
-
     return errorResponse(tStatus("failure.upsert"));
   }
 };

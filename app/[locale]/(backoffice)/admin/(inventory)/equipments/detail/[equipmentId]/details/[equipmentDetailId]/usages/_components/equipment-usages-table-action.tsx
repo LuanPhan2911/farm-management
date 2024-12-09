@@ -11,29 +11,29 @@ import { EquipmentUsageEditButton } from "./equipment-usage-edit-button";
 import { LinkButton } from "@/components/buttons/link-button";
 import { DestroyButton } from "@/components/buttons/destroy-button";
 import { assign, destroy, revoke } from "@/actions/equipment-usage";
-import { EquipmentUsageTable } from "@/types";
+import { EquipmentUsageTable, ManagePermission } from "@/types";
 import { useTranslations } from "next-intl";
-import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { canUpdateActivityStatus } from "@/lib/permission";
 import { useParams } from "next/navigation";
 import { ActionButton } from "@/components/buttons/action-button";
 
-interface EquipmentUsagesTableActionProps {
+interface EquipmentUsagesTableActionProps extends ManagePermission {
   data: EquipmentUsageTable;
   disabled?: boolean;
 }
 export const EquipmentUsagesTableAction = ({
   data,
   disabled,
+  canEdit,
 }: EquipmentUsagesTableActionProps) => {
   const t = useTranslations("equipmentUsages.form");
-  const { isOnlyAdmin } = useCurrentStaffRole();
+
   const params = useParams<{ activityId: string }>()!;
 
   const canAssign =
     data.activity === null ||
     (data.activity && canUpdateActivityStatus(data.activity.status));
-  const canUpdate = data.activity === null && isOnlyAdmin;
+  const canUpdate = data.activity === null && canEdit;
   const canDelete = canUpdate;
   return (
     <DropdownMenu>

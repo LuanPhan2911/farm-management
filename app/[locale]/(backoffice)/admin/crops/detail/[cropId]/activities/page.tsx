@@ -1,18 +1,26 @@
-import { parseToDate, parseToNumber } from "@/lib/utils";
+import { parseToDate } from "@/lib/utils";
 import { getTranslations } from "next-intl/server";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 import { ActivityCreateButton } from "../../../../activities/_components/activity-create-button";
-import { canUpdateActivity } from "@/lib/role";
 import { CropActivitiesTable } from "./_components/crop-activities-table";
 import { getActivitiesByCrop } from "@/services/activities";
+import { getCurrentStaffRole } from "@/services/staffs";
+import { getOnlyCropById } from "@/services/crops";
+import { notFound } from "next/navigation";
+import { canUpdateCropStatus } from "@/lib/permission";
 
 interface CropActivitiesPageProps {
   params: {
     cropId: string;
   };
   searchParams: {
-    orderBy?: string;
     filterString?: string;
     query?: string;
     begin?: string;
@@ -35,26 +43,35 @@ const CropActivitiesPage = async ({
   const begin = parseToDate(searchParams!.begin);
   const end = parseToDate(searchParams!.end);
 
-  const { orderBy, filterString, query } = searchParams;
+  const { filterString, query } = searchParams;
 
   const data = await getActivitiesByCrop({
     cropId: params.cropId,
     begin,
     end,
     filterString,
-    orderBy,
     query,
   });
-  const canEdit = await canUpdateActivity(params.cropId);
+
+  const crop = await getOnlyCropById(params.cropId);
+  if (!crop) {
+    notFound();
+  }
+
+  const { isOnlyAdmin } = await getCurrentStaffRole();
+
+  const canCreate = isOnlyAdmin && canUpdateCropStatus(crop.status);
+
   return (
     <div className="flex flex-col gap-4 py-4 h-full">
       <Card>
         <CardHeader>
           <CardTitle>{t("title")}</CardTitle>
+          <CardDescription>{t("description")}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex justify-end">
-            <ActivityCreateButton disabled={!canEdit} />
+            <ActivityCreateButton canCreate={canCreate} />
           </div>
           <CropActivitiesTable data={data} />
         </CardContent>

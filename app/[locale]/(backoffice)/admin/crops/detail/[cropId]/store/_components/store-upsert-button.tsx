@@ -19,7 +19,7 @@ import {
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 
-import { CropTable } from "@/types";
+import { CropTable, ManagePermission } from "@/types";
 import { editLearnedLessons } from "@/actions/crop";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 
@@ -31,7 +31,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 
-interface StoreUpsertFormProps {
+interface StoreUpsertFormProps extends ManagePermission {
   data: Store | null;
   crop: CropTable;
   currentStaff: Staff;
@@ -41,6 +41,7 @@ export const StoreUpsertForm = ({
   data,
   crop,
   currentStaff,
+  canEdit,
 }: StoreUpsertFormProps) => {
   const tSchema = useTranslations("stores.schema");
   const formSchema = StoreSchema(tSchema);
@@ -56,13 +57,11 @@ export const StoreUpsertForm = ({
       cropId: data?.cropId ?? crop.id,
     },
   });
-  const { isSuperAdmin } = useCurrentStaffRole();
-  const canEdit = isSuperAdmin && canUpdateCropStatus(crop.status);
+
+  const disabled = isPending || !canEdit;
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
-      console.log(values);
-
       upsert(values, data?.id)
         .then(({ message, ok }) => {
           if (ok) {
@@ -86,12 +85,14 @@ export const StoreUpsertForm = ({
           render={({ field }) => (
             <FormItem>
               <FormLabel>{tSchema("imageUrl.label")}</FormLabel>
-
+              <FormDescription>
+                {tSchema("imageUrl.placeholder")}
+              </FormDescription>
               <FormControl>
                 <UploadImage
                   onChange={field.onChange}
                   defaultValue={field.value}
-                  disabled={isPending || !canEdit}
+                  disabled={disabled}
                 />
               </FormControl>
 
@@ -111,7 +112,7 @@ export const StoreUpsertForm = ({
                   value={field.value ?? undefined}
                   onChange={field.onChange}
                   placeholder={tSchema("name.placeholder")}
-                  disabled={isPending || !canEdit}
+                  disabled={disabled}
                 />
               </FormControl>
 
@@ -131,7 +132,7 @@ export const StoreUpsertForm = ({
                   value={field.value ?? undefined}
                   onChange={field.onChange}
                   placeholder={tSchema("description.placeholder")}
-                  disabled={isPending || !canEdit}
+                  disabled={disabled}
                   rows={5}
                 />
               </FormControl>
@@ -153,7 +154,7 @@ export const StoreUpsertForm = ({
                     placeholder={tSchema("address.placeholder")}
                     value={field.value ?? undefined}
                     onChange={field.onChange}
-                    disabled={isPending}
+                    disabled={disabled}
                   />
                 </FormControl>
 
@@ -173,7 +174,7 @@ export const StoreUpsertForm = ({
                     placeholder={tSchema("phoneNumber.placeholder")}
                     value={field.value ?? undefined}
                     onChange={field.onChange}
-                    disabled={isPending}
+                    disabled={disabled}
                   />
                 </FormControl>
 
@@ -182,53 +183,53 @@ export const StoreUpsertForm = ({
             )}
           />
         </div>
-        <div className="grid lg:grid-cols-3 gap-4">
-          <div className="grid grid-cols-4 gap-2">
-            <div className="col-span-3">
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{tSchema("price.label")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={tSchema("price.placeholder")}
-                        value={field.value ?? undefined}
-                        onChange={field.onChange}
-                        disabled={isPending || !canEdit}
-                        type="number"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+        <div className="grid grid-cols-4 gap-2">
+          <div className="col-span-3">
             <FormField
               control={form.control}
-              name="unitId"
+              name="price"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{tSchema("unitId.label")}</FormLabel>
+                  <FormLabel>{tSchema("price.label")}</FormLabel>
                   <FormControl>
-                    <UnitsSelect
+                    <Input
+                      placeholder={tSchema("price.placeholder")}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
-                      placeholder={tSchema("unitId.placeholder")}
-                      unitType={UnitType.WEIGHT}
-                      disabled={isPending || !canEdit}
-                      className="w-full"
-                      error={tSchema("unitId.error")}
-                      notFound={tSchema("unitId.notFound")}
-                      defaultValue={field.value}
+                      disabled={disabled}
+                      type="number"
                     />
                   </FormControl>
-
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
+          <FormField
+            control={form.control}
+            name="unitId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("unitId.label")}</FormLabel>
+                <FormControl>
+                  <UnitsSelect
+                    onChange={field.onChange}
+                    placeholder={tSchema("unitId.placeholder")}
+                    unitType={UnitType.WEIGHT}
+                    disabled={disabled}
+                    className="w-full"
+                    error={tSchema("unitId.error")}
+                    notFound={tSchema("unitId.notFound")}
+                    defaultValue={field.value}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="grid lg:grid-cols-2 gap-2">
           <FormField
             control={form.control}
             name="isFeature"
@@ -238,7 +239,7 @@ export const StoreUpsertForm = ({
                   <Checkbox
                     checked={field.value}
                     onCheckedChange={field.onChange}
-                    disabled={isPending || !canEdit}
+                    disabled={disabled}
                   />
                 </FormControl>
                 <div className="space-y-1 leading-none">
@@ -259,7 +260,7 @@ export const StoreUpsertForm = ({
                   <Checkbox
                     checked={field.value}
                     onCheckedChange={field.onChange}
-                    disabled={isPending || !canEdit}
+                    disabled={disabled}
                   />
                 </FormControl>
                 <div className="space-y-1 leading-none">
@@ -273,10 +274,7 @@ export const StoreUpsertForm = ({
           />
         </div>
 
-        <DynamicDialogFooter
-          disabled={isPending || !canEdit}
-          closeButton={false}
-        />
+        <DynamicDialogFooter disabled={disabled} closeButton={false} />
       </form>
     </Form>
   );

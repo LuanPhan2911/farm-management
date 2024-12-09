@@ -20,6 +20,7 @@ import {
   FloatUnit,
   Frequency,
   Gender,
+  Harvest,
   IntUnit,
   JobExperience,
   JobWorkingState,
@@ -32,6 +33,7 @@ import {
   Plant,
   PlantFertilizer,
   PlantPesticide,
+  Sale,
   Soil,
   SoilType,
   Staff,
@@ -55,6 +57,12 @@ export type NextApiResponseServerIo<T> = NextApiResponse<T> & {
     };
   };
 };
+
+export interface ManagePermission {
+  canCreate?: boolean;
+  canEdit?: boolean;
+  canDelete?: boolean;
+}
 export type ActionResponse = {
   message: string;
   ok: boolean;
@@ -494,6 +502,7 @@ export type ActivityWithCountUsages = Activity & {
     equipmentUseds: number;
     assignedTo: number;
   };
+  crop: CropSelect;
 };
 export type ActivityStatusCount = {
   status: ActivityStatus;
@@ -527,9 +536,6 @@ export type SalaryChart = {
 export type CropTable = Crop & {
   plant: PlantSelect;
   field: FieldSelect;
-  _count: {
-    activities: number;
-  };
   unit: {
     name: string;
   };
@@ -596,4 +602,25 @@ export type Product = Store & {
 export type MaterialUsedInCrop = {
   fertilizers: FertilizerTable[];
   pesticides: PesticideTable[];
+};
+
+export type HarvestTable = Harvest & {
+  unit: {
+    name: string;
+  };
+  createdBy: Staff;
+};
+
+export type SaleTableWithCost = Sale & {
+  actualCost: number;
+  createdBy: Staff;
+  unit: {
+    name: string;
+  };
+};
+
+export type CropSaleTable = Crop & {
+  unit: {
+    name: string;
+  };
 };

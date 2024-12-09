@@ -18,23 +18,21 @@ import {
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 
-import { CropTable } from "@/types";
+import { CropTable, ManagePermission } from "@/types";
 import { UnitsSelect } from "@/app/[locale]/(backoffice)/admin/_components/units-select";
 import { edit, editLearnedLessons } from "@/actions/crop";
 import { PlantsSelect } from "@/app/[locale]/(backoffice)/admin/_components/plants-select";
 import { DatePickerWithRange } from "@/components/form/date-picker-with-range";
 import { DateRange } from "react-day-picker";
-import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { SelectOptions } from "@/components/form/select-options";
 import { FieldsSelect } from "../../_components/fields-select";
-import { canUpdateCropStatus } from "@/lib/permission";
 import { Tiptap } from "@/components/tiptap";
 
-interface CropEditFormProps {
+interface CropEditFormProps extends ManagePermission {
   data: CropTable;
 }
 
-export const CropEditForm = ({ data }: CropEditFormProps) => {
+export const CropEditForm = ({ data, canEdit }: CropEditFormProps) => {
   const tSchema = useTranslations("crops.schema");
 
   const formSchema = CropSchema(tSchema);
@@ -46,10 +44,6 @@ export const CropEditForm = ({ data }: CropEditFormProps) => {
       ...data,
     },
   });
-  const { isSuperAdmin } = useCurrentStaffRole();
-  const canEdit = isSuperAdmin && canUpdateCropStatus(data.status);
-
-  const endDate = form.watch("endDate");
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
@@ -67,6 +61,9 @@ export const CropEditForm = ({ data }: CropEditFormProps) => {
     });
   };
 
+  const endDate = form.watch("endDate");
+
+  const disabled = isPending || !canEdit;
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -82,7 +79,7 @@ export const CropEditForm = ({ data }: CropEditFormProps) => {
                   value={field.value ?? undefined}
                   onChange={field.onChange}
                   placeholder={tSchema("name.placeholder")}
-                  disabled={isPending || !canEdit}
+                  disabled={disabled}
                 />
               </FormControl>
 
@@ -111,7 +108,7 @@ export const CropEditForm = ({ data }: CropEditFormProps) => {
                       from: field.value,
                       to: endDate || undefined,
                     }}
-                    disabled={isPending || !canEdit}
+                    disabled={disabled}
                     className="lg:w-full"
                   />
                 </FormControl>
@@ -137,7 +134,7 @@ export const CropEditForm = ({ data }: CropEditFormProps) => {
                     placeholder={tSchema("status.placeholder")}
                     defaultValue={field.value}
                     onChange={field.onChange}
-                    disabled={isPending || !canEdit}
+                    disabled={disabled}
                     disabledValues={[CropStatus.FINISH, CropStatus.NEW]}
                   />
                 </FormControl>
@@ -194,29 +191,7 @@ export const CropEditForm = ({ data }: CropEditFormProps) => {
             )}
           />
         </div>
-        <div className="grid lg:grid-cols-3 gap-2">
-          <FormField
-            control={form.control}
-            name="unitId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tSchema("unitId.label")}</FormLabel>
-                <FormControl>
-                  <UnitsSelect
-                    onChange={field.onChange}
-                    placeholder={tSchema("unitId.placeholder")}
-                    unitType={UnitType.WEIGHT}
-                    disabled={isPending || !canEdit}
-                    error={tSchema("unitId.error")}
-                    notFound={tSchema("unitId.notFound")}
-                    defaultValue={field.value}
-                  />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <div className="grid lg:grid-cols-4 grid-cols-2 gap-2">
           <FormField
             control={form.control}
             name="estimatedYield"
@@ -228,7 +203,7 @@ export const CropEditForm = ({ data }: CropEditFormProps) => {
                     placeholder={tSchema("estimatedYield.placeholder")}
                     value={field.value ?? undefined}
                     onChange={field.onChange}
-                    disabled={isPending || !canEdit}
+                    disabled={disabled}
                     type="number"
                     min={0}
                     max={1_000_000_000}
@@ -249,31 +224,63 @@ export const CropEditForm = ({ data }: CropEditFormProps) => {
                     placeholder={tSchema("actualYield.placeholder")}
                     value={field.value ?? undefined}
                     onChange={field.onChange}
-                    disabled={isPending || !canEdit}
+                    disabled={true}
                     type="number"
-                    min={0}
-                    max={1_000_000_000}
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+          <FormItem>
+            <FormLabel>{tSchema("remainYield.label")}</FormLabel>
+            <FormControl>
+              <Input
+                placeholder={tSchema("remainYield.placeholder")}
+                value={data.remainYield}
+                disabled={true}
+                type="number"
+              />
+            </FormControl>
+          </FormItem>
+
+          <FormField
+            control={form.control}
+            name="unitId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{tSchema("unitId.label")}</FormLabel>
+                <FormControl>
+                  <UnitsSelect
+                    onChange={field.onChange}
+                    placeholder={tSchema("unitId.placeholder")}
+                    unitType={UnitType.WEIGHT}
+                    disabled={true}
+                    error={tSchema("unitId.error")}
+                    notFound={tSchema("unitId.notFound")}
+                    defaultValue={field.value}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
 
-        <DynamicDialogFooter
-          disabled={isPending || !canEdit}
-          closeButton={false}
-        />
+        <DynamicDialogFooter disabled={disabled} closeButton={false} />
       </form>
     </Form>
   );
 };
 
-interface CropEditLearnedLessonProps {
+interface CropEditLearnedLessonProps extends ManagePermission {
   data: CropTable;
 }
-export const CropEditLearnedLesson = ({ data }: CropEditLearnedLessonProps) => {
+export const CropEditLearnedLesson = ({
+  data,
+  canEdit,
+}: CropEditLearnedLessonProps) => {
   const tSchema = useTranslations("crops.schema");
 
   const formSchema = CropLearnedLessonsSchema(tSchema);
@@ -285,8 +292,6 @@ export const CropEditLearnedLesson = ({ data }: CropEditLearnedLessonProps) => {
       learnedLessons: data.learnedLessons,
     },
   });
-  const { isSuperAdmin } = useCurrentStaffRole();
-  const canEdit = isSuperAdmin && canUpdateCropStatus(data.status);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
@@ -304,6 +309,8 @@ export const CropEditLearnedLesson = ({ data }: CropEditLearnedLessonProps) => {
     });
   };
 
+  const disabled = isPending || !canEdit;
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -318,7 +325,7 @@ export const CropEditLearnedLesson = ({ data }: CropEditLearnedLessonProps) => {
                 <Tiptap
                   value={field.value || ""}
                   onChange={field.onChange}
-                  disabled={isPending || !canEdit}
+                  disabled={disabled}
                 />
               </FormControl>
 
@@ -327,10 +334,7 @@ export const CropEditLearnedLesson = ({ data }: CropEditLearnedLessonProps) => {
           )}
         />
 
-        <DynamicDialogFooter
-          disabled={isPending || !canEdit}
-          closeButton={false}
-        />
+        <DynamicDialogFooter disabled={disabled} closeButton={false} />
       </form>
     </Form>
   );

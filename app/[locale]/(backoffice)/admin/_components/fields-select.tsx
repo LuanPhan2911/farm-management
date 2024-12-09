@@ -22,7 +22,7 @@ export const FieldsSelect = (props: FieldsSelectProps) => {
   const { orgId } = useAuth();
   const { isCreateCrop } = props;
   const { data, isPending, isError, refetch } = useQuery({
-    queryKey: ["fields", isCreateCrop],
+    queryKey: ["fields_select", isCreateCrop, orgId],
     queryFn: async () => {
       const url = queryString.stringifyUrl(
         {

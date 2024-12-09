@@ -10,24 +10,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
-import { StaffWithSalaryAndActivity } from "@/types";
+import { ManagePermission, StaffWithSalaryAndActivity } from "@/types";
 import { MoreHorizontal, Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { ActivityStaffsEditButton } from "./activity-staffs-edit-button";
 import { canUpdateActivityStatus } from "@/lib/permission";
-interface ActivityStaffTableActionProps {
+interface ActivityStaffTableActionProps extends ManagePermission {
   data: StaffWithSalaryAndActivity;
   disabled?: boolean;
 }
 export const ActivityStaffsTableAction = ({
   data,
   disabled,
+  canEdit,
+  canDelete,
 }: ActivityStaffTableActionProps) => {
   const t = useTranslations("activityAssigned.form");
   const params = useParams<{ activityId: string }>();
-  const { isOnlyAdmin } = useCurrentStaffRole();
-  const canEdit = canUpdateActivityStatus(data.activity.status) && isOnlyAdmin;
 
   return (
     <DropdownMenu>
@@ -49,7 +49,7 @@ export const ActivityStaffsTableAction = ({
             className="w-full"
             icon={Trash}
             variant={"destroy"}
-            disabled={!canEdit}
+            disabled={!canDelete}
           />
         </DropdownMenuItem>
       </DropdownMenuContent>
