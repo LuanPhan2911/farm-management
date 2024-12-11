@@ -38,6 +38,7 @@ import {
   type Content,
   type OnChangeStatus,
   type JSONContent,
+  toJSONContent,
 } from "vanilla-jsoneditor";
 import { JSONEditorReact } from "@/components/vanila-json-editor";
 import { parseUploadedJSONFile } from "@/lib/utils";
@@ -436,7 +437,8 @@ export const WeatherCreateManyButton = () => {
   const [isOpen, setOpen] = useState(false);
   const onSubmit = () => {
     startTransition(() => {
-      const data = (jsonContent as JSONContent).json;
+      const data = toJSONContent(jsonContent).json;
+
       createMany(params!.fieldId, data)
         .then(({ message, ok }) => {
           if (ok) {
@@ -449,7 +451,7 @@ export const WeatherCreateManyButton = () => {
             toast.error(message);
           }
         })
-        .catch((error: Error) => {
+        .catch((error) => {
           toast.error(t("status.failure.createMany"));
         });
     });

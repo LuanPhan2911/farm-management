@@ -35,11 +35,12 @@ const CropDetailPage = async ({ params }: CropDetailPageProps) => {
     notFound();
   }
 
-  const { isSuperAdmin } = await getCurrentStaffRole();
+  const { isOnlyAdmin } = await getCurrentStaffRole();
 
-  const canEditCrop = isSuperAdmin && canUpdateCropStatus(data.status);
+  const canEditCrop = isOnlyAdmin && canUpdateCropStatus(data.status);
 
-  const canEditCropLearnedLessons = canUpdateCropStatus(data.status);
+  const canEditCropLearnedLessons =
+    isOnlyAdmin && canUpdateCropStatus(data.status);
   return (
     <div className="flex flex-col gap-y-4 py-4 h-full">
       <Card>

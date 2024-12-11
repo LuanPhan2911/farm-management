@@ -205,8 +205,6 @@ export const CropEditForm = ({ data, canEdit }: CropEditFormProps) => {
                     onChange={field.onChange}
                     disabled={disabled}
                     type="number"
-                    min={0}
-                    max={1_000_000_000}
                   />
                 </FormControl>
                 <FormMessage />

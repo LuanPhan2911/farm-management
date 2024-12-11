@@ -452,10 +452,6 @@ export const getCropSaleCosts = async ({
   getAll = false,
 }: CropSaleCostQuery): Promise<CropSaleTable[]> => {
   try {
-    if (!begin || !end) {
-      throw new Error("Missing begin and end date");
-    }
-
     if (!getAll && !orgId) {
       throw new Error("No field id to get crops");
     }
@@ -473,12 +469,17 @@ export const getCropSaleCosts = async ({
           in: getAll && !orgId ? undefined : fieldIds,
         },
         status: "FINISH",
-        startDate: {
-          gte: begin,
-        },
-        endDate: {
-          lte: end,
-        },
+        ...(begin && {
+          startDate: {
+            gte: begin,
+          },
+        }),
+        ...(end && {
+          endDate: {
+            lte: end,
+          },
+        }),
+
         name: {
           contains: query,
           mode: "insensitive",

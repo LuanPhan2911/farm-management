@@ -172,8 +172,6 @@ export const MaterialUsageEditDialog = () => {
                     onChange={field.onChange}
                     disabled={isPending || !canEdit}
                     type="number"
-                    min={1}
-                    max={10_000_000}
                   />
                 </FormControl>
                 <FormMessage />

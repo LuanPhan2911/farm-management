@@ -14,7 +14,6 @@ import { useFormatter, useTranslations } from "next-intl";
 import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-with-value";
 import { CropTable } from "@/types";
 
-import { OrderByButton } from "@/components/buttons/order-by-button";
 import { DatePickerWithRangeButton } from "@/components/buttons/date-picker-range-button";
 import { SearchBar } from "@/components/search-bar";
 import { PlantsSelect } from "@/app/[locale]/(backoffice)/admin/_components/plants-select";
@@ -96,6 +95,9 @@ export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
             <TableHead className="min-w-[250px]">
               {t("table.thead.field.name")}
             </TableHead>
+            <TableHead className="text-right">
+              {t("table.thead.estimatedYield")}
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -129,6 +131,12 @@ export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
                   <SelectItemContentWithoutImage
                     title={item.field.name}
                     description={item.field.location}
+                  />
+                </TableCell>
+                <TableCell>
+                  <UnitWithValue
+                    value={item.estimatedYield}
+                    unit={item.unit.name}
                   />
                 </TableCell>
               </TableRow>

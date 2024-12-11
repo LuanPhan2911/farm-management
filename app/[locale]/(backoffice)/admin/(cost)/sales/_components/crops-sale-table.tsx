@@ -33,10 +33,7 @@ export const CropsSaleTable = ({ data, totalPage }: CropsSaleTableProps) => {
     <>
       <div className="py-4 flex gap-2 lg:flex-row flex-col items-start lg:items-center ">
         <SearchBar placeholder={t("search.placeholder")} />
-        <DatePickerWithRangeButton
-          begin={startOfMonth(new Date())}
-          end={endOfMonth(new Date())}
-        />
+        <DatePickerWithRangeButton />
       </div>
 
       <Table>

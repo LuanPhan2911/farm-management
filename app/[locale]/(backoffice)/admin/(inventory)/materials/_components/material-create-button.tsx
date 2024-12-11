@@ -175,8 +175,6 @@ export const MaterialCreateForm = () => {
                           onChange={field.onChange}
                           disabled={isPending || !canCreate}
                           type="number"
-                          min={1}
-                          max={1000}
                         />
                       </FormControl>
                       <FormMessage />
@@ -222,8 +220,6 @@ export const MaterialCreateForm = () => {
                       onChange={field.onChange}
                       disabled={isPending || !canCreate}
                       type="number"
-                      min={0}
-                      max={10_000_000}
                     />
                   </FormControl>
                   <FormMessage />

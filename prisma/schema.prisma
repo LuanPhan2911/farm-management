@@ -723,7 +723,7 @@ model Harvest {
   unit        Unit     @relation(fields: [unitId], references: [id])
 
   cropId      String
-  crop        Crop   @relation(fields: [cropId], references: [id])
+  crop        Crop   @relation(fields: [cropId], references: [id], onDelete: Cascade)
   createdById String
   createdBy   Staff  @relation(fields: [createdById], references: [id])
 
@@ -746,7 +746,7 @@ model Sale {
   unitId      String
   unit        Unit   @relation(fields: [unitId], references: [id])
   cropId      String
-  crop        Crop   @relation(fields: [cropId], references: [id])
+  crop        Crop   @relation(fields: [cropId], references: [id], onDelete: Cascade)
   createdById String
   createdBy   Staff  @relation(fields: [createdById], references: [id])
 

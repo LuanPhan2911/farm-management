@@ -208,8 +208,6 @@ export const MaterialEditForm = ({ data }: MaterialEditFormProps) => {
                       onChange={field.onChange}
                       disabled={isPending || !canEdit}
                       type="number"
-                      min={0}
-                      max={10_000_000}
                     />
                   </FormControl>
                   <FormMessage />

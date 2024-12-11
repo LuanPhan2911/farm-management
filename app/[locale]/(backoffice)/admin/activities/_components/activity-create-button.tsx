@@ -149,9 +149,6 @@ export const ActivityCreateButton = ({
                         placeholder={tSchema("activityDate.placeholder")}
                         onChange={field.onChange}
                         value={field.value}
-                        disabledDateRange={{
-                          before: new Date(),
-                        }}
                         disabled={disabled}
                       />
                     </FormControl>

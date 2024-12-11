@@ -210,8 +210,6 @@ export const MaterialUsageCreateButton = ({
                         onChange={field.onChange}
                         disabled={disabled}
                         type="number"
-                        min={1}
-                        max={10_000_000}
                       />
                     </FormControl>
                     <FormMessage />

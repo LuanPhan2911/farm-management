@@ -219,73 +219,53 @@ export const CropCreateButton = ({ canCreate }: CropCreateButtonProps) => {
                 )}
               />
             </div>
-            <div className="grid lg:grid-cols-3 gap-2">
-              <FormField
-                control={form.control}
-                name="unitId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{tSchema("unitId.label")}</FormLabel>
-                    <FormControl>
-                      <UnitsSelect
-                        onChange={field.onChange}
-                        placeholder={tSchema("unitId.placeholder")}
-                        unitType={UnitType.WEIGHT}
-                        disabled={disabled}
-                        error={tSchema("unitId.error")}
-                        notFound={tSchema("unitId.notFound")}
-                        defaultValue={field.value}
-                      />
-                    </FormControl>
+            <div className="grid lg:grid-cols-2">
+              <div className="grid grid-cols-3 gap-2">
+                <div className="col-span-2">
+                  <FormField
+                    control={form.control}
+                    name="estimatedYield"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{tSchema("estimatedYield.label")}</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder={tSchema("estimatedYield.placeholder")}
+                            value={field.value ?? undefined}
+                            onChange={field.onChange}
+                            disabled={disabled}
+                            type="number"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <FormField
+                  control={form.control}
+                  name="unitId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{tSchema("unitId.label")}</FormLabel>
+                      <FormControl>
+                        <UnitsSelect
+                          onChange={field.onChange}
+                          placeholder={tSchema("unitId.placeholder")}
+                          unitType={UnitType.WEIGHT}
+                          disabled={disabled}
+                          error={tSchema("unitId.error")}
+                          notFound={tSchema("unitId.notFound")}
+                          defaultValue={field.value}
+                        />
+                      </FormControl>
 
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="estimatedYield"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{tSchema("estimatedYield.label")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={tSchema("estimatedYield.placeholder")}
-                        value={field.value ?? undefined}
-                        onChange={field.onChange}
-                        disabled={disabled}
-                        type="number"
-                        min={0}
-                        max={1_000_000_000}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="actualYield"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{tSchema("actualYield.label")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={tSchema("actualYield.placeholder")}
-                        value={field.value ?? undefined}
-                        onChange={field.onChange}
-                        disabled={disabled}
-                        type="number"
-                        min={0}
-                        max={1_000_000_000}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
-
             <DynamicDialogFooter disabled={disabled} />
           </form>
         </Form>

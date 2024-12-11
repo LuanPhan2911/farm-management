@@ -1309,7 +1309,7 @@ export const HarvestSchema = (
     }),
     value: numberSchema(t, "value", {
       min: 0,
-      max: 100_000,
+      max: 1_000_000_000,
     }),
     cropId: z.string(),
     createdById: z.string(),
@@ -1344,11 +1344,11 @@ export const SaleSchema = (
 
     value: numberSchema(t, "value", {
       min: 0,
-      max: 100_000,
+      max: 1_000_000_000,
     }),
     price: numberSchema(t, "price", {
       min: 0,
-      max: 10_000_000,
+      max: 1_000_000_000,
     }),
     cropId: z.string(),
     createdById: z.string(),

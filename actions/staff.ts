@@ -114,6 +114,8 @@ export const destroy = async (externalId: string): Promise<ActionResponse> => {
     revalidatePath("/admin/staffs");
     return successResponse(tStatus("success.destroy"));
   } catch (error) {
+    console.log(error);
+
     return errorResponse(tStatus("failure.destroy"));
   }
 };

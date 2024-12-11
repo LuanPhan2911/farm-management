@@ -273,7 +273,6 @@ export const EquipmentUsageCreateButton = ({
                             onChange={field.onChange}
                             disabled={disabled}
                             type="number"
-                            min={0}
                             max={maxFuelConsumption}
                           />
                         </FormControl>
@@ -321,8 +320,6 @@ export const EquipmentUsageCreateButton = ({
                         onChange={field.onChange}
                         disabled={disabled}
                         type="number"
-                        min={0}
-                        max={1_000_000}
                       />
                     </FormControl>
                     <FormMessage />
@@ -342,8 +339,6 @@ export const EquipmentUsageCreateButton = ({
                         onChange={field.onChange}
                         disabled={disabled}
                         type="number"
-                        min={0}
-                        max={10_000_000}
                       />
                     </FormControl>
                     <FormMessage />
