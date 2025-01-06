@@ -30,11 +30,12 @@ export const EquipmentUsagesTableAction = ({
 
   const params = useParams<{ activityId: string }>()!;
 
-  const canAssign =
-    data.activity === null ||
-    (data.activity && canUpdateActivityStatus(data.activity.status));
+  const canAssign = data.activity === null && canEdit;
+  const canRevoke =
+    data.activity && canUpdateActivityStatus(data.activity.status) && canEdit;
   const canUpdate = data.activity === null && canEdit;
   const canDelete = canUpdate;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -61,7 +62,7 @@ export const EquipmentUsagesTableAction = ({
                 actionFn={() => {
                   return revoke(data.id);
                 }}
-                disabled={!canAssign}
+                disabled={!canRevoke}
                 label={t("revoke.label")}
                 description={t("revoke.description")}
                 title={t("revoke.title")}

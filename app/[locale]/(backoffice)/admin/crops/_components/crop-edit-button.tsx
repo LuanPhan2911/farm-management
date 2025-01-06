@@ -203,7 +203,7 @@ export const CropEditForm = ({ data, canEdit }: CropEditFormProps) => {
                     placeholder={tSchema("estimatedYield.placeholder")}
                     value={field.value ?? undefined}
                     onChange={field.onChange}
-                    disabled={disabled}
+                    disabled={true}
                     type="number"
                   />
                 </FormControl>
