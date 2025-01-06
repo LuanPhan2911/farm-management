@@ -4,9 +4,6 @@ import { getTranslations } from "next-intl/server";
 
 import { getEquipmentUsagesByActivity } from "@/services/equipment-usages";
 import { ActivityEquipmentUsagesTable } from "@/app/[locale]/(backoffice)/admin/activities/detail/[activityId]/equipment-usages/_components/activity-equipment-usages-table";
-import { getOnlyActivityById } from "@/services/activities";
-import { notFound } from "next/navigation";
-import { canUpdateActivity } from "@/lib/role";
 export async function generateMetadata() {
   const t = await getTranslations("activities.page.detail.equipment-usages");
   return {
@@ -35,18 +32,14 @@ const ActivityEquipmentUsagesPage = async ({
     orderBy,
     query,
   });
-  const activity = await getOnlyActivityById(params.activityId);
-  if (!activity) {
-    notFound();
-  }
-  const canEdit = await canUpdateActivity(activity.cropId, params.activityId);
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>{t("title")}</CardTitle>
       </CardHeader>
       <CardContent>
-        <ActivityEquipmentUsagesTable data={data} disabled={!canEdit} />
+        <ActivityEquipmentUsagesTable data={data} />
       </CardContent>
     </Card>
   );

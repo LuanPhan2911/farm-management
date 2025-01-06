@@ -30,7 +30,7 @@ export const EmailTemplate = ({
     return (
       <Tailwind>
         <Container className="my-0 mx-auto">
-          <Text className="text-muted-foreground text-md m-1">Receivers:</Text>
+          <Text className="text-muted-foreground text-sm m-1">Receivers:</Text>
           <Text className="line-clamp-2 m-0">{receivers.join("; ")}</Text>
           <Link
             href={baseUrl}
@@ -39,23 +39,23 @@ export const EmailTemplate = ({
             {siteConfig.name}
           </Link>
           <Heading className="flex items-center gap-x-2">
-            <Text className="text-md m-1 text-muted-foreground"> Subject:</Text>
+            <Text className="text-sm m-1 text-muted-foreground"> Subject:</Text>
             <Text className="text-lg font-semibold line-clamp-1 m-0">
               {subject}
             </Text>
           </Heading>
 
-          <Text className="text-muted-foreground text-md m-1">Contents:</Text>
+          <Text className="text-muted-foreground text-sm m-1">Contents:</Text>
           {contents.map((content) => {
             return (
-              <Text className="text-md m-1" key={content}>
+              <Text className="text-sm m-1" key={content}>
                 {content}
               </Text>
             );
           })}
           <Heading className="flex items-center gap-x-2">
-            <Text className="text-md m-1 text-muted-foreground"> Sender:</Text>
-            <Text className="text-md m-1 font-semibold line-clamp-1">
+            <Text className="text-sm m-1 text-muted-foreground"> Sender:</Text>
+            <Text className="text-sm m-1 font-semibold line-clamp-1">
               {sender}
             </Text>
           </Heading>
@@ -86,7 +86,7 @@ export const EmailTemplate = ({
             </Heading>
             {contents.map((content) => {
               return (
-                <Text className="text-md m-1" key={content}>
+                <Text className="text-sm m-1" key={content}>
                   {content}
                 </Text>
               );

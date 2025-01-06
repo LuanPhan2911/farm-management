@@ -1,7 +1,7 @@
 import { redirect } from "@/navigation";
 
 const AdminPage = () => {
-  return redirect("/admin/dashboard");
+  return redirect("/admin/crops");
 };
 
 export default AdminPage;

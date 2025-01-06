@@ -29,13 +29,13 @@ export const UploadImage = ({
     onChange(url);
   };
   return (
-    <div className="flex justify-center items-center flex-col gap-2">
-      <Card className="w-32 h-32">
-        <CardContent className="flex aspect-square items-center justify-center p-6 relative">
+    <div className="flex justify-center items-center flex-col gap-2 ">
+      <Card className="w-32 h-32 group">
+        <CardContent className="flex aspect-square items-center justify-center lg:p-1 relative">
           {defaultValue ? (
             <>
               <Button
-                className="absolute right-1 top-1 w-5 h-5"
+                className="absolute right-1 top-1 w-5 h-5 z-[100] hidden group-hover:inline-flex"
                 disabled={disabled}
                 variant={"destructive"}
                 size={"icon"}

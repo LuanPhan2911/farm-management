@@ -1,10 +1,10 @@
 import {
-  BadgeDollarSign,
   CreditCard,
   Currency,
   DollarSign,
   LucideIcon,
   Pickaxe,
+  Shapes,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import {
@@ -24,7 +24,6 @@ import {
   Grid2X2,
   Hammer,
   House,
-  LayoutGrid,
   Leaf,
   MessageCircle,
   MountainSnow,
@@ -50,12 +49,6 @@ export const useSidebarItem = () => {
   const t = useTranslations("sidebar");
 
   const adminSidebar: SidebarWithChildren[] = [
-    {
-      icon: LayoutGrid,
-      items: [],
-      title: t("dashboard"),
-      href: "/admin/dashboard",
-    },
     {
       icon: Vegan,
       items: [],
@@ -85,6 +78,11 @@ export const useSidebarItem = () => {
           icon: Pickaxe,
           title: t("equipment-cost"),
           href: "/admin/equipment-cost",
+        },
+        {
+          icon: Shapes,
+          title: t("sales"),
+          href: "/admin/sales",
         },
       ],
       title: t("cost"),

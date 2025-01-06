@@ -48,7 +48,10 @@ export const create = async (
       ...validatedFields.data,
       jobId,
     });
-    sendApplicantApply(applicant);
+    sendApplicantApply(applicant.email, {
+      jobName: applicant.job.name,
+      name: applicant.name,
+    });
 
     return successResponse(tStatus("success.create"));
   } catch (error) {
@@ -95,8 +98,16 @@ export const createApplicantStaff = async (
       return errorResponse(tSchema("errors.exist"));
     }
 
-    const { email, password, name, role, address, phone, baseHourlyWage } =
-      validatedFields.data;
+    const {
+      email,
+      password,
+      name,
+      role,
+      address,
+      phone,
+      startToWorkDate,
+      baseHourlyWage,
+    } = validatedFields.data;
 
     const existingUser = await getUserByEmail(email);
     if (existingUser) {
@@ -119,10 +130,17 @@ export const createApplicantStaff = async (
       address,
       baseHourlyWage,
       phone,
+      startToWorkDate,
     });
     // TODO: use webhook to create staff
 
-    sendApplicantCreateUser(applicant, email, password);
+    sendApplicantCreateUser(applicant.email, {
+      email,
+      name,
+      password,
+      startToWorkDate,
+      jobName: applicant.job.name,
+    });
 
     // send mail notification
 

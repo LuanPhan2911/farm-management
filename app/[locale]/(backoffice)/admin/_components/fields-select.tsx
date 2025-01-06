@@ -16,17 +16,20 @@ interface FieldsSelectProps {
   notFound: string;
   error: string;
   appearance?: ComboBoxCustomAppearance;
+  isCreateCrop?: boolean;
 }
 export const FieldsSelect = (props: FieldsSelectProps) => {
   const { orgId } = useAuth();
+  const { isCreateCrop } = props;
   const { data, isPending, isError, refetch } = useQuery({
-    queryKey: ["fields"],
+    queryKey: ["fields_select", isCreateCrop, orgId],
     queryFn: async () => {
       const url = queryString.stringifyUrl(
         {
           url: "/api/fields/select",
           query: {
             orgId,
+            isCreateCrop,
           },
         },
         {

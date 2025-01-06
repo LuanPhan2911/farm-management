@@ -38,12 +38,11 @@ import { StaffsSelectMultiple } from "../../_components/staffs-select";
 import { CategoriesSelect } from "../../_components/categories-select";
 import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
+import { ManagePermission } from "@/types";
 
-interface ActivityCreateButtonProps {
-  disabled?: boolean;
-}
+interface ActivityCreateButtonProps extends ManagePermission {}
 export const ActivityCreateButton = ({
-  disabled,
+  canCreate,
 }: ActivityCreateButtonProps) => {
   const t = useTranslations("activities.form");
 
@@ -85,15 +84,11 @@ export const ActivityCreateButton = ({
     });
   };
 
-  const canCreate = !disabled;
+  const disabled = isPending || !canCreate;
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          size={"sm"}
-          variant={"success"}
-          disabled={isPending || !canCreate}
-        >
+        <Button size={"sm"} variant={"success"} disabled={disabled}>
           <Plus className="h-4 w-4 mr-2" />{" "}
           <span className="text-sm font-semibold">{t("create.label")}</span>
         </Button>
@@ -122,7 +117,7 @@ export const ActivityCreateButton = ({
                             placeholder={tSchema("name.placeholder")}
                             value={field.value ?? undefined}
                             onChange={field.onChange}
-                            disabled={isPending || !canCreate}
+                            disabled={disabled}
                           />
                         </div>
                         <CategoriesSelect
@@ -130,7 +125,7 @@ export const ActivityCreateButton = ({
                           notFound={tSchema("name.select.notFound")}
                           placeholder={tSchema("name.select.placeholder")}
                           type="ACTIVITY"
-                          disabled={isPending || !canCreate}
+                          disabled={disabled}
                           onChange={field.onChange}
                           valueKey="name"
                           hidden
@@ -154,10 +149,7 @@ export const ActivityCreateButton = ({
                         placeholder={tSchema("activityDate.placeholder")}
                         onChange={field.onChange}
                         value={field.value}
-                        disabledDateRange={{
-                          before: new Date(),
-                        }}
-                        disabled={isPending || !canCreate}
+                        disabled={disabled}
                       />
                     </FormControl>
 
@@ -181,7 +173,7 @@ export const ActivityCreateButton = ({
                         error={tSchema("cropId.error")}
                         notFound={tSchema("cropId.notFound")}
                         placeholder={tSchema("cropId.placeholder")}
-                        disabled={isPending || !!params.cropId}
+                        disabled={disabled || !!params.cropId}
                       />
                     </FormControl>
 
@@ -203,7 +195,7 @@ export const ActivityCreateButton = ({
                         error={tSchema("assignedTo.error")}
                         placeholder={tSchema("assignedTo.placeholder")}
                         notFound={tSchema("assignedTo.notFound")}
-                        disabled={isPending || !canCreate}
+                        disabled={disabled}
                       />
                     </FormControl>
 
@@ -230,7 +222,7 @@ export const ActivityCreateButton = ({
                           };
                         })}
                         defaultValue={field.value}
-                        disabled={isPending || !canCreate}
+                        disabled={disabled}
                         disabledValues={[ActivityStatus.COMPLETED]}
                       />
                     </FormControl>
@@ -256,7 +248,7 @@ export const ActivityCreateButton = ({
                           };
                         })}
                         defaultValue={field.value}
-                        disabled={isPending || !canCreate}
+                        disabled={disabled}
                       />
                     </FormControl>
 
@@ -276,9 +268,8 @@ export const ActivityCreateButton = ({
                         placeholder={tSchema("estimatedDuration.placeholder")}
                         value={field.value ?? undefined}
                         onChange={field.onChange}
-                        disabled={isPending || !canCreate}
+                        disabled={disabled}
                         type="number"
-                        min={1}
                         max={100}
                       />
                     </FormControl>
@@ -298,9 +289,8 @@ export const ActivityCreateButton = ({
                         placeholder={tSchema("actualDuration.placeholder")}
                         value={field.value ?? undefined}
                         onChange={field.onChange}
-                        disabled={isPending || !canCreate}
+                        disabled={disabled}
                         type="number"
-                        min={1}
                         max={100}
                       />
                     </FormControl>
@@ -321,7 +311,7 @@ export const ActivityCreateButton = ({
                       placeholder={tSchema("description.placeholder")}
                       value={field.value ?? undefined}
                       onChange={field.onChange}
-                      disabled={isPending || !canCreate}
+                      disabled={disabled}
                     />
                   </FormControl>
 
@@ -330,10 +320,7 @@ export const ActivityCreateButton = ({
               )}
             />
 
-            <DynamicDialogFooter
-              disabled={isPending || !canCreate}
-              closeButton={false}
-            />
+            <DynamicDialogFooter disabled={disabled} closeButton={false} />
           </form>
         </Form>
       </DialogContent>

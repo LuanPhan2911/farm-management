@@ -9,7 +9,6 @@ import { Ellipsis } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { isSuperAdmin } from "@/lib/permission";
 import { Staff } from "@prisma/client";
-import { DestroyButton } from "@/components/buttons/destroy-button";
 import { destroy } from "@/actions/staff";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { StaffEditButton } from "./staff-edit-button";
@@ -40,7 +39,7 @@ export const StaffsTableAction = ({ data }: StaffsTableActionProps) => {
         <DropdownMenuItem>
           <DestroyButtonWithConfirmCode
             destroyFn={destroy}
-            id={data.id}
+            id={data.externalId}
             inltKey="staffs"
             className="w-full"
             disabled={!canDelete}

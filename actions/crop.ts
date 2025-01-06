@@ -73,8 +73,7 @@ export const editLearnedLessons = async (
   try {
     const crop = await updateCropLearnedLessons(id, validatedFields.data);
 
-    revalidatePath(`/admin/crops`);
-    revalidatePath(`/admin/crops/detail/${id}/learned-lessons`);
+    revalidatePath(`/admin/crops/detail/${id}`);
 
     return successResponse(tStatus("success.editLearnedLessons"));
   } catch (error) {

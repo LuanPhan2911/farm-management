@@ -213,8 +213,6 @@ export const StaffEditDialog = () => {
                       onChange={field.onChange}
                       disabled={isPending || !isSuperAdmin}
                       type="number"
-                      min={0}
-                      max={500_000}
                     />
                   </FormControl>
 

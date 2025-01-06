@@ -44,13 +44,11 @@ export const StaffSalariesTable = ({ data }: StaffSalariesTableProps) => {
         <TableHeader>
           <TableRow>
             <TableHead>{t("table.thead.staff")}</TableHead>
-            <TableHead>{t("table.thead.phone")}</TableHead>
-            <TableHead>{t("table.thead.address")}</TableHead>
-            <TableHead className="text-right">
-              {t("table.thead.baseHourlyWage")}
-            </TableHead>
             <TableHead className="text-right">
               {t("table.thead._count.activityAssigned")}
+            </TableHead>
+            <TableHead className="text-right">
+              {t("table.thead.baseHourlyWage")}
             </TableHead>
 
             <TableHead className="text-right">
@@ -78,17 +76,13 @@ export const StaffSalariesTable = ({ data }: StaffSalariesTableProps) => {
                     role={staff.role}
                   />
                 </TableCell>
-                <TableCell>{staff.phone || t("table.trow.phone")}</TableCell>
-                <TableCell>
-                  {staff.address || t("table.trow.address")}
+                <TableCell className="text-right">
+                  {staff._count.activityAssigned}
                 </TableCell>
                 <TableCell className="text-right font-semibold">
                   {staff.baseHourlyWage
                     ? number(staff.baseHourlyWage, "currency")
                     : t("table.trow.baseHourlyWage")}
-                </TableCell>
-                <TableCell className="text-right">
-                  {staff._count.activityAssigned}
                 </TableCell>
 
                 <TableCell className="text-right font-semibold">
@@ -104,7 +98,7 @@ export const StaffSalariesTable = ({ data }: StaffSalariesTableProps) => {
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableHead colSpan={5}>{t("table.tfooter.total")}</TableHead>
+            <TableHead colSpan={3}>{t("table.tfooter.total")}</TableHead>
             <TableCell className="text-right">
               {number(totalHourlyWork, "hour")}
             </TableCell>

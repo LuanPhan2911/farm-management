@@ -24,6 +24,7 @@ import {
   PesticideToxicLevelValue,
   PesticideTypeValue,
 } from "./pesticide-status-value";
+import { UnitWithValue } from "../../../_components/unit-with-value";
 
 interface PesticidesTableProps {
   data: PesticideTable[];
@@ -58,6 +59,9 @@ export const PesticidesTable = ({ data, totalPage }: PesticidesTableProps) => {
             <TableHead>{t("table.thead.toxicityLevel")}</TableHead>
             <TableHead>{t("table.thead.applicationMethod")}</TableHead>
             <TableHead>{t("table.thead.manufacturer")}</TableHead>
+            <TableHead className="text-right">
+              {t("table.thead.recommendedDosage")}
+            </TableHead>
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>
@@ -69,7 +73,7 @@ export const PesticidesTable = ({ data, totalPage }: PesticidesTableProps) => {
                 className="cursor-pointer"
                 onClick={() => handleEdit(item)}
               >
-                <TableCell>{item.name}</TableCell>
+                <TableHead>{item.name}</TableHead>
                 <TableCell>
                   <PesticideTypeValue value={item.type || undefined} />
                 </TableCell>
@@ -79,14 +83,20 @@ export const PesticidesTable = ({ data, totalPage }: PesticidesTableProps) => {
                   />
                 </TableCell>
                 <TableCell>
-                  {item.applicationMethod
-                    ? item.applicationMethod
-                    : t("table.trow.applicationMethod")}
+                  {item.applicationMethod || t("table.trow.applicationMethod")}
                 </TableCell>
                 <TableCell>
-                  {item.manufacturer
-                    ? item.manufacturer
-                    : t("table.trow.manufacturer")}
+                  {item.manufacturer || t("table.trow.manufacturer")}
+                </TableCell>
+                <TableCell className="text-right">
+                  {item.recommendedDosage?.value ? (
+                    <UnitWithValue
+                      value={item.recommendedDosage.value}
+                      unit={item.recommendedDosage.unit?.name}
+                    />
+                  ) : (
+                    t("table.trow.recommendedDosage")
+                  )}
                 </TableCell>
                 <TableCell>
                   <PesticidesTableAction data={item} />

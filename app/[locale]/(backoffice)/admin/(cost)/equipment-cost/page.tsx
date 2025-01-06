@@ -21,7 +21,7 @@ export async function generateMetadata() {
 const EquipmentDetailUsageCostsPage = async ({
   searchParams,
 }: EquipmentDetailUsageCostsPageProps) => {
-  const t = await getTranslations("materials.page.cost");
+  const t = await getTranslations("equipmentDetails.page.cost");
 
   const begin = parseToDate(searchParams.begin);
   const end = parseToDate(searchParams.end);

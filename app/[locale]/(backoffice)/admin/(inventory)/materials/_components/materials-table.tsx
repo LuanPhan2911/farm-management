@@ -50,9 +50,7 @@ export const MaterialsTable = ({ data, totalPage }: MaterialsTableProps) => {
             </TableHead>
             <TableHead>{t("table.thead.type")}</TableHead>
             <TableHead>{t("table.thead.updatedAt")}</TableHead>
-            <TableHead className="text-right">
-              {t("table.thead._count.materialUsages")}
-            </TableHead>
+
             <TableHead className="text-right">
               {t("table.thead.basePrice")}
             </TableHead>
@@ -82,9 +80,7 @@ export const MaterialsTable = ({ data, totalPage }: MaterialsTableProps) => {
                   <MaterialTypeValue value={item.type} />
                 </TableCell>
                 <TableCell>{dateTime(item.updatedAt, "long")}</TableCell>
-                <TableCell className="text-right">
-                  {item._count.materialUsages}
-                </TableCell>
+
                 <TableCell className="text-right">
                   {item.basePrice
                     ? number(item.basePrice, "currency")

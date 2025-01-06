@@ -10,7 +10,10 @@ import { UnitWithValue } from "../../../_components/unit-with-value";
 import { SoilType } from "@prisma/client";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
 import { UsageStatusValue } from "@/components/usage-status-value";
-import { SelectItemContent } from "@/components/form/select-item";
+import {
+  SelectItemContent,
+  SelectItemContentWithoutImage,
+} from "@/components/form/select-item";
 import { FieldSoilTypeValue } from "./field-soil-type-value";
 
 interface FieldsDataTableProps {
@@ -24,25 +27,17 @@ export const FieldsDataTable = ({ data }: FieldsDataTableProps) => {
   const columns: ColumnDef<FieldTable>[] = [
     {
       accessorKey: "name",
-      header: ({ column }) => {
-        return (
-          <DataTableColumnHeader
-            column={column}
-            title={t("table.thead.name")}
-          />
-        );
-      },
-    },
-    {
-      accessorKey: "location",
-      header: t("table.thead.location"),
+      header: t("table.thead.name"),
 
       cell: ({ row }) => {
         const data = row.original;
-        if (!data.location) {
-          return t("table.trow.location");
-        }
-        return data.location;
+
+        return (
+          <SelectItemContentWithoutImage
+            title={data.name}
+            description={data.location || t("table.trow")}
+          />
+        );
       },
     },
     {

@@ -1,6 +1,5 @@
 export const siteConfig = {
-  name: "NetMarket",
-  description:
-    "Beautifully designed components that you can copy and paste into your apps. Accessible. Customizable. Open Source.",
-  address: "An Chau, Chau Thanh, An Giang, Viet Nam",
+  name: "NextFarm",
+  description: "Mang nông sản chất lượng cho mọi gia đình Việt.",
+  address: "Thị trấn An Châu, huyện Châu Thành, tỉnh An Giang.",
 };

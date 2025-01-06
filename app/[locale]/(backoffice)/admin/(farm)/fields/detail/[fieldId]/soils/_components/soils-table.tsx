@@ -96,9 +96,7 @@ export const SoilsTable = ({ data, totalPage }: SoilsTableProps) => {
             </TableHead>
             <TableHead>{t("thead.confirmed")} </TableHead>
             <TableHead>{t("thead.confirmedAt")} </TableHead>
-            <TableHead className="min-w-[200px]">
-              {t("thead.confirmedBy")}{" "}
-            </TableHead>
+            <TableHead>{t("thead.confirmedBy")}</TableHead>
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>
@@ -119,31 +117,49 @@ export const SoilsTable = ({ data, totalPage }: SoilsTableProps) => {
                   />
                 </TableCell>
                 <TableCell>{dateTime(item.createdAt, "long")}</TableCell>
-                <TableCell className="text-right">{item.ph}</TableCell>
+                <TableCell className="text-right">
+                  {item.ph || t("trow.ph")}
+                </TableCell>
 
                 <TableCell className="text-right">
-                  <UnitWithValue
-                    value={item.nutrientNitrogen}
-                    unit={item.nutrientUnit?.name || "g/kg"}
-                  />
+                  {item.nutrientNitrogen ? (
+                    <UnitWithValue
+                      value={item.nutrientNitrogen}
+                      unit={item.nutrientUnit?.name || "g/kg"}
+                    />
+                  ) : (
+                    t("trow.nutrientNitrogen")
+                  )}
                 </TableCell>
                 <TableCell className="text-right">
-                  <UnitWithValue
-                    value={item.nutrientPhosphorus}
-                    unit={item.nutrientUnit?.name || "g/kg"}
-                  />
+                  {item.nutrientPhosphorus ? (
+                    <UnitWithValue
+                      value={item.nutrientPhosphorus}
+                      unit={item.nutrientUnit?.name || "g/kg"}
+                    />
+                  ) : (
+                    t("trow.nutrientPhosphorus")
+                  )}
                 </TableCell>
-                <TableCell className="text-center">
-                  <UnitWithValue
-                    value={item.nutrientPotassium}
-                    unit={item.nutrientUnit?.name || "g/kg"}
-                  />
+                <TableCell className="text-right">
+                  {item.nutrientPotassium ? (
+                    <UnitWithValue
+                      value={item.nutrientPotassium}
+                      unit={item.nutrientUnit?.name || "g/kg"}
+                    />
+                  ) : (
+                    t("trow.nutrientPotassium")
+                  )}
                 </TableCell>
-                <TableCell className="text-center">
-                  <UnitWithValue
-                    value={item.moisture?.value}
-                    unit={item.moisture?.unit?.name || "%"}
-                  />
+                <TableCell className="text-right">
+                  {item.moisture?.value ? (
+                    <UnitWithValue
+                      value={item.nutrientPotassium}
+                      unit={item.nutrientUnit?.name || "g/kg"}
+                    />
+                  ) : (
+                    t("trow.moisture")
+                  )}
                 </TableCell>
 
                 <TableCell>

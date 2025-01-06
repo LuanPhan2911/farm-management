@@ -100,6 +100,10 @@ export const OrgMemberCreateButton = ({}: OrgMemberCreateButtonProps) => {
                       placeholder={tSchema("memberId.placeholder")}
                       notFound={tSchema("memberId.notFound")}
                       disabled={isPending || !canManageMember}
+                      appearance={{
+                        button: "lg:w-full h-10",
+                        content: "lg:w-[400px]",
+                      }}
                     />
                   </FormControl>
 

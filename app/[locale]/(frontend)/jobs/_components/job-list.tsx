@@ -3,7 +3,13 @@ import { JobCardItem } from "./job-card-item";
 
 import { Separator } from "@/components/ui/separator";
 
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { SearchBar } from "@/components/search-bar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -15,37 +21,39 @@ interface JobListProps {
   activeId?: string;
 }
 export const JobList = async ({ query, activeId }: JobListProps) => {
-  const tCard = await getTranslations("jobs.card");
   const data = await getJobsCard(query);
   return (
     <Card>
+      <CardHeader>
+        <CardTitle className="text-green-500">Công việc</CardTitle>
+        <CardDescription>
+          Danh sách công việc tuyển dụng ở nông trại
+        </CardDescription>
+      </CardHeader>
       <CardContent className="p-0">
-        <div className="flex items-center px-4 py-2">
-          <h1 className="text-xl font-bold">{tCard("title")}</h1>
+        <div className="my-4">
+          <SearchBar placeholder={"Tìm kiểm theo tên việc làm"} />
         </div>
-        <Separator />
-        <div className="bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          <SearchBar placeholder={tCard("search.placeholder")} />
-        </div>
+
         {query && !data.length && (
           <>
             <div className="text-sm font-semibold text-center">
-              {tCard("search.notFound")} <Badge variant={"info"}>{query}</Badge>
+              Không tìm thấy việc làm: <Badge variant={"info"}>{query}</Badge>
             </div>
 
             <div className="text-center text-sm text-muted-foreground">
-              {tCard("search.typeOther")}
+              Vui lòng tìm tên khác
             </div>
           </>
         )}
         {!query && !data.length && (
           <div className="text-sm font-semibold text-center h-[400px] flex justify-center items-center">
-            {tCard("noJob.label")}
+            Hiện tại không có việc làm tuyển dụng
           </div>
         )}
         {!!data.length && (
           <ScrollArea className="h-screen">
-            <div className="flex flex-col gap-2 px-4 pt-0">
+            <div className="flex flex-col gap-2">
               {data.map((item) => {
                 return (
                   <JobCardItem

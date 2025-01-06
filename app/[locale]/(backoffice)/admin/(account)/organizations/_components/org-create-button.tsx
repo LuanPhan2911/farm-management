@@ -150,7 +150,7 @@ export const OrgCreateButton = () => {
                       placeholder={tSchema("createdBy.placeholder")}
                       notFound={tSchema("createdBy.notFound")}
                       disabled={isPending}
-                      superAdminOnly
+                      adminOnly
                     />
                   </FormControl>
 

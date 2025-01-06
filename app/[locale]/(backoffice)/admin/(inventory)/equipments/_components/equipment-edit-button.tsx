@@ -68,7 +68,7 @@ export const EquipmentEditForm = ({ data }: EquipmentEditFormProps) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4 max-w-5xl"
+        className="space-y-4 max-w-6xl"
       >
         <FormField
           control={form.control}

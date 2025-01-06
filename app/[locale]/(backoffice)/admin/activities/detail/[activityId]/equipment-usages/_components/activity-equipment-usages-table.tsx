@@ -10,9 +10,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useFormatter, useTranslations } from "next-intl";
-import { EquipmentUsageTable, EquipmentUsageTableWithCost } from "@/types";
-
-import { OrderByButton } from "@/components/buttons/order-by-button";
+import {
+  EquipmentUsageTable,
+  EquipmentUsageTableWithCost,
+  ManagePermission,
+} from "@/types";
 
 import { SearchBar } from "@/components/search-bar";
 
@@ -24,14 +26,12 @@ import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { useRouterWithRole } from "@/hooks/use-router-with-role";
 import _ from "lodash";
 
-interface ActivityEquipmentUsagesTableProps {
+interface ActivityEquipmentUsagesTableProps extends ManagePermission {
   data: EquipmentUsageTableWithCost[];
-
-  disabled?: boolean;
 }
 export const ActivityEquipmentUsagesTable = ({
   data,
-  disabled,
+  canEdit,
 }: ActivityEquipmentUsagesTableProps) => {
   const t = useTranslations("equipmentUsages");
   const { dateTime, number } = useFormatter();
@@ -136,7 +136,7 @@ export const ActivityEquipmentUsagesTable = ({
                 )}
 
                 <TableCell>
-                  <EquipmentUsagesTableAction data={item} disabled={disabled} />
+                  <EquipmentUsagesTableAction data={item} canEdit={canEdit} />
                 </TableCell>
               </TableRow>
             );

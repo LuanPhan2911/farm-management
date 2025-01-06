@@ -1,9 +1,16 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { getActivityById } from "@/services/activities";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { ActivityEditForm } from "../../../_components/activity-edit-button";
-import { canUpdateActivity } from "@/lib/role";
+import { getCurrentStaffRole } from "@/services/staffs";
+import { canUpdateActivityStatus, canUpdateCropStatus } from "@/lib/permission";
 
 export async function generateMetadata() {
   const t = await getTranslations("activities.page.detail");
@@ -24,16 +31,22 @@ const ActivityDetailPage = async ({ params }: ActivityDetailPageProps) => {
     notFound();
   }
 
-  const canEdit = await canUpdateActivity(data.cropId, data.id);
+  const { isOnlyAdmin } = await getCurrentStaffRole();
+
+  const canEdit =
+    isOnlyAdmin &&
+    canUpdateCropStatus(data.crop.status) &&
+    canUpdateActivityStatus(data.status);
 
   return (
     <div className="flex flex-col gap-y-4 py-4 h-full">
       <Card>
         <CardHeader>
           <CardTitle>{t("title")}</CardTitle>
+          <CardDescription>{t("description")}</CardDescription>
         </CardHeader>
         <CardContent>
-          <ActivityEditForm data={data} disabled={!canEdit} />
+          <ActivityEditForm data={data} canEdit={canEdit} />
         </CardContent>
       </Card>
     </div>
