@@ -124,8 +124,6 @@ export const JobCreateForm = () => {
                     onChange={field.onChange}
                     disabled={isPending}
                     type="number"
-                    min={1}
-                    max={10}
                   />
                 </FormControl>
 

@@ -29,6 +29,7 @@ export const create = async (
     const activity = await createActivity(validatedFields.data);
 
     revalidatePath("/admin/activities");
+
     return successResponse(tStatus("success.create"), activity);
   } catch (error) {
     return errorResponse(tStatus("failure.create"));

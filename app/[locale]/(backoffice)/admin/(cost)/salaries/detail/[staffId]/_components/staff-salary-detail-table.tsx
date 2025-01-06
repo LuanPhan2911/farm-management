@@ -14,7 +14,6 @@ import { SearchBar } from "@/components/search-bar";
 import { StaffWithSalaryAndActivity } from "@/types";
 import { DatePickerWithRangeButton } from "@/components/buttons/date-picker-range-button";
 import { endOfMonth, startOfMonth } from "date-fns";
-import { ActivityStatusValue } from "@/app/[locale]/(backoffice)/admin/activities/_components/activity-status-value";
 import { ActivityPriorityValue } from "@/app/[locale]/(backoffice)/admin/activities/_components/activity-priority-value";
 import _ from "lodash";
 import { cn } from "@/lib/utils";
@@ -35,9 +34,7 @@ export const StaffSalariesDetailTable = ({
     return item.actualCost;
   });
   const totalHourlyWork = _.sumBy(data, (item) =>
-    item.actualWork !== null && item.activity.status === "COMPLETED"
-      ? item.actualWork
-      : 0
+    item.actualWork !== null ? item.actualWork : 0
   );
 
   return (
@@ -61,7 +58,6 @@ export const StaffSalariesDetailTable = ({
             <TableHead className="min-w-[200px]">
               {t("table.detail.thead.name")}
             </TableHead>
-            <TableHead>{t("table.detail.thead.status")}</TableHead>
             <TableHead>{t("table.detail.thead.priority")}</TableHead>
             <TableHead>{t("table.detail.thead.activityDate")}</TableHead>
 
@@ -78,7 +74,6 @@ export const StaffSalariesDetailTable = ({
         </TableHeader>
         <TableBody>
           {data.map((item) => {
-            const { status } = item.activity;
             return (
               <TableRow
                 key={item.id}
@@ -95,19 +90,14 @@ export const StaffSalariesDetailTable = ({
                     role={item.staff.role}
                   />
                 </TableCell>
-                {status === "COMPLETED" ? (
-                  <TableHead>{item.activity.name}</TableHead>
-                ) : (
-                  <TableCell>{item.activity.name}</TableCell>
-                )}
-                <TableCell>
-                  <ActivityStatusValue value={item.activity.status} />
-                </TableCell>
+
+                <TableHead>{item.activity.name}</TableHead>
+
                 <TableCell>
                   <ActivityPriorityValue value={item.activity.priority} />
                 </TableCell>
                 <TableCell className="font-semibold">
-                  {dateTime(item.activity.activityDate, "short")}
+                  {dateTime(item.activity.activityDate, "long")}
                 </TableCell>
 
                 <TableCell className={cn("text-right font-semibold")}>
@@ -121,10 +111,7 @@ export const StaffSalariesDetailTable = ({
                     : t("table.detail.trow.actualWork")}
                 </TableCell>
                 <TableCell
-                  className={cn(
-                    "text-right font-semibold",
-                    status === "COMPLETED" && "text-green-500"
-                  )}
+                  className={cn("text-right font-semibold", "text-green-500")}
                 >
                   {number(item.actualCost, "currency")}
                 </TableCell>
@@ -134,7 +121,7 @@ export const StaffSalariesDetailTable = ({
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableHead colSpan={6}>{t("table.tfooter.total")}</TableHead>
+            <TableHead colSpan={5}>{t("table.tfooter.total")}</TableHead>
             <TableCell className="text-right">
               {number(totalHourlyWork, "hour")}
             </TableCell>

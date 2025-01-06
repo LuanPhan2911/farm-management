@@ -26,7 +26,7 @@ export const EquipmentDetailUsageCostTable = ({
   data,
 }: EquipmentDetailUsageCostTableProps) => {
   const t = useTranslations("equipmentDetails");
-  const { number, dateTime } = useFormatter();
+  const { number } = useFormatter();
   const router = useRouterWithRole();
   const totalCost = _.sumBy(data, (item) => item.totalCost);
   const totalRentalPrice = _.sumBy(data, (item) => item.totalRentalPrice);
@@ -45,17 +45,12 @@ export const EquipmentDetailUsageCostTable = ({
             <TableHead className="min-w-[200px]">
               {t("table.thead.name")}
             </TableHead>
-            <TableHead>{t("table.thead.lastMaintenanceDate")}</TableHead>
+
             <TableHead>{t("table.thead.energyType")}</TableHead>
             <TableHead className="text-right">
               {t("table.thead.baseFuelPrice")}
             </TableHead>
-            <TableHead className="text-right">
-              {t("table.thead.maxOperatingHours")}
-            </TableHead>
-            <TableHead className="text-right">
-              {t("table.thead.operatingHours")}
-            </TableHead>
+
             <TableHead className="text-right">
               {t("table.cost.thead.totalFuelConsumption")}
             </TableHead>
@@ -86,11 +81,7 @@ export const EquipmentDetailUsageCostTable = ({
                     description={item.location || t("table.trow.location")}
                   />
                 </TableCell>
-                <TableCell>
-                  {item.lastMaintenanceDate
-                    ? dateTime(item.lastMaintenanceDate, "short")
-                    : t("table.trow.lastMaintenanceDate")}
-                </TableCell>
+
                 <TableCell>
                   {item.energyType || t("table.trow.energyType")}
                 </TableCell>
@@ -99,12 +90,7 @@ export const EquipmentDetailUsageCostTable = ({
                     ? number(item.baseFuelPrice, "currency")
                     : t("table.trow.baseFuelPrice")}
                 </TableCell>
-                <TableCell className="text-right">
-                  {number(item.maxOperatingHours, "hour")}
-                </TableCell>
-                <TableCell className="text-right font-semibold">
-                  {number(item.operatingHours, "hour")}
-                </TableCell>
+
                 <TableCell className="text-right font-semibold">
                   <UnitWithValue
                     value={item.totalFuelConsumption}
@@ -124,7 +110,7 @@ export const EquipmentDetailUsageCostTable = ({
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableHead colSpan={7}>{t("table.tfooter.total")}</TableHead>
+            <TableHead colSpan={4}>{t("table.tfooter.total")}</TableHead>
             <TableCell className="text-right">
               {number(totalRentalPrice, "currency")}
             </TableCell>

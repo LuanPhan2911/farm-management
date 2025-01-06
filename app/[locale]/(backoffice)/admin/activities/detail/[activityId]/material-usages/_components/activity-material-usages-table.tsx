@@ -10,13 +10,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useFormatter, useTranslations } from "next-intl";
-import { MaterialUsageTable, MaterialUsageTableWithCost } from "@/types";
+import {
+  ManagePermission,
+  MaterialUsageTable,
+  MaterialUsageTableWithCost,
+} from "@/types";
 import { OrderByButton } from "@/components/buttons/order-by-button";
 import { SearchBar } from "@/components/search-bar";
 
 import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-with-value";
 import { UsageStatusValue } from "@/components/usage-status-value";
-import { UserAvatar } from "@/components/user-avatar";
 import { MaterialTypeValue } from "@/app/[locale]/(backoffice)/admin/(inventory)/materials/_components/material-type-value";
 import { MaterialUsagesTableAction } from "@/app/[locale]/(backoffice)/admin/(inventory)/materials/detail/[materialId]/usages/_components/material-usages-table-action";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
@@ -24,14 +27,12 @@ import { useRouterWithRole } from "@/hooks/use-router-with-role";
 import { SelectItemContent } from "@/components/form/select-item";
 import _ from "lodash";
 
-interface ActivityMaterialUsagesTableProps {
+interface ActivityMaterialUsagesTableProps extends ManagePermission {
   data: MaterialUsageTableWithCost[];
-
-  disabled?: boolean;
 }
 export const ActivityMaterialUsagesTable = ({
   data,
-  disabled,
+  canEdit,
 }: ActivityMaterialUsagesTableProps) => {
   const t = useTranslations("materialUsages");
   const { dateTime } = useFormatter();
@@ -124,7 +125,7 @@ export const ActivityMaterialUsagesTable = ({
                 )}
 
                 <TableCell>
-                  <MaterialUsagesTableAction data={item} disabled={disabled} />
+                  <MaterialUsagesTableAction data={item} canEdit={canEdit} />
                 </TableCell>
               </TableRow>
             );

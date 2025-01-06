@@ -41,7 +41,7 @@ export const SelectItemContentWithoutImage = ({
       <div className="text-sm font-semibold leading-none text-start">
         {title}
       </div>
-      <div className="text-xs text-muted-foreground text-start">
+      <div className="text-xs text-muted-foreground text-start line-clamp-2">
         {description}
       </div>
     </div>

@@ -38,10 +38,10 @@ interface SoilsTableActionProps {
   data: SoilTable;
 }
 export const SoilsTableAction = ({ data }: SoilsTableActionProps) => {
-  const { isSuperAdmin } = useCurrentStaffRole();
+  const { isOnlyAdmin } = useCurrentStaffRole();
   const { has } = useAuth();
   const isAdminOrg = has?.({ role: "org:field" }) || false;
-  const canUpdate = !data.confirmed || isAdminOrg || isSuperAdmin;
+  const canUpdate = !data.confirmed || isAdminOrg || isOnlyAdmin;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

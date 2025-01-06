@@ -45,7 +45,7 @@ const EquipmentUsagesPage = async ({
       </CardHeader>
       <CardContent>
         <div className="flex justify-end">
-          <EquipmentUsageCreateButton />
+          <EquipmentUsageCreateButton canCreate />
         </div>
         <EquipmentUsagesTable data={data} totalPage={totalPage} />
       </CardContent>

@@ -4,11 +4,11 @@ import { getTranslations } from "next-intl/server";
 
 import { EquipmentUsageCreateButton } from "../../../../(inventory)/equipments/detail/[equipmentId]/details/[equipmentDetailId]/usages/_components/equipment-usage-create-button";
 import { getEquipmentUsagesByActivity } from "@/services/equipment-usages";
-import { getOnlyActivityById } from "@/services/activities";
-import { canUpdateActivityStatus } from "@/lib/permission";
+import { getActivityById } from "@/services/activities";
+import { canUpdateActivityStatus, canUpdateCropStatus } from "@/lib/permission";
 import { notFound } from "next/navigation";
 import { ActivityEquipmentUsagesTable } from "./_components/activity-equipment-usages-table";
-import { canUpdateActivity } from "@/lib/role";
+import { getCurrentStaffRole } from "@/services/staffs";
 export async function generateMetadata() {
   const t = await getTranslations("activities.page.detail.equipment-usages");
   return {
@@ -37,11 +37,16 @@ const ActivityEquipmentUsagesPage = async ({
     orderBy,
     query,
   });
-  const activity = await getOnlyActivityById(params.activityId);
+  const activity = await getActivityById(params.activityId);
   if (!activity) {
     notFound();
   }
-  const canEdit = await canUpdateActivity(activity.cropId, params.activityId);
+  const { isOnlyAdmin } = await getCurrentStaffRole();
+
+  const canManage =
+    isOnlyAdmin &&
+    canUpdateCropStatus(activity.crop.status) &&
+    canUpdateActivityStatus(activity.status);
 
   return (
     <Card>
@@ -50,9 +55,9 @@ const ActivityEquipmentUsagesPage = async ({
       </CardHeader>
       <CardContent>
         <div className="flex justify-end">
-          <EquipmentUsageCreateButton disabled={!canEdit} />
+          <EquipmentUsageCreateButton canCreate={canManage} />
         </div>
-        <ActivityEquipmentUsagesTable data={data} disabled={!canEdit} />
+        <ActivityEquipmentUsagesTable data={data} canEdit={canManage} />
       </CardContent>
     </Card>
   );

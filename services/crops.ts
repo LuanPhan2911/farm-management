@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { getObjectFilterNumber, getObjectSortOrder } from "@/lib/utils";
 import {
   CropMaterialUsage,
+  CropSaleTable,
   CropSelectWithField,
   CropTable,
   CropWithCount,
@@ -11,11 +12,12 @@ import {
 import { unitInclude } from "./units";
 import { getCurrentStaff } from "./staffs";
 import { isSuperAdmin } from "@/lib/permission";
-import { fieldSelect } from "./fields";
+import { fieldSelect, getFieldsByOrgId } from "./fields";
 import { plantSelect } from "./plants";
-import { CropStatus } from "@prisma/client";
+import { Crop, CropStatus } from "@prisma/client";
 import { CropEndDateInvalidError, CropUpdateStatusFinishError } from "@/errors";
 import { isBefore } from "date-fns";
+import _ from "lodash";
 
 type CropParams = {
   name: string;
@@ -65,6 +67,14 @@ export const updateCropStatusFinish = async (id: string) => {
         },
       },
     },
+    include: {
+      sales: {
+        select: {
+          price: true,
+          value: true,
+        },
+      },
+    },
   });
   if (!crop) {
     throw new CropUpdateStatusFinishError();
@@ -72,6 +82,8 @@ export const updateCropStatusFinish = async (id: string) => {
   if (crop.endDate === null && isBefore(new Date(), crop.startDate)) {
     throw new CropEndDateInvalidError();
   }
+  const actualYield = _.sumBy(crop.sales, (item) => item.value);
+  const totalRevenue = _.sumBy(crop.sales, (item) => item.price * item.value);
   return await db.crop.update({
     where: {
       id,
@@ -79,7 +91,8 @@ export const updateCropStatusFinish = async (id: string) => {
     data: {
       status: "FINISH",
       endDate: crop.endDate ?? new Date(),
-      actualYield: crop.actualYield ?? crop.estimatedYield,
+      actualYield,
+      totalRevenue,
     },
   });
 };
@@ -108,51 +121,34 @@ type CropQuery = {
   orgId?: string | null;
   plantId?: string;
   fieldId?: string;
-  name?: string;
+  query?: string;
   page?: number;
-  orderBy?: string;
   startDate?: Date;
   endDate?: Date;
-  filterNumber?: string;
+  getAll?: boolean;
 };
 export const getCrops = async ({
   orgId,
   endDate,
-  filterNumber,
-  name,
-  orderBy,
+  query,
   page = 1,
   plantId,
   startDate,
   fieldId,
+
+  getAll = false,
 }: CropQuery): Promise<PaginatedResponse<CropTable>> => {
   try {
-    let fields;
-    const currentStaff = await getCurrentStaff();
-    if (!currentStaff) {
-      throw new Error("Unauthorized");
-    }
-    if (!orgId && !isSuperAdmin(currentStaff.role)) {
+    if (!getAll && !orgId) {
       throw new Error("No field id to get crops");
     }
-    if (!orgId) {
-      fields = await db.field.findMany({
-        select: {
-          id: true,
-        },
-      });
+    let fields;
+    if (orgId) {
+      fields = await getFieldsByOrgId(orgId);
     }
 
-    if (orgId) {
-      fields = await db.field.findMany({
-        where: {
-          orgId,
-        },
-        select: {
-          id: true,
-        },
-      });
-    }
+    let fieldIds: string[] = [];
+    fieldIds = fields === undefined ? [] : fields.map((item) => item.id);
 
     const [crops, count] = await db.$transaction([
       db.crop.findMany({
@@ -163,36 +159,31 @@ export const getCrops = async ({
               }
             : {
                 fieldId: {
-                  in: fields?.map((item) => item.id),
+                  in: getAll && !orgId ? undefined : fieldIds,
                 },
               }),
-          AND: [
-            {
-              startDate: {
-                ...(startDate && {
-                  gte: startDate,
-                }),
-              },
-              endDate: {
-                ...(endDate && {
-                  lte: endDate,
-                }),
-              },
-            },
-          ],
-          ...(plantId && { plantId }),
-          ...(name && {
-            name: {
-              contains: name,
-              mode: "insensitive",
-            },
+          startDate: {
+            ...(startDate && {
+              gte: startDate,
+            }),
+          },
+          endDate: {
+            ...(endDate && {
+              lte: endDate,
+            }),
+          },
 
-            ...(filterNumber && getObjectFilterNumber(filterNumber)),
-          }),
+          ...(plantId && { plantId }),
+
+          name: {
+            contains: query,
+            mode: "insensitive",
+          },
         },
-        orderBy: [...(orderBy ? getObjectSortOrder(orderBy) : [])],
+
         take: LIMIT,
         skip: (page - 1) * LIMIT,
+        orderBy: [{ startDate: "desc" }],
         include: {
           ...unitInclude,
           plant: {
@@ -205,11 +196,6 @@ export const getCrops = async ({
               ...fieldSelect,
             },
           },
-          _count: {
-            select: {
-              activities: true,
-            },
-          },
         },
       }),
       db.crop.count({
@@ -220,32 +206,26 @@ export const getCrops = async ({
               }
             : {
                 fieldId: {
-                  in: fields?.map((item) => item.id),
+                  in: getAll && !orgId ? undefined : fieldIds,
                 },
               }),
-          AND: [
-            {
-              startDate: {
-                ...(startDate && {
-                  gte: startDate,
-                }),
-              },
-              endDate: {
-                ...(endDate && {
-                  lte: endDate,
-                }),
-              },
-            },
-          ],
-          ...(plantId && { plantId }),
-          ...(name && {
-            name: {
-              contains: name,
-              mode: "insensitive",
-            },
+          startDate: {
+            ...(startDate && {
+              gte: startDate,
+            }),
+          },
+          endDate: {
+            ...(endDate && {
+              lte: endDate,
+            }),
+          },
 
-            ...(filterNumber && getObjectFilterNumber(filterNumber)),
-          }),
+          ...(plantId && { plantId }),
+
+          name: {
+            contains: query,
+            mode: "insensitive",
+          },
         },
       }),
     ]);
@@ -276,11 +256,6 @@ export const getCropById = async (id: string): Promise<CropTable | null> => {
         field: {
           select: {
             ...fieldSelect,
-          },
-        },
-        _count: {
-          select: {
-            activities: true,
           },
         },
       },
@@ -323,6 +298,7 @@ export const cropSelect = {
   name: true,
   startDate: true,
   endDate: true,
+  status: true,
 };
 type CropSelectQuery = {
   orgId?: string;
@@ -369,6 +345,10 @@ export const getCropsSelect = async ({
       },
       orderBy: {
         createdAt: "desc",
+      },
+      cacheStrategy: {
+        swr: 60,
+        ttl: 60,
       },
     });
   } catch (error) {
@@ -453,5 +433,73 @@ export const getCropMaterialUsage = async ({
       data: [],
       totalPage: 0,
     };
+  }
+};
+
+type CropSaleCostQuery = {
+  begin?: Date;
+  end?: Date;
+  query?: string;
+  orgId?: string | null;
+
+  getAll?: boolean;
+};
+export const getCropSaleCosts = async ({
+  begin,
+  end,
+  query,
+  orgId,
+  getAll = false,
+}: CropSaleCostQuery): Promise<CropSaleTable[]> => {
+  try {
+    if (!getAll && !orgId) {
+      throw new Error("No field id to get crops");
+    }
+    let fields;
+    if (orgId) {
+      fields = await getFieldsByOrgId(orgId);
+    }
+
+    let fieldIds: string[] = [];
+    fieldIds = fields === undefined ? [] : fields.map((item) => item.id);
+
+    const crops = await db.crop.findMany({
+      where: {
+        fieldId: {
+          in: getAll && !orgId ? undefined : fieldIds,
+        },
+        status: "FINISH",
+        ...(begin && {
+          startDate: {
+            gte: begin,
+          },
+        }),
+        ...(end && {
+          endDate: {
+            lte: end,
+          },
+        }),
+
+        name: {
+          contains: query,
+          mode: "insensitive",
+        },
+      },
+      include: {
+        unit: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      cacheStrategy: {
+        swr: 60,
+        ttl: 60,
+      },
+    });
+
+    return crops;
+  } catch (error) {
+    return [];
   }
 };

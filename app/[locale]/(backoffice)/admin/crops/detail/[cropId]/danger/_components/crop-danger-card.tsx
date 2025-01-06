@@ -7,18 +7,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { DestroyButton } from "@/components/buttons/destroy-button";
-
 import { destroy } from "@/actions/crop";
 import { useTranslations } from "next-intl";
 import { CropFinishButton } from "../../../../_components/crop-edit-status-button";
 import { CustomAlert } from "@/components/cards/custom-alert";
 import { DestroyButtonWithConfirmCode } from "@/components/buttons/destroy-button-with-confirm-code";
+import { ManagePermission } from "@/types";
 
-interface CropDangerCardProps {
+interface CropDangerCardProps extends ManagePermission {
   id: string;
-  canEdit?: boolean;
-  canDelete?: boolean;
   redirectUrl?: string;
 }
 export const CropDangerCard = ({
@@ -42,14 +39,7 @@ export const CropDangerCard = ({
             variant={"success"}
             description={tDanger("finish.description.learnedLessons")}
           />
-          <CustomAlert
-            variant={"info"}
-            description={tDanger("finish.description.endDate")}
-          />
-          <CustomAlert
-            variant={"info"}
-            description={tDanger("finish.description.actualYield")}
-          />
+
           <CustomAlert
             variant={"destructive"}
             description={tDanger("finish.description.endDateValid")}
@@ -68,6 +58,9 @@ export const CropDangerCard = ({
       <Card>
         <CardHeader>
           <CardTitle>{tDanger("destroy.title")}</CardTitle>
+          <CardDescription>
+            {tDanger("destroy.description.note")}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <CustomAlert

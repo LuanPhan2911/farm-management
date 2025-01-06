@@ -189,8 +189,6 @@ export const EquipmentUsageEditDialog = () => {
                           onChange={field.onChange}
                           disabled={isPending || !canEdit}
                           type="number"
-                          min={0}
-                          max={10_000}
                         />
                       </FormControl>
                       <FormMessage />
@@ -238,8 +236,6 @@ export const EquipmentUsageEditDialog = () => {
                       onChange={field.onChange}
                       disabled={isPending || !canEdit}
                       type="number"
-                      min={0}
-                      max={1_000_000}
                     />
                   </FormControl>
                   <FormMessage />
@@ -259,8 +255,6 @@ export const EquipmentUsageEditDialog = () => {
                       onChange={field.onChange}
                       disabled={isPending || !canEdit}
                       type="number"
-                      min={0}
-                      max={10_000_000}
                     />
                   </FormControl>
                   <FormMessage />

@@ -7,6 +7,7 @@ import {
   ApplicantStatus,
   Category,
   Crop,
+  CropStatus,
   Equipment,
   EquipmentDetail,
   EquipmentStatus,
@@ -19,6 +20,7 @@ import {
   FloatUnit,
   Frequency,
   Gender,
+  Harvest,
   IntUnit,
   JobExperience,
   JobWorkingState,
@@ -31,9 +33,11 @@ import {
   Plant,
   PlantFertilizer,
   PlantPesticide,
+  Sale,
   Soil,
   SoilType,
   Staff,
+  Store,
   ToxicityLevel,
   Unit,
   Weather,
@@ -53,6 +57,12 @@ export type NextApiResponseServerIo<T> = NextApiResponse<T> & {
     };
   };
 };
+
+export interface ManagePermission {
+  canCreate?: boolean;
+  canEdit?: boolean;
+  canDelete?: boolean;
+}
 export type ActionResponse = {
   message: string;
   ok: boolean;
@@ -159,6 +169,8 @@ export type FieldLocation = {
   unit: {
     name: string;
   } | null;
+};
+export type FieldLocationWithLatestCrop = FieldLocation & {
   latestCrop: CropSelectWithPlant | null;
 };
 
@@ -463,7 +475,9 @@ export type AssignedStaff = ActivityAssigned & {
 
 export type ActivityTable = Activity & {
   createdBy: Staff;
-  crop: CropSelect;
+  crop: CropSelect & {
+    field: FieldSelect;
+  };
   assignedTo: AssignedStaff[];
 };
 
@@ -488,6 +502,7 @@ export type ActivityWithCountUsages = Activity & {
     equipmentUseds: number;
     assignedTo: number;
   };
+  crop: CropSelect;
 };
 export type ActivityStatusCount = {
   status: ActivityStatus;
@@ -521,9 +536,6 @@ export type SalaryChart = {
 export type CropTable = Crop & {
   plant: PlantSelect;
   field: FieldSelect;
-  _count: {
-    activities: number;
-  };
   unit: {
     name: string;
   };
@@ -533,6 +545,7 @@ export type CropSelect = {
   name: string;
   startDate: Date;
   endDate: Date | null;
+  status: CropStatus;
 };
 export type CropSelectWithField = CropSelect & {
   field: FieldSelect;
@@ -559,6 +572,54 @@ export type CropMaterial = {
 };
 export type CropMaterialUsage = MaterialUsage & {
   material: CropMaterial;
+  unit: {
+    name: string;
+  };
+};
+
+export type StoreWithCrop = Store & {
+  crop: CropSelect;
+  unit: {
+    name: string;
+  };
+};
+
+export type Product = Store & {
+  crop: {
+    id: string;
+    name: string;
+    startDate: Date;
+    endDate: Date | null;
+    status: CropStatus;
+    plant: PlantSelect;
+    field: FieldLocation;
+  };
+  unit: {
+    name: string;
+  };
+};
+
+export type MaterialUsedInCrop = {
+  fertilizers: FertilizerTable[];
+  pesticides: PesticideTable[];
+};
+
+export type HarvestTable = Harvest & {
+  unit: {
+    name: string;
+  };
+  createdBy: Staff;
+};
+
+export type SaleTableWithCost = Sale & {
+  actualCost: number;
+  createdBy: Staff;
+  unit: {
+    name: string;
+  };
+};
+
+export type CropSaleTable = Crop & {
   unit: {
     name: string;
   };

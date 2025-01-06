@@ -346,6 +346,11 @@ export const StaffSchema = (
       required: false,
     }).nullish(),
 
+    startToWorkDate: z.date({
+      invalid_type_error: t("startToWorkDate.invalid_type_error"),
+      required_error: t("startToWorkDate.required_error"),
+    }),
+
     receiverEmail: stringSchema(t, "receiverEmail", {
       max: 255,
       required: false,
@@ -1193,6 +1198,7 @@ export const CropSchema = (
       max: 1_000_000_000,
       required: false,
     }).nullish(),
+
     status: z.nativeEnum(CropStatus, {
       message: t("status.enum"),
     }),
@@ -1259,4 +1265,93 @@ export const OTPCodeSchema = (
         path: ["code"],
       }
     );
+};
+
+export const StoreSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    cropId: z.string(),
+    imageUrl: stringSchema(t, "imageUrl"),
+    name: stringSchema(t, "name", {
+      min: 3,
+      max: 100,
+    }),
+    description: stringSchema(t, "description", {
+      min: 1,
+      max: 1000,
+    }),
+    address: stringSchema(t, "address", {
+      min: 3,
+      max: 255,
+    }),
+    phoneNumber: stringSchema(t, "phoneNumber", {
+      min: 1,
+      max: 15,
+    }).refine(validator.isMobilePhone, "phoneNumber.isPhone"),
+    price: numberSchema(t, "price", {
+      min: 500,
+      max: 10_000_000,
+    }),
+    unitId: stringSchema(t, "unitId"),
+    isFeature: z.boolean().default(false),
+    isPublic: z.boolean().default(false),
+  });
+};
+
+export const HarvestSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    harvestDate: z.date({
+      invalid_type_error: t("harvestDate.invalid_type_error"),
+      required_error: t("harvestDate.required_error"),
+    }),
+    value: numberSchema(t, "value", {
+      min: 0,
+      max: 1_000_000_000,
+    }),
+    cropId: z.string(),
+    createdById: z.string(),
+    unitId: stringSchema(t, "unitId"),
+  });
+};
+export const SaleSchema = (
+  t: (arg: string, obj?: Record<string, any>) => string
+) => {
+  return z.object({
+    saleDate: z.date({
+      invalid_type_error: t("saleDate.invalid_type_error"),
+      required_error: t("saleDate.required_error"),
+    }),
+    customerName: stringSchema(t, "customerName", {
+      min: 3,
+      max: 100,
+    }),
+    customerEmail: stringSchema(t, "customerEmail", {
+      min: 3,
+      max: 100,
+    }),
+
+    customerAddress: stringSchema(t, "customerAddress", {
+      min: 3,
+      max: 255,
+    }),
+    customerPhone: stringSchema(t, "customerPhone", {
+      min: 8,
+      max: 15,
+    }).refine(validator.isMobilePhone, "customerPhone.isPhone"),
+
+    value: numberSchema(t, "value", {
+      min: 0,
+      max: 1_000_000_000,
+    }),
+    price: numberSchema(t, "price", {
+      min: 0,
+      max: 1_000_000_000,
+    }),
+    cropId: z.string(),
+    createdById: z.string(),
+    unitId: stringSchema(t, "unitId"),
+  });
 };

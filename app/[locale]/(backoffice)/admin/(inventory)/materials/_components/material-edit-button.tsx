@@ -70,7 +70,7 @@ export const MaterialEditForm = ({ data }: MaterialEditFormProps) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4 max-w-5xl"
+        className="space-y-4 max-w-6xl"
       >
         <div className="grid lg:grid-cols-2 gap-4">
           <div className="col-span-1 space-y-4">
@@ -208,8 +208,6 @@ export const MaterialEditForm = ({ data }: MaterialEditFormProps) => {
                       onChange={field.onChange}
                       disabled={isPending || !canEdit}
                       type="number"
-                      min={0}
-                      max={10_000_000}
                     />
                   </FormControl>
                   <FormMessage />

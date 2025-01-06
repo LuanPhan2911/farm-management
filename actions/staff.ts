@@ -35,6 +35,7 @@ export const create = async (
       address,
       baseHourlyWage,
       phone,
+      startToWorkDate,
     } = validatedFields.data;
     const existingUser = await getUserByEmail(email);
     if (existingUser) {
@@ -56,6 +57,7 @@ export const create = async (
       address,
       baseHourlyWage,
       phone,
+      startToWorkDate,
     });
 
     //TODO: webhook for create staff
@@ -64,6 +66,7 @@ export const create = async (
         email,
         password,
         name,
+        startToWorkDate,
       });
     }
     revalidatePath("/admin/staffs");
@@ -111,6 +114,8 @@ export const destroy = async (externalId: string): Promise<ActionResponse> => {
     revalidatePath("/admin/staffs");
     return successResponse(tStatus("success.destroy"));
   } catch (error) {
+    console.log(error);
+
     return errorResponse(tStatus("failure.destroy"));
   }
 };

@@ -161,8 +161,6 @@ export const EquipmentDetailCreateForm = ({
                     onChange={field.onChange}
                     disabled={isPending || !canCreate}
                     type="number"
-                    min={1}
-                    max={10_000}
                   />
                 </FormControl>
                 <FormMessage />
@@ -184,8 +182,6 @@ export const EquipmentDetailCreateForm = ({
                         onChange={field.onChange}
                         disabled={isPending || !canCreate}
                         type="number"
-                        min={0}
-                        max={10_000}
                       />
                     </FormControl>
                     <FormMessage />
@@ -232,8 +228,6 @@ export const EquipmentDetailCreateForm = ({
                     onChange={field.onChange}
                     disabled={isPending || !canCreate}
                     type="number"
-                    min={0}
-                    max={1_000_000}
                   />
                 </FormControl>
                 <FormMessage />

@@ -34,7 +34,13 @@ import { useParams } from "next/navigation";
 import { useCallback, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Content, JSONContent, Mode, OnChangeStatus } from "vanilla-jsoneditor";
+import {
+  Content,
+  JSONContent,
+  Mode,
+  OnChangeStatus,
+  toJSONContent,
+} from "vanilla-jsoneditor";
 import { z } from "zod";
 
 export const SoilCreateButton = () => {
@@ -357,7 +363,7 @@ export const SoilCreateManyButton = () => {
   const [isOpen, setOpen] = useState(false);
   const onSubmit = () => {
     startTransition(() => {
-      const data = (jsonContent as JSONContent).json;
+      const data = toJSONContent(jsonContent).json;
       createMany(params!.fieldId, data)
         .then(({ message, ok }) => {
           if (ok) {

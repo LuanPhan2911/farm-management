@@ -14,7 +14,6 @@ import { useFormatter, useTranslations } from "next-intl";
 import { UnitWithValue } from "@/app/[locale]/(backoffice)/admin/_components/unit-with-value";
 import { CropTable } from "@/types";
 
-import { OrderByButton } from "@/components/buttons/order-by-button";
 import { DatePickerWithRangeButton } from "@/components/buttons/date-picker-range-button";
 import { SearchBar } from "@/components/search-bar";
 import { PlantsSelect } from "@/app/[locale]/(backoffice)/admin/_components/plants-select";
@@ -23,6 +22,8 @@ import { useRouterWithRole } from "@/hooks/use-router-with-role";
 import { FieldsSelect } from "../../_components/fields-select";
 import { SelectItemContentWithoutImage } from "@/components/form/select-item";
 import { CropStatusValue } from "./crop-status-value";
+import { useAuth } from "@clerk/nextjs";
+import { useEffect } from "react";
 
 interface CropsTableProps {
   data: CropTable[];
@@ -30,6 +31,8 @@ interface CropsTableProps {
 }
 export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
   const t = useTranslations("crops");
+
+  const { orgId } = useAuth();
   const { dateTime } = useFormatter();
   const { updateSearchParam: updatePlantId, initialParam: plantId } =
     useUpdateSearchParam("plantId");
@@ -39,6 +42,13 @@ export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
   const handleEdit = (row: CropTable) => {
     push(`crops/detail/${row.id}`);
   };
+
+  useEffect(() => {
+    if (fieldId) {
+      updateFieldId(undefined);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orgId]);
 
   return (
     <>
@@ -73,21 +83,10 @@ export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
         <TableHeader>
           <TableRow>
             <TableHead className="min-w-[250px]">
-              <OrderByButton column="name" label={t("table.thead.name")} />
+              {t("table.thead.name")}
             </TableHead>
-            <TableHead>
-              <OrderByButton
-                column="startDate"
-                label={t("table.thead.startDate")}
-                defaultValue="desc"
-              />
-            </TableHead>
-            <TableHead>
-              <OrderByButton
-                column="endDate"
-                label={t("table.thead.endDate")}
-              />
-            </TableHead>
+            <TableHead>{t("table.thead.startDate")}</TableHead>
+            <TableHead>{t("table.thead.endDate")}</TableHead>
 
             <TableHead>{t("table.thead.status")}</TableHead>
             <TableHead className="min-w-[200px]">
@@ -95,6 +94,9 @@ export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
             </TableHead>
             <TableHead className="min-w-[250px]">
               {t("table.thead.field.name")}
+            </TableHead>
+            <TableHead className="text-right">
+              {t("table.thead.estimatedYield")}
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -108,11 +110,11 @@ export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
               >
                 <TableHead className="whitespace-nowrap">{item.name}</TableHead>
                 <TableCell className="font-semibold">
-                  {dateTime(item.startDate, "long")}
+                  {dateTime(item.startDate, "short")}
                 </TableCell>
                 <TableCell className="font-semibold">
                   {item.endDate
-                    ? dateTime(item.endDate, "long")
+                    ? dateTime(item.endDate, "short")
                     : t("table.trow.endDate")}
                 </TableCell>
 
@@ -129,6 +131,12 @@ export const CropsTable = ({ data, totalPage }: CropsTableProps) => {
                   <SelectItemContentWithoutImage
                     title={item.field.name}
                     description={item.field.location}
+                  />
+                </TableCell>
+                <TableCell>
+                  <UnitWithValue
+                    value={item.estimatedYield}
+                    unit={item.unit.name}
                   />
                 </TableCell>
               </TableRow>

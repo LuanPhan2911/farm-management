@@ -17,7 +17,6 @@ interface JobCardDisplayItemProps {
 export const JobCardDisplayItem = ({ data }: JobCardDisplayItemProps) => {
   const format = useFormatter();
   const tJob = useTranslations("jobs.schema");
-  const tCard = useTranslations("jobs.card");
   return (
     <Card className="py-6">
       <CardContent>
@@ -28,13 +27,13 @@ export const JobCardDisplayItem = ({ data }: JobCardDisplayItemProps) => {
             </Badge>
           </div>
 
-          <div className="flex mt-6 text-justify md:text-lg text-md font-semibold">
+          <div className="flex mt-6 text-justify md:text-lg text-md font-semibold text-green-500">
             {data.name}
           </div>
           <Separator className="my-4" />
           <div className="flex flex-col gap-y-2">
             <h2 className="md:text-lg text-md font-semibold">
-              {tCard("info")}
+              Thông tin việc làm
             </h2>
             <div className="grid md:grid-cols-3 gap-4">
               <SmallCard
@@ -72,22 +71,21 @@ export const JobCardDisplayItem = ({ data }: JobCardDisplayItemProps) => {
           <Separator className="my-4" />
           <div className="flex flex-col gap-y-2">
             <h2 className="md:text-lg text-md font-semibold">
-              {tCard("description")}
+              Mô tả công việc
             </h2>
+            Mô tả công việc
             <TiptapContent content={data.description} />
           </div>
           <Separator className="my-4" />
           <div className="flex flex-col gap-y-2">
             <h2 className="md:text-lg text-md font-semibold">
-              {tCard("requirement")}
+              Yêu cầu công việc
             </h2>
             <TiptapContent content={data.requirement} />
           </div>
           <Separator className="my-4" />
           <div className="flex flex-col gap-y-2">
-            <h2 className="md:text-lg text-md font-semibold">
-              {tCard("rights")}
-            </h2>
+            <h2 className="md:text-lg text-md font-semibold">Quyền lợi</h2>
             <TiptapContent content={data.rights} />
           </div>
           <Separator className="my-4" />

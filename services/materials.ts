@@ -11,6 +11,7 @@ import {
   MaterialTable,
   MaterialTypeCount,
   MaterialUsedChart,
+  MaterialUsedInCrop,
   MaterialWithCost,
   PaginatedResponse,
 } from "@/types";
@@ -24,6 +25,7 @@ import {
   endOfMonth,
   startOfMonth,
 } from "date-fns";
+import { unitInclude } from "./units";
 
 type MaterialParam = {
   name: string;
@@ -229,6 +231,10 @@ export const getMaterialUsageCost = async ({
           },
         },
       },
+      cacheStrategy: {
+        swr: 60,
+        ttl: 60,
+      },
     });
 
     const materialWithCosts: MaterialWithCost[] = materials.map((material) => {
@@ -322,5 +328,82 @@ export const getMaterialMostUsages = async (
     return _.take(sortedMaterialCharts, limit);
   } catch (error) {
     return [];
+  }
+};
+
+export const getMaterialUsedInCrop = async (
+  cropId: string
+): Promise<MaterialUsedInCrop> => {
+  try {
+    const materials = await db.material.findMany({
+      where: {
+        type: {
+          in: ["FERTILIZER", "PESTICIDE"], // Filter by material type
+        },
+        materialUsages: {
+          some: {
+            activity: {
+              cropId: cropId, // Filter by cropId
+            },
+          },
+        },
+      },
+      cacheStrategy: {
+        swr: 60,
+        ttl: 60,
+      },
+    });
+    const pesticideIds = materials
+      .filter((item) => {
+        return item.type === "PESTICIDE" && item.typeId !== null;
+      })
+      .map((item) => item.typeId!);
+    const fertilizerIds = materials
+      .filter((item) => {
+        return item.type === "FERTILIZER" && item.typeId !== null;
+      })
+      .map((item) => item.typeId!);
+    const pesticides = await db.pesticide.findMany({
+      where: {
+        id: {
+          in: pesticideIds,
+        },
+      },
+      include: {
+        recommendedDosage: {
+          include: {
+            ...unitInclude,
+          },
+        },
+        withdrawalPeriod: {
+          include: {
+            ...unitInclude,
+          },
+        },
+      },
+    });
+    const fertilizers = await db.fertilizer.findMany({
+      where: {
+        id: {
+          in: fertilizerIds,
+        },
+      },
+      include: {
+        recommendedDosage: {
+          include: {
+            ...unitInclude,
+          },
+        },
+      },
+    });
+    return {
+      fertilizers,
+      pesticides,
+    };
+  } catch (error) {
+    return {
+      fertilizers: [],
+      pesticides: [],
+    };
   }
 };

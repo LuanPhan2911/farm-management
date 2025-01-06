@@ -24,6 +24,7 @@ import {
   FertilizerFrequencyValue,
   FertilizerTypeValue,
 } from "./fertilizer-status-value";
+import { UnitWithValue } from "../../../_components/unit-with-value";
 
 interface FertilizersTableProps {
   data: FertilizerTable[];
@@ -64,6 +65,9 @@ export const FertilizersTable = ({
             <TableHead>{t("table.thead.nutrientOfNPK")}</TableHead>
             <TableHead>{t("table.thead.applicationMethod")}</TableHead>
             <TableHead>{t("table.thead.manufacturer")}</TableHead>
+            <TableHead className="text-right">
+              {t("table.thead.recommendedDosage")}
+            </TableHead>
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>
@@ -89,14 +93,20 @@ export const FertilizersTable = ({
                 </TableCell>
 
                 <TableCell>
-                  {item.applicationMethod
-                    ? item.applicationMethod
-                    : t("table.trow.applicationMethod")}
+                  {item.applicationMethod || t("table.trow.applicationMethod")}
                 </TableCell>
                 <TableCell>
-                  {item.manufacturer
-                    ? item.manufacturer
-                    : t("table.trow.manufacturer")}
+                  {item.manufacturer || t("table.trow.manufacturer")}
+                </TableCell>
+                <TableCell className="text-right">
+                  {item.recommendedDosage?.value ? (
+                    <UnitWithValue
+                      value={item.recommendedDosage.value}
+                      unit={item.recommendedDosage.unit?.name}
+                    />
+                  ) : (
+                    t("table.trow.recommendedDosage")
+                  )}
                 </TableCell>
                 <TableCell>
                   <FertilizersTableAction data={item} />

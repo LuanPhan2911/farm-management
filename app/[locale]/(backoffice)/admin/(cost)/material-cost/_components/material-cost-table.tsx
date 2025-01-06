@@ -47,13 +47,10 @@ export const MaterialCostsTable = ({ data }: MaterialCostTableProps) => {
               {t("table.thead.material")}
             </TableHead>
             <TableHead>{t("table.thead.type")}</TableHead>
-            <TableHead>{t("table.thead.updatedAt")}</TableHead>
             <TableHead className="text-right">
               {t("table.thead.basePrice")}
             </TableHead>
-            <TableHead className="text-right">
-              {t("table.thead._count.materialUsages")}
-            </TableHead>
+
             <TableHead className="text-right">
               {t("table.thead.quantityInStock")}
             </TableHead>
@@ -88,15 +85,13 @@ export const MaterialCostsTable = ({ data }: MaterialCostTableProps) => {
                 <TableCell>
                   <MaterialTypeValue value={item.type} />
                 </TableCell>
-                <TableCell>{dateTime(item.updatedAt, "long")}</TableCell>
+
                 <TableCell className="text-right">
                   {item.basePrice !== null
                     ? number(item.basePrice, "currency")
                     : t("table.trow.basePrice")}
                 </TableCell>
-                <TableCell className="text-right">
-                  {item._count.materialUsages}
-                </TableCell>
+
                 <TableCell className="text-right font-semibold">
                   <UnitWithValue
                     value={item.quantityInStock}
@@ -118,7 +113,7 @@ export const MaterialCostsTable = ({ data }: MaterialCostTableProps) => {
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableHead colSpan={7}>{t("table.tfooter.total")}</TableHead>
+            <TableHead colSpan={5}>{t("table.tfooter.total")}</TableHead>
             <TableCell className="text-right">
               {number(totalCost, "currency")}
             </TableCell>

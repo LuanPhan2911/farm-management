@@ -8,7 +8,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { UserAvatar } from "@/components/user-avatar";
 import { useFormatter, useTranslations } from "next-intl";
 import { SearchBar } from "@/components/search-bar";
 import { NavPagination } from "@/components/nav-pagination";
@@ -19,6 +18,7 @@ import { OrderByButton } from "@/components/buttons/order-by-button";
 import { useDialog } from "@/stores/use-dialog";
 import { useCurrentStaff } from "@/hooks/use-current-staff";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
+import { SelectItemContent } from "@/components/form/select-item";
 
 interface StaffsTableProps {
   data: Staff[];
@@ -26,7 +26,7 @@ interface StaffsTableProps {
 }
 export const StaffsTable = ({ data, totalPage }: StaffsTableProps) => {
   const t = useTranslations("staffs");
-  const { relativeTime } = useFormatter();
+  const { dateTime } = useFormatter();
   const { onOpen } = useDialog();
   const { currentStaff } = useCurrentStaff();
   const { isSuperAdmin } = useCurrentStaffRole();
@@ -48,22 +48,13 @@ export const StaffsTable = ({ data, totalPage }: StaffsTableProps) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead></TableHead>
             <TableHead>
               <OrderByButton column="name" label={t("table.thead.name")} />
-            </TableHead>
-            <TableHead>
-              <OrderByButton column="email" label={t("table.thead.email")} />
             </TableHead>
             <TableHead>{t("table.thead.role")}</TableHead>
             <TableHead>{t("table.thead.phone")}</TableHead>
             <TableHead>{t("table.thead.address")}</TableHead>
-            <TableHead>
-              <OrderByButton
-                column="createdAt"
-                label={t("table.thead.createdAt")}
-              />
-            </TableHead>
+            <TableHead>{t("table.thead.startToWorkDate")}</TableHead>
             <TableHead className="text-right">
               {t("table.thead.baseHourlyWage")}
             </TableHead>
@@ -80,10 +71,12 @@ export const StaffsTable = ({ data, totalPage }: StaffsTableProps) => {
                 onClick={() => handleEdit(staff)}
               >
                 <TableCell>
-                  <UserAvatar src={staff.imageUrl || undefined} />
+                  <SelectItemContent
+                    description={staff.email}
+                    imageUrl={staff.imageUrl}
+                    title={staff.name}
+                  />
                 </TableCell>
-                <TableCell>{staff.name}</TableCell>
-                <TableCell>{staff.email}</TableCell>
                 <TableCell>
                   <StaffMetadataRole
                     metadata={{
@@ -91,11 +84,12 @@ export const StaffsTable = ({ data, totalPage }: StaffsTableProps) => {
                     }}
                   />
                 </TableCell>
+
                 <TableCell>{staff.phone || t("table.trow.phone")}</TableCell>
                 <TableCell>
                   {staff.address || t("table.trow.address")}
                 </TableCell>
-                <TableCell>{relativeTime(staff.createdAt)}</TableCell>
+                <TableCell>{dateTime(staff.startToWorkDate)}</TableCell>
                 <TableCell className="text-right">
                   {staff.baseHourlyWage
                     ? number(staff.baseHourlyWage, "currency")

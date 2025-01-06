@@ -9,11 +9,10 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { edit } from "@/actions/activity";
 import { useParams } from "next/navigation";
-import { ActivityTable } from "@/types";
+import { ActivityTable, ManagePermission } from "@/types";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -30,14 +29,11 @@ import { StaffsSelectMultiple } from "../../_components/staffs-select";
 import { DatePickerWithTime } from "@/components/form/date-picker-with-time";
 import { CropsSelect } from "../../_components/crops-select";
 import { useAuth } from "@clerk/nextjs";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Hint } from "@/components/hint";
 
-interface ActivityEditFormProps {
+interface ActivityEditFormProps extends ManagePermission {
   data: ActivityTable;
-  disabled?: boolean;
 }
-export const ActivityEditForm = ({ data, disabled }: ActivityEditFormProps) => {
+export const ActivityEditForm = ({ data, canEdit }: ActivityEditFormProps) => {
   const tSchema = useTranslations("activities.schema");
   const formSchema = ActivitySchema(tSchema);
   const [isPending, startTransition] = useTransition();
@@ -54,7 +50,6 @@ export const ActivityEditForm = ({ data, disabled }: ActivityEditFormProps) => {
     },
   });
 
-  const canEdit = !disabled;
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
       edit(values, params!.activityId)
@@ -70,12 +65,11 @@ export const ActivityEditForm = ({ data, disabled }: ActivityEditFormProps) => {
         });
     });
   };
+
+  const disabled = isPending || !canEdit;
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4 max-w-6xl"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <div className="grid lg:grid-cols-2 gap-2">
           <FormField
             control={form.control}
@@ -88,7 +82,7 @@ export const ActivityEditForm = ({ data, disabled }: ActivityEditFormProps) => {
                     placeholder={tSchema("name.placeholder")}
                     value={field.value ?? undefined}
                     onChange={field.onChange}
-                    disabled={isPending || !canEdit}
+                    disabled={disabled}
                   />
                 </FormControl>
 
@@ -110,7 +104,7 @@ export const ActivityEditForm = ({ data, disabled }: ActivityEditFormProps) => {
                     disabledDateRange={{
                       before: new Date(),
                     }}
-                    disabled={isPending || !canEdit}
+                    disabled={disabled}
                   />
                 </FormControl>
 
@@ -156,7 +150,7 @@ export const ActivityEditForm = ({ data, disabled }: ActivityEditFormProps) => {
                     error={tSchema("assignedTo.error")}
                     placeholder={tSchema("assignedTo.placeholder")}
                     notFound={tSchema("assignedTo.notFound")}
-                    disabled={isPending || !canEdit}
+                    disabled={disabled}
                   />
                 </FormControl>
 
@@ -183,7 +177,7 @@ export const ActivityEditForm = ({ data, disabled }: ActivityEditFormProps) => {
                       };
                     })}
                     defaultValue={field.value}
-                    disabled={isPending || !canEdit}
+                    disabled={disabled}
                     disabledValues={[ActivityStatus.COMPLETED]}
                   />
                 </FormControl>
@@ -209,7 +203,7 @@ export const ActivityEditForm = ({ data, disabled }: ActivityEditFormProps) => {
                       };
                     })}
                     defaultValue={field.value}
-                    disabled={isPending || !canEdit}
+                    disabled={disabled}
                   />
                 </FormControl>
 
@@ -229,7 +223,7 @@ export const ActivityEditForm = ({ data, disabled }: ActivityEditFormProps) => {
                     placeholder={tSchema("estimatedDuration.placeholder")}
                     value={field.value ?? undefined}
                     onChange={field.onChange}
-                    disabled={isPending || !canEdit}
+                    disabled={disabled}
                   />
                 </FormControl>
 
@@ -249,7 +243,7 @@ export const ActivityEditForm = ({ data, disabled }: ActivityEditFormProps) => {
                     placeholder={tSchema("actualDuration.placeholder")}
                     value={field.value ?? undefined}
                     onChange={field.onChange}
-                    disabled={isPending || !canEdit}
+                    disabled={disabled}
                   />
                 </FormControl>
                 <FormMessage />
@@ -269,7 +263,8 @@ export const ActivityEditForm = ({ data, disabled }: ActivityEditFormProps) => {
                   placeholder={tSchema("description.placeholder")}
                   value={field.value ?? undefined}
                   onChange={field.onChange}
-                  disabled={isPending || !canEdit}
+                  disabled={disabled}
+                  rows={5}
                 />
               </FormControl>
 
@@ -278,10 +273,7 @@ export const ActivityEditForm = ({ data, disabled }: ActivityEditFormProps) => {
           )}
         />
 
-        <DynamicDialogFooter
-          disabled={isPending || !canEdit}
-          closeButton={false}
-        />
+        <DynamicDialogFooter disabled={disabled} closeButton={false} />
       </form>
     </Form>
   );

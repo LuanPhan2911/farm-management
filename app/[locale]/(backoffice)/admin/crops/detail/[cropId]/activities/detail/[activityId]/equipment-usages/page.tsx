@@ -4,11 +4,11 @@ import { getTranslations } from "next-intl/server";
 
 import { getEquipmentUsagesByActivity } from "@/services/equipment-usages";
 import { EquipmentUsageCreateButton } from "@/app/[locale]/(backoffice)/admin/(inventory)/equipments/detail/[equipmentId]/details/[equipmentDetailId]/usages/_components/equipment-usage-create-button";
-import { getOnlyActivityById } from "@/services/activities";
+import { getActivityById } from "@/services/activities";
 import { notFound } from "next/navigation";
-import { canUpdateActivityStatus } from "@/lib/permission";
+import { canUpdateActivityStatus, canUpdateCropStatus } from "@/lib/permission";
 import { ActivityEquipmentUsagesTable } from "@/app/[locale]/(backoffice)/admin/activities/detail/[activityId]/equipment-usages/_components/activity-equipment-usages-table";
-import { canUpdateActivity } from "@/lib/role";
+import { getCurrentStaffRole } from "@/services/staffs";
 export async function generateMetadata() {
   const t = await getTranslations("activities.page.detail.equipment-usages");
   return {
@@ -41,7 +41,16 @@ const CropActivityEquipmentUsagesPage = async ({
     query,
   });
 
-  const canEdit = await canUpdateActivity(params.cropId, params.activityId);
+  const activity = await getActivityById(params.activityId);
+  if (!activity) {
+    notFound();
+  }
+  const { isOnlyAdmin } = await getCurrentStaffRole();
+
+  const canManage =
+    isOnlyAdmin &&
+    canUpdateCropStatus(activity.crop.status) &&
+    canUpdateActivityStatus(activity.status);
   return (
     <Card>
       <CardHeader>
@@ -49,9 +58,9 @@ const CropActivityEquipmentUsagesPage = async ({
       </CardHeader>
       <CardContent>
         <div className="flex justify-end">
-          <EquipmentUsageCreateButton disabled={!canEdit} />
+          <EquipmentUsageCreateButton canCreate={canManage} />
         </div>
-        <ActivityEquipmentUsagesTable data={data} disabled={!canEdit} />
+        <ActivityEquipmentUsagesTable data={data} canEdit={canManage} />
       </CardContent>
     </Card>
   );

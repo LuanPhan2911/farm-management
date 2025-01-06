@@ -99,6 +99,7 @@ export const createMany = async (fieldId: string, json: unknown) => {
     const paramsSchema = WeatherSchema(tSchema);
 
     const data = json as any[];
+
     const weathers = data.map((item) => {
       const validatedField = paramsSchema.safeParse(item);
 
@@ -108,6 +109,7 @@ export const createMany = async (fieldId: string, json: unknown) => {
         return undefined;
       }
     });
+    console.log(weathers);
 
     const validatedWeathers = weathers.filter((item) => item !== undefined);
     if (
@@ -120,6 +122,8 @@ export const createMany = async (fieldId: string, json: unknown) => {
     revalidatePath(`/admin/fields/detail/${fieldId}/weathers`);
     return successResponse(tStatus("success.createMany"));
   } catch (error) {
+    console.log(error);
+
     return errorResponse(tStatus("failure.createMany"));
   }
 };

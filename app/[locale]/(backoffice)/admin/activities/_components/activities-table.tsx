@@ -54,23 +54,15 @@ export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
             <TableHead>
               <OrderByButton column="name" label={t("table.thead.name")} />
             </TableHead>
-            <TableHead>
-              <OrderByButton
-                column="activityDate"
-                label={t("table.thead.activityDate")}
-                defaultValue="desc"
-              />
-            </TableHead>
+            <TableHead>{t("table.thead.activityDate")}</TableHead>
 
             <TableHead>{t("table.thead.status")}</TableHead>
             <TableHead>{t("table.thead.priority")}</TableHead>
-            <TableHead>{t("table.thead.createdBy")}</TableHead>
             <TableHead className="text-right">
               {t("table.thead.estimatedDuration")}
             </TableHead>
-            <TableHead className="text-right">
-              {t("table.thead.actualDuration")}
-            </TableHead>
+            <TableHead>{t("table.thead.createdBy")}</TableHead>
+            <TableHead>{t("table.thead.crop.field")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -90,7 +82,9 @@ export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
                 <TableCell>
                   <ActivityPriorityValue value={item.priority} />
                 </TableCell>
-
+                <TableCell className="text-right">
+                  {number(item.estimatedDuration, "hour")}
+                </TableCell>
                 <TableCell>
                   <SelectItemContent
                     imageUrl={item.createdBy.imageUrl}
@@ -98,13 +92,11 @@ export const ActivitiesTable = ({ data, totalPage }: ActivitiesTableProps) => {
                     description={item.createdBy.email}
                   />
                 </TableCell>
-                <TableCell className="text-right">
-                  {number(item.estimatedDuration, "hour")}
-                </TableCell>
-                <TableCell className="text-right">
-                  {item.actualDuration
-                    ? number(item.actualDuration, "hour")
-                    : t("table.trow.actualDuration")}
+                <TableCell>
+                  <SelectItemContentWithoutImage
+                    title={item.crop.field.name}
+                    description={item.crop.field.location}
+                  />
                 </TableCell>
               </TableRow>
             );

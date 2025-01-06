@@ -2,12 +2,11 @@
 
 import { UserAvatar } from "@/components/user-avatar";
 import { dateToString, getLocationLatLng } from "@/lib/utils";
-import { FieldLocation } from "@/types";
-import { useTranslations } from "next-intl";
+import { FieldLocationWithLatestCrop } from "@/types";
 import { Marker, Popup } from "react-leaflet";
 
 interface MarkerLocationProps {
-  data: FieldLocation;
+  data: FieldLocationWithLatestCrop;
 }
 export const MarkerLocation = ({ data }: MarkerLocationProps) => {
   const position = getLocationLatLng(data.latitude, data.longitude);

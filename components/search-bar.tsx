@@ -9,11 +9,13 @@ interface SearchBarProps {
   isPagination?: boolean;
   pageCursor?: string;
   className?: string;
+  inputClassName?: string;
 }
 export const SearchBar = ({
   placeholder,
   isPagination,
   className,
+  inputClassName,
   pageCursor = "1",
 }: SearchBarProps) => {
   const { initialParams, updateSearchParams } = useUpdateSearchParams({
@@ -32,7 +34,7 @@ export const SearchBar = ({
       <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
       <Input
         placeholder={placeholder}
-        className="pl-8 h-10"
+        className={cn("pl-8 h-10", inputClassName)}
         onChange={(e) => handleSearch(e.target.value)}
         defaultValue={initialParams.query}
       />

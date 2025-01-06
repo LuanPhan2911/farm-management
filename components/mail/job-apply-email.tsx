@@ -36,17 +36,17 @@ export const JobApplyEmail = ({
             >
               {siteConfig.name}
             </Link>
-            <Text className="text-md m-1">Kính gửi {receiveName},</Text>
-            <Text className="text-md m-1">
+            <Text className="text-sm m-1">Kính gửi {receiveName},</Text>
+            <Text className="text-sm m-1">
               Chúng tôi xin xác nhận đã nhận được đơn xin việc của bạn cho vị
               trí <span className="font-semibold">{jobTitle}</span>. Cảm ơn bạn
               đã quan tâm đến công ty chúng tôi.
             </Text>
-            <Text className="text-md m-1">
+            <Text className="text-sm m-1">
               Chúng tôi sẽ xem xét hồ sơ của bạn và liên hệ lại với bạn sớm nhất
               có thể.
             </Text>
-            <Text className="text-md m-1">
+            <Text className="text-sm m-1">
               Trân trọng,
               <br />
               {senderName}

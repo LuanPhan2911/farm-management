@@ -8,10 +8,8 @@ import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { EquipmentDetailTable } from "@/types";
-import { DestroyButton } from "@/components/buttons/destroy-button";
 
 import { EditButton } from "@/components/buttons/edit-button";
-import { LinkButton } from "@/components/buttons/link-button";
 import { useCurrentStaffRole } from "@/hooks/use-current-staff-role";
 import { destroy } from "@/actions/equipment-detail";
 import { canUpdateEquipmentDetail } from "@/lib/permission";

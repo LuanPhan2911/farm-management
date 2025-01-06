@@ -124,7 +124,7 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
                 </TableCell>
 
                 <TableCell className="text-right">
-                  {item.temperature ? (
+                  {item.temperature?.value ? (
                     <UnitWithValue
                       value={item.temperature.value}
                       unit={item.temperature.unit?.name || "C"}
@@ -134,7 +134,7 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
                   )}
                 </TableCell>
                 <TableCell className="text-right">
-                  {item.humidity ? (
+                  {item.humidity?.value ? (
                     <UnitWithValue
                       value={item.humidity?.value}
                       unit={item.humidity?.unit?.name || "%"}
@@ -144,7 +144,7 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
                   )}
                 </TableCell>
                 <TableCell className="text-right">
-                  {item.atmosphericPressure ? (
+                  {item.atmosphericPressure?.value ? (
                     <UnitWithValue
                       value={item.atmosphericPressure?.value}
                       unit={item.atmosphericPressure?.unit?.name || "hPa"}
@@ -154,7 +154,7 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
                   )}
                 </TableCell>
                 <TableCell className="text-right">
-                  {item.rainfall ? (
+                  {item.rainfall?.value ? (
                     <UnitWithValue
                       value={item.rainfall?.value}
                       unit={item.rainfall?.unit?.name || "mm"}
@@ -171,7 +171,7 @@ export const WeathersTable = ({ data, totalPage }: WeathersTableProps) => {
                     ? relativeTime(item.confirmedAt)
                     : t("trow.confirmedAt")}
                 </TableCell>
-                <TableCell className="min-w-[200px]">
+                <TableCell>
                   {item.confirmedBy ? (
                     <SelectItemContent
                       imageUrl={item.confirmedBy.imageUrl}

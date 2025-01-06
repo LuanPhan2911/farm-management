@@ -26,6 +26,7 @@ export const ScheduleSelectCron = ({
     { label: "Every Friday at 6 PM", value: "0 18 * * 5" },
     { label: "Every month on the 1st at midnight", value: "0 0 1 * *" },
     { label: "Every month on the 15th at noon", value: "0 12 15 * *" },
+    { label: "Every month on the 28th at noon", value: "0 12 28 * *" },
     { label: "Every year on January 1st at midnight", value: "0 0 1 1 *" },
     { label: "Every year on July 4th at noon", value: "0 12 4 7 *" },
     { label: "Every weekday at 9 AM", value: "0 9 * * 1-5" },

@@ -47,34 +47,26 @@ export const CropActivitiesTable = ({ data }: CropActivitiesTableProps) => {
         <TableHeader>
           <TableRow>
             <TableHead className="min-w-[200px]">
-              <OrderByButton column="name" label={t("table.thead.name")} />
+              {t("table.thead.name")}
             </TableHead>
-            <TableHead>
-              <OrderByButton
-                column="activityDate"
-                label={t("table.thead.activityDate")}
-                defaultValue="desc"
-              />
-            </TableHead>
+            <TableHead>{t("table.thead.activityDate")}</TableHead>
 
             <TableHead>{t("table.thead.status")}</TableHead>
             <TableHead>{t("table.thead.priority")}</TableHead>
             <TableHead className="text-right">
               {t("table.thead.estimatedDuration")}
             </TableHead>
+
             <TableHead className="text-right">
-              {t("table.thead.actualDuration")}
-            </TableHead>
-            <TableHead className="whitespace-nowrap">
               {t("table.thead.totalStaffCost")}
             </TableHead>
-            <TableHead className="whitespace-nowrap">
+            <TableHead className="text-right">
               {t("table.thead.totalEquipmentCost")}
             </TableHead>
-            <TableHead className="whitespace-nowrap">
+            <TableHead className="text-right">
               {t("table.thead.totalMaterialCost")}
             </TableHead>
-            <TableHead className="whitespace-nowrap">
+            <TableHead className="text-right">
               {t("table.thead.actualCost")}
             </TableHead>
           </TableRow>
@@ -101,11 +93,7 @@ export const CropActivitiesTable = ({ data }: CropActivitiesTableProps) => {
                 <TableCell className="text-right">
                   {number(item.estimatedDuration, "hour")}
                 </TableCell>
-                <TableCell className="text-right">
-                  {item.actualDuration
-                    ? number(item.actualDuration, "hour")
-                    : t("table.trow.actualDuration")}
-                </TableCell>
+
                 <TableCell className="text-right">
                   {item.totalStaffCost !== null
                     ? number(item.totalStaffCost, "currency")
@@ -132,7 +120,7 @@ export const CropActivitiesTable = ({ data }: CropActivitiesTableProps) => {
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={9}>{t("table.tfooter.totalCost")}</TableCell>
+            <TableCell colSpan={8}>{t("table.tfooter.totalCost")}</TableCell>
             <TableCell className="text-right">
               {number(totalCost, "currency")}
             </TableCell>
